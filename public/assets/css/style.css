@@ -1,0 +1,192 @@
+
+/**
+======================================================
+<--  hendrio Process Section Css -->
+======================================================**/
+
+.process-section {
+    background: #fff;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    padding: 90px 0 60px;
+}
+
+.single-process-box {
+    text-align: center;
+    margin-bottom: 30px;
+    position: relative;
+    z-index: 1;
+}
+
+.single-process-box:before {
+    position: absolute;
+    content: "";
+    right: 51px;
+    top: 60px;
+    width: 100%;
+    height: 100%;
+    background: url('../images/arrow.png');
+    background-repeat: no-repeat;
+}
+
+.upper.single-process-box:before {
+    position: inherit;
+}
+
+.process-thumb {
+    position: relative;
+    z-index: 1;
+    width: 142px;
+    height: 142px;
+    line-height: 142px;
+    border-radius: 71px;
+    background-color: #f5f8fe;
+    transition: .5s;
+    display: inline-block;
+}
+
+.process-thumb:before {
+    position: absolute;
+    content: "";
+    left: -9px;
+    top: -9px;
+    width: 160px;
+    height: 160px;
+    line-height: 160px;
+    border-radius: 50%;
+    border: 2px dashed #152b63;
+    opacity: .154;
+    transition: .5s;
+}
+
+.process-thumb:after {
+    position: absolute;
+    content: "";
+    z-index: -1;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    border-radius: 71px;
+    background: #0064c9;
+    transform: scale(0);
+    transition: .5s;
+}
+
+
+.process-number {
+    position: absolute;
+    right: -20px;
+    top: 0;
+    transition: .5s;
+}
+
+.process-number span {
+    font-size: 14px;
+    font-weight: 600;
+    color: #fff;
+    background: #152b63;
+    border-radius: 30px;
+    font-family: 'Inter';
+    height: 36px;
+    width: 36px;
+    line-height: 36px;
+    text-align: center;
+    display: inline-block;
+}
+
+h4.process-title {
+    font-size: 22px;
+    padding: 25px 0 10px;
+    color: #152b63;
+    font-weight: 600;
+}
+
+p.process-desc {
+    opacity: .6;
+    font-weight: 300;
+}
+
+span.check-arrow i {
+    font-size: 20px;
+}
+
+.single-process-box:hover .process-thumb:before {
+    border: 2px dashed #0064c9;
+    opacity: 1;
+    -webkit-animation-name: rotateme;
+    -webkit-animation-duration: 20s;
+    -webkit-animation-iteration-count: infinite;
+}
+
+.single-process-box:hover .process-thumb:after {
+    transform: scale(1);
+}
+
+.single-process-box:hover .process-number {
+    right: -8px;
+    top: -45px;
+}
+
+@keyframes rotateme {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Appliquer uniquement la rotation à l'élément avec la bordure rouge */
+.single-process-box:hover .process-thumb:before {
+    border: 2px dashed #0064c9;
+    opacity: 1;
+    animation: rotateme 15s linear infinite;
+}
+
+/* Garder les autres éléments fixes */
+.single-process-box:hover .process-number {
+    right: -8px;
+    top: -45px;
+}
+
+/* S'assurer que l'élément ".process-thumb:after" ne tourne pas */
+.single-process-box:hover .process-thumb:after {
+    transform: scale(1);
+}
+.hendrio-section-title h4{
+    font-weight: 600;
+    color: #0052a3;
+    font-family: "Plus Jakarta Sans",sans-serif !important;
+}
+.hendrio-section-title h1{
+    color: #000;
+    font-weight: 600;
+    font-family: "Plus Jakarta Sans",sans-serif !important;
+}
+.hendrio-section-title  h1 span{
+    color: #0052a3;
+}
+.bg-primary-subtle {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../images/banner.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+[data-bs-theme=dark][data-color-theme=Blue_Theme]:root .btn-primary, [data-bs-theme=light][data-color-theme=Blue_Theme]:root .btn-primary {
+    --bs-btn-bg: #0064c9; /* Couleur principale */
+    --bs-btn-border-color: #0064c9; /* Bordure du bouton */
+    --bs-btn-hover-bg: #0052a3; /* Couleur au survol (une nuance plus foncée) */
+    --bs-btn-hover-border-color: #0052a3; /* Bordure au survol (une nuance plus foncée) */
+    
+}
+.header-fp .navbar .navbar-nav .nav-link.active{
+    color: #fff !important;
+}
+
+
+.footer{
+    background-color: #0064c9;
+}
