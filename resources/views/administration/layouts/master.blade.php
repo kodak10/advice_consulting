@@ -8,7 +8,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- Favicon icon-->
-  <link rel="shortcut icon" type="image/png" href="{{ asset('adminAssets/images/logos/favicon.ico') }}">
+  <link rel="shortcut icon" type="image/png" href="{{ asset('adminAssets/images/logos/favicon.png') }}">
 
   <!-- Core Css -->
   <link rel="stylesheet" href="{{ asset('adminAssets/css/styles.css') }}">
