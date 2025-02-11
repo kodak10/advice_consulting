@@ -49,7 +49,7 @@
             <div class="col-lg-3 col-md-6">
                 <div class="single-process-box">
                     <div class="process-thumb">
-                        <img src="{{ asset('assets/images/process2.png') }}" alt="">
+                        <img src="{{ asset('assets/images/process3.png') }}" alt="">
                         <div class="process-number">
                             <span>02</span>
                         </div>
