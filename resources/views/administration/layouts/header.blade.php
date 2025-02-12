@@ -21,10 +21,6 @@
           <li class="nav-item dropdown-hover d-none d-lg-block">
             <a class="nav-link" href="app-chat.html">Messagerie</a>
           </li>
-          <li class="nav-item dropdown-hover d-none d-lg-block">
-            <a class="nav-link" href="app-calendar.html">Calendrier</a>
-          </li>
-         
         </ul>
 
         <div class="d-block d-lg-none py-4">

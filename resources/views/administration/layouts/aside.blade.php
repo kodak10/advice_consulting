@@ -21,7 +21,7 @@
           </li>
           
           <li class="sidebar-item">
-            <a class="sidebar-link {{ Request::is('dashboard') ? 'active' : '' }}" href="/dashboard" id="get-url" aria-expanded="false">
+            <a class="sidebar-link {{ Request::is('dashboard') ? 'active' : '' }}" href="{{ route('dashboard.') }}" id="get-url" aria-expanded="false">
               <span>
                 <i class="ti ti-layout-dashboard"></i>
               </span>
@@ -35,7 +35,7 @@
           </li>
           
           <li class="sidebar-item">
-            <a class="sidebar-link" href="app-invoice.html" id="get-url" aria-expanded="false">
+            <a class="sidebar-link {{ Request::is('devis') ? 'active' : '' }}" href="{{ route('dashboard.devis.index') }}" id="get-url" aria-expanded="false">
               <span>
                 <i class="ti ti-list"></i>
               </span>
@@ -44,7 +44,7 @@
           </li>
 
           <li class="sidebar-item">
-            <a class="sidebar-link" href="" id="get-url" aria-expanded="false">
+            <a class="sidebar-link {{ Request::is('devis') ? 'active' : '' }}" href="{{ route('dashboard.devis.create') }}" id="get-url" aria-expanded="false">
               <span>
                 <i class="ti ti-receipt"></i> 
               </span>
@@ -58,7 +58,7 @@
           </li>
           
           <li class="sidebar-item">
-            <a class="sidebar-link" href="app-invoice.html" id="get-url" aria-expanded="false">
+            <a class="sidebar-link {{ Request::is('factures') ? 'active' : '' }}" href="{{ route('dashboard.factures.index') }}" id="get-url" aria-expanded="false">
               <span>
                 <i class="ti ti-list"></i>
               </span>
@@ -67,7 +67,7 @@
           </li>
 
           <li class="sidebar-item">
-            <a class="sidebar-link" href="" id="get-url" aria-expanded="false">
+            <a class="sidebar-link {{ Request::is('factures') ? 'active' : '' }}" href="{{ route('dashboard.factures.create') }}" id="get-url" aria-expanded="false">
               <span>
                 <i class="ti ti-file-invoice"></i> 
               </span>
@@ -83,7 +83,7 @@
          
 
           <li class="sidebar-item">
-            <a class="sidebar-link" href="/clients" id="get-url" aria-expanded="false">
+            <a class="sidebar-link {{ Request::is('clients') ? 'active' : '' }}" href="{{ route('dashboard.clients.index') }}" id="get-url" aria-expanded="false">
               <span>
                 <i class="ti ti-user-plus"></i> 
               </span>
@@ -92,7 +92,7 @@
           </li>
 
           <li class="sidebar-item">
-            <a class="sidebar-link" href="app-contact.html" id="get-url" aria-expanded="false">
+            <a class="sidebar-link {{ Request::is('designations') ? 'active' : '' }}" href="{{ route('dashboard.designations.index') }}" id="get-url" aria-expanded="false">
               <span>
                 <i class="ti ti-pencil"></i>
               </span>
@@ -113,7 +113,7 @@
           </li>
 
           <li class="sidebar-item">
-            <a class="sidebar-link justify-content-between" href="app-chat.html" aria-expanded="false">
+            <a class="sidebar-link justify-content-between {{ Request::is('messagerie') ? 'active' : '' }}" href="{{ route('dashboard.messagerie.index') }}" aria-expanded="false">
               <div class="d-flex align-items-center gap-3">
                 <span class="d-flex">
                   <i class="ti ti-award"></i>
@@ -125,15 +125,10 @@
               </div>
             </a>
           </li>
+
           
-          <li class="sidebar-item">
-            <a class="sidebar-link" href="app-calendar.html" aria-expanded="false">
-              <span>
-                <i class="ti ti-calendar"></i>
-              </span>
-              <span class="hide-menu">Calendrier</span>
-            </a>
-          </li>
+          
+          
           
           
          
@@ -153,7 +148,7 @@
           </li>
          
           <li class="sidebar-item">
-            <a class="sidebar-link" href="page-account-settings.html" aria-expanded="false">
+            <a class="sidebar-link {{ Request::is('profile') ? 'active' : '' }}" href="{{ route('dashboard.users.profile') }}" aria-expanded="false">
               <span>
                 <i class="ti ti-user-circle"></i>
               </span>
@@ -162,7 +157,7 @@
           </li>
 
           <li class="sidebar-item">
-            <a class="sidebar-link" href="app-contact.html" id="get-url" aria-expanded="false">
+            <a class="sidebar-link {{ Request::is('users') ? 'active' : '' }}" href="{{ route('dashboard.users.index') }}" id="get-url" aria-expanded="false">
               <span>
                 <i class="ti ti-user-cog"></i> 
 
