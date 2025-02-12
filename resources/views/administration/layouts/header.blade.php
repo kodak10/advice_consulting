@@ -19,7 +19,7 @@
         <ul class="navbar-nav quick-links d-none d-lg-flex align-items-center">
          
           <li class="nav-item dropdown-hover d-none d-lg-block">
-            <a class="nav-link" href="app-chat.html">Messagerie</a>
+            <a class="nav-link" href="{{ route('dashboard.messagerie.index') }}">Messagerie</a>
           </li>
         </ul>
 
@@ -154,7 +154,7 @@
                       </div>
                     </div>
                     <div class="message-body">
-                      <a href="page-account-settings.html" class="py-8 px-7 mt-8 d-flex align-items-center">
+                      <a href="{{ route('dashboard.users.profile') }}" class="py-8 px-7 mt-8 d-flex align-items-center">
                         <span class="d-flex align-items-center justify-content-center text-bg-light rounded-1 p-6">
                           <img src="{{ asset('adminAssets/images/svgs/icon-account.svg') }}" alt="modernize-img" width="24" height="24">
                         </span>
@@ -163,7 +163,7 @@
                           <span class="fs-2 d-block text-body-secondary">Paramètres du compte</span>
                         </div>
                       </a>
-                      <a href="app-email.html" class="py-8 px-7 d-flex align-items-center">
+                      <a href="{{ route('dashboard.messagerie.index') }}" class="py-8 px-7 d-flex align-items-center">
                         <span class="d-flex align-items-center justify-content-center text-bg-light rounded-1 p-6">
                           <img src="{{ asset('adminAssets/images/svgs/icon-inbox.svg') }}" alt="modernize-img" width="24" height="24">
                         </span>

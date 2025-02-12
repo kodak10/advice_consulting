@@ -3,7 +3,7 @@
       <!-- Start Vertical Layout Sidebar -->
       <!-- ---------------------------------- -->
       <div class="brand-logo d-flex align-items-center justify-content-between">
-        <a href="index.html" class="text-nowrap logo-img">
+        <a href="{{ route('dashboard.') }}" class="text-nowrap logo-img">
           <img src="{{ asset('adminAssets/images/logos/logo.png') }}" class="dark-logo" alt="Logo-Dark" style="height: 100px">
           <img src="{{ asset('adminAssets/images/logos/logo.png') }}" class="light-logo" alt="Logo-light" style="height: 100px">
         </a>
