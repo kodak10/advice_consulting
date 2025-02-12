@@ -4,8 +4,8 @@
       <!-- ---------------------------------- -->
       <div class="brand-logo d-flex align-items-center justify-content-between">
         <a href="index.html" class="text-nowrap logo-img">
-          <img src="{{ asset('adminAssets/images/logos/logo.png') }}" class="dark-logo" alt="Logo-Dark">
-          <img src="{{ asset('adminAssets/images/logos/logo.png') }}" class="light-logo" alt="Logo-light">
+          <img src="{{ asset('adminAssets/images/logos/logo.png') }}" class="dark-logo" alt="Logo-Dark" style="height: 100px">
+          <img src="{{ asset('adminAssets/images/logos/logo.png') }}" class="light-logo" alt="Logo-light" style="height: 100px">
         </a>
         <a href="javascript:void(0)" class="sidebartoggler ms-auto text-decoration-none fs-5 d-block d-xl-none">
           <i class="ti ti-x"></i>
@@ -23,38 +23,30 @@
           <li class="sidebar-item">
             <a class="sidebar-link {{ Request::is('dashboard') ? 'active' : '' }}" href="/dashboard" id="get-url" aria-expanded="false">
               <span>
-                <i class="ti ti-aperture"></i>
+                <i class="ti ti-layout-dashboard"></i>
               </span>
-              <span class="hide-menu">Dashboard</span>
-            </a>
-          </li>
-          <li class="sidebar-item">
-            <a href="frontend-aboutpage.html" class="sidebar-link">
-              <div class="round-16 d-flex align-items-center justify-content-center">
-                <i class="ti ti-circle"></i>
-              </div>
-              <span class="hide-menu">Index de la page</span>
+              <span class="hide-menu">Menu Principal</span>
             </a>
           </li>
 
           <li class="nav-small-cap">
             <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-            <span class="hide-menu">Devis</span>
+            <span class="hide-menu">Dévis</span>
           </li>
           
           <li class="sidebar-item">
             <a class="sidebar-link" href="app-invoice.html" id="get-url" aria-expanded="false">
               <span>
-                <i class="ti ti-aperture"></i>
+                <i class="ti ti-list"></i>
               </span>
-              <span class="hide-menu">Mes Devis</span>
+              <span class="hide-menu">Mes Dévis</span>
             </a>
           </li>
 
           <li class="sidebar-item">
             <a class="sidebar-link" href="" id="get-url" aria-expanded="false">
               <span>
-                <i class="ti ti-aperture"></i>
+                <i class="ti ti-receipt"></i> 
               </span>
               <span class="hide-menu">Faire un Dévis</span>
             </a>
@@ -68,7 +60,7 @@
           <li class="sidebar-item">
             <a class="sidebar-link" href="app-invoice.html" id="get-url" aria-expanded="false">
               <span>
-                <i class="ti ti-aperture"></i>
+                <i class="ti ti-list"></i>
               </span>
               <span class="hide-menu">Mes Factures</span>
             </a>
@@ -77,43 +69,38 @@
           <li class="sidebar-item">
             <a class="sidebar-link" href="" id="get-url" aria-expanded="false">
               <span>
-                <i class="ti ti-aperture"></i>
+                <i class="ti ti-file-invoice"></i> 
               </span>
-              <span class="hide-menu">Faire une facture</span>
+              <span class="hide-menu">Faire une Facture</span>
             </a>
           </li>
 
           <li class="nav-small-cap">
             <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-            <span class="hide-menu">Parametrage</span>
+            <span class="hide-menu">Gestions</span>
           </li>
           
+         
+
           <li class="sidebar-item">
             <a class="sidebar-link" href="app-contact.html" id="get-url" aria-expanded="false">
               <span>
-                <i class="ti ti-aperture"></i>
+                <i class="ti ti-user-plus"></i> 
               </span>
-              <span class="hide-menu">Accès Utilisateurs</span>
+              <span class="hide-menu">Compte Clients</span>
             </a>
           </li>
 
           <li class="sidebar-item">
             <a class="sidebar-link" href="app-contact.html" id="get-url" aria-expanded="false">
               <span>
-                <i class="ti ti-aperture"></i>
+                <i class="ti ti-pencil"></i>
               </span>
-              <span class="hide-menu">Création de compte clients</span>
+              <span class="hide-menu">Désignations</span>
             </a>
           </li>
 
-          <li class="sidebar-item">
-            <a class="sidebar-link" href="app-contact.html" id="get-url" aria-expanded="false">
-              <span>
-                <i class="ti ti-aperture"></i>
-              </span>
-              <span class="hide-menu">Création des désignations</span>
-            </a>
-          </li>
+          
 
           
           
@@ -122,17 +109,9 @@
           <!-- ---------------------------------- -->
           <li class="nav-small-cap">
             <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-            <span class="hide-menu">Activités</span>
+            <span class="hide-menu">Activitées</span>
           </li>
-          <li class="sidebar-item">
-            <a class="sidebar-link" href="app-calendar.html" aria-expanded="false">
-              <span>
-                <i class="ti ti-calendar"></i>
-              </span>
-              <span class="hide-menu">Calendrier</span>
-            </a>
-          </li>
-          
+
           <li class="sidebar-item">
             <a class="sidebar-link justify-content-between" href="app-chat.html" aria-expanded="false">
               <div class="d-flex align-items-center gap-3">
@@ -146,6 +125,17 @@
               </div>
             </a>
           </li>
+          
+          <li class="sidebar-item">
+            <a class="sidebar-link" href="app-calendar.html" aria-expanded="false">
+              <span>
+                <i class="ti ti-calendar"></i>
+              </span>
+              <span class="hide-menu">Calendrier</span>
+            </a>
+          </li>
+          
+          
          
          
          
@@ -161,21 +151,23 @@
             <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
             <span class="hide-menu">Mon Compte</span>
           </li>
-          
-          <li class="sidebar-item">
-            <a class="sidebar-link" href="page-faq.html" aria-expanded="false">
-              <span>
-                <i class="ti ti-help"></i>
-              </span>
-              <span class="hide-menu">FAQ</span>
-            </a>
-          </li>
+         
           <li class="sidebar-item">
             <a class="sidebar-link" href="page-account-settings.html" aria-expanded="false">
               <span>
                 <i class="ti ti-user-circle"></i>
               </span>
               <span class="hide-menu">Mon Profil</span>
+            </a>
+          </li>
+
+          <li class="sidebar-item">
+            <a class="sidebar-link" href="app-contact.html" id="get-url" aria-expanded="false">
+              <span>
+                <i class="ti ti-user-cog"></i> 
+
+              </span>
+              <span class="hide-menu">Accès Utilisateurs</span>
             </a>
           </li>
           
@@ -305,7 +297,14 @@
               </li>
               
               
-              
+              <li class="sidebar-item">
+                <a class="sidebar-link" href="page-faq.html" aria-expanded="false">
+                  <span>
+                    <i class="ti ti-help"></i>
+                  </span>
+                  <span class="hide-menu">FAQ</span>
+                </a>
+              </li>
               
               <li class="sidebar-item">
                 <a href="ui-spinner.html" class="sidebar-link">

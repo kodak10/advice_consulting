@@ -28,7 +28,7 @@
         </ul>
 
         <div class="d-block d-lg-none py-4">
-          <a href="index.html" class="text-nowrap logo-img">
+          <a href="#" class="text-nowrap logo-img">
             <img src="" class="dark-logo" alt="Logo">
             <img src="" class="light-logo" alt="Logo">
           </a>
@@ -165,7 +165,7 @@
                 <a class="nav-link pe-0" href="javascript:void(0)" id="drop1" aria-expanded="false">
                   <div class="d-flex align-items-center">
                     <div class="user-profile-img">
-                      <img src="../assets/images/profile/user-1.jpg" class="rounded-circle" width="35" height="35" alt="modernize-img">
+                      <img src="{{ asset('adminAssets/images/profile/user-1.jpg') }}" class="rounded-circle" width="35" height="35" alt="modernize-img">
                     </div>
                   </div>
                 </a>
@@ -175,7 +175,7 @@
                       <h5 class="mb-0 fs-5 fw-semibold">User Profile</h5>
                     </div>
                     <div class="d-flex align-items-center py-9 mx-7 border-bottom">
-                      <img src="../assets/images/profile/user-1.jpg" class="rounded-circle" width="80" height="80" alt="modernize-img">
+                      <img src="{{ asset('adminAssets/images/profile/user-1.jpg') }}" class="rounded-circle" width="80" height="80" alt="modernize-img">
                       <div class="ms-3">
                         <h5 class="mb-1 fs-3">Mathew Anderson</h5>
                         <span class="mb-1 d-block">Designer</span>
@@ -187,20 +187,20 @@
                     <div class="message-body">
                       <a href="page-account-settings.html" class="py-8 px-7 mt-8 d-flex align-items-center">
                         <span class="d-flex align-items-center justify-content-center text-bg-light rounded-1 p-6">
-                          <img src="../assets/images/svgs/icon-account.svg" alt="modernize-img" width="24" height="24">
+                          <img src="{{ asset('adminAssets/images/svgs/icon-account.svg') }}" alt="modernize-img" width="24" height="24">
                         </span>
                         <div class="w-100 ps-3">
-                          <h6 class="mb-1 fs-3 fw-semibold lh-base">My Profile</h6>
-                          <span class="fs-2 d-block text-body-secondary">Account Settings</span>
+                          <h6 class="mb-1 fs-3 fw-semibold lh-base">Mon Profil</h6>
+                          <span class="fs-2 d-block text-body-secondary">Paramètres du compte</span>
                         </div>
                       </a>
                       <a href="app-email.html" class="py-8 px-7 d-flex align-items-center">
                         <span class="d-flex align-items-center justify-content-center text-bg-light rounded-1 p-6">
-                          <img src="../assets/images/svgs/icon-inbox.svg" alt="modernize-img" width="24" height="24">
+                          <img src="{{ asset('adminAssets/images/svgs/icon-inbox.svg') }}" alt="modernize-img" width="24" height="24">
                         </span>
                         <div class="w-100 ps-3">
-                          <h6 class="mb-1 fs-3 fw-semibold lh-base">My Inbox</h6>
-                          <span class="fs-2 d-block text-body-secondary">Messages & Emails</span>
+                          <h6 class="mb-1 fs-3 fw-semibold lh-base">Ma boîte de réception</h6>
+                          <span class="fs-2 d-block text-body-secondary">Messages</span>
                         </div>
                       </a>
                       
