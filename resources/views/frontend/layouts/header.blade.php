@@ -17,7 +17,7 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link fs-4 fw-bold text-white link-primary" href="/devis/create">Dashboard</a>
+                <a class="nav-link fs-4 fw-bold text-white link-primary" href="{{ route('dashboard.') }}">Dashboard</a>
               </li>
             
             
