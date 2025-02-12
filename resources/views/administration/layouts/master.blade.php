@@ -21,6 +21,10 @@
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 
+  <link rel="stylesheet" href="{{ asset('adminAssets/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css') }}">
+
+  <link rel="stylesheet" href="{{ asset('adminAssets/libs/sweetalert2/dist/sweetalert2.min.css') }}">
+
 </head>
 
 <body>
@@ -706,6 +710,9 @@
     </div>
    
 
+   
+
+
   </div>
   <div class="dark-transparent sidebartoggler"></div>
 
@@ -719,7 +726,6 @@
   <script src="{{ asset('adminAssets/js/theme/sidebarmenu.js') }}"></script>
 
   <!-- solar icons -->
-  <script src="{{ asset('icon.min') }}../../../npm/iconify-icon%401.0.8/dist/iconify-icon.min.js"></script>
   <script src="{{ asset('adminAssets/libs/apexcharts/dist/apexcharts.min.js') }}"></script>
   <script src="{{ asset('adminAssets/js/dashboards/dashboard2.js') }}"></script>
 
@@ -741,6 +747,13 @@
   <script src="{{ asset('adminAssets/js/extra-libs/moment/moment.min.js') }}"></script>
   <script src="{{ asset('adminAssets/libs/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
   <script src="{{ asset('adminAssets/js/forms/daterangepicker-init.js') }}"></script>
+  <script src="{{ asset('adminAssets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+  <script src="{{ asset('adminAssets/js/datatable/datatable-basic.init.js') }}"></script>
+
+  <script src="{{ asset('adminAssets/libs/sweetalert2/dist/sweetalert2.min.js') }}"></script>
+  <script src="{{ asset('adminAssets/js/forms/sweet-alert.init.js') }}"></script>
+  <script src="{{ asset('adminAssets/js/plugins/toastr-init.js') }}"></script>
+  @stack('scripts') <!-- C'est ici que les scripts seront inclus -->
 
 </body>
 

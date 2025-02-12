@@ -83,7 +83,7 @@
          
 
           <li class="sidebar-item">
-            <a class="sidebar-link" href="app-contact.html" id="get-url" aria-expanded="false">
+            <a class="sidebar-link" href="/clients" id="get-url" aria-expanded="false">
               <span>
                 <i class="ti ti-user-plus"></i> 
               </span>
