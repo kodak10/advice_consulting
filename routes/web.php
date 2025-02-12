@@ -18,12 +18,13 @@ Route::get('/', function () {
 
 Route::prefix('dashboard')->name('dashboard.')->group(function () {
     Route::get('/', [AdminController::class, 'index']);
-
-
     Route::resource('clients', ClientController::class);
+
+
+    Route::resource('designations', DesignationsController::class);
+
     Route::resource('devis', DevisController::class);
     Route::resource('factures', FacturesController::class);
-    Route::resource('designations', DesignationsController::class);
     Route::resource('messagerie', MessagerieController::class);
     Route::resource('users', UsersController::class);
     Route::get('users/profile', [UsersController::class, 'profile'])->name('users.profile');

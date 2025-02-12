@@ -7,13 +7,13 @@
       <div class="card-body px-4 py-3">
         <div class="row align-items-center">
           <div class="col-9">
-            <h4 class="fw-semibold mb-8">Compte Clients</h4>
+            <h4 class="fw-semibold mb-8">Designations</h4>
             <nav aria-label="breadcrumb">
               <ol class="breadcrumb">
                 <li class="breadcrumb-item">
                   <a class="text-muted text-decoration-none" href="{{ route('dashboard.') }}">Accueil</a>
                 </li>
-                <li class="breadcrumb-item" aria-current="page">Compte Clients</li>
+                <li class="breadcrumb-item" aria-current="page">Designations</li>
               </ol>
             </nav>
           </div>
@@ -51,7 +51,7 @@
 
             <button type="button" class="btn bg-warning-subtle text-warning px-4 fs-4 " data-bs-toggle="modal" data-bs-target="#addContactModal">
                 <i class="ti ti-users text-white me-1 fs-5"></i> 
-                Ajouter un Client
+                Ajouter une Désignation
               </button>
               
           </div>
@@ -64,7 +64,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header d-flex align-items-center">
-                <h5 class="modal-title">Information du Client</h5>
+                <h5 class="modal-title">Details de la Désignation</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -78,11 +78,11 @@
                 <div class="add-contact-box">
                     <div class="add-contact-content">
                     <form id="addContactModalTitle">
+                        
                         <div class="row">
                             <div class="col-md-12">
-                                <div class="mb-3 contact-name">
-                                <input type="text" id="c-name" class="form-control" placeholder="Nom ou raison sociale">
-                                <span class="validation-text text-danger"></span>
+                                <div class="mb-3 contact-occupation">
+                                <input type="text" id="description" class="form-control" placeholder="Désignation">
                                 </div>
                             </div>
                         </div>
@@ -90,39 +90,20 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3 contact-occupation">
-                                <input type="text" id="c-occupation" class="form-control" placeholder="N°CC">
+                                <input type="text" id="ref" class="form-control" placeholder="Référence">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="mb-3 contact-phone">
-                                <input type="text" id="c-phone" class="form-control" placeholder="Téléphone">
+                                <input type="text" id="prix_unitaire" class="form-control" placeholder="Prix unitaire">
                                 <span class="validation-text text-danger"></span>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="row">
-                        <div class="col-md-12">
-                            <div class="mb-3 contact-occupation">
-                            <input type="text" id="c-adresse" class="form-control" placeholder="Adresse">
-                            </div>
-                        </div>
-                        </div>
+                        
 
-                        <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3 contact-phone">
-                            <input type="text" id="c-ville" class="form-control" placeholder="Ville">
-                            <span class="validation-text text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3 contact-phone">
-                            <input type="text" id="c-attn" class="form-control" placeholder="ATTM">
-                            <span class="validation-text text-danger"></span>
-                            </div>
-                        </div>
-                        </div>
+                        
                     </form>
                     </div>
                 </div>
@@ -144,33 +125,31 @@
               <thead>
                 <!-- start row -->
                 <tr>
-                  <th>Nom</th>
-                  <th>N° Téléphone</th>
-                  <th>Adresse</th>
-                  <th>N°CC</th>
+                  <th>Réference</th>
+                  <th>Désignations</th>
+                  <th>Prix Unitaire</th>
                   <th>Action</th>
                 </tr>
                 <!-- end row -->
               </thead>
               <tbody>
-                @forelse ($clients as $client)
+                @forelse ($designations as $designation)
                 <tr>
                     <td>
-                        <h6 class="mb-0">{{ $client->nom }}</h6>
+                        <h6 class="mb-0">{{ $designation->reference }}</h6>
                     </td>
-                    <td>{{ $client->numero_cc }}</td>
-                    <td>{{ $client->ville }}</td>
-                    <td>{{ $client->telephone ?? 'Non renseigné' }}</td>
+                    <td>{{ $designation->description }}</td>
+                    <td>{{ $designation->prix_unitaire }}</td>
                     <td>
                         <div class="action-btn text-center">
-                            <a href="#editClientModal{{ $client->id }}" class="text-primary edit" title="Modifier" data-bs-toggle="modal">
+                            <a href="#editDesignationModal{{ $designation->id }}" class="text-primary edit" title="Modifier" data-bs-toggle="modal">
                                 <i class="ti ti-pencil fs-5"></i> 
                             </a>
                             
-                            <form id="delete-form-{{ $client->id }}" action="{{ route('dashboard.clients.destroy', $client->id) }}" method="POST" style="display: inline;">
+                            <form id="delete-form-{{ $designation->id }}" action="{{ route('dashboard.designations.destroy', $designation->id) }}" method="POST" style="display: inline;">
                                 @csrf
                                 @method('DELETE')
-                                <button type="button" class="text-dark delete ms-2" title="Supprimer" style="border: none; background: none;" onclick="confirmDelete({{ $client->id }})">
+                                <button type="button" class="text-dark delete ms-2" title="Supprimer" style="border: none; background: none;" onclick="confirmDelete({{ $designation->id }})">
                                     <i class="ti ti-trash fs-5"></i>
                                 </button>
                             </form>
@@ -180,28 +159,28 @@
 
 
                 <!-- Modal de modification -->
-                <div class="modal fade" id="editClientModal{{ $client->id }}" tabindex="-1" aria-labelledby="editClientModalLabel{{ $client->id }}" aria-hidden="true">
+                <div class="modal fade" id="editDesignationModal{{ $designation->id }}" tabindex="-1" aria-labelledby="editDesignationLabel{{ $designation->id }}" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
                             <div class="modal-header d-flex align-items-center">
-                                <h5 class="modal-title">Modifier les informations du Client</h5>
+                                <h5 class="modal-title">Modifier les informations sur la Désignation</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
                                 <!-- Affichage des messages d'erreur et de succès -->
-                                <div id="error-message{{ $client->id }}" class="alert alert-danger text-danger" style="display: none;"></div>
-                                <div id="success-message{{ $client->id }}" class="alert alert-success text-success" style="display: none;"></div>
+                                <div id="error-message{{ $designation->id }}" class="alert alert-danger text-danger" style="display: none;"></div>
+                                <div id="success-message{{ $designation->id }}" class="alert alert-success text-success" style="display: none;"></div>
 
                                 <div class="add-contact-box">
                                     <div class="add-contact-content">
-                                        <form id="update-client-form{{ $client->id }}">
+                                        <form id="update-designation-form{{ $designation->id }}">
                                             @csrf
                                             @method('PUT')
 
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <div class="mb-3 contact-name">
-                                                        <input type="text" id="c-name{{ $client->id }}" class="form-control" placeholder="Nom ou raison sociale" name="nom" value="{{ $client->nom }}">
+                                                        <input type="text" id="designation{{ $designation->id }}" class="form-control" placeholder="Désignation" name="description" value="{{ $designation->description }}">
                                                         <span class="validation-text text-danger"></span>
                                                     </div>
                                                 </div>
@@ -211,39 +190,20 @@
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="mb-3 contact-occupation">
-                                                        <input type="text" id="c-occupation{{ $client->id }}" class="form-control" placeholder="N°CC" name="numero_cc" value="{{ $client->numero_cc }}">
+                                                        <input type="text" id="ref{{ $designation->id }}" class="form-control" placeholder="Référence" name="reference" value="{{ $designation->reference }}">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="mb-3 contact-phone">
-                                                        <input type="text" id="c-phone{{ $client->id }}" class="form-control" placeholder="Téléphone" name="telephone" value="{{ $client->telephone }}">
+                                                        <input type="text" id="prix_unitaire{{ $designation->id }}" class="form-control" placeholder="Prix Unitaire" name="prix_unitaire" value="{{ $designation->prix_unitaire }}">
                                                         <span class="validation-text text-danger"></span>
                                                     </div>
                                                 </div>
                                             </div>
 
-                                            <div class="row">
-                                                <div class="col-md-12">
-                                                    <div class="mb-3 contact-occupation">
-                                                        <input type="text" id="c-adresse{{ $client->id }}" class="form-control" placeholder="Adresse" name="adresse" value="{{ $client->adresse }}">
-                                                    </div>
-                                                </div>
-                                            </div>
+                                           
 
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="mb-3 contact-phone">
-                                                        <input type="text" id="c-ville{{ $client->id }}" class="form-control" placeholder="Ville" name="ville" value="{{ $client->ville }}">
-                                                        <span class="validation-text text-danger"></span>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="mb-3 contact-phone">
-                                                        <input type="text" id="c-attn{{ $client->id }}" class="form-control" placeholder="ATTM" name="attn" value="{{ $client->attn }}">
-                                                        <span class="validation-text text-danger"></span>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                           
 
                                             <div class="modal-footer">
                                                 <div class="d-flex gap-6 m-0">
@@ -259,7 +219,7 @@
                     </div>
                 </div>
                 @empty
-                    Aucun client enregistré.
+                    Aucun Désignation enregistrée.
                 @endforelse
                 
             </tbody>
@@ -267,10 +227,9 @@
               <tfoot>
                 <!-- start row -->
                 <tr>
-                    <th>Nom</th>
-                    <th>N° Téléphone</th>
-                    <th>Adresse</th>
-                    <th>N°CC</th>
+                    <th>Réference</th>
+                    <th>Désignations</th>
+                    <th>Prix Unitaire</th>
                     <th>Action</th>
                 </tr>
                 <!-- end row -->
@@ -291,16 +250,14 @@
 
     // Récupérer les données du formulaire
     let formData = {
-        nom: document.getElementById('c-name').value,
-        numero_cc: document.getElementById('c-occupation').value,
-        telephone: document.getElementById('c-phone').value,
-        adresse: document.getElementById('c-adresse').value,
-        ville: document.getElementById('c-ville').value,
-        attn: document.getElementById('c-attn').value,
+        reference: document.getElementById('ref').value,
+        description: document.getElementById('description').value,
+        prix_unitaire: document.getElementById('prix_unitaire').value,
+        
     };
 
     // Envoi de la requête avec fetch
-    fetch("{{ route('dashboard.clients.store') }}", {
+    fetch("{{ route('dashboard.designations.store') }}", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -320,7 +277,7 @@
             });
 
             // Fermer le modal et recharger la page après un délai
-            $('#addContactModal').modal('hide');
+            $('#addDesignationModal').modal('hide');
             setTimeout(() => {
                 location.reload();  // Recharger la page pour afficher les nouveaux clients
             }, 5000);
@@ -355,16 +312,16 @@
 
 </script>
 
-@if($clients->isNotEmpty())
+@if($designations->isNotEmpty())
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            @foreach($clients as $client)
-                document.getElementById('update-client-form{{ $client->id }}').addEventListener('submit', function(event) {
+            @foreach($designations as $designation)
+                document.getElementById('update-designation-form{{ $designation->id }}').addEventListener('submit', function(event) {
                     event.preventDefault();
 
                     let formData = new FormData(this);
 
-                    fetch("{{ route('dashboard.clients.update', ['client' => $client->id]) }}", {
+                    fetch("{{ route('dashboard.designations.update', ['designation' => $designation->id]) }}", {
                         method: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': '{{ csrf_token() }}',
@@ -381,7 +338,7 @@
                                 progressBar: true,
                             });
 
-                            $('#editClientModal{{ $client->id }}').modal('hide');
+                            $('#editDesignationModal{{ $designation->id }}').modal('hide');
                             setTimeout(() => {
                                 location.reload();
                             }, 5000);
