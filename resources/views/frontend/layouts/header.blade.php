@@ -24,7 +24,7 @@
             
           </ul>
           <div>
-            <a href="#" class="btn btn-primary py-8 px-9">Se connecté</a>
+            <a href="/login" class="btn btn-primary py-8 px-9">Se connecté</a>
           </div>
         </div>
       </div>

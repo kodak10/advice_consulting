@@ -11,7 +11,7 @@
           <div class="col-lg-6">
             <h2 class="fs-12 fw-bolder">Gérez vos devis et factures en toute simplicité</h2>
             <div class="d-flex mt-4 gap-3 flex-sm-nowrap flex-wrap">
-              <a href="javascript:void(0)" class="btn btn-primary px-9 py-6">Se Connecté</a>
+              <a href="/login" class="btn btn-primary px-9 py-6">Se Connecté</a>
               <a href="#howtomatch" class="btn btn-outline-primary px-9 py-6">Comment ça marche ?</a>
             </div>
           </div>
@@ -94,3 +94,15 @@
     </div>
 </div>
 @endsection
+
+@push('styles')
+    <style>
+        .bg-primary-subtle {
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('{{ asset('assets/images/banner.jpg') }}') !important;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+    </style>
+@endpush
+

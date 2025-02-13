@@ -168,12 +168,7 @@ span.check-arrow i {
 .hendrio-section-title  h1 span{
     color: #0052a3;
 }
-.bg-primary-subtle {
-    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../images/banner.jpg');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-}
+
 
 [data-bs-theme=dark][data-color-theme=Blue_Theme]:root .btn-primary, [data-bs-theme=light][data-color-theme=Blue_Theme]:root .btn-primary {
     --bs-btn-bg: #0064c9; /* Couleur principale */

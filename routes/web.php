@@ -10,11 +10,16 @@ use App\Http\Controllers\Administration\UsersController;
 use Illuminate\Support\Facades\Route;
 
 
-
 Route::get('/', function () {
     return view('frontend.pages.index');
 });
 
+Route::get('/login', function () {
+    return view('frontend.pages.login');
+});
+Route::get('/password-forgot', function () {
+    return view('frontend.pages.forgot-password');
+});
 
 Route::prefix('dashboard')->name('dashboard.')->group(function () {
     Route::get('/', [AdminController::class, 'index']);
