@@ -159,7 +159,7 @@
         </li>
         
 
-        @if(auth()->user()->role === 'Administrateur')
+        
           <li class="sidebar-item">
               <a class="sidebar-link {{ Request::is('users') ? 'active' : '' }}" 
                 href="{{ route('dashboard.users.index') }}" 
@@ -171,7 +171,6 @@
                 <span class="hide-menu">Accès Utilisateurs</span>
               </a>
           </li>
-      @endif
           
           
           <!-- ---------------------------------- -->
