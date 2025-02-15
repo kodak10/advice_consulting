@@ -1,7 +1,7 @@
 <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
     <div class="offcanvas-header">
       <a href="/">
-        <img src="{{ asset('assets/images/logo.png') }}" alt="Logo-light">
+        <img src="{{ asset('assets/images/logo.png') }}" alt="Logo-light" style="height: 100px">
       </a>
       <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
