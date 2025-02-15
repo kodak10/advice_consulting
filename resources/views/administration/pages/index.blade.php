@@ -10,10 +10,12 @@
               <div class="col-sm-7">
                 <div class="d-flex align-items-center mb-7">
                   <div class="rounded-circle overflow-hidden me-6">
-                    <img src="../assets/images/profile/user-1.jpg" alt="modernize-img" width="40" height="40">
+                    <img src="{{ asset(auth()->user()->image) }}" alt="modernize-img" width="40" height="40">
                   </div>
-                  <h5 class="fw-semibold mb-0 fs-5">Welcome back Mathew Anderson!</h5>
-                </div>
+                  <h5 class="fw-semibold mb-0 fs-5">
+                      {{ now()->hour < 18 ? 'Bonjour' : 'Bonsoir' }} {{ auth()->user()->name }}
+                  </h5>
+                                </div>
                 <div class="d-flex align-items-center">
                   <div class="border-end pe-4 border-muted border-opacity-10">
                     <h3 class="mb-1 fw-semibold fs-8 d-flex align-content-center">$2,340<i class="ti ti-arrow-up-right fs-5 lh-base text-success"></i>
