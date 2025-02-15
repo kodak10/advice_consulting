@@ -148,8 +148,8 @@
           </li>
          
           <li class="sidebar-item">
-            <a class="sidebar-link {{ Request::is('dashboard/users/*/profil') ? 'active' : '' }}" 
-               href="{{ route('dashboard.users.show', ['user' => auth()->user()->id]) }}" 
+            <a class="sidebar-link {{ Request::is('dashboard/profil') ? 'active' : '' }}" 
+               href="{{ route('dashboard.profil') }}" 
                aria-expanded="false">
                 <span>
                     <i class="ti ti-user-circle"></i>
@@ -159,15 +159,19 @@
         </li>
         
 
+        @if(auth()->user()->role === 'Administrateur')
           <li class="sidebar-item">
-            <a class="sidebar-link {{ Request::is('users') ? 'active' : '' }}" href="{{ route('dashboard.users.index') }}" id="get-url" aria-expanded="false">
-              <span>
-                <i class="ti ti-user-cog"></i> 
-
-              </span>
-              <span class="hide-menu">Accès Utilisateurs</span>
-            </a>
+              <a class="sidebar-link {{ Request::is('users') ? 'active' : '' }}" 
+                href="{{ route('dashboard.users.index') }}" 
+                id="get-url" 
+                aria-expanded="false">
+                <span>
+                  <i class="ti ti-user-cog"></i>
+                </span>
+                <span class="hide-menu">Accès Utilisateurs</span>
+              </a>
           </li>
+      @endif
           
           
           <!-- ---------------------------------- -->
@@ -801,11 +805,11 @@
       <div class="fixed-profile p-3 mx-4 mb-2 bg-secondary-subtle rounded mt-3">
         <div class="hstack gap-3">
           <div class="john-img">
-            <img src="{{ asset('adminAssets/images/profile/user-1.jpg') }}" class="rounded-circle" width="40" height="40" alt="modernize-img">
+            <img src="{{ asset(auth()->user()->image) }}" class="rounded-circle" width="40" height="40" alt="modernize-img">
           </div>
           <div class="john-title">
-            <h6 class="mb-0 fs-4 fw-semibold">Mathew</h6>
-            <span class="fs-2">Designer</span>
+            <h6 class="mb-0 fs-4 fw-semibold">{{ $user->name }}</h6>
+            <span class="fs-2">{{ $user->roles->first()->name}}</span>
           </div>
           <form action="{{ route('logout') }}" method="POST">
             @csrf

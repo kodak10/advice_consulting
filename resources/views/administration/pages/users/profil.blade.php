@@ -6,13 +6,13 @@
       <div class="card-body px-4 py-3">
         <div class="row align-items-center">
           <div class="col-9">
-            <h4 class="fw-semibold mb-8">Account Setting</h4>
+            <h4 class="fw-semibold mb-8">Paramétrage du compte</h4>
             <nav aria-label="breadcrumb">
               <ol class="breadcrumb">
                 <li class="breadcrumb-item">
-                  <a class="text-muted text-decoration-none" href="index.html">Home</a>
+                  <a class="text-muted text-decoration-none" href="{{ route('dashboard.') }}">Accueil</a>
                 </li>
-                <li class="breadcrumb-item" aria-current="page">Account Setting</li>
+                <li class="breadcrumb-item" aria-current="page">Paramétrage du compte</li>
               </ol>
             </nav>
           </div>
@@ -24,101 +24,149 @@
         </div>
       </div>
     </div>
+    <div class="row">
+      @if(session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+                @if($errors->any())
+                  <div class="alert alert-danger">
+                      <ul>
+                          @foreach($errors->all() as $error)
+                              <li>{{ $error }}</li>
+                          @endforeach
+                      </ul>
+                  </div>
+              @endif
+    </div>
     <div class="card">
      
       <div class="card-body">
         <div class="row">
           <div class="col-lg-6 d-flex align-items-stretch">
             <div class="card w-100 border position-relative overflow-hidden">
-              <div class="card-body p-4">
-                <h4 class="card-title">Changé image de profil</h4>
-                <p class="card-subtitle mb-4">Changez votre photo de profil à partir d'ici</p>
-                <div class="text-center">
-                  <img src="{{ asset('adminAssets/images/profile/user-1.jpg') }}" alt="modernize-img" class="img-fluid rounded-circle" width="120" height="120">
-                  <div class="d-flex align-items-center justify-content-center my-4 gap-6">
-                    <button class="btn btn-primary">Télécharger</button>
-                    <button class="btn bg-danger-subtle text-danger">Réinitialiser</button>
-                  </div>
-                  <p class="mb-0">JPG, GIF ou PNG autorisés. Taille maximale de 1 MB</p>
+                <div class="card-body p-4">
+                    <h4 class="card-title">Changé image de profil</h4>
+                    <p class="card-subtitle mb-4">Changez votre photo de profil à partir d'ici</p>
+                    <div class="text-center">
+                        <img src="{{ asset(auth()->user()->image) }}" 
+                             alt="modernize-img" 
+                             class="img-fluid rounded-circle" 
+                             width="120" 
+                             height="120">
+                        
+                        <!-- Formulaire pour changer l'image -->
+                        <div class="row">
+                          <div class="col-lg-6">
+                            <form action="{{ route('dashboard.profil.image') }}" method="POST" enctype="multipart/form-data">
+                              @csrf
+                              @method('PUT')
+          
+                              <div class="d-flex align-items-center justify-content-center my-4 gap-6">
+                                  <input type="file" name="image" class="form-control">
+                              </div>
+          
+                              <button type="submit" class="btn btn-primary">Télécharger</button>
+                          </form>
+                          </div>
+        
+                        <!-- Formulaire pour réinitialiser l'image -->
+                        <div class="col-lg-6">
+                          <form action="{{ route('dashboard.profil.resetImage') }}" method="POST" class="d-inline">
+                            @csrf
+                            @method('PUT')
+                            <button type="submit" class="btn bg-danger-subtle text-danger">Réinitialiser</button>
+                        </form>
+                        </div>
+                        </div>
+        
+                        <p class="mb-0">JPG, GIF ou PNG autorisés. Taille maximale de 1 MB</p>
+                    </div>
                 </div>
-              </div>
             </div>
-          </div>
-          <div class="col-lg-6 d-flex align-items-stretch">
-            <div class="card w-100 border position-relative overflow-hidden">
+        </div>
+        
+        <div class="col-lg-6 d-flex align-items-stretch">
+          <div class="card w-100 border position-relative overflow-hidden">
               <div class="card-body p-4">
-                <h4 class="card-title">Changer le mot de passe</h4>
-                <p class="card-subtitle mb-4">Pour changer votre mot de passe veuillez confirmer ici</p>
-                <form>
-                  <div class="mb-3">
-                    <label for="exampleInputPassword1" class="form-label">Mot de passe actuel</label>
-                    <input type="password" class="form-control" id="exampleInputPassword1" value="12345678910">
-                  </div>
-                  <div class="mb-3">
-                    <label for="exampleInputPassword2" class="form-label">Nouveau mot de passe</label>
-                    <input type="password" class="form-control" id="exampleInputPassword2" value="12345678910">
-                  </div>
-                  <div>
-                    <label for="exampleInputPassword3" class="form-label">Confirmez le mot de passe</label>
-                    <input type="password" class="form-control" id="exampleInputPassword3" value="12345678910">
-                  </div>
-                </form>
+                  <h4 class="card-title">Changer le mot de passe</h4>
+                  <p class="card-subtitle mb-4">Pour changer votre mot de passe veuillez confirmer ici</p>
+      
+                  
+                  <!-- Formulaire de changement de mot de passe -->
+                  <form method="POST" action="{{ route('dashboard.profil.updatePassword') }}">
+                      @csrf <!-- Token CSRF pour la sécurité -->
+      
+                      <div class="mb-3">
+                          <label for="current_password" class="form-label">Mot de passe actuel</label>
+                          <input type="password" class="form-control" id="current_password" name="current_password" placeholder="****************" required>
+                      </div>
+                      <div class="mb-3">
+                          <label for="new_password" class="form-label">Nouveau mot de passe</label>
+                          <input type="password" class="form-control" id="new_password" name="new_password" placeholder="****************" required>
+                      </div>
+                      <div class="mb-3">
+                          <label for="new_password_confirmation" class="form-label">Confirmez le nouveau mot de passe</label>
+                          <input type="password" class="form-control" id="new_password_confirmation" name="new_password_confirmation" placeholder="****************" required>
+                      </div>
+                      <button type="submit" class="btn btn-primary">Mettre à jour le mot de passe</button>
+                  </form>
               </div>
-            </div>
           </div>
+      </div>
           <div class="col-12">
             <div class="card w-100 border position-relative overflow-hidden mb-0">
-              <div class="card-body p-4">
-                <h4 class="card-title">Détails personnels</h4>
-                <p class="card-subtitle mb-4">Pour modifier vos informations personnelles, modifiez et enregistrez à partir d'ici</p>
-                <form>
-                  <div class="row">
-                    <div class="col-lg-6">
-                      <div class="mb-3">
-                        <label for="exampleInputtext" class="form-label">Votre nom</label>
-                        <input type="text" name="name" class="form-control" id="exampleInputtext" placeholder="Nom ou raison sociale">
-                      </div>
-                      
-                      
-                    </div>
-                    <div class="col-lg-6">
-                      <div class="mb-3">
-                        <label class="form-label">Email</label>
-                        <input type="email" name="email" class="form-control" id="exampleInputtext" placeholder="email@email.com" disabled>
-
-                      </div>
-                    </div>
-                    <div class="col-lg-6">
-                      <div class="mb-3">
-                        <label for="exampleInputtext2" class="form-label">Téléphone</label>
-                        <input type="text" name="phone" class="form-control" id="exampleInputtext2" placeholder="téléphone">
-                      </div>
-                    </div>
-                    <div class="col-lg-6">
-                      <div class="mb-3">
-                        <label for="exampleInputtext2" class="form-label">Adresse</label>
-                        <input type="text" name="adresse" class="form-control" id="exampleInputtext2" placeholder="Adresse">
-                      </div>
-                      
-                      
-                    </div>
-                   
+                <div class="card-body p-4">
+                    <h4 class="card-title">Détails personnels</h4>
+                    <p class="card-subtitle mb-4">Pour modifier vos informations personnelles, modifiez et enregistrez à partir d'ici</p>
                     
-                    <div class="col-12">
-                      <div class="d-flex align-items-center justify-content-end mt-4 gap-6">
-                        <button class="btn btn-primary">Sauvegarder</button>
-                        <button class="btn bg-danger-subtle text-danger">Annuler</button>
-                      </div>
-                    </div>
-                  </div>
-                </form>
-              </div>
+                    <!-- Formulaire de mise à jour -->
+                    <form method="POST" action="{{ route('dashboard.profil.updateInformation') }}">
+                        @csrf <!-- Token CSRF pour la sécurité -->
+                        @method('PUT') <!-- Utilisation de la méthode PUT pour la mise à jour -->
+        
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">Votre nom</label>
+                                    <input type="text" name="name" class="form-control" value="{{ $user->name }}" placeholder="Nom ou raison sociale">
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" name="email" class="form-control" value="{{ $user->email }}" disabled>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label for="phone" class="form-label">Téléphone</label>
+                                    <input type="text" name="phone" class="form-control" value="{{ $user->phone }}" placeholder="Téléphone">
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label for="adresse" class="form-label">Adresse</label>
+                                    <input type="text" name="adresse" class="form-control" value="{{ $user->adresse }}" placeholder="Adresse">
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="d-flex align-items-center justify-content-end mt-4 gap-6">
+                                    <button class="btn btn-primary" type="submit">Sauvegarder</button>
+                                    <button class="btn bg-danger-subtle text-danger" type="button">Annuler</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
-          </div>
+        </div>
         </div>
       </div>
     </div>
-  </div>
+</div>
 @endsection
 
 @push('scripts')

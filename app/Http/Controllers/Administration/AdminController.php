@@ -17,7 +17,9 @@ class AdminController extends Controller
     
     public function index()
     {
-        return view('administration.pages.index');
+        $user = auth()->user(); // Récupère l'utilisateur connecté
+
+        return view('administration.pages.index', compact('user'));
     }
 
     public function createUser()

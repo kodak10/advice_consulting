@@ -16,9 +16,12 @@
               <a class="nav-link fs-4 fw-bold text-white link-primary" href="#howtomatch">Comment ça marche ?</a>
             </li>
 
-            <li class="nav-item">
+            @if(auth()->check())
+              <li class="nav-item">
                 <a class="nav-link fs-4 fw-bold text-white link-primary" href="{{ route('dashboard.') }}">Dashboard</a>
               </li>
+            @endif
+            
             
             
             

@@ -36,8 +36,12 @@ Route::middleware(['auth', 'verified','check.user.status'])->prefix('dashboard')
     Route::resource('users', UsersController::class);
     Route::post('/users', [UsersController::class, 'storeUser'])->name('storeUser');
     Route::get('/users/{id}/disable', [UsersController::class, 'disable'])->name('disable');
-   // Route::get('/users/{id}/profil', [UsersController::class, 'show'])->name('users.profil');
-   // Route::get('/users/{id}/profil', [UsersController::class, 'show'])->name('users.show');
+    Route::get('/profil', [UsersController::class, 'profile'])->name('profil');
+    Route::put('/profil/update', [UsersController::class, 'updateProfileImage'])->name('profil.image');
+    Route::put('/profil/reset-image', [UsersController::class, 'resetProfileImage'])->name('profil.resetImage');
+    Route::put('/profile/update', [UsersController::class, 'updateInformation'])->name('profil.updateInformation');
+
+    Route::post('/update-password', [UsersController::class, 'updatePassword'])->name('profil.updatePassword');
 
     Route::resource('devis', DevisController::class);
     Route::get('/client/{id}', [ClientController::class, 'getClientInfo']);

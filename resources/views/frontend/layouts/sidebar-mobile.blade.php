@@ -19,11 +19,14 @@
           </a>
         </li>
 
-        <li class="mb-1">
-            <a href="{{ route('dashboard.') }}" class="px-0 fs-4 d-block w-100 py-2 text-dark link-primary">
-             Dashboard
-            </a>
-        </li>
+        @if(auth()->check())
+            <li class="mb-1">
+                <a href="{{ route('dashboard.') }}" class="px-0 fs-4 d-block w-100 py-2 text-dark link-primary">
+                    Dashboard
+                </a>
+            </li>
+        @endif
+
 
         <li class="mt-3">
           <a href="/login" class="btn btn-primary w-100">Se Connecté</a>
