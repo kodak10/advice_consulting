@@ -148,13 +148,16 @@
           </li>
          
           <li class="sidebar-item">
-            <a class="sidebar-link {{ Request::is('profile') ? 'active' : '' }}" href="{{ route('dashboard.users.profile') }}" aria-expanded="false">
-              <span>
-                <i class="ti ti-user-circle"></i>
-              </span>
-              <span class="hide-menu">Mon Profil</span>
+            <a class="sidebar-link {{ Request::is('dashboard/users/*/profil') ? 'active' : '' }}" 
+               href="{{ route('dashboard.users.show', ['user' => auth()->user()->id]) }}" 
+               aria-expanded="false">
+                <span>
+                    <i class="ti ti-user-circle"></i>
+                </span>
+                <span class="hide-menu">Mon Profil</span>
             </a>
-          </li>
+        </li>
+        
 
           <li class="sidebar-item">
             <a class="sidebar-link {{ Request::is('users') ? 'active' : '' }}" href="{{ route('dashboard.users.index') }}" id="get-url" aria-expanded="false">
@@ -798,15 +801,19 @@
       <div class="fixed-profile p-3 mx-4 mb-2 bg-secondary-subtle rounded mt-3">
         <div class="hstack gap-3">
           <div class="john-img">
-            <img src="../assets/images/profile/user-1.jpg" class="rounded-circle" width="40" height="40" alt="modernize-img">
+            <img src="{{ asset('adminAssets/images/profile/user-1.jpg') }}" class="rounded-circle" width="40" height="40" alt="modernize-img">
           </div>
           <div class="john-title">
             <h6 class="mb-0 fs-4 fw-semibold">Mathew</h6>
             <span class="fs-2">Designer</span>
           </div>
-          <button class="border-0 bg-transparent text-primary ms-auto" tabindex="0" type="button" aria-label="logout" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="logout">
-            <i class="ti ti-power fs-6"></i>
-          </button>
+          <form action="{{ route('logout') }}" method="POST">
+            @csrf
+            <button class="border-0 bg-transparent text-primary ms-auto" tabindex="0" type="submit" aria-label="logout" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Se déconnecter">
+                <i class="ti ti-power fs-6"></i>
+            </button>
+        </form>
+        
         </div>
       </div>
 

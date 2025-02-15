@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Facture</title>
+    <style>
+ body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+.invoice-container {
+    width: 100%;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.d-flex {
+    display: flex;
+    justify-content: space-between;
+}
+
+.section-title {
+    font-weight: bold;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.table, table {
+    width: 100%;
+    margin: 20px 0;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 8px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+thead {
+    background-color: #f7f7f7;
+}
+
+tfoot {
+    font-weight: bold;
+}
+
+th {
+    background-color: #007bff;
+    color: white;
+}
+
+td {
+    text-align: right;
+}
+
+.client-info p {
+    margin: 5px 0;
+}
+
+.payment-footer-container {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.signature {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.payment, .footer {
+    width: 48%;
+}
+
+@media print {
+    body {
+        background-color: white;
+        padding: 0;
+    }
+
+    .invoice-container {
+        width: 100%;
+        box-shadow: none;
+        margin: 0;
+    }
+
+    .d-flex {
+        display: block;
+    }
+}
+
+    </style>
+</head>
+<body>
+    <div class="invoice-container">
+        <div class="header">
+            <div class="d-flex justify-between">
+                <strong>Type règlement facture:</strong> À échéance
+                <strong>Délai:</strong> 15
+                <strong>Agent:</strong> Paul A
+            </div>
+        </div>
+        
+        <div class="info-client-container">
+            <div class="info">
+                <table>
+                    <tr>
+                        <td><strong>Date:</strong> {{ $devis->date_emmision }}</td>
+                        <td><strong>Échéance:</strong> {{ $devis->date_echeance }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>N° Pro-forma:</strong> {{ $devis->num_proforma }}</td>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="client-container">
+                <div class="section-title">Client</div>
+                <div class="client-info">
+                    <p><strong>Nom:</strong> {{ $devis->client->nom }}</p>
+                    <p><strong>Adresse:</strong> {{ $devis->client->adresse }}</p>
+                    <p><strong>Téléphone:</strong> {{ $devis->client->telephone }}</p>
+                    <p><strong>Ville:</strong> {{ $devis->client->ville }}</p>
+                </div>
+            </div>
+        </div>
+    
+        <div class="section-title">Détails</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Référence</th>
+                    <th>Description</th>
+                    <th>Quantité</th>
+                    <th>Prix unitaire</th>
+                    <th>TOTAL</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ $devis->ref_designation }}</td>
+                    <td style="text-align: center; color: red;">{{ $devis->description_designation }}</td>
+                    <td>{{ $devis->qte_designation }}</td>
+                    <td>{{ $devis->prixUnitaire_designation }}</td>
+                    <td>{{ $devis->total_designation }}</td>
+                </tr>
+            </tbody>
+        </table>
+    
+        <div class="payment-footer-container">
+            <table class="payment">
+                <thead>
+                    <tr>
+                        <th class="section-title">Informations de paiement</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Banque:</strong> VERSUS BANK</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Compte:</strong> C112 01001 012206440008 24</td>
+                    </tr>
+                </tbody>
+            </table>
+    
+            <table class="footer">
+                <thead>
+                    <tr>
+                        <th class="section-title">Totaux</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Total HT:</strong> {{ $devis->totall_ht }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>TVA 18%:</strong> {{ $devis->tva }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Total TTC:</strong> {{ $devis->total_ttc }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Acompte:</strong> {{ $devis->accompte }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Solde:</strong> {{ $devis->solde }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    
+        <div class="signature">
+            <p><strong>Cachet et signature:</strong></p>
+            <p>"Je sers Khalil, vous passez à la facturation."</p>
+        </div>
+    </div>
+</body>
+
+</html>

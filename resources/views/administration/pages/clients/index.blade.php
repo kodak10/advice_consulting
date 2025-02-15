@@ -158,9 +158,9 @@
                     <td>
                         <h6 class="mb-0">{{ $client->nom }}</h6>
                     </td>
-                    <td>{{ $client->numero_cc }}</td>
+                    <td>{{ $client->telephone }}</td>
                     <td>{{ $client->ville }}</td>
-                    <td>{{ $client->telephone ?? 'Non renseigné' }}</td>
+                    <td>{{ $client->numero_cc ?? 'Non renseigné' }}</td>
                     <td>
                         <div class="action-btn text-center">
                             <a href="#editClientModal{{ $client->id }}" class="text-primary edit" title="Modifier" data-bs-toggle="modal">

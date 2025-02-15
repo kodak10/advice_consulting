@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr" data-bs-theme="dark" data-color-theme="Blue_Theme" data-layout="vertical">
+<html lang="fr" dir="ltr" data-bs-theme="dark" data-color-theme="Blue_Theme" data-layout="vertical">
 
 <head>
   <!-- Required meta tags -->
@@ -14,7 +14,8 @@
   <link rel="stylesheet" href="{{ asset('adminAssets/css/styles.css') }}">
 
   <title>Advice Consulting | Devis - Factures</title>
-
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  
   <link rel="stylesheet" href="{{ asset('adminAssets/libs/quill/dist/quill.snow.css') }}">
   <link rel="stylesheet" href="{{ asset('adminAssets/libs/dropzone/dist/min/dropzone.min.css') }}">
   <link rel="stylesheet" href="{{ asset('adminAssets/libs/select2/dist/css/select2.min.css') }}">
@@ -25,6 +26,7 @@
 
   <link rel="stylesheet" href="{{ asset('adminAssets/libs/sweetalert2/dist/sweetalert2.min.css') }}">
 
+  @stack('styles')
 </head>
 
 <body>
@@ -732,8 +734,7 @@
   <!-- Import Js Files -->
 
 
-  <script src="{{ asset('adminAssets/libs/quill/dist/quill.min.js') }}"></script>
-  <script src="{{ asset('adminAssets/js/forms/quill-init.js') }}"></script>
+ 
   <script src="{{ asset('adminAssets/libs/dropzone/dist/min/dropzone.min.css') }}"></script>
   <script src="{{ asset('adminAssets/libs/select2/dist/js/select2.full.min.js') }}"></script>
   <script src="{{ asset('adminAssets/libs/select2/dist/js/select2.min.js') }}"></script>

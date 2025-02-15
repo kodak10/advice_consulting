@@ -10,10 +10,31 @@ use Illuminate\Validation\ValidationException;
 
 class ClientController extends Controller
 {
+    
+    // public function __construct()
+    // {
+    //     $this->middleware(['role:Administrateur']);
+    // }
     public function index()
     {
         $clients = Client::all(); 
         return view('administration.pages.clients.index', compact('clients')); 
+    }
+
+    public function getClientInfo($id)
+    {
+        $client = Client::find($id);
+
+        if (!$client) {
+            return response()->json(['error' => 'Client non trouvé'], 404);
+        }
+
+        return response()->json([
+            'nom' => $client->nom,
+            'adresse' => $client->adresse,
+            'telephone' => $client->telephone,
+            'ville' => $client->ville,
+        ]);
     }
 
 
