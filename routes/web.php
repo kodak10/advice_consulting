@@ -63,3 +63,8 @@ Route::middleware(['auth', 'verified','check.user.status'])->prefix('dashboard')
 
 //Route::get('/dashboard', [AdminController::class, 'index'])->name('home');
 Auth::routes(['verify' => true]);
+
+
+Route::fallback(function () {
+    return view('administration.pages.maintenance');
+})->withoutMiddleware(['auth']);

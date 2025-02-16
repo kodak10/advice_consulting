@@ -680,7 +680,7 @@
      
 
     <!--  Search Bar -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-hidden="true">
+    {{-- <div class="modal fade" id="exampleModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-dialog-scrollable modal-lg">
         <div class="modal-content rounded-1">
           <div class="modal-header border-bottom">
@@ -709,7 +709,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> --}}
    
 
    
