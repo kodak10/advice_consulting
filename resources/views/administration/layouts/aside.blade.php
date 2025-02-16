@@ -807,8 +807,8 @@
             <img src="{{ asset(auth()->user()->image) }}" class="rounded-circle" width="40" height="40" alt="modernize-img">
           </div>
           <div class="john-title">
-            <h6 class="mb-0 fs-4 fw-semibold">{{ $user->name }}</h6>
-            <span class="fs-2">{{ $user->roles->first()->name}}</span>
+            <h6 class="mb-0 fs-4 fw-semibold">{{ auth()->user()->name }}</h6>
+            <span class="fs-2">{{ Auth::user()->roles->first()->name }}</span>
           </div>
           <form action="{{ route('logout') }}" method="POST">
             @csrf
