@@ -10,7 +10,7 @@ class Devis extends Model
         'user_id',
         'banque_id',
         'client_id',
-        'date_emmision',
+        'date_emission',
         'date_echeance',
         'num_proforma',
         'num_bc',
@@ -44,4 +44,10 @@ class Devis extends Model
     {
         return $this->belongsTo(Client::class);
     }
+
+    public function designations()
+{
+    return $this->belongsToMany(Designation::class, 'devis_designation');
+}
+
 }

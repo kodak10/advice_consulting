@@ -24,9 +24,9 @@
         </ul>
 
         <div class="d-block d-lg-none py-4">
-          <a href="#" class="text-nowrap logo-img">
-            <img src="" class="dark-logo" alt="Logo">
-            <img src="" class="light-logo" alt="Logo">
+          <a href="{{ route('dashboard.') }}" class="text-nowrap logo-img">
+            <img src="{{ asset('adminAssets/images/logos/favicon.png') }}" class="dark-logo" alt="Logo" style="height: 50px">
+            <img src="{{ asset('adminAssets/images/logos/favicon.png') }}" class="light-logo" alt="Logo" style="height: 50px">
           </a>
         </div>
         <a class="navbar-toggler nav-icon-hover-bg rounded-circle p-0 mx-0 border-0" href="javascript:void(0)" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
@@ -60,9 +60,9 @@
                 <div class="dropdown-menu content-dd dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
                   <div class="d-flex align-items-center justify-content-between py-3 px-7">
                     <h5 class="mb-0 fs-5 fw-semibold">Notifications</h5>
-                    <span class="badge text-bg-primary rounded-4 px-3 py-1 lh-sm">5 new</span>
+                    <span class="badge text-bg-primary rounded-4 px-3 py-1 lh-sm">5 Nouveau</span>
                   </div>
-                  <div class="message-body" data-simplebar="">
+                  {{-- <div class="message-body" data-simplebar="">
                     <a href="javascript:void(0)" class="py-6 px-7 d-flex align-items-center dropdown-item">
                       <span class="me-3">
                         <img src="../assets/images/profile/user-2.jpg" alt="user" class="rounded-circle" width="48" height="48">
@@ -117,9 +117,9 @@
                         <span class="fs-2 d-block text-body-secondary">Congratulate him</span>
                       </div>
                     </a>
-                  </div>
+                  </div> --}}
                   <div class="py-6 px-7 mb-1">
-                    <button class="btn btn-outline-primary w-100">See All Notifications</button>
+                    <button class="btn btn-outline-primary w-100">Voir toutes les notifications</button>
                   </div>
                 </div>
               </li>

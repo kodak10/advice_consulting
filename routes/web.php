@@ -44,7 +44,14 @@ Route::middleware(['auth', 'verified','check.user.status'])->prefix('dashboard')
     Route::post('/update-password', [UsersController::class, 'updatePassword'])->name('profil.updatePassword');
 
     Route::resource('devis', DevisController::class);
+
+    Route::post('/devis/recap', [DevisController::class, 'recap'])->name('devis.recap'); // Affichage du récapitulatif
+    //Route::post('/devis/store', [DevisController::class, 'store'])->name('devis.store'); // Enregistrement en base
+
     Route::get('/client/{id}', [ClientController::class, 'getClientInfo']);
+
+
+
 
     
     Route::resource('factures', FacturesController::class);

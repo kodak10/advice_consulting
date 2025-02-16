@@ -11,4 +11,10 @@ class Designation extends Model
         'description', 
         'prix_unitaire', 
     ];
+
+    public function devis()
+{
+    return $this->belongsToMany(Devis::class, 'devis_designation');
+}
+
 }

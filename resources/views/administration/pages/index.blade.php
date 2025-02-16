@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container-fluid">
-    <div class="row">
+    {{-- <div class="row">
       <div class="col-lg-8 d-flex align-items-stretch">
         <div class="card w-100 bg-primary-subtle overflow-hidden shadow-none">
           <div class="card-body position-relative">
@@ -500,6 +500,6 @@
           </div>
         </div>
       </div>
-    </div>
+    </div> --}}
   </div>
 @endsection

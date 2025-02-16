@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('banque_id')->constrained()->onDelete('cascade');
             $table->foreignId('client_id')->constrained()->onDelete('cascade');
-            $table->date('date_emmision');
+            $table->date('date_emission');
             $table->date('date_echeance');
             $table->string('num_proforma')->nullable();
             $table->string('num_bc')->nullable();

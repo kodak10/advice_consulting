@@ -21,7 +21,7 @@
           </li>
           
           <li class="sidebar-item">
-            <a class="sidebar-link {{ Request::is('dashboard') ? 'active' : '' }}" href="{{ route('dashboard.') }}" id="get-url" aria-expanded="false">
+            <a class="sidebar-link {{ Request::is('dashboard') ? 'active' : '' }}" href="{{ route('dashboard.') }}"  aria-expanded="false">
               <span>
                 <i class="ti ti-layout-dashboard"></i>
               </span>
@@ -35,7 +35,7 @@
           </li>
           
           <li class="sidebar-item">
-            <a class="sidebar-link {{ Request::is('devis') ? 'active' : '' }}" href="{{ route('dashboard.devis.index') }}" id="get-url" aria-expanded="false">
+            <a class="sidebar-link {{ Request::is('dashboard/devis') ? 'active' : '' }}" href="{{ route('dashboard.devis.index') }}"  aria-expanded="false">
               <span>
                 <i class="ti ti-list"></i>
               </span>
@@ -44,7 +44,7 @@
           </li>
 
           <li class="sidebar-item">
-            <a class="sidebar-link {{ Request::is('devis') ? 'active' : '' }}" href="{{ route('dashboard.devis.create') }}" id="get-url" aria-expanded="false">
+            <a class="sidebar-link {{ Request::is('dashboard/devis/create') ? 'active' : '' }}" href="{{ route('dashboard.devis.create') }}"  aria-expanded="false">
               <span>
                 <i class="ti ti-receipt"></i> 
               </span>
@@ -58,7 +58,7 @@
           </li>
           
           <li class="sidebar-item">
-            <a class="sidebar-link {{ Request::is('factures') ? 'active' : '' }}" href="{{ route('dashboard.factures.index') }}" id="get-url" aria-expanded="false">
+            <a class="sidebar-link {{ Request::is('factures') ? 'active' : '' }}" href="{{ route('dashboard.factures.index') }}"  aria-expanded="false">
               <span>
                 <i class="ti ti-list"></i>
               </span>
@@ -67,7 +67,7 @@
           </li>
 
           <li class="sidebar-item">
-            <a class="sidebar-link {{ Request::is('factures') ? 'active' : '' }}" href="{{ route('dashboard.factures.create') }}" id="get-url" aria-expanded="false">
+            <a class="sidebar-link {{ Request::is('factures') ? 'active' : '' }}" href="{{ route('dashboard.factures.create') }}"  aria-expanded="false">
               <span>
                 <i class="ti ti-file-invoice"></i> 
               </span>
@@ -83,7 +83,7 @@
          
 
           <li class="sidebar-item">
-            <a class="sidebar-link {{ Request::is('clients') ? 'active' : '' }}" href="{{ route('dashboard.clients.index') }}" id="get-url" aria-expanded="false">
+            <a class="sidebar-link {{ Request::is('dashboard/clients') ? 'active' : '' }}" href="{{ route('dashboard.clients.index') }}"  aria-expanded="false">
               <span>
                 <i class="ti ti-user-plus"></i> 
               </span>
@@ -92,7 +92,7 @@
           </li>
 
           <li class="sidebar-item">
-            <a class="sidebar-link {{ Request::is('designations') ? 'active' : '' }}" href="{{ route('dashboard.designations.index') }}" id="get-url" aria-expanded="false">
+            <a class="sidebar-link {{ Request::is('dashboard/designations') ? 'active' : '' }}" href="{{ route('dashboard.designations.index') }}"  aria-expanded="false">
               <span>
                 <i class="ti ti-pencil"></i>
               </span>
@@ -161,9 +161,9 @@
 
         
           <li class="sidebar-item">
-              <a class="sidebar-link {{ Request::is('users') ? 'active' : '' }}" 
+              <a class="sidebar-link {{ Request::is('dashboard/users') ? 'active' : '' }}" 
                 href="{{ route('dashboard.users.index') }}" 
-                id="get-url" 
+                 
                 aria-expanded="false">
                 <span>
                   <i class="ti ti-user-cog"></i>
@@ -176,14 +176,14 @@
           <!-- ---------------------------------- -->
           <!-- UI -->
           <!-- ---------------------------------- -->
-          <li class="nav-small-cap">
+          {{-- <li class="nav-small-cap">
             <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
             <span class="hide-menu">UI</span>
-          </li>
+          </li> --}}
           <!-- ---------------------------------- -->
           <!-- UI Elements -->
           <!-- ---------------------------------- -->
-          <li class="sidebar-item">
+          {{-- <li class="sidebar-item">
             <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
               <span class="d-flex">
                 <i class="ti ti-layout"></i>
@@ -317,12 +317,12 @@
               </li>
               
             </ul>
-          </li>
+          </li> --}}
 
           <!-- ---------------------------------- -->
           <!-- Cards -->
           <!-- ---------------------------------- -->
-          <li class="sidebar-item">
+          {{-- <li class="sidebar-item">
             <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
               <span class="d-flex">
                 <i class="ti ti-cards"></i>
@@ -342,12 +342,12 @@
               
               
             </ul>
-          </li>
+          </li> --}}
 
           <!-- ---------------------------------- -->
           <!-- Component -->
           <!-- ---------------------------------- -->
-          <li class="sidebar-item">
+          {{-- <li class="sidebar-item">
             <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
               <span class="d-flex">
                 <i class="ti ti-components"></i>
@@ -375,19 +375,19 @@
                 </a>
               </li>
             </ul>
-          </li>
+          </li> --}}
 
           <!-- ---------------------------------- -->
           <!-- Forms -->
           <!-- ---------------------------------- -->
-          <li class="nav-small-cap">
+          {{-- <li class="nav-small-cap">
             <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
             <span class="hide-menu">Forms</span>
-          </li>
+          </li> --}}
           <!-- ---------------------------------- -->
           <!-- Form Elements -->
           <!-- ---------------------------------- -->
-          <li class="sidebar-item">
+          {{-- <li class="sidebar-item">
             <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
               <span class="d-flex">
                 <i class="ti ti-file-text"></i>
@@ -444,12 +444,12 @@
                 </a>
               </li>
             </ul>
-          </li>
+          </li> --}}
 
           <!-- ---------------------------------- -->
           <!-- Form Addons -->
           <!-- ---------------------------------- -->
-          <li class="sidebar-item">
+          {{-- <li class="sidebar-item">
             <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
               <span class="d-flex">
                 <i class="ti ti-qrcode"></i>
@@ -482,12 +482,12 @@
                 </a>
               </li>
             </ul>
-          </li>
+          </li> --}}
 
           <!-- ---------------------------------- -->
           <!-- Form Validation -->
           <!-- ---------------------------------- -->
-          <li class="sidebar-item">
+          {{-- <li class="sidebar-item">
             <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
               <span class="d-flex">
                 <i class="ti ti-alert-circle"></i>
@@ -505,12 +505,12 @@
               </li>
               
             </ul>
-          </li>
+          </li> --}}
 
           <!-- ---------------------------------- -->
           <!-- Form Pickers -->
           <!-- ---------------------------------- -->
-          <li class="sidebar-item">
+          {{-- <li class="sidebar-item">
             <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
               <span class="d-flex">
                 <i class="ti ti-file-pencil"></i>
@@ -537,12 +537,12 @@
               </li>
               
             </ul>
-          </li>
+          </li> --}}
 
           <!-- ---------------------------------- -->
           <!-- Form Editor -->
           <!-- ---------------------------------- -->
-          <li class="sidebar-item">
+          {{-- <li class="sidebar-item">
             <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
               <span class="d-flex">
                 <i class="ti ti-dna"></i>
@@ -560,13 +560,13 @@
               </li>
               
             </ul>
-          </li>
+          </li> --}}
 
           <!-- ---------------------------------- -->
           <!-- Form Input -->
           <!-- ---------------------------------- -->
           
-          <li class="sidebar-item">
+          {{-- <li class="sidebar-item">
             <a class="sidebar-link" href="form-vertical.html" aria-expanded="false">
               <span class="d-flex">
                 <i class="ti ti-box-align-left"></i>
@@ -599,20 +599,20 @@
               </span>
               <span class="hide-menu">Form Detail</span>
             </a>
-          </li>
+          </li> --}}
           
          
           <!-- ---------------------------------- -->
           <!-- Form Wizard -->
           <!-- ---------------------------------- -->
-          <li class="sidebar-item">
+          {{-- <li class="sidebar-item">
             <a class="sidebar-link" href="form-wizard.html" aria-expanded="false">
               <span class="d-flex">
                 <i class="ti ti-files"></i>
               </span>
               <span class="hide-menu">Form Wizard</span>
             </a>
-          </li>
+          </li> --}}
           <!-- ---------------------------------- -->
           <!-- Form Repeater -->
           <!-- ---------------------------------- -->
@@ -620,16 +620,16 @@
           <!-- ---------------------------------- -->
           <!-- Tables -->
           <!-- ---------------------------------- -->
-          <li class="nav-small-cap">
+          {{-- <li class="nav-small-cap">
             <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
             <span class="hide-menu">Tables</span>
-          </li>
+          </li> --}}
          
           
           <!-- ---------------------------------- -->
           <!-- Datatable -->
           <!-- ---------------------------------- -->
-          <li class="sidebar-item">
+          {{-- <li class="sidebar-item">
             <a class="sidebar-link has-arrow" href="javascript:void(0)" aria-expanded="false">
               <span class="d-flex">
                 <i class="ti ti-air-conditioning-disabled"></i>
@@ -648,7 +648,7 @@
              
               
             </ul>
-          </li>
+          </li> --}}
           <!-- ---------------------------------- -->
           <!-- Table Jsgrid -->
           <!-- ---------------------------------- -->
@@ -661,36 +661,36 @@
           <!-- ---------------------------------- -->
           <!-- Icons -->
           <!-- ---------------------------------- -->
-          <li class="nav-small-cap">
+          {{-- <li class="nav-small-cap">
             <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
             <span class="hide-menu">Icons</span>
-          </li>
+          </li> --}}
           <!-- ---------------------------------- -->
           <!-- Tabler Icon -->
           <!-- ---------------------------------- -->
-          <li class="sidebar-item">
+          {{-- <li class="sidebar-item">
             <a class="sidebar-link sidebar-link" href="icon-tabler.html" aria-expanded="false">
               <span class="rounded-3">
                 <i class="ti ti-archive"></i>
               </span>
               <span class="hide-menu">Tabler Icon</span>
             </a>
-          </li>
+          </li> --}}
           <!-- ---------------------------------- -->
           <!-- Solar Icon -->
           <!-- ---------------------------------- -->
-          <li class="sidebar-item">
+          {{-- <li class="sidebar-item">
             <a class="sidebar-link sidebar-link" href="icon-solar.html" aria-expanded="false">
               <span class="rounded-3">
                 <i class="ti ti-mood-smile"></i>
               </span>
               <span class="hide-menu">Solar Icon</span>
             </a>
-          </li>
+          </li> --}}
           <!-- ---------------------------------- -->
           <!-- AUTH -->
           <!-- ---------------------------------- -->
-          <li class="nav-small-cap">
+          {{-- <li class="nav-small-cap">
             <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
             <span class="hide-menu">AUTH</span>
           </li>
@@ -739,8 +739,8 @@
                 </a>
               </li>
             </ul>
-          </li>
-          <li class="sidebar-item">
+          </li> --}}
+          {{-- <li class="sidebar-item">
            
             <ul aria-expanded="false" class="collapse first-level">
               <li class="sidebar-item">
@@ -769,12 +769,12 @@
               </span>
               <span class="hide-menu">Maintenance</span>
             </a>
-          </li>
+          </li> --}}
          
           <!-- ---------------------------------- -->
           <!-- OTHER -->
           <!-- ---------------------------------- -->
-          <li class="nav-small-cap">
+          {{-- <li class="nav-small-cap">
             <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
             <span class="hide-menu">OTHER</span>
           </li>
@@ -786,18 +786,18 @@
               </span>
               <span class="hide-menu">Disabled</span>
             </a>
-          </li>
+          </li> --}}
          
           
         
-          <li class="sidebar-item">
+          {{-- <li class="sidebar-item">
             <a class="sidebar-link" href="https://google.com" aria-expanded="false">
               <span class="d-flex">
                 <i class="ti ti-star"></i>
               </span>
               <span class="hide-menu">External Link</span>
             </a>
-          </li>
+          </li> --}}
         </ul>
       </nav>
 
