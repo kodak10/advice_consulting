@@ -72,6 +72,20 @@ class UsersController extends Controller
         return redirect()->back()->with('success', 'Utilisateur désactivé avec succès.');
     }
 
+    // Méthode pour Activer un utilisateur
+    public function activate($id)
+    {
+        // Récupérer l'utilisateur
+        $user = User::findOrFail($id);
+
+        // Mettre à jour le statut en "Actif"
+        $user->status = 'Actif';
+        $user->save();
+
+        // Rediriger avec un message de succès
+        return redirect()->back()->with('success', 'Utilisateur activé avec succès.');
+    }
+
 
     public function show($id)
     {

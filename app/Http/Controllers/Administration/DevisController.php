@@ -7,17 +7,19 @@ use App\Models\Banque;
 use App\Models\Client;
 use App\Models\Designation;
 use App\Models\Devis;
-use Illuminate\Http\Request;
+use App\Models\DevisDetail;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DevisController extends Controller
 {
     public function index()
     {
-        $devis = Devis::where('user_id', auth()->id())->get();
+        $devis = Devis::where('user_id', Auth::user()->id)->get();
         return view('administration.pages.devis.index', compact('devis'));
 
-    }
+    } 
 
     public function create()
     {
@@ -30,104 +32,205 @@ class DevisController extends Controller
 
     public function recap(Request $request)
     {
-        // Valider les données du formulaire avant le récapitulatif
-        $validatedData = $request->validate([
-            'client_id' => 'required|exists:clients,id',
-            'date_emission' => 'required|date',
-            'date_echeance' => 'required|date|after_or_equal:date_emission',
-            'numero_bc' => 'required|string|max:50',
-            // 'designations' => 'required|array',
-            // 'designations.*.description' => 'required|string',
-            // 'designations.*.quantite' => 'required|integer|min:1',
-            // 'designations.*.pu' => 'required|numeric|min:0',
-            'remise' => 'nullable|numeric|min:0',
-            'accompte' => 'nullable|numeric|min:0',
+        
+        // Valider les données du formulaire
+        $validated = $request->validate([
+            'client_id' => 'required|exists:clients,id',  
+            'date_emission' => 'required|date',  
+            'date_echeance' => 'required|date|after_or_equal:date_emission',  
+            'commande' => 'required|string',  
+            'livraison' => 'required|string',  
+            'validite' => 'required|string',  
+            'banque_id' => 'required|exists:banques,id',  
+            'total_ht' => 'required|numeric|min:0',  
+            // 'tva' => 'required|numeric|in:18',  
+            'tva' => 'required',  
+
+            'total_ttc' => 'required|numeric|min:0',  
+            'acompte' => 'required|numeric|min:0',  
+            'solde' => 'required|numeric|min:0',  
+            // 'delai' => 'required',
+            // 'acompte' => 'required',
+           
+            'designations' => 'required|array', 
+            'designations.*.id' => 'required|exists:designations,id',
+            'designations.*.designation' => 'required|exists:designations,id', 
+            'designations.*.quantity' => 'required|numeric|min:1',
+            'designations.*.price' => 'required|numeric|min:0', 
+            'designations.*.discount' => 'nullable|numeric|min:0', 
+            'designations.*.total' => 'required|numeric|min:0', 
         ]);
 
-        // Sauvegarder temporairement les données en session
-        session(['devis_data' => $validatedData]);
+        // dd($request);
 
-        // Afficher la page de récapitulatif
-        return view('administration.pages.devis.recap', compact('validatedData'));
+
+        $designations = Designation::all();  
+
+        // Récupérer les données validées
+        $client = Client::find($validated['client_id']);
+        $banque = Banque::find($validated['banque_id']);
+
+        // Passer les données à la vue
+        return view('administration.pages.devis.recap', compact('client', 'validated', 'banque', 'designations'));
     }
+
 
     public function store(Request $request)
     {
-        // Vérifier si les données existent en session
-        $devisData = session('devis_data');
-
-        if (!$devisData) {
-            return redirect()->route('dashboard.devis.create')->with('error', 'Aucune donnée à enregistrer.');
-        }
-
-        // Enregistrement de la facture en base de données
-        // $devis = Devis::create([
-        //     'client_id' => $devisData['client_id'],
-        //     'date_emission' => $devisData['date_emission'],
-        //     'date_echeance' => $devisData['date_echeance'],
-        //     'numero_bc' => $devisData['numero_bc'],
-        //     'remise' => $devisData['remise'] ?? 0,
-        //     'accompte' => $devisData['accompte'] ?? 0,
-        //     'user_id' => 1,
-        //     'banque_id' => 1,
-        //     'ref_designation' => 'REF-001',
-        //     'description_designation' => 'Description de test',
-        //     'qte_designation' => 10,
-        //     'prixUnitaire_designation' => 100,
-        //     'total_designation' => 1000,
-        //     'totall_ht' => 2000,
-        //     'tva' => 18,
-        //     'total_ttc' => 5000,
-        //     'accompte' => 1000,
-        //     'solde' => 3500,
-        // ]);
-
-        $devis = Devis::create([
-            'client_id' => $devisData['client_id'],
-            'date_emission' => $devisData['date_emission'],
-            'date_echeance' => $devisData['date_echeance'],
-            'numero_bc' => $devisData['numero_bc'],
-            'remise' => $devisData['remise'] ?? 0,
-            'accompte' => $devisData['accompte'] ?? 0,
-            'user_id' => auth()->id(),  // Utiliser l'ID de l'utilisateur connecté
-            'banque_id' => 1,  // Banque par défaut (modifier si nécessaire)
-            'totall_ht' => $devisData['total_ht'] ?? 0,
-            'tva' => $devisData['tva'] ?? 0,
-            'total_ttc' => $devisData['total_ttc'] ?? 0,
-            'solde' => $devisData['solde'] ?? 0,
-            'ref_designation' => 'REF-001',
-            'description_designation' => 'Description de test',
-            'qte_designation' => 10,
-            'prixUnitaire_designation' => 100,
-            'total_designation' => 1000,
-
+        // Valider la requête
+        $validated = $request->validate([
+            'client_id' => 'required|exists:clients,id',  
+            'date_emission' => 'required|date',  
+            'date_echeance' => 'required|date|after_or_equal:date_emission',  
+            'commande' => 'required|string',  
+            'livraison' => 'required|string',  
+            'validite' => 'required|string',  
+            'banque_id' => 'required|exists:banques,id',  
+            'total_ht' => 'required|numeric|min:0',  
+            // 'tva' => 'required|numeric|in:18',  
+            'total_ttc' => 'required|numeric|min:0',  
+            'acompte' => 'required|numeric|min:0',  
+            'solde' => 'required|numeric|min:0',
+            'designations' => 'required|array', 
+            'designations.*.designation' => 'required|exists:designations,id', 
+            'designations.*.quantity' => 'required|numeric|min:1',
+            'designations.*.price' => 'required|numeric|min:0', 
+            'designations.*.discount' => 'nullable|numeric|min:0', 
+            'designations.*.total' => 'required|numeric|min:0',        
         ]);
 
-        // Enregistrement des désignations
-       // Enregistrement des désignations et association avec le devis
-       foreach ($devisData['designations'] as $designation) {
-        $devis->designations()->create([
-            'description' => $designation['description'],
-            'quantite' => $designation['quantite'],
-            'prix_unitaire' => $designation['pu'],
-            'total' => $designation['quantite'] * $designation['pu'],
-            'reference' => 'REF-' . str_pad(rand(1, 9999), 4, '0', STR_PAD_LEFT), // Générer une référence unique
+        // Récupérer les objets associés
+        $client = Client::find($validated['client_id']);
+        $banque = Banque::find($validated['banque_id']);
 
-        ]);
+        // Créer le devis dans la base de données
+        $devis = new Devis();
+        $devis->client_id = $validated['client_id'];
+        $devis->date_emission = $validated['date_emission'];
+        $devis->date_echeance = $validated['date_echeance'];
+        $devis->commande = $validated['commande'];
+        $devis->livraison = $validated['livraison'];
+        $devis->validite = $validated['validite'];
+        $devis->banque_id = $validated['banque_id'];
+        $devis->total_ht = $validated['total_ht'];
+        // $devis->tva = $validated['tva'];
+        $devis->tva = 1;
+        $devis->total_ttc = $validated['total_ttc'];
+        $devis->acompte = $validated['acompte'];
+        $devis->solde = $validated['solde'];
+        $devis->delai = 1;
+        $devis->user_id = Auth::user()->id;
+
+
+        // Sauvegarder le devis
+        $devis->save();
+
+        // Enregistrer les détails du devis (DevisDetail)
+        foreach ($validated['designations'] as $designationData) {
+            $devisDetail = new DevisDetail();
+            $devisDetail->devis_id = $devis->id;
+            $devisDetail->designation_id = $designationData['designation']; // ID de la désignation
+            $devisDetail->quantite = $designationData['quantity'];
+            $devisDetail->prix_unitaire = $designationData['price'];
+            $devisDetail->remise = $designationData['discount'];
+            $devisDetail->total = $designationData['total'];
+        
+            // Sauvegarder les détails
+            $devisDetail->save();
         }
+        
+
+
+
+        // Générer le PDF
+        $pdf = PDF::loadView('frontend.pdf.devis', compact('devis', 'client', 'banque'));
+        $pdfOutput = $pdf->output();
+
+        // Enregistrer le PDF sur le serveur
+        $pdfFilePath = storage_path('app/public/devis/' . $devis->id . '.pdf');
+        file_put_contents($pdfFilePath, $pdfOutput);
+
+        // Ajouter le chemin du fichier PDF à la base de données (optionnel)
+        $devis->pdf_path = $pdfFilePath;
+        $devis->save();
+
+        // Nettoyer la session
+        $request->session()->forget([
+            'client_id', 'date_emission', 'date_echeance', 'commande', 'livraison', 'validite',
+            'banque_id', 'total_ht', 'tva', 'total_ttc', 'acompte', 'solde', 'designations'
+        ]);
+
+        // Retourner le fichier PDF pour le téléchargement
+        // return response()->download($pdfFilePath)->deleteFileAfterSend(true);
+
+        return redirect()->route('dashboard.devis.create')->with('success', 'Facture enregistrée avec succès.');
+
+    }
+
+    // public function show()
+    // {
+    //     return view('administration.pages.index');
+    // }
+
+
+
+//     public function store(Request $request)
+//     {
+//         $request->validate([
+//             'client_id' => 'required|exists:clients,id',
+//             'date_emission' => 'required|date',
+//             'date_echeance' => 'required|date',
+//             'designations' => 'required|array',
+//             'designations.*.designation_id' => 'required|exists:designations,id',
+//             'designations.*.quantite' => 'required|integer|min:1',
+//             'designations.*.prix_unitaire' => 'required|numeric|min:0',
+//             'designations.*.total' => 'required|numeric|min:0',
+//         ]);
+//         $emission = $request->date_emission;
+//         $echeance = $request->date_echeance;
+//         $delai = $emission - $echeance;
+
+//         $devis = Devis::create([
+//             'client_id' => $request->client_id,
+//             'date_emission' => $request->date_emission,
+//             'date_echeance' => $request->date_echeance,
+//             'commande' => $request->commande,
+//             'livraison' => $request->livraison,
+//             'validite' => $request->validite,
+//             'delai' => $delai,
+//             'banque_id' => $request->banque_id,
+//             'total_ht' => collect($request->designations)->sum('total'),
+//             'tva' => 0.18,
+//             'total_ttc' => collect($request->designations)->sum('total') * 1.18,
+//             'acompte' => $request->acompte ?? 0,
+//             'solde' => ($request->total_ttc ?? 0) - ($request->acompte ?? 0),
+//         ]);
+
+//         foreach ($request->designations as $detail) {
+//             DevisDetail::create([
+//                 'devis_id' => $devis->id,
+//                 'designation_id' => $detail['designation_id'],
+//                 'quantite' => $detail['quantite'],
+//                 'prix_unitaire' => $detail['prix_unitaire'],
+//                 'remise' => $detail['remise'] ?? 0,
+//                 'total' => $detail['total'],
+//             ]);
+//         }
+
+//         // return redirect()->route('dashboard.devis.recap')->with('success', 'Devis créé avec succès !');
 
        
 
-        // Générer le PDF
-        $pdf = Pdf::loadView('frontend.pdf.devis', compact('devis'));
+//         // Générer le PDF
+//         $pdf = Pdf::loadView('frontend.pdf.devis', compact('devis'));
 
-        // Retourner le PDF en téléchargement
-        return $pdf->download('devis-' . $devis->id . '.pdf');
- // Nettoyer la session avant de procéder au téléchargement du PDF
- session()->forget('devis_data');
+//         // Retourner le PDF en téléchargement
+//         return $pdf->download('devis-' . $devis->id . '.pdf');
+//  // Nettoyer la session avant de procéder au téléchargement du PDF
+//  session()->forget('devis_data');
 
-        return redirect()->route('dashboard.devis.create')->with('success', 'Facture enregistrée avec succès.');
-    }
+//         return redirect()->route('dashboard.devis.create')->with('success', 'Facture enregistrée avec succès.');
+//     }
 
     public function storeRecap(Request $request)
 {

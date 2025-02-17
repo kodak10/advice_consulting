@@ -13,26 +13,20 @@ return new class extends Migration
     {
         Schema::create('devis', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('banque_id')->constrained()->onDelete('cascade');
-            $table->foreignId('client_id')->constrained()->onDelete('cascade');
+            $table->foreignId('client_id')->constrained('clients')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->date('date_emission');
             $table->date('date_echeance');
-            $table->string('num_proforma')->nullable();
-            $table->string('num_bc')->nullable();
-            $table->string('num_rap')->nullable();
-            $table->string('num_bl')->nullable();
-            $table->string('ref_designation');
-            $table->text('description_designation');
-            $table->integer('qte_designation');
-            $table->decimal('prixUnitaire_designation', 10, 2);
-            $table->decimal('total_designation', 10, 2);
-            $table->decimal('remise_speciale', 10, 2)->nullable();
-            $table->decimal('totall_ht', 10, 2);
-            $table->decimal('tva', 10, 2);
-            $table->decimal('total_ttc', 10, 2);
-            $table->decimal('accompte', 10, 2)->nullable();
-            $table->decimal('solde', 10, 2);
+            $table->string('commande')->nullable();
+            $table->string('livraison')->nullable();
+            $table->string('validite')->nullable();
+            $table->string('delai')->nullable();
+            $table->foreignId('banque_id')->nullable()->constrained('banques')->onDelete('set null');
+            $table->decimal('total_ht', 10, 2)->default(0);
+            $table->decimal('tva', 10, 2)->default(0.18);
+            $table->decimal('total_ttc', 10, 2)->default(0);
+            $table->decimal('acompte', 10, 2)->default(0);
+            $table->decimal('solde', 10, 2)->default(0);
             $table->timestamps();
         });
     }

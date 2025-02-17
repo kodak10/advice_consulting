@@ -19,38 +19,6 @@
 @endif
     <form action="{{ route('dashboard.devis.recap') }}" method="POST">
         @csrf
-        @if(session('step') == 'recap')
-            <!-- ÉTAPE RÉCAPITULATIVE -->
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title">Récapitulatif</h4>
-                    <p><strong>Client :</strong> {{ session('data.client_nom') }}</p>
-                    <p><strong>Date d'émission :</strong> {{ session('data.date_emission') }}</p>
-                    <p><strong>Date d'échéance :</strong> {{ session('data.date_echeance') }}</p>
-                    <p><strong>N° BC :</strong> {{ session('data.numero_bc') }}</p>
-
-                    <h5>Désignations</h5>
-                    <ul>
-                        @foreach(session('data.designations') as $designation)
-                            <li>{{ $designation['description'] }} - {{ $designation['quantite'] }} x {{ $designation['pu'] }} = {{ $designation['total'] }}</li>
-                        @endforeach
-                    </ul>
-
-                    <h5>Total</h5>
-                    <p><strong>Total HT :</strong> {{ session('data.total_ht') }}</p>
-                    <p><strong>TVA :</strong> {{ session('data.tva') }}</p>
-                    <p><strong>Total TTC :</strong> {{ session('data.total_ttc') }}</p>
-                    <p><strong>Accompte :</strong> {{ session('data.accompte') }}</p>
-                    <p><strong>Solde :</strong> {{ session('data.solde') }}</p>
-                </div>
-            </div>
-
-            <div class="form-actions mb-5">
-                <a href="{{ route('facture.create') }}" class="btn btn-secondary">Retour</a>
-                <button type="submit" class="btn btn-success">Enregistrer</button>
-            </div>
-        @else
-
        
             <div class="row">
                 <!-- Étape Informations Client -->
@@ -60,7 +28,6 @@
                             <h4 class="card-title">Informations du Client</h4>
         
                             <div class="mb-3">
-                                <label class="form-label">Clients</label>
                                 <div class="row">
                                     <div class="col-lg-9">
                                         <select class="select2 form-control" name="client_id">
@@ -93,97 +60,74 @@
                     <!-- Étape Dates -->
                     <div class="card">
                         <div class="card-body">
+                            <h4 class="card-title">Date</h4>
                             <div class="row">
                                 <div class="col-lg-6">
-                                    <div class="mb-4">
+                                    <div class="">
                                         <label class="form-label">Date d'Émission</label>
-                                        <input type="date" name="date_emission" class="form-control mydatepicker" value="{{ session('data.date_emission', '') }}">
+                                        <input type="date" name="date_emission" class="form-control mydatepicker">
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
-                                    <div class="mb-4">
+                                    <div class="">
                                         <label class="form-label">Date d'Échéance</label>
-                                        <input type="date" name="date_echeance" class="form-control mydatepicker" value="{{ session('data.date_echeance', '') }}">
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="mb-4">
-                                        <label class="form-label">N° BC</label>
-                                        <input type="text" name="numero_bc" class="form-control" value="{{ session('data.numero_bc', '') }}">
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="mb-4">
-                                        <label class="form-label">N° Rap activ</label>
-                                        <input type="text" name="num_rap" class="form-control" value="{{ session('data.num_rap', '') }}">
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="mb-4">
-                                        <label class="form-label">N° BL</label>
-                                        <input type="text" name="num_bl" class="form-control" value="{{ session('data.num_bl', '') }}">
+                                        <input type="date" name="date_echeance" class="form-control mydatepicker">
                                     </div>
                                 </div>
                             </div>
                             
 
-                            
-
-                            
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-body">
-                    <h4 class="card-title mb-7">Désignations</h4>
-        
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                        <h4 class="card-title mb-7">Désignations</h4>
+            
                         <div class="email-repeater mb-3">
-                        <div data-repeater-list="repeater-group">
-                            <div data-repeater-item="" class="row mb-3">
+                            <div data-repeater-list="designations">
+                                <div data-repeater-item class="row mb-3">
+                                    <div class="col-md-3 mt-3 mt-md-0">
+                                        <select class="select2 form-control designation" name="designations[][designation]">
+                                            <option value="">Sélectionner</option>
+                                            @foreach ($designations as $designation)
+                                                <option value="{{ $designation->id }}" data-price="{{ $designation->prix_unitaire }}">
+                                                    {{ $designation->description }}
+                                                </option>
+                                                <input type="hidden" class="form-control" name="designations[][id]" value="{{ $designation->id }}">
 
-                            <div class="col-md-6 mt-3 mt-md-0 d-none">
-                                <select class="select2 form-control">
-                                <option selected="">Ref</option>
-                                <option>Material</option>
-                                <option>Style</option>
-                                </select>                          
-                            </div>
+                                            @endforeach
+                                        </select>
 
-                            <div class="col-md-5 mt-3 mt-md-0">
-                                <select class="select2 form-control">
-                                <option selected="">Selectionner</option>
-
-                                @foreach ($designations as $designation)
-                                <option value="{{ $designation->description }}">{{ $designation->description }}</option>
-    
-                                @endforeach
-                                
-                                </select>                         
+                                    </div>
+                                    <div class="col-md-2 mt-3 mt-md-0">
+                                        <input type="number" class="form-control quantity" name="designations[][quantity]" placeholder="Qte" value="0" min="1">
+                                    </div>
+                                    <div class="col-md-2 mt-3 mt-md-0">
+                                        <input type="number" class="form-control price" name="designations[][price]" placeholder="PU">
+                                    </div>
+                                    <div class="col-md-2 mt-3 mt-md-0">
+                                        <input type="number" class="form-control discount" name="designations[][discount]" placeholder="Remise" value="0" min="0">
+                                    </div>
+                                    <div class="col-md-2 mt-3 mt-md-0">
+                                        <input type="number" class="form-control total" name="designations[][total]" placeholder="Total" readonly>
+                                    </div>
+                                    <div class="col-md-1 mt-3 mt-md-0">
+                                        <button data-repeater-delete class="btn bg-danger-subtle text-danger" type="button">
+                                            <i class="ti ti-x fs-5 d-flex"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="col-md-2 mt-3 mt-md-0">
-                                <input type="number" class="form-control" placeholder="Qte">
-                            </div>
-                            <div class="col-md-2 mt-3 mt-md-0">
-                                <input type="number" class="form-control" placeholder="PU">
-                            </div>
-                            <div class="col-md-2 mt-3 mt-md-0">
-                                <input type="number" class="form-control" placeholder="Total">
-                            </div>
-                            
-                            <div class="col-md-1 mt-3 mt-md-0">
-                                <button data-repeater-delete="" class="btn bg-danger-subtle text-danger" type="button">
-                                <i class="ti ti-x fs-5 d-flex"></i>
-                                </button>
-                            </div>
-                            </div>
-                        </div>
-                        <button type="button" data-repeater-create="" class="btn bg-primary-subtle text-primary ">
-                            <span class="fs-4 me-1">+</span>
+                            <button type="button" data-repeater-create class="btn bg-primary-subtle text-primary">
+                                <span class="fs-4 me-1">+</span>
                                 Ajouter une autre
-                        </button>
+                            </button>
+                        </div>
                         </div>
                     </div>
                 </div>
@@ -191,6 +135,40 @@
 
             <div class="row">
                 <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Conditions financières</h4>
+        
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="">
+                                        <label class="form-label">Commande</label>
+                                        <input type="text" name="commande" class="form-control mydatepicker">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="">
+                                        <label class="form-label">Livraison</label>
+                                        <input type="text" name="livraison" class="form-control mydatepicker" >
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="">
+                                        <label class="form-label">Validité de l'offre</label>
+                                        <input type="text" name="validite" class="form-control mydatepicker">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="">
+                                        <label class="form-label">Delai de livraison</label>
+                                        <input type="text" name="delai" class="form-control mydatepicker">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
                     <div class="card">
                         <div class="card-body">
                             <h4 class="card-title">Banque</h4>
@@ -207,56 +185,47 @@
                         </div>
                     </div>
                 </div>
+                
 
-                <div class="col-lg-8">
+                <div class="col-lg-5">
                     <div class="card">
                         <div class="card-body">
                             <div class="d-flex justify-content-between align-items-center mb-7">
                                 <h4 class="card-title">Les conditions</h4>
-                
-                                <button class="navbar-toggler border-0 shadow-none d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
-                                <i class="ti ti-menu fs-5 d-flex"></i>
-                                </button>
                             </div>
                             <div class="row">
                                 <div class="col-4">
-                                    <div class="mb-4">
-                                        <label class="form-label">Remise spéciale <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" value="0">
-                                    </div>
-                                </div>
-                                <div class="col-4">
                                     <label class="form-label">Total HT <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" value="0">
+                                    <input type="text" name="total_ht" class="form-control" value="0" readonly>
                                 </div>
                                 <div class="col-4">
                                     <label class="form-label">TVA 18% <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" value="0.18">
+                                    <input type="text" name="tva" class="form-control" value="0.18">
                                 </div>
                                 <div class="col-4">
                                     <div class="mb-4">
                                         <label class="form-label">Total TTC <span class="text-danger">*</span></label>
-                                        <input type="text" class="form-control" value="0">
+                                        <input type="text" name="total_ttc" class="form-control" value="0" readonly>
                                     </div>
                                 </div>
                                 <div class="col-4">
                                     <label class="form-label">Accompte <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" value="0">
+                                    <input type="text" name="acompte" class="form-control" value="0">
                                 </div>
                                 <div class="col-4">
                                     <label class="form-label">Solde <span class="text-danger">*</span></label>
-                                    <input type="text" class="form-control" value="0">
+                                    <input type="text" name="solde" class="form-control" value="0" readonly>
                                 </div>
                             </div>
                         </div>
-                  </div>
+                    </div>
                 </div>
+                
             </div>
             
             <div class="form-actions mb-5">
                 <button type="submit" class="btn btn-success">Recapitulaif</button>
             </div>
-        @endif
 
     </form>
 
@@ -264,62 +233,123 @@
 @endsection
 
 @push('scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-    // Ajouter une nouvelle désignation
-    document.getElementById('add-designation').addEventListener('click', function() {
-        const container = document.getElementById('designations-container');
-        const index = container.children.length;
-        
-        // Créer un nouvel élément de désignation
-        const newDesignation = document.createElement('div');
-        newDesignation.classList.add('mb-4');
-        newDesignation.classList.add('designation-item');
-        newDesignation.innerHTML = `
-            <label class="form-label">Désignation ${index + 1}</label>
-            <div class="row">
-                <div class="col-md-4">
-                    <input type="text" name="designations[${index}][description]" class="form-control" required>
-                </div>
-                <div class="col-md-2">
-                    <input type="number" name="designations[${index}][quantite]" class="form-control" min="1" required>
-                </div>
-                <div class="col-md-2">
-                    <input type="number" step="0.01" name="designations[${index}][pu]" class="form-control" min="0" required>
-                </div>
-                <div class="col-md-2">
-                    <input type="number" step="0.01" name="designations[${index}][total]" class="form-control" readonly>
-                </div>
-                <div class="col-md-2">
-                    <button type="button" class="btn btn-danger remove-designation">Supprimer</button>
-                </div>
-            </div>
-        `;
-        
-        // Ajouter la nouvelle désignation au formulaire
-        container.appendChild(newDesignation);
-        
-        // Calculer automatiquement le total de la désignation
-        newDesignation.querySelector('input[name$="[quantite]"]').addEventListener('input', updateTotal);
-        newDesignation.querySelector('input[name$="[pu]"]').addEventListener('input', updateTotal);
-    });
+<script>
+    $(document).ready(function() {
+        function updateTotal(row) {
+            var price = parseFloat(row.find('.price').val()) || 0;
+            var quantity = parseInt(row.find('.quantity').val()) || 1;
+            var discount = parseFloat(row.find('.discount').val()) || 0;
 
-    // Supprimer une désignation
-    document.addEventListener('click', function(event) {
-        if (event.target.classList.contains('remove-designation')) {
-            event.target.closest('.designation-item').remove();
+            var total = (price * quantity) - discount;
+            if (total < 0) total = 0; // Empêcher un total négatif
+
+            row.find('.total').val(total.toFixed(2)); // Afficher avec 2 décimales
         }
+
+        // Mise à jour du prix unitaire lorsqu'on sélectionne une désignation
+        $(document).on('change', '.designation', function() {
+            var selectedOption = $(this).find(':selected');
+            var price = parseFloat(selectedOption.data('price')) || 0;
+
+            var row = $(this).closest('.row');
+            row.find('.price').val(price); // Mettre à jour le prix unitaire
+            updateTotal(row);
+        });
+
+        // Mise à jour du total lorsque la quantité ou la remise change
+        $(document).on('input', '.quantity, .discount', function() {
+            var row = $(this).closest('.row');
+            updateTotal(row);
+        });
+
+        // Fonction pour mettre à jour le total HT
+    function updateTotalHT() {
+        var totalHT = 0;
+        $('.email-repeater .row').each(function () {
+            var row = $(this);
+            var total = parseFloat(row.find('.total').val()) || 0;
+            totalHT += total;
+        });
+
+        // Mise à jour de Total HT
+        $('.col-4 input[value="0"]').eq(0).val(totalHT.toFixed(2));
+
+        updateTVAandTTC(totalHT);
+    }
+
+    // Fonction pour mettre à jour TVA et Total TTC
+    function updateTVAandTTC(totalHT) {
+        var tva = 0.18; // TVA 18%
+        var ttc = totalHT + (totalHT * tva); // Calcul correct du Total TTC
+
+        // Mise à jour de TVA (fixe à 18%)
+        $('.col-4 input[value="0"]').eq(1).val((tva * 100).toFixed(2));  // TVA en pourcentage
+
+        // Mise à jour de Total TTC
+        $('.col-4 input[value="0"]').eq(2).val(ttc.toFixed(2));
+
+        updateSolde(ttc);
+    }
+
+    // Fonction pour mettre à jour le solde
+    function updateSolde(ttc) {
+        var acompte = parseFloat($('.col-4 input[value="0"]').eq(3).val()) || 0;
+        var solde = ttc - acompte;
+
+        // Mise à jour du solde
+        $('.col-4 input[value="0"]').eq(4).val(solde.toFixed(2));
+    }
+
+    // Quand l'acompte change, mettre à jour le solde
+    $(document).on('input', '.col-4 input[value="0"]:eq(3)', function () {
+        var totalTTC = parseFloat($('.col-4 input[value="0"]').eq(2).val()) || 0;
+        updateSolde(totalTTC);
     });
 
-    // Calculer le total pour chaque désignation
-    function updateTotal(event) {
-        const row = event.target.closest('.row');
-        const quantite = parseFloat(row.querySelector('input[name$="[quantite]"]').value) || 0;
-        const pu = parseFloat(row.querySelector('input[name$="[pu]"]').value) || 0;
-        const total = quantite * pu;
-        row.querySelector('input[name$="[total]"]').value = total.toFixed(2);
-    }
-});
+    // Chaque fois qu'un champ "total" change (ajout/remise)
+    $(document).on('input', '.quantity, .discount, .total', function () {
+        updateTotalHT();
+    });
 
-    </script>
+
+    // Chaque fois qu'une ligne est ajoutée
+    $(document).on('click', '[data-repeater-create]', function () {
+        updateTotalHT();
+    });
+    
+    // Chaque fois qu'une ligne est supprimée
+    $(document).on('click', '[data-repeater-delete]', function () {
+        updateTotalHT();
+    });
+
+
+        // Gérer l'ajout dynamique d'une nouvelle ligne
+        // Gérer l'ajout dynamique d'une nouvelle ligne
+        $(document).on('click', '[data-repeater-create]', function() {
+            var lastRow = $('.email-repeater [data-repeater-item]:last');
+            var newRow = lastRow.clone();
+
+            // Réinitialiser les valeurs des champs
+            newRow.find('input').val('');
+            newRow.find('.quantity').val(1);
+            newRow.find('.discount').val(0);
+            newRow.find('.total').val(0);
+            newRow.find('.price').val('');
+
+            // Réappliquer Select2 si utilisé
+            newRow.find('.designation').val('').trigger('change');
+            newRow.find('.designation').select2(); // Initialiser Select2 sur le nouvel élément
+
+            // Ajouter la nouvelle ligne au DOM
+            $('.email-repeater [data-repeater-list]').append(newRow);
+        });
+
+        // Initialiser Select2 pour les éléments existants
+        $('.designation').select2();
+    });
+</script>
+
+
+
+
 @endpush

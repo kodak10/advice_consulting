@@ -85,13 +85,22 @@
 </head>
 <body>
     <div class="invoice-container">
-       
+        <table style="width: 100%; border-collapse: collapse;">
+            <tr>
+                <td colspan="3" style="border-bottom: 1px solid #000; padding-bottom: 5px;"><strong>Type règlement facture:</strong> À échéance</td>
+                <td><strong>Délai:</strong> {{ $devis->description_designation }}</td>
+                <td><strong>Agent:</strong> {{ $client->nom }}</td>
+            </tr>
+        </table>
         
         <table style="width: 100%; margin-top: 10px; border-collapse: collapse;">
             <tr>
                 <td style="width: 40%; border-top: 1px solid #000; padding-top: 5px;">
                     <strong>Date emission:</strong> {{ $devis->date_emmision }} <br>
-                    <strong>Numero: </strong> {{ $devis->num_proforma }} <br>
+                    <strong>N° Pro-forma:</strong> {{ $devis->num_proforma }} <br>
+                    <strong>N° BC:</strong> <br>
+                    <strong>N° Rap Activ:</strong> <br>
+                    <strong>N° BL:</strong> <br>
                 </td>
                 <td style="width: 60%; border-top: 1px solid #000; padding-top: 5px;">
                     <strong>Client</strong><br>
@@ -100,9 +109,6 @@
                     <strong>Adresse:</strong> {{ $devis->client->adresse }}<br>
                     <strong>Téléphone:</strong> {{ $devis->client->telephone }}<br>
                     <strong>Ville:</strong> {{ $devis->client->ville }}
-                    <strong>N°CC:</strong> 
-                    <strong>ATTN:</strong> 
-
                 </td>
             </tr>
         </table>
@@ -117,7 +123,6 @@
                 <th>Total</th>
             </tr>
             <tr>
-                
                 <td>{{ $devis->ref_designation }}</td>
                 <td style="text-align: center; color: red;">{{ $devis->description_designation }}</td>
                 <td>{{ $devis->qte_designation }}</td>

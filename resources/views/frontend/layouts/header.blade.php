@@ -13,7 +13,7 @@
               <a class="nav-link active fs-4 fw-bold text-white link-primary" href="/">Accueil</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link fs-4 fw-bold text-white link-primary" href="#howtomatch">Comment ça marche ?</a>
+              <a class="nav-link fs-4 fw-bold text-white link-primary" href="/#howtomatch">Comment ça marche ?</a>
             </li>
 
             @if(auth()->check())

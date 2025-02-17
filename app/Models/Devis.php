@@ -6,28 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Devis extends Model
 {
-    protected $fillable =[
-        'user_id',
-        'banque_id',
-        'client_id',
-        'date_emission',
-        'date_echeance',
-        'num_proforma',
-        'num_bc',
-        'num_rap',
-        'num_bl',
-        'ref_designation',
-        'description_designation',
-        'qte_designation',
-        'prixUnitaire_designation',
-        'total_designation',
-        'remise_speciale',
-        'totall_ht',
-        'tva',
-        'total_ttc',
-        'accompte',
-        'solde',
-        'user_id',
+  
+    protected $fillable = [
+        'client_id', 'date_emission', 'date_echeance', 
+        'commande', 'livraison', 'validite', 'delai', 
+        'banque_id', 'total_ht', 'tva', 'total_ttc', 
+        'acompte', 'solde'
     ];
 
     public function user()
@@ -35,19 +19,19 @@ class Devis extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function banque()
-    {
-        return $this->belongsTo(Banque::class);
-    }
-
     public function client()
     {
         return $this->belongsTo(Client::class);
     }
 
-    public function designations()
-{
-    return $this->belongsToMany(Designation::class, 'devis_designation');
-}
+    public function banque()
+    {
+        return $this->belongsTo(Banque::class);
+    }
+
+    public function details()
+    {
+        return $this->hasMany(DevisDetail::class);
+    }
 
 }

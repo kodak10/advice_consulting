@@ -161,9 +161,12 @@
                     <td>{{ $user->roles->first()->name ?? 'Aucun rôle' }}</td>
                     <td>{{ $user->status ?? 'Non renseigné' }}</td>
                     <td>
-                        <div class="action-btn text-center">
+                        <div class="action-btn text-center d-flex justify-content-between">
+                            <a href="{{ route('dashboard.activate', $user->id) }}" class="text-primary" title="Activer">
+                                <i class="ti ti-lock-open fs-5"></i>
+                            </a>
                             <a href="{{ route('dashboard.disable', $user->id) }}" class="text-primary" title="Desactiver">
-                                <i class="ti ti-pencil fs-5"></i>
+                                <i class="ti ti-lock fs-5"></i>
                             </a>
                             
                             

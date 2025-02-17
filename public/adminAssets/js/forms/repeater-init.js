@@ -10,7 +10,7 @@ $(function () {
       $(this).slideDown();
     },
     hide: function (remove) {
-      if (confirm("Are you sure you want to remove this item?")) {
+      if (confirm("Êtes-vous sûr de vouloir supprimer cet élément ?")) {
         $(this).slideUp(remove);
       }
     },

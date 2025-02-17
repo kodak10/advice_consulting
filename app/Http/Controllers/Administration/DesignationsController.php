@@ -40,7 +40,7 @@ class DesignationsController extends Controller
 
             return response()->json([
                 'success' => true,
-                'message' => 'designation ajouté avec succès!'
+                'message' => 'Designation ajouté avec succès!'
             ]);
 
         } catch (ValidationException $e) {
