@@ -34,7 +34,7 @@
                                             <option value="none">Sélectionner un client</option>
                                             @foreach ($clients as $client)
                                                 <option value="{{ $client->id }}" 
-                                                    @if(session('data.client_id') == $client->id) selected @endif>
+                                                    {{ old('client_id', session('data.client_id')) == $client->id ? 'selected' : '' }}>
                                                     {{ $client->nom }}
                                                 </option>
                                             @endforeach
@@ -65,13 +65,13 @@
                                 <div class="col-lg-6">
                                     <div class="">
                                         <label class="form-label">Date d'Émission</label>
-                                        <input type="date" name="date_emission" class="form-control mydatepicker">
+                                        <input type="date" name="date_emission" value="{{ old('date_emission', session('data.date_emission')) }}" class="form-control mydatepicker">
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="">
                                         <label class="form-label">Date d'Échéance</label>
-                                        <input type="date" name="date_echeance" class="form-control mydatepicker">
+                                        <input type="date" name="date_echeance" value="{{ old('date_echeance', session('data.date_echeance')) }}" class="form-control mydatepicker">
                                     </div>
                                 </div>
                             </div>
@@ -138,55 +138,76 @@
                     <div class="card">
                         <div class="card-body">
                             <h4 class="card-title">Conditions financières</h4>
-        
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="">
                                         <label class="form-label">Commande</label>
-                                        <input type="text" name="commande" class="form-control mydatepicker">
+                                        <input type="text" name="commande" class="form-control mydatepicker 
+                                            @error('commande') is-invalid @enderror" 
+                                            value="{{ old('commande', session('data.commande')) }}">
+                                        @error('commande')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="">
                                         <label class="form-label">Livraison</label>
-                                        <input type="text" name="livraison" class="form-control mydatepicker" >
+                                        <input type="text" name="livraison" class="form-control mydatepicker 
+                                            @error('livraison') is-invalid @enderror" 
+                                            value="{{ old('livraison', session('data.livraison')) }}">
+                                        @error('livraison')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="">
                                         <label class="form-label">Validité de l'offre</label>
-                                        <input type="text" name="validite" class="form-control mydatepicker">
+                                        <input type="text" name="validite" class="form-control mydatepicker 
+                                            @error('validite') is-invalid @enderror" 
+                                            value="{{ old('validite', session('data.validite')) }}">
+                                        @error('validite')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="">
-                                        <label class="form-label">Delai de livraison</label>
-                                        <input type="text" name="delai" class="form-control mydatepicker">
+                                        <label class="form-label">Délai de livraison</label>
+                                        <input type="text" name="delai" class="form-control mydatepicker 
+                                            @error('delai') is-invalid @enderror" 
+                                            value="{{ old('delai', session('data.delai')) }}">
+                                        @error('delai')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+            
                 <div class="col-lg-3">
                     <div class="card">
                         <div class="card-body">
                             <h4 class="card-title">Banque</h4>
-        
-                            <select class="select2 form-control" name="banque_id">
+                            <select class="select2 form-control @error('banque_id') is-invalid @enderror" name="banque_id">
                                 <option value="none">Sélectionner une banque</option>
                                 @foreach ($banques as $banque)
                                     <option value="{{ $banque->id }}" 
-                                        @if(session('data.banque_id') == $banque->id) selected @endif>
+                                        @if(old('banque_id', session('data.banque_id')) == $banque->id) selected @endif>
                                         {{ $banque->name }}
                                     </option>
                                 @endforeach
                             </select>
+                            @error('banque_id')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
                 </div>
-                
-
+            
                 <div class="col-lg-5">
                     <div class="card">
                         <div class="card-body">
@@ -196,32 +217,45 @@
                             <div class="row">
                                 <div class="col-4">
                                     <label class="form-label">Total HT <span class="text-danger">*</span></label>
-                                    <input type="text" name="total_ht" class="form-control" value="0" readonly>
+                                    <input type="text" name="total_ht" class="form-control" 
+                                        value="{{ old('total_ht', session('data.total_ht', 0)) }}" readonly>
                                 </div>
                                 <div class="col-4">
                                     <label class="form-label">TVA 18% <span class="text-danger">*</span></label>
-                                    <input type="text" name="tva" class="form-control" value="0.18">
+                                    <input type="text" name="tva" class="form-control 
+                                        @error('tva') is-invalid @enderror" 
+                                        value="{{ old('tva', session('data.tva', 0.18)) }}">
+                                    @error('tva')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                                 <div class="col-4">
                                     <div class="mb-4">
                                         <label class="form-label">Total TTC <span class="text-danger">*</span></label>
-                                        <input type="text" name="total_ttc" class="form-control" value="0" readonly>
+                                        <input type="text" name="total_ttc" class="form-control" 
+                                            value="{{ old('total_ttc', session('data.total_ttc', 0)) }}" readonly>
                                     </div>
                                 </div>
                                 <div class="col-4">
-                                    <label class="form-label">Accompte <span class="text-danger">*</span></label>
-                                    <input type="text" name="acompte" class="form-control" value="0">
+                                    <label class="form-label">Acompte <span class="text-danger">*</span></label>
+                                    <input type="text" name="acompte" class="form-control 
+                                        @error('acompte') is-invalid @enderror" 
+                                        value="{{ old('acompte', session('data.acompte', 0)) }}">
+                                    @error('acompte')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
                                 <div class="col-4">
                                     <label class="form-label">Solde <span class="text-danger">*</span></label>
-                                    <input type="text" name="solde" class="form-control" value="0" readonly>
+                                    <input type="text" name="solde" class="form-control" 
+                                        value="{{ old('solde', session('data.solde', 0)) }}" readonly>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                
             </div>
+            
             
             <div class="form-actions mb-5">
                 <button type="submit" class="btn btn-success">Recapitulaif</button>

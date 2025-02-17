@@ -30,6 +30,31 @@ class DevisController extends Controller
 
     }
 
+    public function generateNumProforma()
+{
+    // Récupérer l'année et le mois actuels
+    $yearMonth = date('Ym'); // Format : 202502
+    
+    // Trouver le dernier numéro de proforma qui commence par "ADC" + année + mois
+    $lastProforma = Devis::where('num_proforma', 'LIKE', 'ADC '.$yearMonth.'%')
+                         ->orderBy('num_proforma', 'desc')
+                         ->first();
+
+    // Initialiser l'incrément (si c'est le premier numéro, on commence à 1)
+    $increment = 1;
+    if ($lastProforma) {
+        // Extraire l'incrément du dernier numéro et l'incrémenter
+        $lastIncrement = substr($lastProforma->num_proforma, -3); // Récupérer les trois derniers chiffres
+        $increment = (int)$lastIncrement + 1;
+    }
+
+    // Générer le numéro de proforma avec le format
+    $numProforma = 'ADC ' . $yearMonth . str_pad($increment, 3, '0', STR_PAD_LEFT); // Ajouter des zéros devant si nécessaire
+
+    return $numProforma;
+}
+
+
     public function recap(Request $request)
     {
         
@@ -96,8 +121,13 @@ class DevisController extends Controller
             'designations.*.quantity' => 'required|numeric|min:1',
             'designations.*.price' => 'required|numeric|min:0', 
             'designations.*.discount' => 'nullable|numeric|min:0', 
-            'designations.*.total' => 'required|numeric|min:0',        
+            'designations.*.total' => 'required|numeric|min:0',       
+            // 'num_proforma' => 'required|string|max:255',
+ 
         ]);
+
+        // Générer le numéro de proforma
+        $numProforma = $this->generateNumProforma();
 
         // Récupérer les objets associés
         $client = Client::find($validated['client_id']);
@@ -120,8 +150,10 @@ class DevisController extends Controller
         $devis->solde = $validated['solde'];
         $devis->delai = 1;
         $devis->user_id = Auth::user()->id;
+        $devis->num_proforma = $numProforma;
+        $devis->status = "En Attente";
 
-
+    
         // Sauvegarder le devis
         $devis->save();
 
@@ -161,9 +193,9 @@ class DevisController extends Controller
         ]);
 
         // Retourner le fichier PDF pour le téléchargement
-        // return response()->download($pdfFilePath)->deleteFileAfterSend(true);
+        return response()->download($pdfFilePath)->deleteFileAfterSend(true);
 
-        return redirect()->route('dashboard.devis.create')->with('success', 'Facture enregistrée avec succès.');
+        //return redirect()->route('dashboard.devis.create')->with('success', 'Devis enregistrée avec succès.');
 
     }
 

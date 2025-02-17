@@ -107,7 +107,7 @@
 
                     <!-- Bouton d'enregistrement -->
                     <div class="form-actions">
-                        <form action="{{ route('dashboard.devis.store') }}" method="POST">
+                        <form  method="POST" action="{{ route('dashboard.devis.store') }}" >
                             @csrf
                             <input type="hidden" name="client_id" value="{{ $client->id }}">
                             <input type="hidden" name="date_emission" value="{{ $validated['date_emission'] }}">
@@ -124,6 +124,8 @@
 
                             @foreach($validated['designations'] as $index => $designation)
                                 <input type="hidden" name="designations[{{ $index }}][id]" value="{{ $designation['id'] }}">
+                                <input type="hidden" name="designations[{{ $index }}][designation]" value="{{ $designation['designation'] }}">
+
                                 <input type="hidden" name="designations[{{ $index }}][quantity]" value="{{ $designation['quantity'] }}">
                                 <input type="hidden" name="designations[{{ $index }}][price]" value="{{ $designation['price'] }}">
                                 <input type="hidden" name="designations[{{ $index }}][discount]" value="{{ $designation['discount'] }}">

@@ -11,20 +11,15 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
 
-use Illuminate\Support\Facades\Mail;
-
-
 Route::get('/', function () {
     return view('frontend.pages.index');
 });
-
 
 
 Route::middleware(['auth', 'verified','check.user.status'])->prefix('dashboard')->name('dashboard.')->group(function () {
 
     Route::get('/', [AdminController::class, 'index']);
     Route::resource('clients', ClientController::class);
-
     Route::resource('designations', DesignationsController::class);
     Route::resource('users', UsersController::class);
     Route::post('/users', [UsersController::class, 'storeUser'])->name('storeUser');
@@ -38,9 +33,12 @@ Route::middleware(['auth', 'verified','check.user.status'])->prefix('dashboard')
 
 
     Route::resource('devis', DevisController::class);
-    Route::post('/devis/recap', [DevisController::class, 'recap'])->name('devis.recap');
+    Route::post('/devis/create', [DevisController::class, 'recap'])->name('devis.recap');
+    // Route::post('/devis/recap', [DevisController::class, 'recap'])->name('devis.recap');
 
-    Route::get('/client/{id}', [ClientController::class, 'getClientInfo']);
+   
+   
+    //Route::get('/client/{id}', [ClientController::class, 'getClientInfo']);
 
 
 
@@ -51,12 +49,10 @@ Route::middleware(['auth', 'verified','check.user.status'])->prefix('dashboard')
 
     
 });
-// Auth::routes();
 
-//Route::get('/dashboard', [AdminController::class, 'index'])->name('home');
 Auth::routes(['verify' => true]);
 
 
-Route::fallback(function () {
-    return view('administration.pages.maintenance');
-})->withoutMiddleware(['auth']);
+// Route::fallback(function () {
+//     return view('administration.pages.maintenance');
+// })->withoutMiddleware(['auth']);

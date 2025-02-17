@@ -63,8 +63,8 @@
                 <!-- start row -->
                 <tr>
                     <th>N° Proforma</th>
-                    <th>Date émission</th>
-                    <th>Date échance</th>
+                    <th>Client</th>
+                    <th>Coût</th>
                     <th>Statut</th>
                     <th>Action</th>
                 </tr>
@@ -76,8 +76,8 @@
                     <td>
                         <h6 class="mb-0">{{ $devi->num_proforma }}</h6>
                     </td>
-                    <td>{{ $devi->date_emission }}</td>
-                    <td>{{ $devi->date_echeance }}</td>
+                    <td>{{ $devi->client->nom }}</td>
+                    <td>{{ $devi->details->sum('total') }}</td>
                     <td>{{ $devi->status ?? 'Non renseigné' }}</td>
                     <td>
                         <div class="action-btn text-center">
@@ -102,8 +102,8 @@
                 <!-- start row -->
                 <tr>
                     <th>N° Proforma</th>
-                    <th>Date émission</th>
-                    <th>Date échance</th>
+                    <th>Client</th>
+                    <th>Coût</th>
                     <th>Statut</th>
                     <th>Action</th>
                 </tr>
