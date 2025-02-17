@@ -52,161 +52,209 @@
         @else
 
        
-            <!-- Étape Informations Client -->
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title">Informations du Client</h4>
-
-                    <div class="mb-3">
-                        <label class="form-label">Clients</label>
-                        <select class="select2 form-control" name="client_id">
-                            <option value="none">Sélectionner un client</option>
-                            @foreach ($clients as $client)
-                                <option value="{{ $client->id }}" 
-                                    @if(session('data.client_id') == $client->id) selected @endif>
-                                    {{ $client->nom }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-
-                   
-                </div>
-            </div>
-
-            
-            <!-- Étape Dates -->
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title">Dates</h4>
-
-                    <div class="mb-4">
-                        <label class="form-label">Date d'Émission</label>
-                        <input type="date" name="date_emission" class="form-control mydatepicker" value="{{ session('data.date_emission', '') }}">
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="form-label">Date d'Échéance</label>
-                        <input type="date" name="date_echeance" class="form-control mydatepicker" value="{{ session('data.date_echeance', '') }}">
-                    </div>
-
-                    <div class="mb-4">
-                        <label class="form-label">N° BC</label>
-                        <input type="text" name="numero_bc" class="form-control" value="{{ session('data.numero_bc', '') }}">
-                    </div>
-                </div>
-            </div>
-
-            <!-- Étape Désignations -->
-            <div class="card">
-                <div class="card-body">
-                  <h4 class="card-title mb-7">Désignations</h4>
-      
-                    <div class="email-repeater mb-3">
-                      <div data-repeater-list="repeater-group">
-                        <div data-repeater-item="" class="row mb-3">
-
-                          <div class="col-md-6 mt-3 mt-md-0 d-none">
-                            <select class="select2 form-control">
-                              <option selected="">Ref</option>
-                              <option>Material</option>
-                              <option>Style</option>
-                            </select>                          
-                          </div>
-
-                          <div class="col-md-5 mt-3 mt-md-0">
-                            <select class="select2 form-control">
-                              <option selected="">Selectionner</option>
-
-                              @foreach ($designations as $designation)
-                              <option value="{{ $designation->description }}">{{ $designation->description }}</option>
- 
-                              @endforeach
-                              
-                            </select>                         
-                          </div>
-                          <div class="col-md-2 mt-3 mt-md-0">
-                            <input type="number" class="form-control" placeholder="Qte">
-                          </div>
-                          <div class="col-md-2 mt-3 mt-md-0">
-                            <input type="number" class="form-control" placeholder="PU">
-                          </div>
-                          <div class="col-md-2 mt-3 mt-md-0">
-                            <input type="number" class="form-control" placeholder="Total">
-                          </div>
-                          
-                          <div class="col-md-1 mt-3 mt-md-0">
-                            <button data-repeater-delete="" class="btn bg-danger-subtle text-danger" type="button">
-                              <i class="ti ti-x fs-5 d-flex"></i>
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                      <button type="button" data-repeater-create="" class="btn bg-primary-subtle text-primary ">
-                        <span class="fs-4 me-1">+</span>
-                        Add another variation
-                      </button>
-                    </div>
-                </div>
-              </div>
-
-           
-            <!-- Étape Conditions -->
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title">Désignations</h4>
-            
-                    <!-- Boucle pour afficher plusieurs désignations -->
-                    <div id="designations-container">
-                        @foreach(session('data.designations', []) as $index => $designation)
-                            <div class="mb-4" class="designation-item">
-                                <label class="form-label">Désignation {{ $index + 1 }}</label>
-            
+            <div class="row">
+                <!-- Étape Informations Client -->
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Informations du Client</h4>
+        
+                            <div class="mb-3">
+                                <label class="form-label">Clients</label>
                                 <div class="row">
-                                    <div class="col-md-4">
-                                        <input type="text" name="designations[{{ $index }}][description]" class="form-control" value="{{ $designation['description'] }}" required>
+                                    <div class="col-lg-9">
+                                        <select class="select2 form-control" name="client_id">
+                                            <option value="none">Sélectionner un client</option>
+                                            @foreach ($clients as $client)
+                                                <option value="{{ $client->id }}" 
+                                                    @if(session('data.client_id') == $client->id) selected @endif>
+                                                    {{ $client->nom }}
+                                                </option>
+                                            @endforeach
+                                        </select>
                                     </div>
-                                    <div class="col-md-2">
-                                        <input type="number" name="designations[{{ $index }}][quantite]" class="form-control" value="{{ $designation['quantite'] }}" min="1" required>
+                                    <div class="col-lg-3">
+                                        <button type="button" class="btn bg-primary-subtle text-primary ">
+                                            <span class="fs-4 me-1">+</span>
+                                            Ajouter
+                                        </button>
                                     </div>
-                                    <div class="col-md-2">
-                                        <input type="number" step="0.01" name="designations[{{ $index }}][pu]" class="form-control" value="{{ $designation['pu'] }}" min="0" required>
+                                </div>
+                                
+                            </div>
+        
+                        
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="col-lg-4">
+                    <!-- Étape Dates -->
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="mb-4">
+                                        <label class="form-label">Date d'Émission</label>
+                                        <input type="date" name="date_emission" class="form-control mydatepicker" value="{{ session('data.date_emission', '') }}">
                                     </div>
-                                    <div class="col-md-2">
-                                        <input type="number" step="0.01" name="designations[{{ $index }}][total]" class="form-control" value="{{ $designation['total'] }}" readonly>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="mb-4">
+                                        <label class="form-label">Date d'Échéance</label>
+                                        <input type="date" name="date_echeance" class="form-control mydatepicker" value="{{ session('data.date_echeance', '') }}">
                                     </div>
-                                    <div class="col-md-2">
-                                        <button type="button" class="btn btn-danger remove-designation">Supprimer</button>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="mb-4">
+                                        <label class="form-label">N° BC</label>
+                                        <input type="text" name="numero_bc" class="form-control" value="{{ session('data.numero_bc', '') }}">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="mb-4">
+                                        <label class="form-label">N° Rap activ</label>
+                                        <input type="text" name="num_rap" class="form-control" value="{{ session('data.num_rap', '') }}">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="mb-4">
+                                        <label class="form-label">N° BL</label>
+                                        <input type="text" name="num_bl" class="form-control" value="{{ session('data.num_bl', '') }}">
                                     </div>
                                 </div>
                             </div>
-                        @endforeach
-                    </div>
-            
-                    <div class="mb-4">
-                        <button type="button" class="btn btn-primary" id="add-designation">Ajouter une désignation</button>
+                            
+
+                            
+
+                            
+                        </div>
                     </div>
                 </div>
             </div>
-            
 
-            
-            <!-- Étape Banque -->
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title">Banque</h4>
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                    <h4 class="card-title mb-7">Désignations</h4>
+        
+                        <div class="email-repeater mb-3">
+                        <div data-repeater-list="repeater-group">
+                            <div data-repeater-item="" class="row mb-3">
 
-                    <div class="mb-4">
-                        <label class="form-label">Nom du produit</label>
-                        <input type="text" name="product_name" class="form-control" value="{{ session('data.product_name', '') }}">
+                            <div class="col-md-6 mt-3 mt-md-0 d-none">
+                                <select class="select2 form-control">
+                                <option selected="">Ref</option>
+                                <option>Material</option>
+                                <option>Style</option>
+                                </select>                          
+                            </div>
+
+                            <div class="col-md-5 mt-3 mt-md-0">
+                                <select class="select2 form-control">
+                                <option selected="">Selectionner</option>
+
+                                @foreach ($designations as $designation)
+                                <option value="{{ $designation->description }}">{{ $designation->description }}</option>
+    
+                                @endforeach
+                                
+                                </select>                         
+                            </div>
+                            <div class="col-md-2 mt-3 mt-md-0">
+                                <input type="number" class="form-control" placeholder="Qte">
+                            </div>
+                            <div class="col-md-2 mt-3 mt-md-0">
+                                <input type="number" class="form-control" placeholder="PU">
+                            </div>
+                            <div class="col-md-2 mt-3 mt-md-0">
+                                <input type="number" class="form-control" placeholder="Total">
+                            </div>
+                            
+                            <div class="col-md-1 mt-3 mt-md-0">
+                                <button data-repeater-delete="" class="btn bg-danger-subtle text-danger" type="button">
+                                <i class="ti ti-x fs-5 d-flex"></i>
+                                </button>
+                            </div>
+                            </div>
+                        </div>
+                        <button type="button" data-repeater-create="" class="btn bg-primary-subtle text-primary ">
+                            <span class="fs-4 me-1">+</span>
+                                Ajouter une autre
+                        </button>
+                        </div>
                     </div>
-
-                    <p class="fs-2">Un nom de produit est requis et doit être unique.</p>
                 </div>
             </div>
 
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Banque</h4>
+        
+                            <select class="select2 form-control" name="banque_id">
+                                <option value="none">Sélectionner une banque</option>
+                                @foreach ($banques as $banque)
+                                    <option value="{{ $banque->id }}" 
+                                        @if(session('data.banque_id') == $banque->id) selected @endif>
+                                        {{ $banque->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-7">
+                                <h4 class="card-title">Les conditions</h4>
+                
+                                <button class="navbar-toggler border-0 shadow-none d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">
+                                <i class="ti ti-menu fs-5 d-flex"></i>
+                                </button>
+                            </div>
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="mb-4">
+                                        <label class="form-label">Remise spéciale <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" value="0">
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <label class="form-label">Total HT <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" value="0">
+                                </div>
+                                <div class="col-4">
+                                    <label class="form-label">TVA 18% <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" value="0.18">
+                                </div>
+                                <div class="col-4">
+                                    <div class="mb-4">
+                                        <label class="form-label">Total TTC <span class="text-danger">*</span></label>
+                                        <input type="text" class="form-control" value="0">
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <label class="form-label">Accompte <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" value="0">
+                                </div>
+                                <div class="col-4">
+                                    <label class="form-label">Solde <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" value="0">
+                                </div>
+                            </div>
+                        </div>
+                  </div>
+                </div>
+            </div>
+            
             <div class="form-actions mb-5">
-                <button type="submit" class="btn btn-success">Finaliser</button>
+                <button type="submit" class="btn btn-success">Recapitulaif</button>
             </div>
         @endif
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Administration;
 
 use App\Http\Controllers\Controller;
+use App\Models\Banque;
 use App\Models\Client;
 use App\Models\Designation;
 use App\Models\Devis;
@@ -13,7 +14,7 @@ class DevisController extends Controller
 {
     public function index()
     {
-        $devis = Devis::all();
+        $devis = Devis::where('user_id', auth()->id())->get();
         return view('administration.pages.devis.index', compact('devis'));
 
     }
@@ -21,8 +22,9 @@ class DevisController extends Controller
     public function create()
     {
         $clients = Client::all();
+        $banques = Banque::all();
         $designations = Designation::all();
-        return view('administration.pages.devis.create', compact('clients','designations'));
+        return view('administration.pages.devis.create', compact('clients','designations','banques'));
 
     }
 
@@ -34,10 +36,10 @@ class DevisController extends Controller
             'date_emission' => 'required|date',
             'date_echeance' => 'required|date|after_or_equal:date_emission',
             'numero_bc' => 'required|string|max:50',
-            'designations' => 'required|array',
-            'designations.*.description' => 'required|string',
-            'designations.*.quantite' => 'required|integer|min:1',
-            'designations.*.pu' => 'required|numeric|min:0',
+            // 'designations' => 'required|array',
+            // 'designations.*.description' => 'required|string',
+            // 'designations.*.quantite' => 'required|integer|min:1',
+            // 'designations.*.pu' => 'required|numeric|min:0',
             'remise' => 'nullable|numeric|min:0',
             'accompte' => 'nullable|numeric|min:0',
         ]);
