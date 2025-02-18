@@ -60,7 +60,7 @@
                     <!-- Étape Dates -->
                     <div class="card">
                         <div class="card-body">
-                            <h4 class="card-title">Date</h4>
+                            <h4 class="card-title">Dates</h4>
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="">

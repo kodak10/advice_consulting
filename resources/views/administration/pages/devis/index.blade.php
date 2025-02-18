@@ -80,20 +80,35 @@
                     <td>{{ $devi->details->sum('total') }}</td>
                     <td>{{ $devi->status ?? 'Non renseigné' }}</td>
                     <td>
-                        <div class="action-btn text-center">
-                            <a href="" class="text-primary" title="Modifier">
-                                <i class="ti ti-pencil fs-5"></i>
-                            </a>
-                            
-                            
-                        </div>
-                    </td>
+                      <div class="action-btn text-center">
+                        <a href="" class="text-primary me-2" title="Telecharger">
+                          <i class="ti ti-download fs-5"></i>
+                      </a>
+
+                      <a href="{{ route('dashboard.devis.validate', $devi->id) }}" class="text-primary me-2" title="Valider">
+                        <i class="ti ti-navigation-check"></i>
+                    </a>
+
+                          <a href="{{ route('dashboard.devis.edit', $devi->id) }}" class="text-primary me-2" title="Modifier">
+                              <i class="ti ti-pencil fs-5"></i>
+                          </a>
+                  
+                          <form id="delete-form-{{ $devi->id }}" action="{{ route('dashboard.devis.destroy', $devi->id) }}" method="POST" class="d-inline-block">
+                            @csrf
+                            @method('DELETE')
+                            <button type="button" class="btn btn-link text-danger p-0 border-0" title="Supprimer" onclick="confirmDelete({{ $devi->id }})">
+                                <i class="ti ti-trash fs-5"></i>
+                            </button>
+                        </form>
+                      </div>
+                  </td>
+                  
                 </tr>
 
 
                 
                 @empty
-                    Aucun client enregistré.
+                    Aucun Devis enregistré.
                 @endforelse
                 
             </tbody>
@@ -121,25 +136,23 @@
 @push('scripts')
 
 <script>
-    function confirmDelete(clientId) {
-        Swal.fire({
-            title: "Êtes-vous sûr ?",
-            text: "Cette action est irréversible !",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#d33",
-            cancelButtonColor: "#3085d6",
-            confirmButtonText: "Oui, supprimer !",
-            cancelButtonText: "Annuler"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                document.getElementById('delete-form-' + clientId).submit();
-            }
-        });
-    }
+  function confirmDelete(devisId) {
+      Swal.fire({
+          title: "Êtes-vous sûr ?",
+          text: "Cette action est irréversible !",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#d33",
+          cancelButtonColor: "#3085d6",
+          confirmButtonText: "Oui, supprimer !",
+          cancelButtonText: "Annuler"
+      }).then((result) => {
+          if (result.isConfirmed) {
+              document.getElementById('delete-form-' + devisId).submit();
+          }
+      });
+  }
 </script>
-
-
 
 @endpush
 

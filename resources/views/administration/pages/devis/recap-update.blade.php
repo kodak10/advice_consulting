@@ -2,6 +2,21 @@
 
 @section('content')
 <div class="container">
+    @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
@@ -107,9 +122,10 @@
 
                     <!-- Bouton d'enregistrement -->
                     <div class="form-actions">
-                        <form  method="POST" action="{{ route('dashboard.devis.store') }}" >
+                        <form method="POST" action="{{ route('dashboard.devis.storeRecap', $devis->id) }}">                            
                             @csrf
-                            
+                            @method('PUT') <!-- Utilisation de PUT pour mettre à jour -->
+
                             <input type="hidden" name="client_id" value="{{ $client->id }}">
                             <input type="hidden" name="date_emission" value="{{ $validated['date_emission'] }}">
                             <input type="hidden" name="date_echeance" value="{{ $validated['date_echeance'] }}">
@@ -133,13 +149,13 @@
                                 <input type="hidden" name="designations[{{ $index }}][total]" value="{{ $designation['total'] }}">
                             @endforeach
 
-                            <button type="submit" class="btn btn-success">Enregistrer et Télécharger PDF</button>
+                            <button type="submit" class="btn btn-success">Mettre à jour et Télécharger PDF</button>
                         </form>
                     </div>
 
                     <!-- Bouton de Retour -->
                     <div class="form-actions">
-                        <a href="{{ route('dashboard.devis.create') }}" class="btn btn-primary">Retour</a>
+                        <a href="{{ route('dashboard.devis.index') }}" class="btn btn-primary">Retour</a>
                     </div>
                 </div>
             </div>

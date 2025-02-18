@@ -134,8 +134,7 @@
                     <strong>Banque:</strong> VERSUS BANK<br>
                     <strong>Compte:</strong> C112 01001 012206440008 24
                     
-                    <p><strong>Arrêté la présente somme de :</strong> {{ ucwords((new NumberFormatter('fr', NumberFormatter::SPELLOUT))->format($devis->total_ttc)) }} francs CFA</p>
-
+                    <p><strong>Arrêté la présente somme de :</strong> {{ ucwords((new NumberFormatter('fr', NumberFormatter::SPELLOUT))->format($devis->details->sum('total'))) }} francs CFA</p>
                 </td>
                 
                 <!-- Totaux (40%) -->

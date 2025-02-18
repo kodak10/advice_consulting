@@ -34,17 +34,22 @@ Route::middleware(['auth', 'verified','check.user.status'])->prefix('dashboard')
 
     Route::resource('devis', DevisController::class);
     Route::post('/devis/create', [DevisController::class, 'recap'])->name('devis.recap');
-    // Route::post('/devis/recap', [DevisController::class, 'recap'])->name('devis.recap');
-
-   
-   
-    //Route::get('/client/{id}', [ClientController::class, 'getClientInfo']);
-
-
+    Route::post('/devis/{id}/edit/recap', [DevisController::class, 'recapUpdate'])->name('devis.recapUpdate');
+    Route::put('/devis/{id}/store-recap', [DevisController::class, 'storeRecap'])->name('devis.storeRecap');
+    Route::get('/devis/{id}/validate', [DevisController::class, 'approuve'])->name('devis.validate');
 
 
     
-    Route::resource('factures', FacturesController::class);
+    //Route::resource('factures', FacturesController::class);
+    Route::get('/factures', [FacturesController::class, 'index'])->name('factures.index');
+
+    Route::get('/factures/{id}/refuse', [FacturesController::class, 'refuse'])->name('factures.refuse');
+    // Route::get('/factures/{id}/create', [FacturesController::class, 'create'])->name('factures.create');
+    Route::get('/factures/create/{id}', [FacturesController::class, 'create'])->name('factures.create');
+    Route::post('/factures/store', [FacturesController::class, 'store'])->name('factures.store');
+    
+
+
     Route::resource('messagerie', MessagerieController::class);
 
     

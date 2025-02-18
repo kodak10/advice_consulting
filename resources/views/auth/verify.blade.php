@@ -26,3 +26,21 @@
     </div>
 </div>
 @endsection
+
+@push('styles')
+<style>
+    .header-fp{
+        background-color: #ffffff;
+        margin-bottom: 30px;
+    }
+    .header-fp .nav-link {
+        color: #000 !important;
+    }
+    .header-fp .navbar .navbar-nav .nav-link.active{
+        color: #000 !important;
+    }
+    .navbar-toggler{
+            color: #000 !important;
+        }
+</style>
+@endpush

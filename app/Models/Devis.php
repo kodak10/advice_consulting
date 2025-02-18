@@ -34,4 +34,15 @@ class Devis extends Model
         return $this->hasMany(DevisDetail::class);
     }
 
+    public function designations()
+    {
+        return $this->belongsToMany(Designation::class, 'devis_designation');
+    }
+
+    public function factures()
+    {
+        return $this->hasMany(Facture::class);
+    }
+
+
 }

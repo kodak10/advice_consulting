@@ -79,7 +79,6 @@ public function store(Request $request)
 
     } catch (ValidationException $e) {
         // Récupérer le tableau des erreurs :
-        // ex : [ 'nom' => ['Le champ nom est obligatoire.'], 'telephone' => ['Le champ téléphone est obligatoire.'], ... ]
         $errors = $e->errors();
     
         // Transformer le tableau pour obtenir une chaîne avec tous les messages

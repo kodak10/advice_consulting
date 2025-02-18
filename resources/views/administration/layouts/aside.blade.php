@@ -58,7 +58,7 @@
           </li>
           
           <li class="sidebar-item">
-            <a class="sidebar-link {{ Request::is('factures') ? 'active' : '' }}" href="{{ route('dashboard.factures.index') }}"  aria-expanded="false">
+            <a class="sidebar-link {{ Request::is('dashboard/factures') ? 'active' : '' }}" href="{{ route('dashboard.factures.index') }}"  aria-expanded="false">
               <span>
                 <i class="ti ti-list"></i>
               </span>
@@ -67,7 +67,7 @@
           </li>
 
           <li class="sidebar-item">
-            <a class="sidebar-link {{ Request::is('factures') ? 'active' : '' }}" href="{{ route('dashboard.factures.create') }}"  aria-expanded="false">
+            <a class="sidebar-link " href=""  aria-expanded="false">
               <span>
                 <i class="ti ti-file-invoice"></i> 
               </span>
