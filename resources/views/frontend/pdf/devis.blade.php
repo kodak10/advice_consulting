@@ -8,7 +8,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 200px 0px 0px 0px; /* Marge importante en haut, petite sur les côtés */
+            margin: 20px 0px 0px 0px; /* Marge importante en haut, petite sur les côtés */
             padding: 0;
         }
         .invoice-container {
@@ -89,47 +89,58 @@
         
         <table style="width: 100%; margin-top: 10px; border-collapse: collapse;">
             <tr>
+                
                 <td style="width: 40%; border-top: 1px solid #000; padding-top: 5px;">
-                    <strong>Date emission:</strong> {{ $devis->date_emmision }} <br>
+                    <p>FACTURE PROFORMA</p>
+                    <strong>Date emission:</strong> {{ $devis->date_emission }} <br>
                     <strong>Numero: </strong> {{ $devis->num_proforma }} <br>
                 </td>
                 <td style="width: 60%; border-top: 1px solid #000; padding-top: 5px;">
                     <strong>Client</strong><br>
                     <strong>Nom:</strong> {{ $devis->client->nom }}<br>
-                    <strong>N°CC:</strong> <br>
+                    <strong>N°CC:</strong> {{ $devis->client->numero_cc }}<br>
                     <strong>Adresse:</strong> {{ $devis->client->adresse }}<br>
                     <strong>Téléphone:</strong> {{ $devis->client->telephone }}<br>
-                    <strong>Ville:</strong> {{ $devis->client->ville }}
-                    <strong>N°CC:</strong> 
+                    <strong>Ville:</strong> {{ $devis->client->ville }}<br>
                     <strong>ATTN:</strong> 
 
                 </td>
             </tr>
         </table>
         
-        <h3>Détails</h3>
         <table style="width: 100%; border-collapse: collapse; border: 1px solid #000;">
             <tr>
                 <th>Référence</th>
                 <th>Description</th>
                 <th>Quantité</th>
                 <th>Prix unitaire</th>
+                <th>Rémise</th>
                 <th>Total</th>
             </tr>
-            <tr>
-                
-                <td>{{ $devis->ref_designation }}</td>
-                <td style="text-align: center; color: red;">{{ $devis->description_designation }}</td>
-                <td>{{ $devis->qte_designation }}</td>
-                <td>{{ $devis->prixUnitaire_designation }}</td>
-                <td>{{ $devis->total_designation }}</td>
-            </tr>
+            @foreach ($devis->details as $devisDetail)
+                <tr>
+                    <td>{{ $devisDetail->designation->reference }}</td>
+                    <td>{{ $devisDetail->designation->description }}</td>
+                    <td>{{ $devisDetail->quantite }}</td>
+                    <td>{{ $devisDetail->prix_unitaire }}</td>
+                    <td>{{ $devisDetail->remise }}</td>
+                    <td>{{ $devisDetail->total }}</td>
+                </tr>
+            @endforeach
+
         </table>
         
         <table style="width: 100%; margin-top: 10px; border-collapse: collapse; border: 1px solid #000;">
             <tr>
                 <!-- Informations de paiement (60%) -->
                 <td style="width: 60%; vertical-align: top; padding: 10px; border-right: 1px solid #000;">
+                    <p>Conditions financières</p>
+                    <strong>Commande:</strong> {{ $devis->commande }} <br>
+                    <strong>Validité:</strong> {{ $devis->validite }} <br>
+                    <strong>Délai de livraison:</strong> {{ $devis->delai }} <br>
+                    <span>veuillez libeller votre chèque au nom de <strong>ADVICE CONSULTING</strong> ou faire en notre faveur sur le compte ci-dessous</span>
+    
+    
                     <strong>Informations de paiement</strong><br>
                     <strong>Banque:</strong> VERSUS BANK<br>
                     <strong>Compte:</strong> C112 01001 012206440008 24
@@ -140,7 +151,7 @@
                 <!-- Totaux (40%) -->
                 <td style="width: 40%; vertical-align: top; padding: 10px;">
                     <strong>Totaux</strong><br>
-                    <strong>Total HT:</strong> {{ $devis->totall_ht }}<br>
+                    <strong>Total HT:</strong> {{ $devis->total_ht }}<br>
                     <strong>TVA 18%:</strong> {{ $devis->tva }}<br>
                     <strong>Total TTC:</strong> {{ $devis->total_ttc }}<br>
                     <strong>Acompte:</strong> {{ $devis->accompte }}<br>
@@ -153,6 +164,10 @@
         
         <div class="signature" style="margin-top: 20px;">
             <p><strong>Cachet et signature:</strong></p>
+        </div>
+
+        <div class="signature" style="margin-top: 20px;">
+            <p><strong>Service commercial</strong> <br> {{ $devis->user->name }}</p>
         </div>
     </div>
     
