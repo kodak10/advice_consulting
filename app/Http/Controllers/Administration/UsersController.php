@@ -26,16 +26,17 @@ class UsersController extends Controller
     public function storeUser(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
+            'name' => 'required|string|max:50|regex:/^[^\d]*$/',
             'email' => 'required|email|unique:users',
-            'phone' => 'nullable|string|max:20',
-            'adresse' => 'nullable|string|max:255',
+            'phone' => 'nullable|regex:/^[0-9]+$/|max:10',
+            'adresse' => 'nullable|string|max:150',
             'role' => 'required|in:Administrateur,Commercial,Comptable',
         ]);
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
+        dd($validator);
 
         $user = User::create([
             'name' => $request->name,
@@ -96,7 +97,7 @@ class UsersController extends Controller
 
     public function profile()
     {
-        $user = auth()->user(); // Récupère l'utilisateur connecté
+        $user = auth()->user(); // Récupère l'utilisateur connecté  
 
         if (!$user) {
             return redirect()->route('login')->with('error', 'Vous devez être connecté pour accéder à cette page.');

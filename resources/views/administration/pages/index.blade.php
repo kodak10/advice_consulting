@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container-fluid">
-    {{-- <div class="row">
+    <div class="row">
       <div class="col-lg-8 d-flex align-items-stretch">
         <div class="card w-100 bg-primary-subtle overflow-hidden shadow-none">
           <div class="card-body position-relative">
@@ -12,11 +12,23 @@
                   <div class="rounded-circle overflow-hidden me-6">
                     <img src="{{ asset(auth()->user()->image) }}" alt="modernize-img" width="40" height="40">
                   </div>
-                  <h5 class="fw-semibold mb-0 fs-5">
-                      {{ now()->hour < 18 ? 'Bonjour' : 'Bonsoir' }} {{ auth()->user()->name }}
-                  </h5>
-                                </div>
-                <div class="d-flex align-items-center">
+                  <div class="text">
+                    <span>
+                      {{ now()->hour < 18 ? 'Bonjour' : 'Bonsoir' }}
+                    
+                      <h5 class="fw-semibold mb-0 fs-5">
+                        {{ auth()->user()->name }}
+                       
+                      </h5>
+                    </span>
+                    
+                    <span>{{ Auth::user()->roles->first()->name }}</span>
+
+                  </div>
+                  
+                </div>
+
+                {{-- <div class="d-flex align-items-center">
                   <div class="border-end pe-4 border-muted border-opacity-10">
                     <h3 class="mb-1 fw-semibold fs-8 d-flex align-content-center">$2,340<i class="ti ti-arrow-up-right fs-5 lh-base text-success"></i>
                     </h3>
@@ -27,18 +39,18 @@
                     </h3>
                     <p class="mb-0 text-dark">Overall Performance</p>
                   </div>
-                </div>
+                </div> --}}
               </div>
-              <div class="col-sm-5">
+              {{-- <div class="col-sm-5">
                 <div class="welcome-bg-img mb-n7 text-end">
-                  <img src="../assets/images/backgrounds/welcome-bg.svg" alt="modernize-img" class="img-fluid">
+                  <img src="{{ asset('adminAssets/images/backgrounds/welcome-bg.svg') }}" alt="modernize-img" class="img-fluid">
                 </div>
-              </div>
+              </div> --}}
             </div>
           </div>
         </div>
       </div>
-      <div class="col-sm-6 col-lg-2 d-flex align-items-stretch">
+      {{-- <div class="col-sm-6 col-lg-2 d-flex align-items-stretch">
         <div class="card w-100">
           <div class="card-body p-4">
             <h4 class="fw-semibold">$10,230</h4>
@@ -499,7 +511,7 @@
             </div>
           </div>
         </div>
-      </div>
-    </div> --}}
+      </div> --}}
+    </div>
   </div>
 @endsection

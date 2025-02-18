@@ -42,6 +42,17 @@
                     </div>
                 @endif
 
+                <!-- Affichage des erreurs de validation -->
+            @if($errors->any())
+            <div class="alert alert-danger text-danger" role="alert">
+                <ul>
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
                 
             </div>
           <div class="col-md-4 col-xl-9 text-end d-flex justify-content-md-end justify-content-center mt-3 mt-md-0">
@@ -82,52 +93,63 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="mb-3 contact-name">
-                                        <input type="text" name="name" class="form-control" placeholder="Nom ou raison sociale" required>
-                                        <span class="validation-text text-danger"></span>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="ti ti-user"></i></span>
+                                            <input type="text" name="name" class="form-control" placeholder="Nom ou raison sociale" value="{{ old('name') }}" required>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-
+                
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="mb-3 contact-occupation">
-                                    <input type="email" name="email" class="form-control" placeholder="Email" required>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="ti ti-mail"></i></span>
+                                            <input type="email" name="email" class="form-control" placeholder="Email" value="{{ old('email') }}">
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="mb-3 contact-phone">
-                                    <input type="text" name="phone" class="form-control" placeholder="Téléphone">
-                                    <span class="validation-text text-danger"></span>
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="ti ti-phone"></i></span>
+                                            <input type="text" name="phone" class="form-control" placeholder="Téléphone" value="{{ old('phone') }}">
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-
+                
                             <div class="row">
-                                <div class="col-md-8">
+                                <div class="col-md-7">
                                     <div class="mb-3 contact-occupation">
-                                        <input type="text" name="adresse" class="form-control" placeholder="Adresse">
+                                        <div class="input-group">
+                                            <span class="input-group-text"><i class="ti ti-address-book"></i></span>
+                                            <input type="text" name="adresse" class="form-control" placeholder="Adresse" value="{{ old('adresse') }}">
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-5">
                                     <div class="mb-3 contact-occupation">
                                         <select class="form-control" name="role" required>
-                                            <option value="Administrateur">Administrateur</option>
-                                            <option value="Commercial">Commercial</option>
-                                            <option value="Comptable">Comptable</option>
+                                            <option value="Administrateur" {{ old('role') == 'Administrateur' ? 'selected' : '' }}>Administrateur</option>
+                                            <option value="Commercial" {{ old('role') == 'Commercial' ? 'selected' : '' }}>Commercial</option>
+                                            <option value="Comptable" {{ old('role') == 'Comptable' ? 'selected' : '' }}>Comptable</option>
                                         </select>
                                     </div>
                                 </div>
                             </div>
-
+                
                             <div class="modal-footer">
                                 <div class="d-flex gap-6 m-0">
                                     <button type="submit" class="btn btn-success">Ajouter</button>
                                     <button class="btn bg-danger-subtle text-danger" data-bs-dismiss="modal"> Annuler</button>
                                 </div>
-                                </div>
+                            </div>
                         </form>
                     </div>
                 </div>
+                
             </div>
             
         </div>
@@ -148,7 +170,6 @@
                   <th>Statut</th>
                   <th>Action</th>
                 </tr>
-                <!-- end row -->
               </thead>
               <tbody>
                 @forelse ($users as $user)
@@ -169,7 +190,6 @@
                                 <i class="ti ti-lock fs-5"></i>
                             </a>
                             
-                            
                         </div>
                     </td>
                 </tr>
@@ -183,7 +203,6 @@
             </tbody>
             
               <tfoot>
-                <!-- start row -->
                 <tr>
                     <th>Nom</th>
                     <th>Email</th>
@@ -192,7 +211,6 @@
                     <th>Status</th>
                     <th>Action</th>
                 </tr>
-                <!-- end row -->
               </tfoot>
             </table>
           </div>
@@ -202,98 +220,4 @@
 
 </div>
 @endsection
-
-@push('scripts')
-{{-- <script>
-  document.getElementById('btn-add').addEventListener('click', function(event) {
-    event.preventDefault();
-
-    // Récupérer les données du formulaire
-    let formData = {
-        nom: document.getElementById('c-name').value,
-        numero_cc: document.getElementById('c-occupation').value,
-        telephone: document.getElementById('c-phone').value,
-        adresse: document.getElementById('c-adresse').value,
-        ville: document.getElementById('c-ville').value,
-        attn: document.getElementById('c-attn').value,
-    };
-
-    // Envoi de la requête avec fetch
-    fetch("{{ route('dashboard.clients.store') }}", {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-        },
-        body: JSON.stringify(formData)
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            // Afficher le toast de succès
-            toastr.success(data.message, 'Succès', {
-                positionClass: 'toast-top-right',
-                timeOut: 5000,
-                closeButton: true,
-                progressBar: true,
-            });
-
-            // Fermer le modal et recharger la page après un délai
-            $('#addContactModal').modal('hide');
-            setTimeout(() => {
-                location.reload();  // Recharger la page pour afficher les nouveaux clients
-            }, 5000);
-        } else {
-            // Afficher le toast d'erreur lorsque data.success est false
-            toastr.error(data.message, 'Erreur', {
-                positionClass: 'toast-top-right',
-                timeOut: 20000,
-                closeButton: true,
-                progressBar: true,
-            });
-            // Vous pouvez également choisir de recharger la page ou non
-            setTimeout(() => {
-                location.reload();
-            }, 1000);
-        }
-    })
-    .catch(error => {
-        console.error('Erreur:', error);
-        // En cas d'erreur réseau ou autre, afficher un toast d'erreur générique
-        toastr.error("Une erreur est survenue lors de l'ajout du client.", 'Erreur', {
-            positionClass: 'toast-top-right',
-            timeOut: 20000,
-            closeButton: true,
-            progressBar: true,
-        });
-        setTimeout(() => {
-            location.reload();
-        }, 1000);
-    });
-}); --}}
-
-</script>
-
-<script>
-    function confirmDelete(clientId) {
-        Swal.fire({
-            title: "Êtes-vous sûr ?",
-            text: "Cette action est irréversible !",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#d33",
-            cancelButtonColor: "#3085d6",
-            confirmButtonText: "Oui, supprimer !",
-            cancelButtonText: "Annuler"
-        }).then((result) => {
-            if (result.isConfirmed) {
-                document.getElementById('delete-form-' + clientId).submit();
-            }
-        });
-    }
-</script>
-
-
-
-@endpush
 
