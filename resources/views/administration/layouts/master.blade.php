@@ -750,15 +750,16 @@
 
   <!-- Import Js Files -->
 
-
- 
+  <script src="https://cdn.jsdelivr.net/npm/jquery.repeater@1.2.1/jquery.repeater.min.js"></script>
+  
+  
   <script src="{{ asset('adminAssets/libs/dropzone/dist/min/dropzone.min.css') }}"></script>
-  <script src="{{ asset('adminAssets/libs/select2/dist/js/select2.full.min.js') }}"></script>
+  {{-- <script src="{{ asset('adminAssets/libs/select2/dist/js/select2.full.min.js') }}"></script>
   <script src="{{ asset('adminAssets/libs/select2/dist/js/select2.min.js') }}"></script>
-  <script src="{{ asset('adminAssets/js/forms/select2.init.js') }}"></script>
-  <script src="{{ asset('adminAssets/libs/jquery.repeater/jquery.repeater.min.js') }}"></script>
+  <script src="{{ asset('adminAssets/js/forms/select2.init.js') }}"></script> --}}
+  {{-- <script src="{{ asset('adminAssets/libs/jquery.repeater/jquery.repeater.min.js') }}"></script> --}}
   <script src="{{ asset('adminAssets/libs/jquery-validation/dist/jquery.validate.min.js') }}"></script>
-  <script src="{{ asset('adminAssets/js/forms/repeater-init.js') }}"></script>
+  {{-- <script src="{{ asset('adminAssets/js/forms/repeater-init.js') }}"></script> --}}
 
   <link rel="stylesheet" href="{{ asset('adminAssets/libs/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css') }}">
 

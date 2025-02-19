@@ -41,10 +41,10 @@
                                         </select>
                                     </div>
                                     <div class="col-lg-3">
-                                        <button type="button" class="btn bg-primary-subtle text-primary ">
-                                            <span class="fs-4 me-1">+</span>
+                                        <button type="button" class="btn bg-warning-subtle text-warning px-4 fs-4 " data-bs-toggle="modal" data-bs-target="#addContactModal">
+                                            <i class="ti ti-users text-white me-1 fs-5"></i> 
                                             Ajouter
-                                        </button>
+                                          </button>
                                     </div>
                                 </div>
                                 
@@ -265,6 +265,83 @@
 
     </form>
 
+    <div class="modal fade" id="addContactModal" tabindex="-1" role="dialog" aria-labelledby="addContactModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header d-flex align-items-center">
+                <h5 class="modal-title">Information du Client</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @if(session('error'))
+                    <div class="alert alert-danger text-danger" role="alert">
+                        {!! session('error') !!}
+                    </div>
+                @endif
+
+
+                <div class="add-contact-box">
+                    <div class="add-contact-content">
+                    <form id="addContactModalTitle">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="mb-3 contact-name">
+                                <input type="text" id="c-name" class="form-control" placeholder="Nom ou raison sociale">
+                                <span class="validation-text text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3 contact-occupation">
+                                <input type="text" id="c-occupation" class="form-control" placeholder="N°CC">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3 contact-phone">
+                                <input type="text" id="c-phone" class="form-control" placeholder="Téléphone">
+                                <span class="validation-text text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                        <div class="col-md-12">
+                            <div class="mb-3 contact-occupation">
+                            <input type="text" id="c-adresse" class="form-control" placeholder="Adresse">
+                            </div>
+                        </div>
+                        </div>
+
+                        <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3 contact-phone">
+                            <input type="text" id="c-ville" class="form-control" placeholder="Ville">
+                            <span class="validation-text text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3 contact-phone">
+                            <input type="text" id="c-attn" class="form-control" placeholder="ATTM">
+                            <span class="validation-text text-danger"></span>
+                            </div>
+                        </div>
+                        </div>
+                    </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+            <div class="d-flex gap-6 m-0">
+                <button id="btn-add" class="btn btn-success">Ajouter</button>
+                <button class="btn bg-danger-subtle text-danger" data-bs-dismiss="modal"> Annuler</button>
+            </div>
+            </div>
+        </div>
+        </div>
+    </div>
+
 </section>
 @endsection
 
@@ -367,35 +444,141 @@
     });
 
 
-        // Gérer l'ajout dynamique d'une nouvelle ligne
-        // Gérer l'ajout dynamique d'une nouvelle ligne
-        $(document).on('click', '[data-repeater-create]', function() {
-            var lastRow = $('.email-repeater [data-repeater-item]:last');
-            var newRow = lastRow.clone();
-
-            // Réinitialiser les valeurs des champs
-            newRow.find('input').val('');
-            newRow.find('.quantity').val(1);
-            newRow.find('.discount').val(0);
-            newRow.find('.total').val(0);
-            newRow.find('.price').val('');
-
-            // Réappliquer Select2 si utilisé
-            newRow.find('.designation').val('').trigger('change');
-            newRow.find('.designation').select2(); // Initialiser Select2 sur le nouvel élément
-
-            // Ajouter la nouvelle ligne au DOM
-            $('.email-repeater [data-repeater-list]').append(newRow);
-        });
-
-        // Initialiser Select2 pour les éléments existants
-        $('.designation').select2();
     });
 </script>
 
 <script>
-    
+    document.getElementById('btn-add').addEventListener('click', function(event) {
+      event.preventDefault();
+  
+      // Récupérer les données du formulaire
+      let formData = {
+          nom: document.getElementById('c-name').value,
+          numero_cc: document.getElementById('c-occupation').value,
+          telephone: document.getElementById('c-phone').value,
+          adresse: document.getElementById('c-adresse').value,
+          ville: document.getElementById('c-ville').value,
+          attn: document.getElementById('c-attn').value,
+      };
+  
+      // Envoi de la requête avec fetch
+      fetch("{{ route('dashboard.clients.store') }}", {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': '{{ csrf_token() }}',
+          },
+          body: JSON.stringify(formData)
+      })
+      .then(response => response.json())
+      .then(data => {
+          if (data.success) {
+              // Afficher le toast de succès
+              toastr.success(data.message, 'Succès', {
+                  positionClass: 'toast-top-right',
+                  timeOut: 5000,
+                  closeButton: true,
+                  progressBar: true,
+              });
+  
+              // Fermer le modal et recharger la page après un délai
+              $('#addContactModal').modal('hide');
+              setTimeout(() => {
+                  location.reload();  // Recharger la page pour afficher les nouveaux clients
+              }, 5000);
+          } else {
+              // Afficher le toast d'erreur lorsque data.success est false
+              toastr.error(data.message, 'Erreur', {
+                  positionClass: 'toast-top-right',
+                  timeOut: 20000,
+                  closeButton: true,
+                  progressBar: true,
+              });
+              // Vous pouvez également choisir de recharger la page ou non
+              setTimeout(() => {
+                  location.reload();
+              }, 1000);
+          }
+      })
+      .catch(error => {
+          console.error('Erreur:', error);
+          // En cas d'erreur réseau ou autre, afficher un toast d'erreur générique
+          toastr.error("Une erreur est survenue lors de l'ajout du client.", 'Erreur', {
+              positionClass: 'toast-top-right',
+              timeOut: 20000,
+              closeButton: true,
+              progressBar: true,
+          });
+          setTimeout(() => {
+              location.reload();
+          }, 1000);
+      });
+  });
+  
+  </script>
 
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.repeater/1.2.1/jquery.repeater.min.js"></script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.repeater/1.2.1/jquery.repeater.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+{{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" /> --}}
+
+<script>
+$(document).ready(function () {
+    // Initialisation du répéteur
+    $('.email-repeater').repeater({
+        initEmpty: false,
+        defaultValues: {},
+        show: function () {
+            $(this).slideDown();
+            initializeSelect2($(this)); // Réinitialiser Select2 pour les nouveaux éléments
+            $(this).find('.discount').val(0);
+            $(this).find('.quantity').val(0);
+
+        },
+        hide: function (deleteElement) {
+            $(this).slideUp(deleteElement);
+        }
+    });
+
+    // Fonction pour initialiser Select2
+    function initializeSelect2(container) {
+        container.find('.designation').select2({
+            width: '100%', // Corrige le problème d'affichage dans les répétitions
+            placeholder: "Sélectionner",
+            allowClear: true
+        });
+    }
+
+    // Appliquer Select2 aux éléments existants
+    initializeSelect2($(document));
+
+    // Gestion du changement de sélection pour récupérer les données associées
+    $(document).on('change', '.designation', function () {
+        let selectedOption = $(this).find(':selected');
+        let id = selectedOption.data('id');
+        let price = selectedOption.data('price') || 0;
+        
+        let row = $(this).closest('[data-repeater-item]');
+        row.find('.designation-id').val(id);
+        row.find('.price').val(price).trigger('input');
+    });
+
+    // Calcul automatique du total
+    $(document).on('input', '.quantity, .price, .discount', function () {
+        let row = $(this).closest('[data-repeater-item]');
+        let quantity = parseFloat(row.find('.quantity').val()) || 0;
+        let price = parseFloat(row.find('.price').val()) || 0;
+        let discount = parseFloat(row.find('.discount').val()) || 0;
+
+        let total = (quantity * price) - discount;
+        row.find('.total').val(total.toFixed(2));
+    });
+});
 </script>
 
 

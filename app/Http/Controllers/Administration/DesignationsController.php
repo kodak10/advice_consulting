@@ -36,7 +36,7 @@ class DesignationsController extends Controller
             $designation->save();
 
             // Message de succès
-            session()->flash('success', 'designation ajouté avec succès !');
+            session()->flash('success', 'Désignation ajouté avec succès !');
 
             return response()->json([
                 'success' => true,

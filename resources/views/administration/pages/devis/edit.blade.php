@@ -67,82 +67,141 @@
                 <div class="card">
                     <div class="card-body">
                         <h4 class="card-title">Désignations</h4>
-                        {{-- <div class="email-repeater">
+                       
+                        {{-- <div class="email-repeater mb-3">
                             <div data-repeater-list="designations">
-                                @foreach ($devis->designations as $designation)
-                                <div data-repeater-item class="row mb-3">
-                                    <div class="col-md-3">
-                                        <select class="select2 form-control designation" name="designations[][designation]">
-                                            <option value="">Sélectionner</option>
-                                            @foreach ($designations as $item)
-                                                <option value="{{ $item->id }}" 
-                                                    data-price="{{ $item->prix_unitaire }}" 
-                                                    {{ $designation->id == $item->id ? 'selected' : '' }}>
-                                                    {{ $item->description }}
-                                                </option>
-                                            @endforeach
-                                        </select>
+                                @if ($devis->designations->isNotEmpty())
+                                    @foreach ($devis->designations as $designation)
+                                        <div data-repeater-item class="row mb-3">
+                                            <div class="col-md-3 mt-3 mt-md-0">
+                                                <select class="select2 form-control designation" name="designations[][description]">
+                                                    <option value="">Sélectionner</option>
+                                                    @foreach ($designations as $option)
+                                                        <option value="{{ $option->description }}"
+                                                            data-id="{{ $option->id }}"
+                                                            data-price="{{ $option->prix_unitaire }}"
+                                                            {{ $option->description == $designation->description ? 'selected' : '' }}>
+                                                            {{ $option->description }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                <input type="hidden" name="designations[][id]" class="designation-id" value="{{ $designation->id }}">
+                                            </div>
+                                            <div class="col-md-2 mt-3 mt-md-0">
+                                                <input type="number" class="form-control quantity" name="designations[][quantity]" 
+                                                       placeholder="Qte" value="{{ $designation->pivot->quantity }}" min="1">
+                                            </div>
+                                            <div class="col-md-2 mt-3 mt-md-0">
+                                                <input type="number" class="form-control price" name="designations[][price]" 
+                                                       placeholder="PU" value="{{ $designation->pivot->price }}">
+                                            </div>
+                                            <div class="col-md-2 mt-3 mt-md-0">
+                                                <input type="number" class="form-control discount" name="designations[][discount]" 
+                                                       placeholder="Remise" value="{{ $designation->pivot->discount ?? 0 }}" min="0">
+                                            </div>
+                                            <div class="col-md-2 mt-3 mt-md-0">
+                                                <input type="number" class="form-control total" name="designations[][total]" 
+                                                       placeholder="Total" value="{{ ($designation->pivot->quantity * $designation->pivot->price) - ($designation->pivot->discount ?? 0) }}" readonly>
+                                            </div>
+                                            <div class="col-md-1 mt-3 mt-md-0">
+                                                <button data-repeater-delete class="btn bg-danger-subtle text-danger" type="button">
+                                                    <i class="ti ti-x fs-5 d-flex"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <!-- Si aucun élément, on affiche une ligne vide par défaut -->
+                                    <div data-repeater-item class="row mb-3">
+                                        <div class="col-md-3 mt-3 mt-md-0">
+                                            <select class="select2 form-control designation" name="designations[][description]">
+                                                <option value="">Sélectionner</option>
+                                                @foreach ($designations as $option)
+                                                    <option value="{{ $option->description }}"
+                                                        data-id="{{ $option->id }}"
+                                                        data-price="{{ $option->prix_unitaire }}">
+                                                        {{ $option->description }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            <input type="hidden" name="designations[][id]" class="designation-id">
+                                        </div>
+                                        <div class="col-md-2 mt-3 mt-md-0">
+                                            <input type="number" class="form-control quantity" name="designations[][quantity]" placeholder="Qte" value="1" min="1">
+                                        </div>
+                                        <div class="col-md-2 mt-3 mt-md-0">
+                                            <input type="number" class="form-control price" name="designations[][price]" placeholder="PU">
+                                        </div>
+                                        <div class="col-md-2 mt-3 mt-md-0">
+                                            <input type="number" class="form-control discount" name="designations[][discount]" placeholder="Remise" value="0" min="0">
+                                        </div>
+                                        <div class="col-md-2 mt-3 mt-md-0">
+                                            <input type="number" class="form-control total" name="designations[][total]" placeholder="Total" readonly>
+                                        </div>
+                                        <div class="col-md-1 mt-3 mt-md-0">
+                                            <button data-repeater-delete class="btn bg-danger-subtle text-danger" type="button">
+                                                <i class="ti ti-x fs-5 d-flex"></i>
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div class="col-md-2">
-                                        <input type="number" class="form-control quantity" name="designations[][quantity]" value="{{ $designation->pivot->quantity }}">
-                                    </div>
-                                    <div class="col-md-2">
-                                        <input type="number" class="form-control price" name="designations[][price]" value="{{ $designation->pivot->price }}">
-                                    </div>
-                                    <div class="col-md-2">
-                                        <input type="number" class="form-control total" name="designations[][total]" value="{{ $designation->pivot->total }}" readonly>
-                                    </div>
-                                    <div class="col-md-1">
-                                        <button data-repeater-delete class="btn btn-danger" type="button">X</button>
-                                    </div>
-                                </div>
-                            @endforeach
-                            
-                            </div>
-                            <button type="button" data-repeater-create class="btn btn-primary">Ajouter une autre</button>
-                        </div> --}}
-                        <div class="email-repeater mb-3">
-                            <div data-repeater-list="designations">
-                                <div data-repeater-item class="row mb-3">
-                                    <div class="col-md-3 mt-3 mt-md-0">
-                                        <select class="select2 form-control designation" name="designations[][description]">
-                                            <option value="">Sélectionner</option>
-                                            @foreach ($designations as $designation)
-                                                <option value="{{ $designation->description }}" data-id="{{ $designation->id }}" data-price="{{ $designation->prix_unitaire }}">
-                                                    {{ $designation->description }}
-                                                </option>
-                                                <input type="hidden" class="form-control" name="designations[][id]" value="{{ $designation->id }}">
-
-                                            @endforeach
-                                        </select>
-                                        <input type="hidden" name="designations[][id]" class="designation-id">
-
-
-                                    </div>
-                                    <div class="col-md-2 mt-3 mt-md-0">
-                                        <input type="number" class="form-control quantity" name="designations[][quantity]" placeholder="Qte" value="0" min="1">
-                                    </div>
-                                    <div class="col-md-2 mt-3 mt-md-0">
-                                        <input type="number" class="form-control price" name="designations[][price]" placeholder="PU">
-                                    </div>
-                                    <div class="col-md-2 mt-3 mt-md-0">
-                                        <input type="number" class="form-control discount" name="designations[][discount]" placeholder="Remise" value="0" min="0">
-                                    </div>
-                                    <div class="col-md-2 mt-3 mt-md-0">
-                                        <input type="number" class="form-control total" name="designations[][total]" placeholder="Total" readonly>
-                                    </div>
-                                    <div class="col-md-1 mt-3 mt-md-0">
-                                        <button data-repeater-delete class="btn bg-danger-subtle text-danger" type="button">
-                                            <i class="ti ti-x fs-5 d-flex"></i>
-                                        </button>
-                                    </div>
-                                </div>
+                                @endif
                             </div>
                             <button type="button" data-repeater-create class="btn bg-primary-subtle text-primary">
-                                <span class="fs-4 me-1">+</span>
-                                Ajouter une autre
+                                <span class="fs-4 me-1">+</span> Ajouter une autre
+                            </button>
+                        </div> --}}
+
+                        <div class="email-repeater mb-3">
+                            <div data-repeater-list="designations">
+                                @foreach($devis->details as $detail)
+                                    <div data-repeater-item class="row mb-3">
+                                        <div class="col-md-3 mt-3 mt-md-0">
+                                            <select class="select2 form-control designation" name="designations[][description]">
+                                                <option value="">Sélectionner</option>
+                                                @foreach ($designations as $designation)
+                                                    <option value="{{ $designation->description }}" 
+                                                            data-id="{{ $designation->id }}" 
+                                                            data-price="{{ $designation->prix_unitaire }}"
+                                                            {{ $designation->id == $detail->designation_id ? 'selected' : '' }}>
+                                                        {{ $designation->description }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            <input type="hidden" name="designations[][id]" class="designation-id" value="{{ $detail->designation_id }}">
+                                        </div>
+                        
+                                        <div class="col-md-2 mt-3 mt-md-0">
+                                            <input type="number" class="form-control quantity" name="designations[][quantity]" placeholder="Qte" value="{{ $detail->quantite }}" min="1">
+                                        </div>
+                        
+                                        <div class="col-md-2 mt-3 mt-md-0">
+                                            <input type="number" class="form-control price" name="designations[][price]" placeholder="PU" value="{{ $detail->prix_unitaire }}">
+                                        </div>
+                        
+                                        <div class="col-md-2 mt-3 mt-md-0">
+                                            <input type="number" class="form-control discount" name="designations[][discount]" placeholder="Remise" value="{{ $detail->remise }}" min="0">
+                                        </div>
+                        
+                                        <div class="col-md-2 mt-3 mt-md-0">
+                                            <input type="number" class="form-control total" name="designations[][total]" placeholder="Total" value="{{ $detail->total }}" readonly>
+                                        </div>
+                        
+                                        <div class="col-md-1 mt-3 mt-md-0">
+                                            <button data-repeater-delete class="btn bg-danger-subtle text-danger" type="button">
+                                                <i class="ti ti-x fs-5 d-flex"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        
+                            <button type="button" data-repeater-create class="btn bg-primary-subtle text-primary">
+                                <span class="fs-4 me-1">+</span> Ajouter une autre
                             </button>
                         </div>
+                        
+                        
+                        
                     </div>
                 </div>
             </div>
@@ -374,29 +433,81 @@
     });
 
 
-        // Gérer l'ajout dynamique d'une nouvelle ligne
-        // Gérer l'ajout dynamique d'une nouvelle ligne
-        $(document).on('click', '[data-repeater-create]', function() {
-            var lastRow = $('.email-repeater [data-repeater-item]:last');
-            var newRow = lastRow.clone();
-
-            // Réinitialiser les valeurs des champs
-            newRow.find('input').val('');
-            newRow.find('.quantity').val(1);
-            newRow.find('.discount').val(0);
-            newRow.find('.total').val(0);
-            newRow.find('.price').val('');
-
-            // Réappliquer Select2 si utilisé
-            newRow.find('.designation').val('').trigger('change');
-            newRow.find('.designation').select2(); // Initialiser Select2 sur le nouvel élément
-
-            // Ajouter la nouvelle ligne au DOM
-            $('.email-repeater [data-repeater-list]').append(newRow);
-        });
-
-        // Initialiser Select2 pour les éléments existants
-        $('.designation').select2();
+      
     });
 </script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.repeater/1.2.1/jquery.repeater.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+{{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" /> --}}
+<script>
+    $(document).ready(function () {
+        // Initialiser le répéteur
+        $('.email-repeater').repeater({
+            initEmpty: false,
+            defaultValues: {},
+            show: function () {
+                $(this).slideDown();
+                initializeSelect2($(this)); 
+                $(this).find('.discount').val(0); 
+                updateRowData($(this));
+            },
+            hide: function (deleteElement) {
+                $(this).slideUp(deleteElement);
+            }
+        });
+    
+        // Fonction pour initialiser Select2
+        function initializeSelect2(container) {
+            container.find('.designation').select2({
+                width: '100%',
+                placeholder: "Sélectionner",
+                allowClear: true
+            });
+        }
+    
+        // Mettre à jour les champs cachés lors du chargement des données
+        function updateRowData(row) {
+            let select = row.find('.designation');
+            let selectedOption = select.find('option:selected');
+    
+            if (selectedOption.val() !== "") {
+                row.find('.designation-id').val(selectedOption.data('id'));
+                row.find('.price').val(selectedOption.data('price') || 0);
+                row.find('.total').val(computeTotal(row));
+            }
+        }
+    
+        // Calcul du total automatiquement
+        function computeTotal(row) {
+            let quantity = parseFloat(row.find('.quantity').val()) || 0;
+            let price = parseFloat(row.find('.price').val()) || 0;
+            let discount = parseFloat(row.find('.discount').val()) || 0;
+            return ((quantity * price) - discount).toFixed(2);
+        }
+    
+        // Appliquer Select2 aux éléments existants
+        initializeSelect2($(document));
+    
+        // Mettre à jour les valeurs existantes à l'affichage
+        $('[data-repeater-item]').each(function () {
+            updateRowData($(this));
+        });
+    
+        // Gérer le changement de sélection
+        $(document).on('change', '.designation', function () {
+            let row = $(this).closest('[data-repeater-item]');
+            updateRowData(row);
+        });
+    
+        // Mettre à jour le total lors de la modification des champs
+        $(document).on('input', '.quantity, .price, .discount', function () {
+            let row = $(this).closest('[data-repeater-item]');
+            row.find('.total').val(computeTotal(row));
+        });
+    });
+    </script>
+    
 @endpush
