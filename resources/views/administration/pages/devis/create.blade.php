@@ -92,19 +92,21 @@
                             <div data-repeater-list="designations">
                                 <div data-repeater-item class="row mb-3">
                                     <div class="col-md-3 mt-3 mt-md-0">
-                                        <select class="select2 form-control designation" name="designations[][designation]">
+                                        <select class="select2 form-control designation" name="designations[][description]">
                                             <option value="">Sélectionner</option>
                                             @foreach ($designations as $designation)
-                                                <option value="{{ $designation->id }}" data-price="{{ $designation->prix_unitaire }}">
+                                                <option value="{{ $designation->description }}" data-id="{{ $designation->id }}" data-price="{{ $designation->prix_unitaire }}">
                                                     {{ $designation->description }}
                                                 </option>
-                                                <input type="hidden" class="form-control" name="designations[][id]" value="{{ $designation->id }}">
 
                                             @endforeach
                                         </select>
+                                        <input type="hidden" name="designations[][id]" class="designation-id">
+
 
                                     </div>
                                     <div class="col-md-2 mt-3 mt-md-0">
+
                                         <input type="number" class="form-control quantity" name="designations[][quantity]" placeholder="Qte" value="0" min="1">
                                     </div>
                                     <div class="col-md-2 mt-3 mt-md-0">
@@ -164,7 +166,7 @@
                                 <div class="col-lg-6">
                                     <div class="">
                                         <label class="form-label">Validité de l'offre</label>
-                                        <input type="text" name="validite" class="form-control mydatepicker 
+                                        <input type="number" name="validite" class="form-control mydatepicker 
                                             @error('validite') is-invalid @enderror" 
                                             value="{{ old('validite', session('data.validite')) }}">
                                         @error('validite')
@@ -269,6 +271,14 @@
 @push('scripts')
 <script>
     $(document).ready(function() {
+
+        $('.designation').on('change', function() {
+            var selectedOption = $(this).find('option:selected');
+            var designationId = selectedOption.data('id'); // ID de la désignation
+            $(this).closest('.email-repeater').find('.designation-id').val(designationId);
+        });
+
+
         function updateTotal(row) {
             var price = parseFloat(row.find('.price').val()) || 0;
             var quantity = parseInt(row.find('.quantity').val()) || 1;
@@ -383,7 +393,10 @@
     });
 </script>
 
+<script>
+    
 
+</script>
 
 
 @endpush

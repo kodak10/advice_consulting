@@ -19,7 +19,7 @@
                                 <p><strong>Adresse :</strong> {{ $client->adresse }}</p>
                             </div>
                             <div class="col-md-4">
-                                <p><strong>Téléphone :</strong> {{ $client->phone }}</p>
+                                <p><strong>Téléphone :</strong> {{ $client->telephone }}</p>
                             </div>
                         </div>
                     </div>

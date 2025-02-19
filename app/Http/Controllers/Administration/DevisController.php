@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers\Administration;
 
+use App\Events\DevisCreated;
 use App\Http\Controllers\Controller;
 use App\Models\Banque;
 use App\Models\Client;
 use App\Models\Designation;
 use App\Models\Devis;
 use App\Models\DevisDetail;
+use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -91,8 +93,8 @@ class DevisController extends Controller
             // 'acompte' => 'required',
            
             'designations' => 'required|array', 
-            'designations.*.id' => 'required|exists:designations,id',
-            'designations.*.designation' => 'required|exists:designations,id', 
+            'designations.*.id' => 'required',
+            'designations.*.description' => 'required|',
             'designations.*.quantity' => 'required|numeric|min:1',
             'designations.*.price' => 'required|numeric|min:0', 
             'designations.*.discount' => 'nullable|numeric|min:0', 
@@ -244,7 +246,8 @@ class DevisController extends Controller
                 'acompte' => 'required|numeric|min:0',
                 'solde' => 'required|numeric|min:0',
                 'designations' => 'required|array',
-                'designations.*.designation' => 'required|exists:designations,id',
+                'designations.*.id' => 'required|exists:designations,id',
+                'designations.*.description' => 'required',
                 'designations.*.quantity' => 'required|numeric|min:1',
                 'designations.*.price' => 'required|numeric|min:0',
                 'designations.*.discount' => 'nullable|numeric|min:0',
@@ -282,13 +285,29 @@ class DevisController extends Controller
             foreach ($validated['designations'] as $designationData) {
                 $devisDetail = new DevisDetail();
                 $devisDetail->devis_id = $devis->id;
-                $devisDetail->designation_id = $designationData['designation'];
+                $devisDetail->designation_id = $designationData['id'];
                 $devisDetail->quantite = $designationData['quantity'];
                 $devisDetail->prix_unitaire = $designationData['price'];
                 $devisDetail->remise = $designationData['discount'];
                 $devisDetail->total = $designationData['total'];
                 $devisDetail->save();
             }
+
+            // Diffuser l'événement après avoir créé le devis
+            event(new DevisCreated($devis));
+
+            // return response()->json([
+            //     'message' => 'Devis créé avec succès et événement envoyé!',
+            //     'status' => 'success',
+            // ]);
+
+            // Envoyer la notification en base de données ou par d'autres moyens
+            // $users = User::role(['comptable', 'administrateur'])->get();
+            // foreach ($users as $user) {
+            //     $user->notify(new NotificationController($devis));
+            // }
+            
+
 
             // Générer le PDF
             $pdf = PDF::loadView('frontend.pdf.devis', compact('devis', 'client', 'banque'));

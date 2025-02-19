@@ -19,7 +19,7 @@
                                 <p><strong>Adresse :</strong> {{ $client->adresse }}</p>
                             </div>
                             <div class="col-md-4">
-                                <p><strong>Téléphone :</strong> {{ $client->phone }}</p>
+                                <p><strong>Téléphone :</strong> {{ $client->telephone }}</p>
                             </div>
                         </div>
                     </div>
@@ -53,7 +53,7 @@
                             <tbody>
                                 @foreach ($validated['designations'] as $designation)
                                     <tr>
-                                        <td>{{ $designation['designation'] }}</td>
+                                        <td>{{ $designation['description'] }}</td>
                                         <td>{{ $designation['quantity'] }}</td>
                                         <td>{{ $designation['price'] }}</td>
                                         <td>{{ $designation['discount'] }}</td>
@@ -125,7 +125,7 @@
 
                             @foreach($validated['designations'] as $index => $designation)
                                 <input type="hidden" name="designations[{{ $index }}][id]" value="{{ $designation['id'] }}">
-                                <input type="hidden" name="designations[{{ $index }}][designation]" value="{{ $designation['designation'] }}">
+                                <input type="hidden" name="designations[{{ $index }}][description]" value="{{ $designation['description'] }}">
 
                                 <input type="hidden" name="designations[{{ $index }}][quantity]" value="{{ $designation['quantity'] }}">
                                 <input type="hidden" name="designations[{{ $index }}][price]" value="{{ $designation['price'] }}">

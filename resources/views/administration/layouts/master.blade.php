@@ -27,6 +27,22 @@
   <link rel="stylesheet" href="{{ asset('adminAssets/libs/sweetalert2/dist/sweetalert2.min.css') }}">
 
   @stack('styles')
+
+  <script>
+    window.Echo.channel('devis.notifications')
+    .listen('.devis.created', (event) => {
+        // Exemple : Ajouter une notification à la liste de notifications
+        let notificationList = document.getElementById('notification-list');
+        let notificationItem = document.createElement('li');
+        notificationItem.classList.add('dropdown-item');
+        notificationItem.innerText = `Nouveau devis créé : ${event.devis_num}`;
+        notificationList.appendChild(notificationItem);
+
+        // Mettez à jour l'icône de notification
+        let notificationIcon = document.querySelector('.nav-icon .notification');
+        notificationIcon.classList.add('bg-primary');
+    });
+  </script>
 </head>
 
 <body>
