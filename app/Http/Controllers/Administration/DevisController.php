@@ -94,7 +94,7 @@ class DevisController extends Controller
            
             'designations' => 'required|array', 
             'designations.*.id' => 'required',
-            'designations.*.description' => 'required|',
+            'designations.*.description' => 'required',
             'designations.*.quantity' => 'required|numeric|min:1',
             'designations.*.price' => 'required|numeric|min:0', 
             'designations.*.discount' => 'nullable|numeric|min:0', 
@@ -393,8 +393,8 @@ class DevisController extends Controller
             // 'acompte' => 'required',
            
             'designations' => 'required|array', 
-            'designations.*.id' => 'required|exists:designations,id',
-            'designations.*.designation' => 'required|exists:designations,id', 
+            'designations.*.id' => 'required',
+            'designations.*.description' => 'required|',
             'designations.*.quantity' => 'required|numeric|min:1',
             'designations.*.price' => 'required|numeric|min:0', 
             'designations.*.discount' => 'nullable|numeric|min:0', 
