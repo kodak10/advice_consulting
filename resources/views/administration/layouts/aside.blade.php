@@ -178,7 +178,7 @@
                
               aria-expanded="false">
               <span>
-                <i class="ti ti-user-cog"></i>
+                <i class="ti ti-wallet"></i>
               </span>
               <span class="hide-menu">Banques</span>
             </a>

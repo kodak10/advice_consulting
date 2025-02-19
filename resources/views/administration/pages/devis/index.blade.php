@@ -81,9 +81,10 @@
                     <td>{{ $devi->status ?? 'Non renseigné' }}</td>
                     <td>
                       <div class="action-btn text-center">
-                        <a href="" class="text-primary me-2" title="Telecharger">
+                        <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger">
                           <i class="ti ti-download fs-5"></i>
-                      </a>
+                        </a>
+                      
 
                       <a href="{{ route('dashboard.devis.validate', $devi->id) }}" class="text-primary me-2" title="Valider">
                         <i class="ti ti-navigation-check"></i>

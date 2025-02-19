@@ -38,6 +38,7 @@ Route::middleware(['auth', 'verified','check.user.status'])->prefix('dashboard')
     Route::post('/devis/{id}/edit/recap', [DevisController::class, 'recapUpdate'])->name('devis.recapUpdate');
     Route::put('/devis/{id}/store-recap', [DevisController::class, 'storeRecap'])->name('devis.storeRecap');
     Route::get('/devis/{id}/validate', [DevisController::class, 'approuve'])->name('devis.validate');
+    Route::get('/devis/download/{id}', [DevisController::class, 'download'])->name('devis.download');
 
 
     

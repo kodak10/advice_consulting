@@ -89,9 +89,9 @@
                         <a href="{{ route('dashboard.factures.refuse', $devi->id) }}" class="text-primary me-2" title="Réfuser">
                             <i class="ti ti-square-rounded-x"></i>
                         </a>
-                        <a href="" class="text-primary me-2" title="Telecharger">
+                        <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger">
                           <i class="ti ti-download fs-5"></i>
-                      </a>
+                        </a>
                         <a href="{{ route('dashboard.factures.create', $devi->id) }}" class="text-primary me-2" title="Etablir la facture">
                           <i class="ti ti-clipboard-list"></i>
                       </a>

@@ -11,7 +11,7 @@ class Devis extends Model
         'client_id', 'date_emission', 'date_echeance', 
         'commande', 'livraison', 'validite', 'delai', 
         'banque_id', 'total_ht', 'tva', 'total_ttc', 
-        'acompte', 'solde', 'status', 'num_proforma',
+        'acompte', 'solde', 'status', 'num_proforma', 'pdf_path'
     ];
 
     public function user()
