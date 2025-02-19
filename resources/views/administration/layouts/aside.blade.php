@@ -144,7 +144,7 @@
           <!-- ---------------------------------- -->
           <li class="nav-small-cap">
             <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-            <span class="hide-menu">Mon Compte</span>
+            <span class="hide-menu">Paramétrage</span>
           </li>
          
           <li class="sidebar-item">
@@ -170,6 +170,18 @@
                 </span>
                 <span class="hide-menu">Accès Utilisateurs</span>
               </a>
+          </li>
+
+          <li class="sidebar-item">
+            <a class="sidebar-link {{ Request::is('dashboard/banques') ? 'active' : '' }}" 
+              href="{{ route('dashboard.banques.index') }}" 
+               
+              aria-expanded="false">
+              <span>
+                <i class="ti ti-user-cog"></i>
+              </span>
+              <span class="hide-menu">Banques</span>
+            </a>
           </li>
           
           

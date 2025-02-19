@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Administration\AdminController;
+use App\Http\Controllers\Administration\BanqueController;
 use App\Http\Controllers\Administration\ClientController;
 use App\Http\Controllers\Administration\DesignationsController;
 use App\Http\Controllers\Administration\DevisController;
@@ -48,7 +49,7 @@ Route::middleware(['auth', 'verified','check.user.status'])->prefix('dashboard')
     Route::get('/factures/create/{id}', [FacturesController::class, 'create'])->name('factures.create');
     Route::post('/factures/store', [FacturesController::class, 'store'])->name('factures.store');
     
-
+    Route::resource('banques', BanqueController::class);
 
     Route::resource('messagerie', MessagerieController::class);
 

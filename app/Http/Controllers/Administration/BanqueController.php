@@ -3,49 +3,59 @@
 namespace App\Http\Controllers\Administration;
 
 use App\Http\Controllers\Controller;
-use App\Models\Designation;
+use App\Models\Banque;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
-class DesignationsController extends Controller
+class BanqueController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
-        $designations = Designation::all();
-        return view('administration.pages.designations.index', compact('designations'));
+        $banques = Banque::all();
+        return view('administration.pages.banques.index', compact('banques'));
     }
 
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request)
     {
         try {
             // Valider les données du formulaire
             $validatedData = $request->validate([
-                'reference'       => 'required|string|max:10',
-                'description' => 'required|string|max:150',
-                'prix_unitaire' => 'required|string|max:10',
+                'name'       => 'required|string|max:100',
+                'num_compte' => 'required|string|unique:banques,num_compte|min:14|max:20',
             ]);
 
-            // Création designation du client
-            $designation = new Designation([
-                'reference'       => $validatedData['reference'],
-                'description' => $validatedData['description'],
-                'prix_unitaire' => $validatedData['prix_unitaire'],
-                
+            // Création et enregistrement de banque
+            $banques = new Banque([
+                'name'       => $validatedData['name'],
+                'num_compte' => $validatedData['num_compte'],
             ]);
 
-            $designation->save();
+            $banques->save();
 
             // Message de succès
-            session()->flash('success', 'designation ajouté avec succès !');
+            session()->flash('success', 'Banque ajouté avec succès !');
 
             return response()->json([
                 'success' => true,
-                'message' => 'Designation ajouté avec succès!'
+                'message' => 'Banque ajouté avec succès!'
             ]);
 
         } catch (ValidationException $e) {
             // Récupérer le tableau des erreurs :
-            // ex : [ 'nom' => ['Le champ nom est obligatoire.'], 'telephone' => ['Le champ téléphone est obligatoire.'], ... ]
             $errors = $e->errors();
         
             // Transformer le tableau pour obtenir une chaîne avec tous les messages
@@ -82,29 +92,48 @@ class DesignationsController extends Controller
         
     }
 
-    public function update(Request $request, Designation $designation)
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, Banque $banque)
 {
     // Validation
     $validatedData = $request->validate([
-        'reference' => 'required|string|max:255',
-        'description' => 'required|string|unique:designations,description,' . $designation->id,
-        'prix_unitaire' => 'nullable|string',
+        'name' => 'required|string|max:100',
+        'num_compte' => 'required|string|unique:banques,num_compte,' . $banque->id,
+        
     ]);
 
-    // Mise à jour du designation
+    // Mise à jour du client
     try {
-        $designation->update([
-            'description' => $request->description,
-            'reference' => $request->reference,
-            'prix_unitaire' => $request->prix_unitaire,
+        $banque->update([
+            'name' => $request->name,
+            'num_compte' => $request->num_compte,
+
         ]);
 
          // Message de succès
-         session()->flash('success', 'Désignation mise à jour avec succès!');
+         session()->flash('success', 'Banque mise à jour avec succès!');
 
          return response()->json([
             'success' => true,
-            'message' => 'Désignation mise à jour avec succès!'
+            'message' => 'Banque mise à jour avec succès!'
         ]);
 
     } catch (ValidationException $e) {
@@ -145,13 +174,12 @@ class DesignationsController extends Controller
     }
 }
 
-
-    // Supprimer une designation
-    public function destroy(Designation $designation)
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(Banque $client)
     {
-        $designation->delete();
-        return redirect()->route('dashboard.designations.index')->with('success', 'designations supprimé avec succès');
+        $client->delete();
+        return redirect()->route('dashboard.banques.index')->with('success', 'Banque supprimé avec succès');
     }
-
 }
-

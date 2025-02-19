@@ -57,6 +57,22 @@ class FacturesController extends Controller
         return view('administration.pages.factures.create', compact('client', 'banque', 'designations', 'devis'));
     }
 
+    public function generateCustomNumber()
+    {
+        $user = Auth::user(); // Récupérer l'utilisateur connecté
+        $month = date('m'); // Mois
+        $year = date('y'); // Année (2 chiffres)
+        $day = date('d/m/Y'); // Date complète
+        $initials = strtoupper(substr($user->name, 0, 2)); // Initiales
+
+        // Récupérer le dernier numéro généré aujourd'hui
+        $lastFacture = Facture::whereDate('created_at', today())->latest()->first();
+        $counter = $lastFacture ? (intval(substr($lastFacture->numero, 5, 3)) + 1) : 1;
+        $counter = str_pad($counter, 3, '0', STR_PAD_LEFT); // Format 3 chiffres
+
+        return "{$month}{$year}-{$counter}{$initials} du {$day}";
+    }
+
     public function store(Request $request)
     {
         // Valider les données du formulaire
@@ -74,13 +90,17 @@ class FacturesController extends Controller
         $devis->status = 'Terminé';
         $devis->save();
 
+        $customNumber = $this->generateCustomNumber(); // Générer le numéro
+
         // Créer la facture et y ajouter les informations nécessaires
         $facture = new Facture();
         $facture->devis_id = $validated['devis_id'];
         $facture->num_bc = $validated['num_bc'];
         $facture->num_rap = $validated['num_rap'];
         $facture->num_bl = $validated['num_bl'];
-        $facture->user_id = Auth::id(); // Ajouter l'ID de l'utilisateur authentifié
+        $facture->user_id = Auth::id();
+        $facture->numero = $customNumber;; 
+
         $facture->save();
 
         // Rediriger avec un message de succès

@@ -142,8 +142,8 @@
     
     
                     <strong>Informations de paiement</strong><br>
-                    <strong>Banque:</strong> VERSUS BANK<br>
-                    <strong>Compte:</strong> C112 01001 012206440008 24
+                    <strong>Banque:</strong> {{ $banque->name }}<br>
+                    <strong>Compte:</strong> {{ $banque->num_compte }}
                     
                     <p><strong>Arrêté la présente somme de :</strong> {{ ucwords((new NumberFormatter('fr', NumberFormatter::SPELLOUT))->format($devis->details->sum('total'))) }} francs CFA</p>
                 </td>

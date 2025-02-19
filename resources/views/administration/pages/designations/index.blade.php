@@ -77,36 +77,49 @@
 
                 <div class="add-contact-box">
                     <div class="add-contact-content">
-                    <form id="addContactModalTitle">
-                        
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="mb-3 contact-occupation">
-                                <input type="text" id="description" class="form-control" placeholder="Désignation">
+                        <form id="addContactModalTitle">
+                
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="mb-3 contact-occupation">
+                
+                                        <div class="input-group">
+                                            <input type="text" id="description" class="form-control" placeholder="Désignation" value="{{ old('description') }}">
+                                            <span class="input-group-text"><i class="ti ti-text-wrap"></i></span>
+                                        </div>
+                
+                                    {{-- <input type="text" id="description" class="form-control" placeholder="Désignation"> --}}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3 contact-occupation">
-                                <input type="text" id="ref" class="form-control" placeholder="Référence">
+                
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3 contact-occupation">
+                                        <div class="input-group mb-3">
+                                            <input type="text" id="ref" class="form-control" placeholder="Référence" aria-label="Référence" aria-describedby="basic-addon1" value="{{ old('ref') }}">
+                                            <span class="input-group-text">ref</span>
+                                        </div>
+                
+                                    {{-- <input type="text" id="ref" class="form-control" placeholder="Référence"> --}}
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3 contact-phone">
+                                        <div class="input-group">
+                                            <input type="text" id="prix_unitaire" class="form-control" aria-label="0" value="{{ old('prix_unitaire') }}">
+                                            <span class="input-group-text">FCFA</span>
+                                        </div>
+                
+                                    {{-- <input type="text" id="prix_unitaire" class="form-control" placeholder="Prix unitaire"> --}}
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-3 contact-phone">
-                                <input type="text" id="prix_unitaire" class="form-control" placeholder="Prix unitaire">
-                                <span class="validation-text text-danger"></span>
-                                </div>
-                            </div>
-                        </div>
-
-                        
-
-                        
-                    </form>
+                
+                        </form>
                     </div>
                 </div>
+                
             </div>
             <div class="modal-footer">
             <div class="d-flex gap-6 m-0">
@@ -280,7 +293,7 @@
             $('#addDesignationModal').modal('hide');
             setTimeout(() => {
                 location.reload();  // Recharger la page pour afficher les nouveaux clients
-            }, 5000);
+            }, 3000);
         } else {
             // Afficher le toast d'erreur lorsque data.success est false
             toastr.error(data.message, 'Erreur', {
@@ -333,7 +346,7 @@
                         if (data.success) {
                             toastr.success(data.message, 'Succès', {
                                 positionClass: 'toast-top-right',
-                                timeOut: 5000,
+                                timeOut: 3000,
                                 closeButton: true,
                                 progressBar: true,
                             });
@@ -341,7 +354,7 @@
                             $('#editDesignationModal{{ $designation->id }}').modal('hide');
                             setTimeout(() => {
                                 location.reload();
-                            }, 5000);
+                            }, 3000);
                         } else {
                             toastr.error(data.message, 'Erreur', {
                                 positionClass: 'toast-top-right',

@@ -117,22 +117,28 @@
                 
                 <input type="hidden" name="devis_id" value="{{ $devis->id }}">
 
+                <!-- Remise Spéciale -->
+                <div class="mb-4">
+                    <label class="form-label">Remise Spéciale <span class="text-danger">*</span></label>
+                    <input type="number" name="remise_speciale" value="0" class="form-control">
+                </div>
+
                 <!-- Numéro BC -->
                 <div class="mb-4">
                     <label class="form-label">Numéro BC <span class="text-danger">*</span></label>
-                    <input type="text" name="num_bc" class="form-control" required>
+                    <input type="text" name="num_bc" placeholder="Numéro BC" class="form-control">
                 </div>
 
                 <!-- Numéro Rap activ. -->
                 <div class="mb-4">
                     <label class="form-label">Numéro Rap activ. <span class="text-danger">*</span></label>
-                    <input type="text" name="num_rap" class="form-control" required>
+                    <input type="text" name="num_rap" placeholder="Numéro RAP" class="form-control">
                 </div>
 
                 <!-- Numéro BL -->
                 <div class="mb-4">
                     <label class="form-label">Numéro BL <span class="text-danger">*</span></label>
-                    <input type="text" name="num_bl" class="form-control" required>
+                    <input type="text" name="num_bl" placeholder="Numéro BL" class="form-control">
                 </div>
 
                 <!-- Boutons -->

@@ -59,7 +59,7 @@
       </div>
 
       <!-- Modal -->
-      <!-- Modal for adding client -->
+      <!-- Modal for adding banques -->
     <div class="modal fade" id="addBanqueModal" tabindex="-1" role="dialog" aria-labelledby="addBanqueModalTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -77,52 +77,25 @@
 
                 <div class="add-contact-box">
                     <div class="add-contact-content">
-                    <form id="addContactModalTitle">
+                    <form id="addBanqueModalTitle">
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="mb-3 contact-name">
-                                <input type="text" id="c-name" class="form-control" placeholder="Nom ou raison sociale">
+                                <input type="text" id="name" class="form-control"value="" placeholder="Nom ou raison sociale">
                                 <span class="validation-text text-danger"></span>
                                 </div>
                             </div>
                         </div>
 
                         <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-md-12">
                                 <div class="mb-3 contact-occupation">
-                                <input type="text" id="c-occupation" class="form-control" placeholder="N°CC">
+                                    <input type="text" id="numero_compte"  class="form-control" placeholder="0">
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="mb-3 contact-phone">
-                                <input type="text" id="c-phone" class="form-control" placeholder="Téléphone">
-                                <span class="validation-text text-danger"></span>
-                                </div>
-                            </div>
+                            
                         </div>
 
-                        <div class="row">
-                        <div class="col-md-12">
-                            <div class="mb-3 contact-occupation">
-                            <input type="text" id="c-adresse" class="form-control" placeholder="Adresse">
-                            </div>
-                        </div>
-                        </div>
-
-                        <div class="row">
-                        <div class="col-md-6">
-                            <div class="mb-3 contact-phone">
-                            <input type="text" id="c-ville" class="form-control" placeholder="Ville">
-                            <span class="validation-text text-danger"></span>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="mb-3 contact-phone">
-                            <input type="text" id="c-attn" class="form-control" placeholder="ATTM">
-                            <span class="validation-text text-danger"></span>
-                            </div>
-                        </div>
-                        </div>
                     </form>
                     </div>
                 </div>
@@ -145,63 +118,61 @@
                 <!-- start row -->
                 <tr>
                   <th>Nom</th>
-                  <th>N° Téléphone</th>
-                  <th>Adresse</th>
-                  <th>N°CC</th>
+                  <th>Numéro de compte</th>
                   <th>Action</th>
                 </tr>
                 <!-- end row -->
               </thead>
               <tbody>
-                @forelse ($clients as $client)
+                @forelse ($banques as $banque)
                 <tr>
                     <td>
-                        <h6 class="mb-0">{{ $client->nom }}</h6>
+                        <h6 class="mb-0">{{ $banque->name }}</h6>
                     </td>
-                    <td>{{ $client->telephone }}</td>
-                    <td>{{ $client->ville }}</td>
-                    <td>{{ $client->numero_cc ?? 'Non renseigné' }}</td>
+                    <td>{{ $banque->num_compte }}</td>
                     <td>
                         <div class="action-btn text-center">
-                            <a href="#editClientModal{{ $client->id }}" class="text-primary edit" title="Modifier" data-bs-toggle="modal">
+                            <a href="#editBanqueModal{{ $banque->id }}" class="text-primary edit" title="Modifier" data-bs-toggle="modal">
                                 <i class="ti ti-pencil fs-5"></i> 
                             </a>
-                            
-                            <form id="delete-form-{{ $client->id }}" action="{{ route('dashboard.clients.destroy', $client->id) }}" method="POST" style="display: inline;">
+
+                            <form id="delete-form-{{ $banque->id }}" action="{{ route('dashboard.banques.destroy', $banque->id) }}" method="POST" style="display: inline;">
                                 @csrf
                                 @method('DELETE')
-                                <button type="button" class="text-dark delete ms-2" title="Supprimer" style="border: none; background: none;" onclick="confirmDelete({{ $client->id }})">
+                                <button type="button" class="text-dark delete ms-2" title="Supprimer" style="border: none; background: none;" onclick="confirmDelete({{ $banque->id }})">
                                     <i class="ti ti-trash fs-5"></i>
                                 </button>
                             </form>
+                            
+                            
                         </div>
                     </td>
                 </tr>
 
 
                 <!-- Modal de modification -->
-                <div class="modal fade" id="editClientModal{{ $client->id }}" tabindex="-1" aria-labelledby="editClientModalLabel{{ $client->id }}" aria-hidden="true">
+                <div class="modal fade" id="editBanqueModal{{ $banque->id }}" tabindex="-1" aria-labelledby="editBanqueModalLabel{{ $banque->id }}" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
                             <div class="modal-header d-flex align-items-center">
-                                <h5 class="modal-title">Modifier les informations du Client</h5>
+                                <h5 class="modal-title">Modifier les informations de la banque</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
                                 <!-- Affichage des messages d'erreur et de succès -->
-                                <div id="error-message{{ $client->id }}" class="alert alert-danger text-danger" style="display: none;"></div>
-                                <div id="success-message{{ $client->id }}" class="alert alert-success text-success" style="display: none;"></div>
+                                <div id="error-message{{ $banque->id }}" class="alert alert-danger text-danger" style="display: none;"></div>
+                                <div id="success-message{{ $banque->id }}" class="alert alert-success text-success" style="display: none;"></div>
 
                                 <div class="add-contact-box">
                                     <div class="add-contact-content">
-                                        <form id="update-client-form{{ $client->id }}">
+                                        <form id="update-banque-form{{ $banque->id }}">
                                             @csrf
                                             @method('PUT')
 
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <div class="mb-3 contact-name">
-                                                        <input type="text" id="c-name{{ $client->id }}" class="form-control" placeholder="Nom ou raison sociale" name="nom" value="{{ $client->nom }}">
+                                                        <input type="text" id="c-name{{ $banque->id }}" class="form-control" placeholder="Nom ou raison sociale" name="name" value="{{ $banque->name }}">
                                                         <span class="validation-text text-danger"></span>
                                                     </div>
                                                 </div>
@@ -209,41 +180,14 @@
 
                                             <!-- Autres champs du formulaire -->
                                             <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="mb-3 contact-occupation">
-                                                        <input type="text" id="c-occupation{{ $client->id }}" class="form-control" placeholder="N°CC" name="numero_cc" value="{{ $client->numero_cc }}">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="mb-3 contact-phone">
-                                                        <input type="text" id="c-phone{{ $client->id }}" class="form-control" placeholder="Téléphone" name="telephone" value="{{ $client->telephone }}">
-                                                        <span class="validation-text text-danger"></span>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
                                                 <div class="col-md-12">
                                                     <div class="mb-3 contact-occupation">
-                                                        <input type="text" id="c-adresse{{ $client->id }}" class="form-control" placeholder="Adresse" name="adresse" value="{{ $client->adresse }}">
+                                                        <input type="text" id="c-occupation{{ $banque->id }}" class="form-control" placeholder="Numéro de compte" name="num_compte" value="{{ $banque->num_compte }}">
                                                     </div>
                                                 </div>
+                                                
                                             </div>
 
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="mb-3 contact-phone">
-                                                        <input type="text" id="c-ville{{ $client->id }}" class="form-control" placeholder="Ville" name="ville" value="{{ $client->ville }}">
-                                                        <span class="validation-text text-danger"></span>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="mb-3 contact-phone">
-                                                        <input type="text" id="c-attn{{ $client->id }}" class="form-control" placeholder="ATTM" name="attn" value="{{ $client->attn }}">
-                                                        <span class="validation-text text-danger"></span>
-                                                    </div>
-                                                </div>
-                                            </div>
 
                                             <div class="modal-footer">
                                                 <div class="d-flex gap-6 m-0">
@@ -259,7 +203,7 @@
                     </div>
                 </div>
                 @empty
-                    Aucun client enregistré.
+                    Aucune Banque enregistré.
                 @endforelse
                 
             </tbody>
@@ -268,9 +212,7 @@
                 <!-- start row -->
                 <tr>
                     <th>Nom</th>
-                    <th>N° Téléphone</th>
-                    <th>Adresse</th>
-                    <th>N°CC</th>
+                    <th>Numéro de compte</th>
                     <th>Action</th>
                 </tr>
                 <!-- end row -->
@@ -291,16 +233,12 @@
 
     // Récupérer les données du formulaire
     let formData = {
-        nom: document.getElementById('c-name').value,
-        numero_cc: document.getElementById('c-occupation').value,
-        telephone: document.getElementById('c-phone').value,
-        adresse: document.getElementById('c-adresse').value,
-        ville: document.getElementById('c-ville').value,
-        attn: document.getElementById('c-attn').value,
+        name: document.getElementById('name').value,
+        num_compte: document.getElementById('numero_compte').value,
     };
-
+    console.log("Numéro de compte:", formData.numero_compte);
     // Envoi de la requête avec fetch
-    fetch("{{ route('dashboard.clients.store') }}", {
+    fetch("{{ route('dashboard.banques.store') }}", {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -320,10 +258,10 @@
             });
 
             // Fermer le modal et recharger la page après un délai
-            $('#addContactModal').modal('hide');
+            $('#addBanqueModal').modal('hide');
             setTimeout(() => {
-                location.reload();  // Recharger la page pour afficher les nouveaux clients
-            }, 5000);
+                location.reload();  // Recharger la page pour afficher les nouvelles banques
+            }, 3000);
         } else {
             // Afficher le toast d'erreur lorsque data.success est false
             toastr.error(data.message, 'Erreur', {
@@ -341,7 +279,7 @@
     .catch(error => {
         console.error('Erreur:', error);
         // En cas d'erreur réseau ou autre, afficher un toast d'erreur générique
-        toastr.error("Une erreur est survenue lors de l'ajout du client.", 'Erreur', {
+        toastr.error("Une erreur est survenue lors de l'ajout d'une banque.", 'Erreur', {
             positionClass: 'toast-top-right',
             timeOut: 20000,
             closeButton: true,
@@ -350,21 +288,22 @@
         setTimeout(() => {
             location.reload();
         }, 1000);
+
     });
 });
 
 </script>
 
-@if($clients->isNotEmpty())
+@if($banques->isNotEmpty())
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            @foreach($clients as $client)
-                document.getElementById('update-client-form{{ $client->id }}').addEventListener('submit', function(event) {
+            @foreach($banques as $banque)
+                document.getElementById('update-banque-form{{ $banque->id }}').addEventListener('submit', function(event) {
                     event.preventDefault();
 
                     let formData = new FormData(this);
 
-                    fetch("{{ route('dashboard.clients.update', ['client' => $client->id]) }}", {
+                    fetch("{{ route('dashboard.banques.update', ['banque' => $banque->id]) }}", {
                         method: 'POST',
                         headers: {
                             'X-CSRF-TOKEN': '{{ csrf_token() }}',
@@ -381,10 +320,10 @@
                                 progressBar: true,
                             });
 
-                            $('#editClientModal{{ $client->id }}').modal('hide');
+                            $('#editBanqueModal{{ $banque->id }}').modal('hide');
                             setTimeout(() => {
                                 location.reload();
-                            }, 5000);
+                            }, 3000);
                         } else {
                             toastr.error(data.message, 'Erreur', {
                                 positionClass: 'toast-top-right',
@@ -419,7 +358,7 @@
 
 
 <script>
-    function confirmDelete(clientId) {
+    function confirmDelete(banqueId) {
         Swal.fire({
             title: "Êtes-vous sûr ?",
             text: "Cette action est irréversible !",
@@ -431,7 +370,7 @@
             cancelButtonText: "Annuler"
         }).then((result) => {
             if (result.isConfirmed) {
-                document.getElementById('delete-form-' + clientId).submit();
+                document.getElementById('delete-form-' + banqueId).submit();
             }
         });
     }
