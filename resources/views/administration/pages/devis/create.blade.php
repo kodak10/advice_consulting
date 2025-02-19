@@ -143,8 +143,8 @@
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="">
-                                        <label class="form-label">Commande</label>
-                                        <input type="text" name="commande" class="form-control mydatepicker 
+                                        <label class="form-label">Commande (%)</label>
+                                        <input type="number" name="commande" class="form-control mydatepicker 
                                             @error('commande') is-invalid @enderror" 
                                             value="{{ old('commande', session('data.commande')) }}">
                                         @error('commande')
@@ -154,8 +154,8 @@
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="">
-                                        <label class="form-label">Livraison</label>
-                                        <input type="text" name="livraison" class="form-control mydatepicker 
+                                        <label class="form-label">Livraison (%)</label>
+                                        <input type="number" name="livraison" class="form-control mydatepicker 
                                             @error('livraison') is-invalid @enderror" 
                                             value="{{ old('livraison', session('data.livraison')) }}">
                                         @error('livraison')
@@ -177,7 +177,7 @@
                                 <div class="col-lg-6">
                                     <div class="">
                                         <label class="form-label">Délai de livraison</label>
-                                        <input type="text" name="delai" class="form-control mydatepicker 
+                                        <input type="number" name="delai" class="form-control mydatepicker 
                                             @error('delai') is-invalid @enderror" 
                                             value="{{ old('delai', session('data.delai')) }}">
                                         @error('delai')
@@ -219,38 +219,32 @@
                             <div class="row">
                                 <div class="col-4">
                                     <label class="form-label">Total HT <span class="text-danger">*</span></label>
-                                    <input type="text" name="total_ht" class="form-control" 
-                                        value="{{ old('total_ht', session('data.total_ht', 0)) }}" readonly>
+                                    <input type="number" class="form-control total-ht" name="total-ht" value="{{ old('total-ht', session('data.total-ht', 0)) }}" readonly>
+
+                                    
                                 </div>
                                 <div class="col-4">
-                                    <label class="form-label">TVA 18% <span class="text-danger">*</span></label>
-                                    <input type="text" name="tva" class="form-control 
-                                        @error('tva') is-invalid @enderror" 
-                                        value="{{ old('tva', session('data.tva', 0.18)) }}">
-                                    @error('tva')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <label class="form-label">TVA (%) : <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control tva"  name="tva"  value="{{ old('tva', session('data.tva', 18)) }}" readonly>
+                                    
                                 </div>
                                 <div class="col-4">
                                     <div class="mb-4">
                                         <label class="form-label">Total TTC <span class="text-danger">*</span></label>
-                                        <input type="text" name="total_ttc" class="form-control" 
-                                            value="{{ old('total_ttc', session('data.total_ttc', 0)) }}" readonly>
+                                        <input type="number" class="form-control total-ttc"  name="total-ttc"  value="{{ old('total-ttc', session('data.total-ttc', 0)) }}" readonly>
                                     </div>
                                 </div>
                                 <div class="col-4">
                                     <label class="form-label">Acompte <span class="text-danger">*</span></label>
-                                    <input type="text" name="acompte" class="form-control 
-                                        @error('acompte') is-invalid @enderror" 
-                                        value="{{ old('acompte', session('data.acompte', 0)) }}">
-                                    @error('acompte')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
+                                    <input type="number" class="form-control acompte"  name="acompte"  value="{{ old('acompte', session('data.acompte', 0)) }}">
+
+
+                                   
+                                   
                                 </div>
                                 <div class="col-4">
                                     <label class="form-label">Solde <span class="text-danger">*</span></label>
-                                    <input type="text" name="solde" class="form-control" 
-                                        value="{{ old('solde', session('data.solde', 0)) }}" readonly>
+                                    <input type="number" class="form-control solde"  name="solde"  value="{{ old('solde', session('data.solde', 0)) }}" readonly>
                                 </div>
                             </div>
                         </div>
@@ -347,43 +341,36 @@
 
 @push('scripts')
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
+    function updateTotal(row) {
+        var price = parseFloat(row.find('.price').val()) || 0;
+        var quantity = parseInt(row.find('.quantity').val()) || 1;
+        var discount = parseFloat(row.find('.discount').val()) || 0;
 
-        $('.designation').on('change', function() {
-            var selectedOption = $(this).find('option:selected');
-            var designationId = selectedOption.data('id'); // ID de la désignation
-            $(this).closest('.email-repeater').find('.designation-id').val(designationId);
-        });
+        var total = (price * quantity) - discount;
+        if (total < 0) total = 0; // Empêcher un total négatif
 
+        row.find('.total').val(total.toFixed(2)); // Afficher avec 2 décimales
+        updateTotalHT();
+    }
 
-        function updateTotal(row) {
-            var price = parseFloat(row.find('.price').val()) || 0;
-            var quantity = parseInt(row.find('.quantity').val()) || 1;
-            var discount = parseFloat(row.find('.discount').val()) || 0;
+    // Mise à jour du prix unitaire lorsqu'on sélectionne une désignation
+    $(document).on('change', '.designation', function () {
+        var selectedOption = $(this).find(':selected');
+        var price = parseFloat(selectedOption.data('price')) || 0;
+        var row = $(this).closest('.row');
 
-            var total = (price * quantity) - discount;
-            if (total < 0) total = 0; // Empêcher un total négatif
+        row.find('.price').val(price); // Mettre à jour le prix unitaire
+        updateTotal(row);
+    });
 
-            row.find('.total').val(total.toFixed(2)); // Afficher avec 2 décimales
-        }
+    // Mise à jour du total lorsqu'on modifie quantité ou remise
+    $(document).on('input', '.quantity, .discount', function () {
+        var row = $(this).closest('.row');
+        updateTotal(row);
+    });
 
-        // Mise à jour du prix unitaire lorsqu'on sélectionne une désignation
-        $(document).on('change', '.designation', function() {
-            var selectedOption = $(this).find(':selected');
-            var price = parseFloat(selectedOption.data('price')) || 0;
-
-            var row = $(this).closest('.row');
-            row.find('.price').val(price); // Mettre à jour le prix unitaire
-            updateTotal(row);
-        });
-
-        // Mise à jour du total lorsque la quantité ou la remise change
-        $(document).on('input', '.quantity, .discount', function() {
-            var row = $(this).closest('.row');
-            updateTotal(row);
-        });
-
-        // Fonction pour mettre à jour le total HT
+    // Fonction pour mettre à jour Total HT
     function updateTotalHT() {
         var totalHT = 0;
         $('.email-repeater .row').each(function () {
@@ -393,58 +380,53 @@
         });
 
         // Mise à jour de Total HT
-        $('.col-4 input[value="0"]').eq(0).val(totalHT.toFixed(2));
+        $('.total-ht').val(totalHT.toFixed(2));
 
         updateTVAandTTC(totalHT);
     }
 
     // Fonction pour mettre à jour TVA et Total TTC
     function updateTVAandTTC(totalHT) {
-        var tva = 0.18; // TVA 18%
-        var ttc = totalHT + (totalHT * tva); // Calcul correct du Total TTC
+        var tvaRate = 18; // TVA 18%
+        var tvaValue = (totalHT * tvaRate) / 100; // Valeur de la TVA
+        var totalTTC = totalHT + tvaValue; // Calcul correct du Total TTC
 
-        // Mise à jour de TVA (fixe à 18%)
-        $('.col-4 input[value="0"]').eq(1).val((tva * 100).toFixed(2));  // TVA en pourcentage
+        // Mise à jour de la TVA (valeur fixe à 18)
+        $('.tva').val(tvaRate.toFixed(2)); // TVA en pourcentage
 
         // Mise à jour de Total TTC
-        $('.col-4 input[value="0"]').eq(2).val(ttc.toFixed(2));
+        $('.total-ttc').val(totalTTC.toFixed(2));
 
-        updateSolde(ttc);
+        updateSolde(totalTTC);
     }
 
     // Fonction pour mettre à jour le solde
-    function updateSolde(ttc) {
-        var acompte = parseFloat($('.col-4 input[value="0"]').eq(3).val()) || 0;
-        var solde = ttc - acompte;
+    function updateSolde(totalTTC) {
+        var acompte = parseFloat($('.acompte').val()) || 0;
+        var solde = totalTTC - acompte;
 
         // Mise à jour du solde
-        $('.col-4 input[value="0"]').eq(4).val(solde.toFixed(2));
+        $('.solde').val(solde.toFixed(2));
     }
 
     // Quand l'acompte change, mettre à jour le solde
-    $(document).on('input', '.col-4 input[value="0"]:eq(3)', function () {
-        var totalTTC = parseFloat($('.col-4 input[value="0"]').eq(2).val()) || 0;
+    $(document).on('input', '.acompte', function () {
+        var totalTTC = parseFloat($('.total-ttc').val()) || 0;
         updateSolde(totalTTC);
     });
-
-    // Chaque fois qu'un champ "total" change (ajout/remise)
-    $(document).on('input', '.quantity, .discount, .total', function () {
-        updateTotalHT();
-    });
-
 
     // Chaque fois qu'une ligne est ajoutée
     $(document).on('click', '[data-repeater-create]', function () {
         updateTotalHT();
     });
-    
+
     // Chaque fois qu'une ligne est supprimée
     $(document).on('click', '[data-repeater-delete]', function () {
         updateTotalHT();
     });
 
+});
 
-    });
 </script>
 
 <script>
