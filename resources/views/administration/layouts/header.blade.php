@@ -133,9 +133,12 @@
               <li class="nav-item dropdown">
                 <a class="nav-link pe-0" href="javascript:void(0)" id="drop1" aria-expanded="false">
                   <div class="d-flex align-items-center">
-                    <div class="user-profile-img">
-                      <img src="{{ asset(auth()->user()->image) }}" class="rounded-circle" width="35" height="35" alt="modernize-img">
+                    <div class="user-profile-img mr-3">
+                      <img src="{{ asset(auth()->user()->image) }}" class="rounded-circle mr-3" width="35" height="35" alt="modernize-img">
                     </div>
+                    <h5 class="fw-semibold mb-0 fs-3 ml-3">
+                      {{ auth()->user()->name }}
+                    </h5>
                   </div>
                 </a>
                 <div class="dropdown-menu content-dd dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop1">

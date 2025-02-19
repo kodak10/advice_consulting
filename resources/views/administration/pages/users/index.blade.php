@@ -133,6 +133,7 @@
                                     <div class="mb-3 contact-occupation">
                                         <select class="form-control" name="role" required>
                                             <option value="Administrateur" {{ old('role') == 'Administrateur' ? 'selected' : '' }}>Administrateur</option>
+                                            <option value="Daf" {{ old('role') == 'Daf' ? 'selected' : '' }}>DAF</option>
                                             <option value="Commercial" {{ old('role') == 'Commercial' ? 'selected' : '' }}>Commercial</option>
                                             <option value="Comptable" {{ old('role') == 'Comptable' ? 'selected' : '' }}>Comptable</option>
                                         </select>

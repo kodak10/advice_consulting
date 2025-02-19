@@ -16,8 +16,6 @@ class FacturesController extends Controller
     public function index()
     {
         $devis = Devis::where('status', '!=', 'En attente')->get();
-        //$factures = Facture::where('user_id', Auth::user()->id)->get();
-
         $myFactures = Facture::where('user_id', Auth::user()->id)
                        ->with(['devis.client', 'devis.details']) 
                        ->get();
@@ -27,14 +25,11 @@ class FacturesController extends Controller
 
     public function refuse($id)
     {
-        // Récupérer l'utilisateur
         $devis = Devis::findOrFail($id);
 
-        // Vérifier si le devis est en attente avant suppression
         if ($devis->status !== 'Approuvé') {
             return redirect()->back()->with('error', 'Vous ne pouvez supprimer ce devis que si son statut est "Approuvé".');
         }
-
 
         // Mettre à jour le statut en "inactif"
         $devis->status = 'Réfusé';
@@ -81,6 +76,8 @@ class FacturesController extends Controller
             'num_bc' => 'required|string',
             'num_rap' => 'required|string',
             'num_bl' => 'required|string',
+            'remise_speciale' => 'required|string',
+
         ]);
 
         // Récupérer le devis
@@ -99,6 +96,8 @@ class FacturesController extends Controller
         $facture->num_rap = $validated['num_rap'];
         $facture->num_bl = $validated['num_bl'];
         $facture->user_id = Auth::id();
+        $facture->remise_speciale = $validated['remise_speciale']; 
+
         $facture->numero = $customNumber;; 
 
         $facture->save();

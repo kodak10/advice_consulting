@@ -39,7 +39,7 @@
               <span>
                 <i class="ti ti-list"></i>
               </span>
-              <span class="hide-menu">Mes Dévis</span>
+              <span class="hide-menu">Mes Proforma</span>
             </a>
           </li>
 
@@ -48,7 +48,7 @@
               <span>
                 <i class="ti ti-receipt"></i> 
               </span>
-              <span class="hide-menu">Faire un Dévis</span>
+              <span class="hide-menu">Faire une Proforma</span>
             </a>
           </li>
 

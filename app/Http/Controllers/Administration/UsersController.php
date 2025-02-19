@@ -30,7 +30,7 @@ class UsersController extends Controller
             'email' => 'required|email|unique:users',
             'phone' => 'nullable|regex:/^[0-9]+$/|max:10',
             'adresse' => 'nullable|string|max:150',
-            'role' => 'required|in:Administrateur,Commercial,Comptable',
+            'role' => 'required|in:Administrateur,Daf,Commercial,Comptable',
         ]);
 
         if ($validator->fails()) {
