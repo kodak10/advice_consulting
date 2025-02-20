@@ -43,7 +43,7 @@ class FacturesController extends Controller
         ->where('user_id', Auth::user()->id)
         ->get();
 
-        // dd($factures);
+        
         return view('administration.pages.factures.index', compact('devis', 'factures'));
 
     } 

@@ -55,8 +55,8 @@
                         </div>
                     </div>
                     <div class="process-content">
-                        <h4 class="process-title">Faire un dévis</h4>
-                        <p class="process-desc">Dans l'onglet de gauche, cliquez sur <strong>Faire une dévis</strong> et renseignez les informations nécessaires.</p>
+                        <h4 class="process-title">Faire une proforma</h4>
+                        <p class="process-desc">Dans l'onglet de gauche, cliquez sur <strong>Faire une Proforma</strong> et renseignez les informations nécessaires.</p>
                     </div>
                 </div>
             </div>

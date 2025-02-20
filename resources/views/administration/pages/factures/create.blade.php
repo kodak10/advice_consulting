@@ -53,7 +53,7 @@
                             <tbody>
                                 @foreach ($devis->details as $detail)
                                     <tr>
-                                        <td>{{ $detail->designation->name }}</td>
+                                        <td>{{ $detail->designation->description }}</td>
                                         <td>{{ $detail->quantite }}</td>
                                         <td>{{ $detail->prix_unitaire }}</td>
                                         <td>{{ $detail->remise }}</td>
