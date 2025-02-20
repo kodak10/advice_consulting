@@ -15,7 +15,8 @@ class Facture extends Model
         'num_bc',   
         'num_rap',  
         'num_bl',
-        'remise_speciale'
+        'remise_speciale',
+        'pays_id'
     ];
 
     public function devis()
@@ -30,5 +31,10 @@ class Facture extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+    
+    public function pays()
+    {
+        return $this->belongsTo(Pays::class);
     }
 }

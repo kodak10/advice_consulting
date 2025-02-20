@@ -4,7 +4,6 @@
 <div class="container-fluid">
     <h1 class="fw-semibold mb-3 fs-6 text-center">
       BIENVENUE SUR LA L'ESPACE DE GESTION DE PROFORMA ET FACTURES
-    
     </h1>
     <div class="row">
       <div class="col-lg-12 d-flex align-items-stretch">
@@ -52,10 +51,10 @@
                 <div class="card">
                     <div class="card-body">
                       <div class="row alig n-items-start">
-                        <div class="col-12">
-                          <h4 class="card-title mb-9 fw-semibold"> Nombres d'utilisateurs </h4>
-                          <div class="d-flex align-items-center mb-3">
-                            <h4 class="fw-semibold mb-0 me-8">{{ $userTotal }}</h4>
+                        <div class="col-12 text-center">
+                          <h4 class="card-title mb-9 fw-semibold"> Nombres d'Utilisateurs </h4>
+                          <div class="">
+                            <p class="mb-0">{{ $userActif }}</p>
                             
                           </div>
                         </div>
@@ -67,7 +66,7 @@
             </div>
           <div class="col-sm-6 d-flex align-items-stretch">
             <div class="card w-100">
-              <div class="card-body">
+              <div class="card-body text-center">
                 <div class="row">
                     <h4 class="card-title mb-9 fw-semibold"> Actif </h4>
 
@@ -80,7 +79,7 @@
           </div>
           <div class="col-sm-6 d-flex align-items-stretch">
             <div class="card w-100">
-              <div class="card-body">
+              <div class="card-body text-center">
                 <div class="row">
                     <h4 class="card-title mb-9 fw-semibold"> Inactif </h4>
 

@@ -10,4 +10,14 @@ class Pays extends Model
     {
         return $this->hasMany(User::class);
     }
+
+    public function devis()
+    {
+        return $this->hasMany(Devis::class);
+    }
+
+    public function factures()
+    {
+        return $this->hasMany(Facture::class);
+    }
 }

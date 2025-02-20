@@ -123,11 +123,11 @@
             </table>
         </div>
 
-        {{-- <div class="table-responsive mt-5">
+        <div class="table-responsive mt-5">
           <h3>
-            Mes factures etabli
+            Mes factures etablie
           </h3>
-            <table id="zero_config" class="table table-striped table-bordered text-nowrap align-middle">
+            <table id="zero_config2" class="table table-striped table-bordered text-nowrap align-middle">
               <thead>
                 <!-- start row -->
                 <tr>
@@ -140,10 +140,10 @@
                 <!-- end row -->
               </thead>
               <tbody>
-                @forelse ($myFactures as $myFacture)
-                <tr>
+                @forelse ($factures as $facture)
+                {{-- <tr>
                     <td>
-                        <h6 class="mb-0">{{ $myFacture->num_proforma }}</h6>
+                        <h6 class="mb-0">{{ $facture->num_proforma }}</h6>
                     </td>
                     @if($myFacture->devis->client)
                         {{ $myFacture->devis->client->nom }}
@@ -159,7 +159,7 @@
                       
                     </td>
                   
-                </tr>
+                </tr> --}}
 
 
                 
@@ -181,7 +181,7 @@
                 <!-- end row -->
               </tfoot>
             </table>
-        </div> --}}
+        </div>
       </div>
     </div>
   

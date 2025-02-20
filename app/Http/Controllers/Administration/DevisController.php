@@ -19,7 +19,10 @@ class DevisController extends Controller
 {
     public function index()
     {
-        $devis = Devis::where('user_id', Auth::user()->id)->get();
+        $devis = Devis::where('pays_id', Auth::user()->pays_id)
+        ->where('user_id', Auth::user()->id)
+        ->get();
+
         return view('administration.pages.devis.index', compact('devis'));
 
     } 
@@ -164,6 +167,7 @@ class DevisController extends Controller
             $devis->user_id = Auth::user()->id;
             $devis->num_proforma = $numProforma;
             $devis->status = "En Attente";
+            $devis->pays_id = Auth::user()->pays_id;
 
             // Sauvegarder le devis
             $devis->save();

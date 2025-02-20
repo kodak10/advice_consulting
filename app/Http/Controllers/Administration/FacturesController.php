@@ -15,11 +15,16 @@ class FacturesController extends Controller
 {
     public function index()
     {
-        $devis = Devis::where('status', '!=', 'En attente')->get();
-        $myFactures = Facture::where('user_id', Auth::user()->id)
-                       ->with(['devis.client', 'devis.details']) 
-                       ->get();
-        return view('administration.pages.factures.index', compact('devis', 'myFactures'));
+        $devis = Devis::where('pays_id', Auth::user()->pays_id)
+        ->where('user_id', Auth::user()->id)
+        ->where('status', '!=', 'En attente')
+        ->get();
+
+        $factures = Facture::where('pays_id', Auth::user()->pays_id)
+        ->where('user_id', Auth::user()->id)
+        ->get();
+
+        return view('administration.pages.factures.index', compact('devis', 'factures'));
 
     } 
 
@@ -98,7 +103,9 @@ class FacturesController extends Controller
         $facture->user_id = Auth::id();
         $facture->remise_speciale = $validated['remise_speciale']; 
 
-        $facture->numero = $customNumber;; 
+        $facture->numero = $customNumber;
+        $devis->pays_id = Auth::user()->pays_id;
+
 
         $facture->save();
 
