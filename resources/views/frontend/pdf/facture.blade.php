@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Devis</title>
+    <title>Facture</title>
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}"> <!-- Lien vers Bootstrap localement -->
     <style>
         body {

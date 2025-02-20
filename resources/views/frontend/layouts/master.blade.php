@@ -11,7 +11,7 @@
   <link rel="stylesheet" href="{{ asset('adminAssets/css/styles.css') }}">
   <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
 
-  <title>Advice Consulting | Devis - Factures</title>
+  <title>Advice Consulting | Proforma - Factures</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 
   @stack('styles')

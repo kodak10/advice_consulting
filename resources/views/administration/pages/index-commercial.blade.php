@@ -58,6 +58,22 @@
                 <a href="{{ route('dashboard.devis.create') }}" class="btn btn-success">Faire une Proforma</a>
               </div>
             </div>
+
+            <div class="row">
+              <div class="col-md-8 col-xl-3">
+                @if(session('success'))
+                    <div class="alert alert-success text-success" role="alert">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+                @if(session('error'))
+                    <div class="alert alert-danger text-danger" role="alert">
+                        {!! session('error') !!}
+                    </div>
+                @endif
+            </div>
+            </div>
             <div class="table-responsive">
                 <table id="zero_config" class="table table-striped table-bordered text-nowrap align-middle">
                   <thead>
@@ -112,7 +128,7 @@
     
                     
                     @empty
-                        Aucun Devis enregistré.
+                        Aucune Proforma enregistrée.
                     @endforelse
                     
                 </tbody>

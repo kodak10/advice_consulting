@@ -244,7 +244,7 @@
         
 
         <div class="form-actions mb-5">
-            <button type="submit" class="btn btn-success">Enregistrer</button>
+            <button type="submit" class="btn btn-success">Suivant</button>
         </div>
     </form>
 </section>

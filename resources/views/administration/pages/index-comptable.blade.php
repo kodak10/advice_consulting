@@ -52,7 +52,7 @@
           <div class="card-body">
             <div class="d-sm-flex d-block align-items-center justify-content-between mb-3">
               <div class="mb-3 mb-sm-0">
-                <h4 class="card-title fw-semibold">Liste des Devis</h4>
+                <h4 class="card-title fw-semibold">Liste des Proforma</h4>
               </div>
               <div>
 
@@ -112,7 +112,7 @@
     
                     
                     @empty
-                        Aucun Devis enregistré.
+                        Aucune Proforma enregistrée.
                     @endforelse
                     
                 </tbody>

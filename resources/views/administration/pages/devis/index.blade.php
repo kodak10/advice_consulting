@@ -7,13 +7,13 @@
       <div class="card-body px-4 py-3">
         <div class="row align-items-center">
           <div class="col-9">
-            <h4 class="fw-semibold mb-8">Mes Devis</h4>
+            <h4 class="fw-semibold mb-8">Mes Proforma</h4>
             <nav aria-label="breadcrumb">
               <ol class="breadcrumb">
                 <li class="breadcrumb-item">
                   <a class="text-muted text-decoration-none" href="{{ route('dashboard.') }}">Accueil</a>
                 </li>
-                <li class="breadcrumb-item" aria-current="page">Mes Devis</li>
+                <li class="breadcrumb-item" aria-current="page">Mes Proforma</li>
               </ol>
             </nav>
           </div>
@@ -46,7 +46,7 @@
     
             <a href="{{ route('dashboard.devis.create') }}" class="btn btn-primary">
                 <i class="ti ti-users text-white me-1 fs-5"></i> 
-                Faire un devis
+                Faire une Proforma
             </a>
               
           </div>
@@ -109,7 +109,7 @@
 
                 
                 @empty
-                    Aucun Devis enregistré.
+                    Aucune Proforma enregistrée.
                 @endforelse
                 
             </tbody>

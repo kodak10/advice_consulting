@@ -9,7 +9,7 @@
             
           </div>
           <div class="col-lg-6">
-            <h2 class="fs-12 fw-bolder">Gérez vos devis et factures en toute simplicité</h2>
+            <h2 class="fs-12 fw-bolder">Gérez vos Proforma et factures en toute simplicité</h2>
             <div class="d-flex mt-4 gap-3 flex-sm-nowrap flex-wrap">
               <a href="/login" class="btn btn-primary px-9 py-6">Se Connecté</a>
               <a href="#howtomatch" class="btn btn-outline-primary px-9 py-6">Comment ça marche ?</a>
@@ -86,7 +86,7 @@
                     </div>
                     <div class="process-content">
                         <h4 class="process-title">Terminé</h4>
-                        <p class="process-desc">Votre devis ou facture est maintenant dans le système et prêt à être consulté à tout moment et en tout lieu.</p>
+                        <p class="process-desc">Votre Proforma ou facture est maintenant dans le système et prêt à être consulté à tout moment et en tout lieu.</p>
                     </div>
                 </div>
             </div>

@@ -43,6 +43,7 @@ class FacturesController extends Controller
         ->where('user_id', Auth::user()->id)
         ->get();
 
+        // dd($factures);
         return view('administration.pages.factures.index', compact('devis', 'factures'));
 
     } 
@@ -52,7 +53,7 @@ class FacturesController extends Controller
         $devis = Devis::findOrFail($id);
 
         if ($devis->status !== 'Approuvé') {
-            return redirect()->back()->with('error', 'Vous ne pouvez supprimer ce devis que si son statut est "Approuvé".');
+            return redirect()->back()->with('error', 'Vous ne pouvez supprimer cete Proforma que si son statut est "Approuvé".');
         }
 
         // Mettre à jour le statut en "inactif"
@@ -60,7 +61,7 @@ class FacturesController extends Controller
         $devis->save();
 
         // Rediriger avec un message de succès
-        return redirect()->back()->with('success', 'Devis Réfusé avec succès.');
+        return redirect()->back()->with('success', 'Proforma Réfusée avec succès.');
     }
 
     public function create($id)
@@ -123,7 +124,7 @@ class FacturesController extends Controller
         $facture->remise_speciale = $validated['remise_speciale']; 
 
         $facture->numero = $customNumber;
-        $devis->pays_id = Auth::user()->pays_id;
+        $facture->pays_id = Auth::user()->pays_id;
 
 
         $facture->save();

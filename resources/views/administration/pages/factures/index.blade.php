@@ -59,7 +59,7 @@
       <div class="card card-body">
         <div class="table-responsive mb-5">
             <h3>
-                Liste des devis
+                Liste des Proforma
             </h3>
             <table id="zero_config" class="table table-striped table-bordered text-nowrap align-middle">
               <thead>
@@ -103,7 +103,7 @@
 
                 
                 @empty
-                    Aucune Devis
+                    Aucune Proforma
                 @endforelse
                 
             </tbody>
@@ -135,31 +135,24 @@
                     <th>Client</th>
                     <th>Coût</th>
                     <th>Statut</th>
-                    <th>Action</th>
                 </tr>
                 <!-- end row -->
               </thead>
               <tbody>
                 @forelse ($factures as $facture)
-                {{-- <tr>
+                <tr>
                     <td>
-                        <h6 class="mb-0">{{ $facture->num_proforma }}</h6>
+                        <h6 class="mb-0">{{ $facture->numero }}</h6>
                     </td>
-                    @if($myFacture->devis->client)
-                        {{ $myFacture->devis->client->nom }}
-                    @else
-                        Client non défini
-                    @endif 
-                    <td>{{ $myFacture->details->sum('total') }}</td>
-                    <td class=""><strong>{{ $devi->user->name }}</strong></td>
-                    <td>{{ $myFacture->status ?? 'Non renseigné' }}</td>
+                   <td>
+                      {{ $facture->devis->client->nom }}
+                   </td>
+                    <td>{{ $facture->devis->details->sum('total') }}</td>
+                    <td>{{ $facture->devis->status ?? 'Non renseigné' }}</td>
 
-                    <td>
-                       
-                      
-                    </td>
+                    
                   
-                </tr> --}}
+                </tr>
 
 
                 
@@ -176,11 +169,11 @@
                     <th>Client</th>
                     <th>Coût</th>
                     <th>Statut</th>
-                    <th>Action</th>
                 </tr>
                 <!-- end row -->
               </tfoot>
             </table>
+            
         </div>
       </div>
     </div>

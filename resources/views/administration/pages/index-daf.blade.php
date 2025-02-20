@@ -90,7 +90,7 @@
     
                     
                     @empty
-                        Aucun Devis enregistré.
+                        Aucune Proforma enregistrée.
                     @endforelse
                     
                 </tbody>
@@ -117,7 +117,7 @@
           <div class="card-body">
             <div class="d-sm-flex d-block align-items-center justify-content-between mb-3">
               <div class="mb-3 mb-sm-0">
-                <h4 class="card-title fw-semibold">Liste des devis </h4>
+                <h4 class="card-title fw-semibold">Liste des Proforma </h4>
               </div>
               <div>
                 <select class="form-select fw-semibold">

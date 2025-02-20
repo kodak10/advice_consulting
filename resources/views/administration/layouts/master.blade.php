@@ -13,7 +13,7 @@
   <!-- Core Css -->
   <link rel="stylesheet" href="{{ asset('adminAssets/css/styles.css') }}">
 
-  <title>Advice Consulting | Devis - Factures</title>
+  <title>Advice Consulting | Proforma - Factures</title>
   <meta name="csrf-token" content="{{ csrf_token() }}">
   
   <link rel="stylesheet" href="{{ asset('adminAssets/libs/quill/dist/quill.snow.css') }}">

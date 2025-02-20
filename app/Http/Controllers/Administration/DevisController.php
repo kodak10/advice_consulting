@@ -66,17 +66,26 @@ class DevisController extends Controller
     }
 
     public function approuve($id)
-        {
-            // Récupérer l'utilisateur
-            $devis = Devis::findOrFail($id);
+    {
+        // Récupérer le devis
+        $devis = Devis::findOrFail($id);
 
-            // Mettre à jour le statut en "inactif"
-            $devis->status = 'Approuvé';
-            $devis->save();
+        // Vérifier si le statut est "En attente"
+        if ($devis->status !== 'En attente') {
+            // Si le statut n'est pas "En attente", empêcher la modification
+            return redirect()->back()->with('error', 'La Proforma ne peut être approuvé que s\'il est en attente.');
+        }
 
-            // Rediriger avec un message de succès
-            return redirect()->back()->with('success', 'Devis Approuvé avec succès.');
+        
+
+        // Changer le statut en "Approuvé"
+        $devis->status = 'Approuvé';
+        $devis->save();
+
+        // Rediriger avec un message de succès
+        return redirect()->back()->with('success', 'Proforma approuvée avec succès.');
     }
+
 
     public function recap(Request $request)
     {
@@ -192,18 +201,6 @@ class DevisController extends Controller
             // Diffuser l'événement après avoir créé le devis
             event(new DevisCreated($devis));
 
-            // return response()->json([
-            //     'message' => 'Devis créé avec succès et événement envoyé!',
-            //     'status' => 'success',
-            // ]);
-
-            // Envoyer la notification en base de données ou par d'autres moyens
-            // $users = User::role(['comptable', 'administrateur'])->get();
-            // foreach ($users as $user) {
-            //     $user->notify(new NotificationController($devis));
-            // }
-            
-
 
             // Générer le PDF
             $pdf = PDF::loadView('frontend.pdf.devis', compact('devis', 'client', 'banque'));
@@ -221,13 +218,7 @@ class DevisController extends Controller
             $imagePath = $directory . '/' . $imageName;
             Storage::disk('public')->put($imagePath, $pdfOutput);
 
-            // Vérifiez si le fichier a été enregistré avec succès
-            // if (Storage::disk('public')->exists($imagePath)) {
-            //     \Log::info("Le fichier a été enregistré avec succès : " . storage_path('app/public/' . $imagePath));
-            // } else {
-            //     \Log::error("Le fichier n'existe pas, problème d'enregistrement !");
-            //     throw new \Exception("Erreur lors de l'enregistrement du fichier PDF.");
-            // }
+            
 
             // Enregistrer le chemin dans la base de données
             $devis->pdf_path = $imagePath;
@@ -258,7 +249,7 @@ class DevisController extends Controller
 
         // Vérifier si le devis est en attente
         if ($devis->status !== 'En Attente') {
-            return redirect()->back()->with('error', 'Vous ne pouvez modifier ce devis que si son statut est "en attente".');
+            return redirect()->back()->with('error', 'Vous ne pouvez modifier cette Proforma que si son statut est "en attente".');
         }
 
         return view('administration.pages.devis.edit', compact('devis','clients','banques', 'designations'));
@@ -386,7 +377,7 @@ class DevisController extends Controller
 
         // Redirection après mise à jour
         return redirect()->route('dashboard.devis.index', $devis->id)
-            ->with('success', 'Devis mis à jour avec succès.');
+            ->with('success', 'Proforma mise à jour avec succès.');
     }
 
 
@@ -397,12 +388,12 @@ class DevisController extends Controller
 
         // Vérifier si le devis est en attente avant suppression
         if ($devis->status !== 'En Attente') {
-            return redirect()->back()->with('error', 'Vous ne pouvez supprimer ce devis que si son statut est "en attente".');
+            return redirect()->back()->with('error', 'Vous ne pouvez supprimer cette Proforma que si son statut est "en attente".');
         }
 
         $devis->delete();
 
-        return redirect()->route('dashboard.devis.index')->with('success', 'Devis supprimé avec succès.');
+        return redirect()->route('dashboard.devis.index')->with('success', 'Proforma supprimée avec succès.');
     }
 
     public function download($id)

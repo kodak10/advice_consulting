@@ -16,7 +16,7 @@ class Facture extends Model
         'num_rap',  
         'num_bl',
         'remise_speciale',
-        'pays_id'
+        'pays_id',
     ];
 
     public function devis()
