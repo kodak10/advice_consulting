@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Notifications\VerifyEmailNotification;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
@@ -43,7 +44,6 @@ class UsersController extends Controller
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
-        dd($validator);
 
         $user = User::create([
             'name' => $request->name,
@@ -53,6 +53,8 @@ class UsersController extends Controller
             'password' => Hash::make('password'),
             'email_verified_at' => null,
             'status' => 'Actif',
+            'pays_id' => Auth::user()->pays_id,
+
         ]);
 
         // Assigner le rôle
