@@ -29,29 +29,59 @@
             </a>
           </li>
 
+          <!-- ------------------------------- -->
+          <!-- Daf - Factures, designation ,client -->
+          <!-- ------------------------------- -->
+
+          @if (Auth::user()->hasRole('Daf'))
           <li class="nav-small-cap">
             <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-            <span class="hide-menu">Dévis</span>
+            <span class="hide-menu">Factures</span>
           </li>
           
           <li class="sidebar-item">
-            <a class="sidebar-link {{ Request::is('dashboard/devis') ? 'active' : '' }}" href="{{ route('dashboard.devis.index') }}"  aria-expanded="false">
+            <a class="sidebar-link {{ Request::is('dashboard/factures') ? 'active' : '' }}" href="{{ route('dashboard.factures.index') }}"  aria-expanded="false">
               <span>
                 <i class="ti ti-list"></i>
               </span>
-              <span class="hide-menu">Mes Proforma</span>
+              <span class="hide-menu">Les Factures</span>
             </a>
           </li>
 
-          <li class="sidebar-item">
-            <a class="sidebar-link {{ Request::is('dashboard/devis/create') ? 'active' : '' }}" href="{{ route('dashboard.devis.create') }}"  aria-expanded="false">
-              <span>
-                <i class="ti ti-receipt"></i> 
-              </span>
-              <span class="hide-menu">Faire une Proforma</span>
-            </a>
-          </li>
+         
 
+          @endif
+
+
+
+          <!-- ------------------------------- -->
+          <!-- Comptable : Proforma, Devis, designation ,client  -->
+          <!-- ------------------------------- -->
+          @if (Auth::user()->hasRole('Comptable'))
+            <li class="nav-small-cap">
+                <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+                <span class="hide-menu">Proforma</span>
+            </li>
+
+            <li class="sidebar-item">
+                <a class="sidebar-link {{ Request::is('dashboard/devis') ? 'active' : '' }}" href="{{ route('dashboard.devis.index') }}"  aria-expanded="false">
+                    <span>
+                        <i class="ti ti-list"></i>
+                    </span>
+                    <span class="hide-menu">Mes Proforma</span>
+                </a>
+            </li>
+
+            <li class="sidebar-item">
+                <a class="sidebar-link {{ Request::is('dashboard/devis/create') ? 'active' : '' }}" href="{{ route('dashboard.devis.create') }}"  aria-expanded="false">
+                    <span>
+                        <i class="ti ti-receipt"></i> 
+                    </span>
+                    <span class="hide-menu">Faire une Proforma</span>
+                </a>
+            </li>
+
+            
           <li class="nav-small-cap">
             <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
             <span class="hide-menu">Factures</span>
@@ -100,43 +130,88 @@
             </a>
           </li>
 
-          
+          @endif
+
+
+
+
+          <!-- ------------------------------- -->
+          <!-- end notification Dropdown -->
+          <!-- ------------------------------- -->
+
+
+
+          <!-- ------------------------------- -->
+          <!-- end notification Dropdown -->
+          <!-- ------------------------------- -->
+
+
+
+
+          <!-- ------------------------------- -->
+          <!-- end notification Dropdown -->
+          <!-- ------------------------------- -->
+
+
+
 
           
-          
-          <!-- ---------------------------------- -->
-          <!-- Apps -->
-          <!-- ---------------------------------- -->
+
+
+          @if (Auth::user()->hasRole('Commercial'))
           <li class="nav-small-cap">
-            <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
-            <span class="hide-menu">Activitées</span>
+              <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+              <span class="hide-menu">Proforma</span>
           </li>
 
           <li class="sidebar-item">
-            <a class="sidebar-link justify-content-between {{ Request::is('messagerie') ? 'active' : '' }}" href="{{ route('dashboard.messagerie.index') }}" aria-expanded="false">
-              <div class="d-flex align-items-center gap-3">
-                <span class="d-flex">
-                  <i class="ti ti-award"></i>
-                </span>
-                <span class="hide-menu">Messagerie</span>
-              </div>
-              <div class="hide-menu">
-                <span class="badge rounded-circle bg-primary d-flex align-items-center justify-content-center rounded-pill fs-2">9</span>
-              </div>
-            </a>
+              <a class="sidebar-link {{ Request::is('dashboard/devis') ? 'active' : '' }}" href="{{ route('dashboard.devis.index') }}"  aria-expanded="false">
+                  <span>
+                      <i class="ti ti-list"></i>
+                  </span>
+                  <span class="hide-menu">Mes Proforma</span>
+              </a>
           </li>
 
-          
-          
-          
-          
-          
-         
-         
-         
-          
-          
-          
+          <li class="sidebar-item">
+              <a class="sidebar-link {{ Request::is('dashboard/devis/create') ? 'active' : '' }}" href="{{ route('dashboard.devis.create') }}"  aria-expanded="false">
+                  <span>
+                      <i class="ti ti-receipt"></i> 
+                  </span>
+                  <span class="hide-menu">Faire une Proforma</span>
+              </a>
+          </li>
+
+       
+       
+
+       
+        <li class="nav-small-cap">
+          <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+          <span class="hide-menu">Gestions</span>
+        </li>
+        
+       
+
+        <li class="sidebar-item">
+          <a class="sidebar-link {{ Request::is('dashboard/clients') ? 'active' : '' }}" href="{{ route('dashboard.clients.index') }}"  aria-expanded="false">
+            <span>
+              <i class="ti ti-user-plus"></i> 
+            </span>
+            <span class="hide-menu">Compte Clients</span>
+          </a>
+        </li>
+
+        <li class="sidebar-item">
+          <a class="sidebar-link {{ Request::is('dashboard/designations') ? 'active' : '' }}" href="{{ route('dashboard.designations.index') }}"  aria-expanded="false">
+            <span>
+              <i class="ti ti-pencil"></i>
+            </span>
+            <span class="hide-menu">Désignations</span>
+          </a>
+        </li>
+
+        @endif
           
           
           <!-- ---------------------------------- -->
@@ -158,6 +233,11 @@
             </a>
         </li>
         
+        <!-- ------------------------------- -->
+        <!-- Administrateur -->
+        <!-- ------------------------------- -->
+
+        @if (Auth::user()->hasRole('Administrateur'))
 
         
           <li class="sidebar-item">
@@ -183,6 +263,7 @@
               <span class="hide-menu">Banques</span>
             </a>
           </li>
+          @endif
           
           
           <!-- ---------------------------------- -->

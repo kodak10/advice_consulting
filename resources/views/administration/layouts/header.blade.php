@@ -16,12 +16,7 @@
           </li> --}}
         </ul>
 
-        <ul class="navbar-nav quick-links d-none d-lg-flex align-items-center">
-         
-          <li class="nav-item dropdown-hover d-none d-lg-block">
-            <a class="nav-link" href="{{ route('dashboard.messagerie.index') }}">Messagerie</a>
-          </li>
-        </ul>
+       
 
         <div class="d-block d-lg-none py-4">
           <a href="{{ route('dashboard.') }}" class="text-nowrap logo-img">
@@ -123,7 +118,7 @@
                         </span>
                         <div class="w-100 ps-3">
                           <h6 class="mb-1 fs-3 fw-semibold lh-base">Ma boîte de réception</h6>
-                          <span class="fs-2 d-block text-body-secondary">Messages</span>
+                          <span class="fs-2 d-block text-body-secondary">Notifications</span>
                         </div>
                       </a>
                       
