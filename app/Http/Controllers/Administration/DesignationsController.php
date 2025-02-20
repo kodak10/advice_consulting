@@ -9,6 +9,10 @@ use Illuminate\Validation\ValidationException;
 
 class DesignationsController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('role:Comptable|Commercial');
+    }
     public function index()
     {
         $designations = Designation::all();

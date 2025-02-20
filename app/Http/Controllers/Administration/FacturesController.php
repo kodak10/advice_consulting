@@ -13,6 +13,25 @@ use Illuminate\Support\Facades\Auth;
 
 class FacturesController extends Controller
 {
+   
+
+    public function __construct()
+    {
+        // Bloquer l'accès aux méthodes sauf 'create', 'refuse', 'store' pour Daf
+        // MAIS laisser le Comptable accéder à tout
+        $this->middleware(function ($request, $next) {
+            if (Auth::check() && Auth::user()->hasRole('Comptable')) {
+                return $next($request); // Comptable a accès à tout
+            }
+
+            // Bloquer toutes les méthodes sauf certaines pour Daf
+            $this->middleware('role:Daf')->except(['index', 'refuse']);
+
+            return $next($request);
+        });
+    }
+
+    
     public function index()
     {
         $devis = Devis::where('pays_id', Auth::user()->pays_id)

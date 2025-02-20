@@ -19,6 +19,7 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified','check.user.status'])->prefix('dashboard')->name('dashboard.')->group(function () {
 
+    
     Route::get('/', [AdminController::class, 'index']);
     Route::resource('clients', ClientController::class);
     Route::resource('designations', DesignationsController::class);

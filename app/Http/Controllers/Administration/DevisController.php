@@ -17,6 +17,11 @@ use Illuminate\Support\Facades\Storage;
 
 class DevisController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('role:Comptable|Commercial');
+    }
+    
     public function index()
     {
         $devis = Devis::where('pays_id', Auth::user()->pays_id)

@@ -9,6 +9,10 @@ use Illuminate\Validation\ValidationException;
 
 class BanqueController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('role:Administrateur');
+    }
     /**
      * Display a listing of the resource.
      */

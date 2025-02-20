@@ -17,6 +17,13 @@ use Spatie\Permission\Models\Role;
 
 class UsersController extends Controller
 {
+
+    public function __construct()
+    {
+        // Bloquer uniquement l'accès aux méthodes create et store pour les non "Daf" ou "Comptable"
+        $this->middleware('role:Administrateur')->only(['index', 'storeUser', 'disable', 'activate', 'disable']);
+    }
+
     public function index()
     {
         $users = User::all();

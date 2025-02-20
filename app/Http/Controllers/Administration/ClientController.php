@@ -11,10 +11,10 @@ use Illuminate\Validation\ValidationException;
 class ClientController extends Controller
 {
     
-    // public function __construct()
-    // {
-    //     $this->middleware(['role:Administrateur']);
-    // }
+    public function __construct()
+    {
+        $this->middleware('role:Comptable|Commercial');
+    }
     public function index()
     {
         $clients = Client::all(); 
