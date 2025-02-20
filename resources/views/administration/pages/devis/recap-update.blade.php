@@ -84,13 +84,16 @@
                         <h5>Conditions Financières</h5>
                         <div class="row">
                             <div class="col-md-6">
-                                <p><strong>Commande :</strong> {{ $validated['commande'] }}</p>
+                                <p><strong>Commande :</strong> {{ $validated['commande'] }}%</p>
                             </div>
                             <div class="col-md-6">
-                                <p><strong>Livraison :</strong> {{ $validated['livraison'] }}</p>
+                                <p><strong>Livraison :</strong> {{ $validated['livraison'] }}%</p>
                             </div>
                             <div class="col-md-6">
                                 <p><strong>Validité de l'offre :</strong> {{ $validated['validite'] }} jours</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Délai :</strong> {{ $validated['delai'] }} jours</p>
                             </div>
                         </div>
                     </div>
@@ -99,6 +102,8 @@
                     <div class="mb-5">
                         <h5>Banque</h5>
                         <p><strong>Nom de la banque :</strong> {{ $banque->name }}</p>
+
+                        <p><strong>Numéro de compte :</strong> {{ $banque->num_compte }}</p>
                     </div>
 
                     <!-- Conditions Générales -->
@@ -106,13 +111,16 @@
                         <h5>Conditions Générales</h5>
                         <div class="row">
                             <div class="col-md-4">
-                                <p><strong>Total HT :</strong> {{ $validated['total_ht'] }}</p>
+                                <p><strong>Total HT :</strong> {{ $validated['total-ht'] }}</p>
                             </div>
                             <div class="col-md-4">
                                 <p><strong>TVA (18%) :</strong> {{ $validated['tva'] }}</p>
                             </div>
                             <div class="col-md-4">
-                                <p><strong>Total TTC :</strong> {{ $validated['total_ttc'] }}</p>
+                                <p><strong>Total TTC :</strong> {{ $validated['total-ttc'] }}</p>
+                            </div>
+                            <div class="col-md-4">
+                                <p><strong>Acompte :</strong> {{ $validated['acompte'] }}</p>
                             </div>
                             <div class="col-md-4">
                                 <p><strong>Solde :</strong> {{ $validated['solde'] }}</p>
@@ -124,18 +132,22 @@
                     <div class="form-actions">
                         <form method="POST" action="{{ route('dashboard.devis.storeRecap', $devis->id) }}">                            
                             @csrf
-                            @method('PUT') <!-- Utilisation de PUT pour mettre à jour -->
+                            {{-- @method('PUT') --}}
 
                             <input type="hidden" name="client_id" value="{{ $client->id }}">
+                            <input type="hidden" name="banque_id" value="{{ $banque->id }}">
+
                             <input type="hidden" name="date_emission" value="{{ $validated['date_emission'] }}">
                             <input type="hidden" name="date_echeance" value="{{ $validated['date_echeance'] }}">
+
                             <input type="hidden" name="commande" value="{{ $validated['commande'] }}">
                             <input type="hidden" name="livraison" value="{{ $validated['livraison'] }}">
                             <input type="hidden" name="validite" value="{{ $validated['validite'] }}">
-                            <input type="hidden" name="banque_id" value="{{ $banque->id }}">
-                            <input type="hidden" name="total_ht" value="{{ $validated['total_ht'] }}">
+                            <input type="hidden" name="delai" value="{{ $validated['delai'] }}">
+
+                            <input type="hidden" name="total-ht" value="{{ $validated['total-ht'] }}">
                             <input type="hidden" name="tva" value="{{ $validated['tva'] }}">
-                            <input type="hidden" name="total_ttc" value="{{ $validated['total_ttc'] }}">
+                            <input type="hidden" name="total-ttc" value="{{ $validated['total-ttc'] }}">
                             <input type="hidden" name="acompte" value="{{ $validated['acompte'] }}">
                             <input type="hidden" name="solde" value="{{ $validated['solde'] }}">
 

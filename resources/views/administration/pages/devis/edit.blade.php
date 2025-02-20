@@ -68,88 +68,7 @@
                     <div class="card-body">
                         <h4 class="card-title">Désignations</h4>
                        
-                        {{-- <div class="email-repeater mb-3">
-                            <div data-repeater-list="designations">
-                                @if ($devis->designations->isNotEmpty())
-                                    @foreach ($devis->designations as $designation)
-                                        <div data-repeater-item class="row mb-3">
-                                            <div class="col-md-3 mt-3 mt-md-0">
-                                                <select class="select2 form-control designation" name="designations[][description]">
-                                                    <option value="">Sélectionner</option>
-                                                    @foreach ($designations as $option)
-                                                        <option value="{{ $option->description }}"
-                                                            data-id="{{ $option->id }}"
-                                                            data-price="{{ $option->prix_unitaire }}"
-                                                            {{ $option->description == $designation->description ? 'selected' : '' }}>
-                                                            {{ $option->description }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                                <input type="hidden" name="designations[][id]" class="designation-id" value="{{ $designation->id }}">
-                                            </div>
-                                            <div class="col-md-2 mt-3 mt-md-0">
-                                                <input type="number" class="form-control quantity" name="designations[][quantity]" 
-                                                       placeholder="Qte" value="{{ $designation->pivot->quantity }}" min="1">
-                                            </div>
-                                            <div class="col-md-2 mt-3 mt-md-0">
-                                                <input type="number" class="form-control price" name="designations[][price]" 
-                                                       placeholder="PU" value="{{ $designation->pivot->price }}">
-                                            </div>
-                                            <div class="col-md-2 mt-3 mt-md-0">
-                                                <input type="number" class="form-control discount" name="designations[][discount]" 
-                                                       placeholder="Remise" value="{{ $designation->pivot->discount ?? 0 }}" min="0">
-                                            </div>
-                                            <div class="col-md-2 mt-3 mt-md-0">
-                                                <input type="number" class="form-control total" name="designations[][total]" 
-                                                       placeholder="Total" value="{{ ($designation->pivot->quantity * $designation->pivot->price) - ($designation->pivot->discount ?? 0) }}" readonly>
-                                            </div>
-                                            <div class="col-md-1 mt-3 mt-md-0">
-                                                <button data-repeater-delete class="btn bg-danger-subtle text-danger" type="button">
-                                                    <i class="ti ti-x fs-5 d-flex"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    @endforeach
-                                @else
-                                    <!-- Si aucun élément, on affiche une ligne vide par défaut -->
-                                    <div data-repeater-item class="row mb-3">
-                                        <div class="col-md-3 mt-3 mt-md-0">
-                                            <select class="select2 form-control designation" name="designations[][description]">
-                                                <option value="">Sélectionner</option>
-                                                @foreach ($designations as $option)
-                                                    <option value="{{ $option->description }}"
-                                                        data-id="{{ $option->id }}"
-                                                        data-price="{{ $option->prix_unitaire }}">
-                                                        {{ $option->description }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                            <input type="hidden" name="designations[][id]" class="designation-id">
-                                        </div>
-                                        <div class="col-md-2 mt-3 mt-md-0">
-                                            <input type="number" class="form-control quantity" name="designations[][quantity]" placeholder="Qte" value="1" min="1">
-                                        </div>
-                                        <div class="col-md-2 mt-3 mt-md-0">
-                                            <input type="number" class="form-control price" name="designations[][price]" placeholder="PU">
-                                        </div>
-                                        <div class="col-md-2 mt-3 mt-md-0">
-                                            <input type="number" class="form-control discount" name="designations[][discount]" placeholder="Remise" value="0" min="0">
-                                        </div>
-                                        <div class="col-md-2 mt-3 mt-md-0">
-                                            <input type="number" class="form-control total" name="designations[][total]" placeholder="Total" readonly>
-                                        </div>
-                                        <div class="col-md-1 mt-3 mt-md-0">
-                                            <button data-repeater-delete class="btn bg-danger-subtle text-danger" type="button">
-                                                <i class="ti ti-x fs-5 d-flex"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                @endif
-                            </div>
-                            <button type="button" data-repeater-create class="btn bg-primary-subtle text-primary">
-                                <span class="fs-4 me-1">+</span> Ajouter une autre
-                            </button>
-                        </div> --}}
+                        
 
                         <div class="email-repeater mb-3">
                             <div data-repeater-list="designations">
@@ -290,36 +209,32 @@
                         <div class="row">
                             <div class="col-4">
                                 <label class="form-label">Total HT <span class="text-danger">*</span></label>
-                                <input type="text" name="total_ht" class="form-control" 
-                                    value="{{ $devis->total_ht }}" readonly>
+                                <input type="number" class="form-control total-ht" name="total-ht" value="{{ old('total-ht', session('data.total-ht', 0)) }}" readonly>
+
+                                
                             </div>
                             <div class="col-4">
-                                <label class="form-label">TVA 18% <span class="text-danger">*</span></label>
-                                <input type="text" name="tva" class="form-control @error('tva') is-invalid @enderror" 
-                                    value="{{ $devis->tva }}">
-                                @error('tva')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <label class="form-label">TVA (%) : <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control tva" name="tva"  value="{{ old('tva', session('data.tva', 18)) }}" readonly>
+                                
                             </div>
                             <div class="col-4">
                                 <div class="mb-4">
                                     <label class="form-label">Total TTC <span class="text-danger">*</span></label>
-                                    <input type="text" name="total_ttc" class="form-control" 
-                                        value="{{ $devis->total_ttc }}" readonly>
+                                    <input type="number" class="form-control total-ttc"  name="total-ttc"  value="{{ old('total-ttc', session('data.total-ttc', 0)) }}" readonly>
                                 </div>
                             </div>
                             <div class="col-4">
                                 <label class="form-label">Acompte <span class="text-danger">*</span></label>
-                                <input type="text" name="acompte" class="form-control @error('acompte') is-invalid @enderror" 
-                                    value="{{ $devis->acompte }}">
-                                @error('acompte')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <input type="number" class="form-control acompte"  name="acompte"  value="{{ old('acompte', session('data.acompte', 0)) }}">
+
+
+                               
+                               
                             </div>
                             <div class="col-4">
                                 <label class="form-label">Solde <span class="text-danger">*</span></label>
-                                <input type="text" name="solde" class="form-control" 
-                                    value="{{ $devis->solde }}" readonly>
+                                <input type="number" class="form-control solde"  name="solde"  value="{{ old('solde', session('data.solde', 0)) }}" readonly>
                             </div>
                         </div>
                     </div>
@@ -337,42 +252,36 @@
 
 @push('scripts')
 <script>
-    $(document).ready(function() {
+    $(document).ready(function () {
+    function updateTotal(row) {
+        var price = parseFloat(row.find('.price').val()) || 0;
+        var quantity = parseInt(row.find('.quantity').val()) || 1;
+        var discount = parseFloat(row.find('.discount').val()) || 0;
 
-        $('.designation').on('change', function() {
-            var selectedOption = $(this).find('option:selected');
-            var designationId = selectedOption.data('id'); // ID de la désignation
-            $(this).closest('.email-repeater').find('.designation-id').val(designationId);
-        });
-        
-        function updateTotal(row) {
-            var price = parseFloat(row.find('.price').val()) || 0;
-            var quantity = parseInt(row.find('.quantity').val()) || 1;
-            var discount = parseFloat(row.find('.discount').val()) || 0;
+        var total = (price * quantity) - discount;
+        if (total < 0) total = 0; // Empêcher un total négatif
 
-            var total = (price * quantity) - discount;
-            if (total < 0) total = 0; // Empêcher un total négatif
+        row.find('.total').val(total.toFixed(2)); // Afficher avec 2 décimales
+        updateTotalHT();
+    }
 
-            row.find('.total').val(total.toFixed(2)); // Afficher avec 2 décimales
-        }
+    // Mise à jour du prix unitaire lorsqu'on sélectionne une désignation
+    $(document).on('change', '.designation', function () {
+        var selectedOption = $(this).find(':selected');
+        var price = parseFloat(selectedOption.data('price')) || 0;
+        var row = $(this).closest('.row');
 
-        // Mise à jour du prix unitaire lorsqu'on sélectionne une désignation
-        $(document).on('change', '.designation', function() {
-            var selectedOption = $(this).find(':selected');
-            var price = parseFloat(selectedOption.data('price')) || 0;
+        row.find('.price').val(price); // Mettre à jour le prix unitaire
+        updateTotal(row);
+    });
 
-            var row = $(this).closest('.row');
-            row.find('.price').val(price); // Mettre à jour le prix unitaire
-            updateTotal(row);
-        });
+    // Mise à jour du total lorsqu'on modifie quantité ou remise
+    $(document).on('input', '.quantity, .discount', function () {
+        var row = $(this).closest('.row');
+        updateTotal(row);
+    });
 
-        // Mise à jour du total lorsque la quantité ou la remise change
-        $(document).on('input', '.quantity, .discount', function() {
-            var row = $(this).closest('.row');
-            updateTotal(row);
-        });
-
-        // Fonction pour mettre à jour le total HT
+    // Fonction pour mettre à jour Total HT
     function updateTotalHT() {
         var totalHT = 0;
         $('.email-repeater .row').each(function () {
@@ -382,61 +291,54 @@
         });
 
         // Mise à jour de Total HT
-        $('.col-4 input[value="0"]').eq(0).val(totalHT.toFixed(2));
+        $('.total-ht').val(totalHT.toFixed(2));
 
         updateTVAandTTC(totalHT);
     }
 
     // Fonction pour mettre à jour TVA et Total TTC
     function updateTVAandTTC(totalHT) {
-        var tva = 0.18; // TVA 18%
-        var ttc = totalHT + (totalHT * tva); // Calcul correct du Total TTC
+        var tvaRate = 18; // TVA 18%
+        var tvaValue = (totalHT * tvaRate) / 100; // Valeur de la TVA
+        var totalTTC = totalHT + tvaValue; // Calcul correct du Total TTC
 
-        // Mise à jour de TVA (fixe à 18%)
-        $('.col-4 input[value="0"]').eq(1).val((tva * 100).toFixed(2));  // TVA en pourcentage
+        // Mise à jour de la TVA (valeur fixe à 18)
+        $('.tva').val(tvaRate.toFixed(2)); // TVA en pourcentage
 
         // Mise à jour de Total TTC
-        $('.col-4 input[value="0"]').eq(2).val(ttc.toFixed(2));
+        $('.total-ttc').val(totalTTC.toFixed(2));
 
-        updateSolde(ttc);
+        updateSolde(totalTTC);
     }
 
     // Fonction pour mettre à jour le solde
-    function updateSolde(ttc) {
-        var acompte = parseFloat($('.col-4 input[value="0"]').eq(3).val()) || 0;
-        var solde = ttc - acompte;
+    function updateSolde(totalTTC) {
+        var acompte = parseFloat($('.acompte').val()) || 0;
+        var solde = totalTTC - acompte;
 
         // Mise à jour du solde
-        $('.col-4 input[value="0"]').eq(4).val(solde.toFixed(2));
+        $('.solde').val(solde.toFixed(2));
     }
 
     // Quand l'acompte change, mettre à jour le solde
-    $(document).on('input', '.col-4 input[value="0"]:eq(3)', function () {
-        var totalTTC = parseFloat($('.col-4 input[value="0"]').eq(2).val()) || 0;
+    $(document).on('input', '.acompte', function () {
+        var totalTTC = parseFloat($('.total-ttc').val()) || 0;
         updateSolde(totalTTC);
     });
-
-    // Chaque fois qu'un champ "total" change (ajout/remise)
-    $(document).on('input', '.quantity, .discount, .total', function () {
-        updateTotalHT();
-    });
-
 
     // Chaque fois qu'une ligne est ajoutée
     $(document).on('click', '[data-repeater-create]', function () {
         updateTotalHT();
     });
-    
+
     // Chaque fois qu'une ligne est supprimée
     $(document).on('click', '[data-repeater-delete]', function () {
         updateTotalHT();
     });
 
+});
 
-      
-    });
 </script>
-
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.repeater/1.2.1/jquery.repeater.min.js"></script>

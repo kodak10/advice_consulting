@@ -262,22 +262,22 @@ class DevisController extends Controller
 
         // Valider les données du formulaire
         $validated = $request->validate([
-            'client_id' => 'required|exists:clients,id',  
+            'client_id' => 'required|exists:clients,id', 
+            'banque_id' => 'required|exists:banques,id',  
+ 
             'date_emission' => 'required|date',  
             'date_echeance' => 'required|date|after_or_equal:date_emission',  
+
             'commande' => 'required|string',  
             'livraison' => 'required|string',  
-            'validite' => 'required|string',  
-            'banque_id' => 'required|exists:banques,id',  
-            'total_ht' => 'required|numeric|min:0',  
-            // 'tva' => 'required|numeric|in:18',  
-            'tva' => 'required',  
+            'validite' => 'required|string', 
+            'delai' => 'required',
 
-            'total_ttc' => 'required|numeric|min:0',  
+            'total-ht' => 'required|numeric|min:0',  
+            'tva' => 'required',  
+            'total-ttc' => 'required|numeric|min:0',  
             'acompte' => 'required|numeric|min:0',  
             'solde' => 'required|numeric|min:0',  
-            // 'delai' => 'required',
-            // 'acompte' => 'required',
            
             'designations' => 'required|array', 
             'designations.*.id' => 'required',
@@ -288,7 +288,6 @@ class DevisController extends Controller
             'designations.*.total' => 'required|numeric|min:0', 
         ]);
 
-        // dd($request);
         $devis = Devis::findOrFail($id);
 
         $designations = Designation::all();
@@ -315,17 +314,22 @@ class DevisController extends Controller
         // Valider les données envoyées par le formulaire
         $validated = $request->validate([
             'client_id' => 'required|exists:clients,id',  
+            'banque_id' => 'required|exists:banques,id',  
+
             'date_emission' => 'required|date',  
             'date_echeance' => 'required|date|after_or_equal:date_emission',  
+
             'commande' => 'required|string',  
             'livraison' => 'required|string',  
             'validite' => 'required|string',  
-            'banque_id' => 'required|exists:banques,id',  
-            'total_ht' => 'required|numeric|min:0',  
+            'delai' => 'required',
+
+            'total-ht' => 'required|numeric|min:0',  
             'tva' => 'required',  
-            'total_ttc' => 'required|numeric|min:0',  
+            'total-ttc' => 'required|numeric|min:0',  
             'acompte' => 'required|numeric|min:0',  
-            'solde' => 'required|numeric|min:0',  
+            'solde' => 'required|numeric|min:0', 
+
             'designations' => 'required|array', 
             'designations.*.id' => 'required|exists:designations,id',
             'designations.*.designation' => 'required|exists:designations,id', 
@@ -341,15 +345,19 @@ class DevisController extends Controller
         // Mettre à jour les informations du devis
         $devis->update([
             'client_id' => $validated['client_id'],
+            'banque_id' => $validated['banque_id'],
+
             'date_emission' => $validated['date_emission'],
             'date_echeance' => $validated['date_echeance'],
+
             'commande' => $validated['commande'],
             'livraison' => $validated['livraison'],
             'validite' => $validated['validite'],
-            'banque_id' => $validated['banque_id'],
-            'total_ht' => $validated['total_ht'],
+            'delai' => $validated['delai'],
+
+            'total_ht' => $validated['total-ht'],
             'tva' => $validated['tva'],
-            'total_ttc' => $validated['total_ttc'],
+            'total_ttc' => $validated['total-ttc'],
             'acompte' => $validated['acompte'],
             'solde' => $validated['solde'],
         ]);
