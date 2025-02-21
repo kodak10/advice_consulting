@@ -208,42 +208,6 @@
                             @enderror
                         </div>
                     </div>
-
-                    <div class="card">
-                        <div class="card-body">
-                          <h4 class="card-title mb-7">Thumbnail</h4>
-                          <form action="#" class="dropzone dz-clickable mb-2">
-                            <div class="dz-default dz-message">
-                              <button class="dz-button" type="button">Drop Thumbnail here
-                                to upload</button>
-                            </div>
-                          </form>
-                          <p class="fs-2 text-center mb-0">
-                            Set the product thumbnail image. Only *.png, *.jpg and *.jpeg image files are accepted.
-                          </p>
-                        </div>
-                      </div>
-                      <div class="card">
-                        <div class="card-body">
-                          <div class="d-flex align-items-center justify-content-between mb-7">
-                            <h4 class="card-title">Status</h4>
-                            <div class="p-2 h-100 bg-success rounded-circle"></div>
-                          </div>
-                          <form action="" class="form-horizontal">
-                            <div>
-                              <select class="form-select mr-sm-2  mb-2" id="inlineFormCustomSelect">
-                                <option selected="">Published</option>
-                                <option value="1">Draft</option>
-                                <option value="2">Sheduled</option>
-                                <option value="3">Inactive</option>
-                              </select>
-                              <p class="fs-2 mb-0">
-                                Set the product status.
-                              </p>
-                            </div>
-                          </form>
-                        </div>
-                      </div>
                 </div>
             
                 <div class="col-lg-5">
