@@ -10,10 +10,12 @@ use App\Models\Designation;
 use App\Models\Devis;
 use App\Models\DevisDetail;
 use App\Models\User;
+use App\Notifications\DevisCreatedNotification;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class DevisController extends Controller
 {
@@ -199,7 +201,18 @@ class DevisController extends Controller
             }
 
             // Diffuser l'événement après avoir créé le devis
-            event(new DevisCreated($devis));
+            // event(new DevisCreated($devis));
+
+
+            // $users = User::all(); 
+            // foreach ($users as $user) {
+            //     $user->notify(new DevisCreatedNotification($devis));
+            // }
+            $users = User::all(); 
+            foreach ($users as $user) {
+                $user->notify((new DevisCreatedNotification($devis))->delay(now()->addSeconds(10)));
+            }
+            Log::info('Notification envoyée pour le devis ID: ' . $devis->id);
 
 
             // Générer le PDF
@@ -234,7 +247,7 @@ class DevisController extends Controller
             return response()->download(storage_path('app/public/' . $imagePath));
 
         } catch (\Exception $e) {
-            \Log::error("Erreur lors de la génération ou de l'enregistrement du PDF : " . $e->getMessage());
+            Log::error("Erreur lors de la génération ou de l'enregistrement du PDF : " . $e->getMessage());
             return back()->withErrors("Une erreur s'est produite lors de la génération du PDF. Veuillez réessayer.");
         }
     }

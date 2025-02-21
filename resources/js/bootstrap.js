@@ -17,10 +17,10 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
  * allows your team to easily build robust real-time web applications.
  */
 
-// import Echo from 'laravel-echo';
+import Echo from 'laravel-echo';
 
-// import Pusher from 'pusher-js';
-// window.Pusher = Pusher;
+import Pusher from 'pusher-js';
+window.Pusher = Pusher;
 
 // window.Echo = new Echo({
 //     broadcaster: 'pusher',
@@ -31,7 +31,30 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     wssPort: import.meta.env.VITE_PUSHER_PORT ?? 443,
 //     forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? 'https') === 'https',
 //     enabledTransports: ['ws', 'wss'],
+//     auth: {
+//         headers: {
+//             Authorization: `Bearer ${localStorage.getItem('token')}`, // Si vous utilisez un token JWT
+//         },
+//     },
 // });
+
+window.Echo = new Echo({
+    broadcaster: 'pusher',
+    key: import.meta.env.VITE_PUSHER_APP_KEY, // Clé Pusher
+    cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER ?? 'mt1',
+    wsHost: window.location.hostname, // Utiliser l'hôte local
+    wsPort: 6001, // Port WebSocket de Laravel Echo Server
+    wssPort: 6001, // Port WebSocket sécurisé (non utilisé en local)
+    forceTLS: false, // Désactiver TLS en local
+    enabledTransports: ['ws', 'wss'],
+    auth: {
+        headers: {
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'), // Token CSRF
+        },
+    },
+    debug: true, // Activer le mode débogage pour voir les erreurs
+});
+
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
