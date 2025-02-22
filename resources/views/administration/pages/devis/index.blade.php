@@ -136,6 +136,80 @@
                 <!-- end row -->
               </tfoot>
             </table>
+
+
+
+            @if (Auth::user()->hasRole('Commercial'))
+              <table id="zero_config" class="table table-striped table-bordered text-nowrap align-middle">
+              <thead>
+                <!-- start row -->
+                <tr>
+                    <th>N° Proforma</th>
+                    <th>Client</th>
+                    <th>Coût</th>
+                    <th>Statut</th>
+                    <th>Action</th>
+                </tr>
+                <!-- end row -->
+              </thead>
+              <tbody>
+                @forelse ($devis as $devi)
+                <tr>
+                    <td>
+                        <h6 class="mb-0">{{ $devi->num_proforma }}</h6>
+                    </td>
+                    <td>{{ $devi->client->nom }}</td>
+                    <td>{{ $devi->details->sum('total') }}</td>
+                    <td>{{ $devi->status ?? 'Non renseigné' }}</td>
+                    <td>
+                      <div class="action-btn text-center">
+                        <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger">
+                          <i class="ti ti-download fs-5"></i>
+                        </a>
+                      
+
+                      <a href="{{ route('dashboard.devis.validate', $devi->id) }}" class="text-primary me-2" title="Valider">
+                        <i class="ti ti-navigation-check"></i>
+                    </a>
+
+                          <a href="{{ route('dashboard.devis.edit', $devi->id) }}" class="text-primary me-2" title="Modifier">
+                              <i class="ti ti-pencil fs-5"></i>
+                          </a>
+                  
+                          <form id="delete-form-{{ $devi->id }}" action="{{ route('dashboard.devis.destroy', $devi->id) }}" method="POST" class="d-inline-block">
+                            @csrf
+                            @method('DELETE')
+                            <button type="button" class="btn btn-link text-danger p-0 border-0" title="Supprimer" onclick="confirmDelete({{ $devi->id }})">
+                                <i class="ti ti-trash fs-5"></i>
+                            </button>
+                        </form>
+                      </div>
+                  </td>
+                  
+                </tr>
+
+
+                
+                @empty
+                    Aucune Proforma enregistrée.
+                @endforelse
+                
+            </tbody>
+            
+              <tfoot>
+                <!-- start row -->
+                <tr>
+                    <th>N° Proforma</th>
+                    <th>Client</th>
+                    <th>Coût</th>
+                    <th>Statut</th>
+                    <th>Action</th>
+                </tr>
+                <!-- end row -->
+              </tfoot>
+            </table>
+            @endif
+
         </div>
       </div>
     </div>
