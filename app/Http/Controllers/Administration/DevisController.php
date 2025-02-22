@@ -323,7 +323,8 @@ class DevisController extends Controller
     //     return redirect()->route('dashboard.devis.index');
     // }
     public function storeRecap(Request $request, $id)
-    {
+{
+    try {
         // Valider les données envoyées par le formulaire
         $validated = $request->validate([
             'client_id' => 'required|exists:clients,id',  
@@ -345,7 +346,7 @@ class DevisController extends Controller
 
             'designations' => 'required|array', 
             'designations.*.id' => 'required|exists:designations,id',
-            'designations.*.designation' => 'required|exists:designations,id', 
+            'designations.*.description' => 'required|exists:designations,description', 
             'designations.*.quantity' => 'required|numeric|min:1',
             'designations.*.price' => 'required|numeric|min:0', 
             'designations.*.discount' => 'nullable|numeric|min:0', 
@@ -358,16 +359,13 @@ class DevisController extends Controller
         // Mettre à jour les informations du devis
         $devis->update([
             'client_id' => $validated['client_id'],
-            'banque_id' => $validated['banque_id'],
-
+            'banque_id' => $validated['banque_id'],  
             'date_emission' => $validated['date_emission'],
             'date_echeance' => $validated['date_echeance'],
-
             'commande' => $validated['commande'],
             'livraison' => $validated['livraison'],
             'validite' => $validated['validite'],
             'delai' => $validated['delai'],
-
             'total_ht' => $validated['total-ht'],
             'tva' => $validated['tva'],
             'total_ttc' => $validated['total-ttc'],
@@ -377,7 +375,7 @@ class DevisController extends Controller
 
         // Mettre à jour ou créer les lignes de devis
         foreach ($validated['designations'] as $designationData) {
-            $devisDetail = DevisDetail::updateOrCreate(
+            DevisDetail::updateOrCreate(
                 ['devis_id' => $devis->id, 'designation_id' => $designationData['id']],
                 [
                     'quantite' => $designationData['quantity'],
@@ -389,9 +387,24 @@ class DevisController extends Controller
         }
 
         // Redirection après mise à jour
-        return redirect()->route('dashboard.devis.index', $devis->id)
+        return redirect()->route('dashboard.devis.index')
             ->with('success', 'Proforma mise à jour avec succès.');
+
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        return redirect()->route('dashboard.devis.index')
+        ->withErrors($e->errors())  // Envoie les erreurs de validation
+        ->withInput();
+
+        // Si c'est une exception de validation, renvoyer les erreurs spécifiques
+        return redirect()->back()->withErrors($e->errors())->withInput();
+    } catch (\Exception $e) {
+        // Capturer toute autre exception générique et retourner un message d'erreur
+        return redirect()->route('dashboard.devis.index')
+            ->with('error', 'Une erreur est survenue lors de la mise à jour du devis: ' . $e->getMessage());
     }
+}
+
+    
 
 
 

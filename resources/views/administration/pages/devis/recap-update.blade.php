@@ -17,6 +17,12 @@
             </ul>
         </div>
     @endif
+
+    @if(session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+@endif
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
@@ -132,7 +138,7 @@
                     <div class="form-actions">
                         <form method="POST" action="{{ route('dashboard.devis.storeRecap', $devis->id) }}">                            
                             @csrf
-                            {{-- @method('PUT') --}}
+                            @method('PUT')
 
                             <input type="hidden" name="client_id" value="{{ $client->id }}">
                             <input type="hidden" name="banque_id" value="{{ $banque->id }}">

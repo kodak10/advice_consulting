@@ -20,7 +20,6 @@
 
     <form action="{{ route('dashboard.devis.recapUpdate', $devis->id) }}" method="POST">
         @csrf
-        {{-- @method('PUT') --}}
 
         <div class="row">
             <div class="col-lg-8">
