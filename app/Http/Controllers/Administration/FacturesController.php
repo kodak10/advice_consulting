@@ -35,8 +35,8 @@ class FacturesController extends Controller
     public function index()
     {
         $devis = Devis::where('pays_id', Auth::user()->pays_id)
-        ->where('user_id', Auth::user()->id)
-        ->where('status', '!=', 'En attente')
+        //->where('user_id', Auth::user()->id)
+        ->where('status',  'Approuvé')
         ->get();
 
         $factures = Facture::where('pays_id', Auth::user()->pays_id)
@@ -66,8 +66,19 @@ class FacturesController extends Controller
 
     public function create($id)
     {
+        
+
         // Récupérer le devis avec l'ID passé
         $devis = Devis::with('client', 'banque', 'details.designation')->findOrFail($id);
+
+        if ($devis->status === 'Terminé') {
+            return redirect()->back()->with('error', "Cette proforma a déjà fait l'objet d'une facture.");
+        }
+        
+        if ($devis->status === 'Réfusé') {
+            return redirect()->back()->with('error', "Cette proforma a déjà été refusée.");
+        }
+        
 
         // Vérifie si les données sont bien récupérées
         $client = $devis->client;

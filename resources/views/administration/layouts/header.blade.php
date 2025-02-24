@@ -44,29 +44,26 @@
               </li>
               
 
-              <!-- ------------------------------- -->
-              <!-- start notification Dropdown -->
-              <!-- ------------------------------- -->
               <ul id="notification-list">
                 <!-- Les notifications apparaîtront ici -->
-            </ul>
-            
-            <li class="nav-item nav-icon-hover-bg rounded-circle dropdown">
-                <a class="nav-link position-relative" href="javascript:void(0)" id="drop2" aria-expanded="false">
-                    <i class="ti ti-bell-ringing"></i>
-                    <div class="notification bg-primary rounded-circle"></div>
-                </a>
-                <div class="dropdown-menu content-dd dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
-                    <div class="d-flex align-items-center justify-content-between py-3 px-7">
-                        <h5 class="mb-0 fs-5 fw-semibold">Notifications</h5>
-                        <span class="badge text-bg-primary rounded-4 px-3 py-1 lh-sm">5 Nouveau</span>
-                    </div>
-                    <div id="notification-list"></div> <!-- Liste des notifications -->
-                    <div class="py-6 px-7 mb-1">
-                        <button class="btn btn-outline-primary w-100">Voir toutes les notifications</button>
-                    </div>
-                </div>
-            </li>
+              </ul>
+              
+              <li class="nav-item nav-icon-hover-bg rounded-circle dropdown">
+                  <a class="nav-link position-relative" href="javascript:void(0)" id="drop2" aria-expanded="false">
+                      <i class="ti ti-bell-ringing"></i>
+                      <div class="notification bg-primary rounded-circle">0</div> <!-- Compteur de notifications -->
+                  </a>
+                  <div class="dropdown-menu content-dd dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
+                      <div class="d-flex align-items-center justify-content-between py-3 px-7">
+                          <h5 class="mb-0 fs-5 fw-semibold">Notifications</h5>
+                          <span class="badge text-bg-primary rounded-4 px-3 py-1 lh-sm" id="notification-count">5 Nouveau</span>
+                      </div>
+                      <div id="notification-list"></div> <!-- Liste des notifications -->
+                      <div class="py-6 px-7 mb-1">
+                          <button class="btn btn-outline-primary w-100">Voir toutes les notifications</button>
+                      </div>
+                  </div>
+              </li>
             
             
               <!-- ------------------------------- -->

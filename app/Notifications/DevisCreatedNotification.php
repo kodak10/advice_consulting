@@ -35,10 +35,15 @@ class DevisCreatedNotification extends Notification
     public function toDatabase($notifiable)
     {
         return [
-            'message' => "Un nouveau devis a été créé : " . $this->devis->id,
+            // 'message' => "Un nouveau devis a été créé : " . $this->devis->id,
+            // 'devis_id' => $this->devis->id,
+            // 'user_id' => $this->devis->user_id, // L'utilisateur associé au devis
+            // 'devis_number' => $this->devis->num_proforma, // Numéro du devis
+
+            'message' => "Un nouveau devis a été créé : ",
             'devis_id' => $this->devis->id,
             'user_id' => $this->devis->user_id, // L'utilisateur associé au devis
-            'devis_number' => $this->devis->numero, // Numéro du devis
+            'devis_number' => $this->devis->num_proforma, // Numéro du devis
         ];
     }
 
@@ -46,10 +51,10 @@ class DevisCreatedNotification extends Notification
     public function toBroadcast($notifiable)
     {
         return new BroadcastMessage([
+            'message' => "Un nouveau devis a été créé : ",
             'devis_id' => $this->devis->id,
-            'message' => 'Un nouveau devis a été créé.',
-            'user_id' => $this->devis->user_id,  // L'utilisateur associé
-            'devis_number' => $this->devis->numero, // Numéro du devis
+            'user_id' => $this->devis->user_id, // L'utilisateur associé au devis
+            'devis_number' => $this->devis->num_proforma, // Numéro du devis
         ]);
     }
 

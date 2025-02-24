@@ -28,10 +28,14 @@ class DevisController extends Controller
     public function index()
     {
         $devis = Devis::where('pays_id', Auth::user()->pays_id)
+        ->where('status', 'Approuvé')
+        ->get();
+
+        $mes_devis = Devis::where('pays_id', Auth::user()->pays_id)
         ->where('user_id', Auth::user()->id)
         ->get();
 
-        return view('administration.pages.devis.index', compact('devis'));
+        return view('administration.pages.devis.index', compact('devis', 'mes_devis'));
 
     } 
 
@@ -74,7 +78,7 @@ class DevisController extends Controller
         $devis = Devis::findOrFail($id);
 
         // Vérifier si le statut est "En attente"
-        if ($devis->status !== 'En attente') {
+        if ($devis->status !== 'En Attente') {
             // Si le statut n'est pas "En attente", empêcher la modification
             return redirect()->back()->with('error', 'La Proforma ne peut être approuvé que s\'il est en attente.');
         }
