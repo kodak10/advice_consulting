@@ -6,6 +6,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="user-id" content="{{ auth()->id() }}">
 
   <!-- Favicon icon-->
   <link rel="shortcut icon" type="image/png" href="{{ asset('adminAssets/images/logos/favicon.png') }}">
@@ -15,6 +16,7 @@
 
   <title>Advice Consulting | Proforma - Factures</title>
   <meta name="csrf-token" content="{{ csrf_token() }}">
+  
   
   <link rel="stylesheet" href="{{ asset('adminAssets/libs/quill/dist/quill.snow.css') }}">
   <link rel="stylesheet" href="{{ asset('adminAssets/libs/select2/dist/css/select2.min.css') }}">
@@ -72,45 +74,39 @@
 
   <!-- Laravel Echo et Pusher -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/laravel-echo/1.11.2/echo.iife.min.js"></script>
-  <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+  {{-- <script src="https://js.pusher.com/7.0/pusher.min.js"></script> --}}
+  <script src="https://cdn.jsdelivr.net/npm/pusher-js@7.0.3/dist/web/pusher.min.js"></script>
+
 
   <script>
-    // Initialisation de Laravel Echo
     window.Pusher = Pusher;
-
     window.Echo = new Echo({
-      broadcaster: 'pusher',
-      key: '5a299c7322c90ce58687',  // Utilisez votre clé Pusher ici
-      cluster: 'eu',  // Utilisez votre cluster Pusher ici
-      forceTLS: true
+        broadcaster: 'pusher',
+        key: '5a299c7322c90ce58687',  // Utilisez votre clé Pusher ici
+        cluster: 'eu',  // Utilisez votre cluster Pusher ici
+        forceTLS: true,
+        debug: true,
+        reconnect: true,  // Active la reconnexion automatique
+
     });
 
-   // Supposez que vous ayez l'ID de l'utilisateur
-   let userId = 1; // Remplacez cela par l'ID de l'utilisateur connecté
+    let userId = document.querySelector('meta[name="user-id"]').getAttribute('content');
 
-  window.Echo.private(`user.${userId}`)
+window.Echo.private(`user.${userId}`)
     .listen('DevisCreated', (event) => {
-        console.log('Notification reçue :', event); // Cela devrait afficher l'événement dans la console
+        console.log('Notification reçue :', event);
         alert(`Nouveau devis créé : ${event.message}`);
-        
-        // Ajoutez la notification à la liste
-        let notificationList = document.getElementById('notification-list');
-        if (notificationList) {
-            let notificationItem = document.createElement('li');
-            notificationItem.classList.add('dropdown-item');
-            notificationItem.innerText = event.message;
-            notificationList.appendChild(notificationItem);
-        }
     })
     .error((error) => {
-        console.log('Erreur avec Pusher:', error); // S'il y a une erreur avec Pusher
+        console.log('Erreur avec Pusher:', error);
     });
 
 
-    
+</script>
 
 
-  </script>
+
+
 
   @stack('scripts') <!-- C'est ici que les scripts seront inclus -->
 </body>

@@ -4,9 +4,7 @@ use Illuminate\Support\Facades\Broadcast;
 
 // routes/channels.php
 
-Broadcast::channel('devis-create', function ($user) {
-    return (bool) $user; // Renvoie `true` si l'utilisateur est connecté
+Broadcast::channel('user.{userId}', function ($user, $userId) {
+    return (int) $user->id === (int) $userId;
 });
-
-
 

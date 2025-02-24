@@ -16,7 +16,7 @@ class DevisCreatedNotification extends Notification
 
     public $devis;
 
-    public function __construct(Devis $devis)
+    public function __construct($devis)
     {
         $this->devis = $devis;
     }
@@ -30,10 +30,8 @@ class DevisCreatedNotification extends Notification
     {
         return ['database', 'broadcast']; // Enregistre dans la base et diffuse en temps réel
     }
-
-    /**
-     * Notification dans la base de données.
-     */
+    // public function via($notifiable)
+   
     public function toDatabase($notifiable)
     {
         return [
@@ -44,18 +42,24 @@ class DevisCreatedNotification extends Notification
         ];
     }
 
-    /**
-     * Diffusion en temps réel via Pusher.
-     */
+  
     public function toBroadcast($notifiable)
     {
         return new BroadcastMessage([
-            'message' => "Un nouveau devis a été créé : " . $this->devis->id,
             'devis_id' => $this->devis->id,
-            'user_id' => $this->devis->user_id,
-            'devis_number' => $this->devis->numero,
+            'message' => 'Un nouveau devis a été créé.',
+            'user_id' => $this->devis->user_id,  // L'utilisateur associé
+            'devis_number' => $this->devis->numero, // Numéro du devis
         ]);
     }
+
+    
+
+    public function receivesBroadcastNotificationsOn(): string
+{
+    return 'users.' . $this->devis->user_id;
+}
+
 
     /**
      * Canal de diffusion.
@@ -64,6 +68,8 @@ class DevisCreatedNotification extends Notification
     {
         return new PrivateChannel('user.' . $this->devis->user_id);
     }
+
+    
 
     /**
      * Événement pour broadcasting.

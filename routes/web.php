@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\DevisCreated;
 use App\Http\Controllers\Administration\AdminController;
 use App\Http\Controllers\Administration\BanqueController;
 use App\Http\Controllers\Administration\ClientController;
@@ -8,8 +9,10 @@ use App\Http\Controllers\Administration\DevisController;
 use App\Http\Controllers\Administration\FacturesController;
 use App\Http\Controllers\Administration\MessagerieController;
 use App\Http\Controllers\Administration\UsersController;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Broadcast;
+use Illuminate\Support\Facades\Route;
+
 
 
 Route::get('/', function () {
@@ -60,6 +63,25 @@ Route::middleware(['auth', 'verified','check.user.status'])->prefix('dashboard')
 
     Route::resource('messagerie', MessagerieController::class);
 
+    Broadcast::routes();
+
+    Route::get('/test', function () {
+        // Créez ou trouvez un devis existant
+        $devis = \App\Models\Devis::first(); // Récupère le premier devis de la base de données
+    
+        // Si aucun devis n'existe, vous pouvez en créer un temporaire pour tester
+        if (!$devis) {
+            $devis = \App\Models\Devis::create([
+                'client_id' => 1, // Assurez-vous que vous avez un client avec l'ID 1
+                'total' => 1000, // Exemple de total
+                'date' => now(), // Exemple de date
+            ]);
+        }
+    
+        // Déclenche l'événement avec l'instance de Devis
+        event(new \App\Events\DevisCreated($devis));
+    });
+    
     
 });
 
@@ -194,7 +216,7 @@ Route::get('/test-role', function () {
 
 Auth::routes(['verify' => true]);
 
-
+Broadcast::routes();
 // Route::fallback(function () {
 //     return view('administration.pages.maintenance');
 // })->withoutMiddleware(['auth']);

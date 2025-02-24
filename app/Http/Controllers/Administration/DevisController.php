@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Administration;
 
 use App\Events\DevisCreated;
+use App\Events\TestEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Banque;
 use App\Models\Client;
@@ -14,8 +15,8 @@ use App\Notifications\DevisCreatedNotification;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class DevisController extends Controller
 {
@@ -201,18 +202,14 @@ class DevisController extends Controller
             }
 
             // Diffuser l'événement après avoir créé le devis
-            // event(new DevisCreated($devis));
-
-
-            // $users = User::all(); 
-            // foreach ($users as $user) {
-            //     $user->notify(new DevisCreatedNotification($devis));
-            // }
             $users = User::all(); 
             foreach ($users as $user) {
-                $user->notify((new DevisCreatedNotification($devis))->delay(now()->addSeconds(10)));
+                $user->notify(new DevisCreatedNotification($devis));  // Retirer le délai pour tester
             }
-            Log::info('Notification envoyée pour le devis ID: ' . $devis->id);
+
+            Log::info('DevisCreated notification sent to user ' . $user->id);
+
+
 
 
             // Générer le PDF
