@@ -244,7 +244,7 @@ class DevisController extends Controller
             return response()->download(storage_path('app/public/' . $imagePath));
 
         } catch (\Exception $e) {
-            Log::error("Erreur lors de la génération ou de l'enregistrement du PDF : " . $e->getMessage());
+            Log::error("Erreur lors de la génération ou de l'enregistrement du PDF: " . $e->getMessage());
             return back()->withErrors("Une erreur s'est produite lors de la génération du PDF. Veuillez réessayer.");
         }
     }
