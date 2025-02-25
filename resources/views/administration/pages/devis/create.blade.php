@@ -81,6 +81,24 @@
                     </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="">
+                        <label class="form-label">Devise</label>
+                        <select id="devise" class="form-control">
+                            <option value="" selected disabled>Sélectionner une devise</option>
+                            @foreach ($devises as $devise)
+                                <option value="{{ $devise->code }}" data-taux="{{ $devise->taux_conversion }}">
+                                    {{ strtoupper($devise->code) }}
+                                </option>
+                            @endforeach
+                        </select>
+                        
+                    </div>
+                </div>
+                
+                
+            </div>
 
             <div class="row">
                 <div class="col-lg-12">
@@ -343,7 +361,7 @@
 
 @endpush
 @push('scripts')
-<script>
+{{-- <script>
     $(document).ready(function () {
     function updateTotal(row) {
         var price = parseFloat(row.find('.price').val()) || 0;
@@ -428,6 +446,98 @@
         updateTotalHT();
     });
 
+});
+
+</script> --}}
+
+<script>
+    $(document).ready(function () {
+    function updateTotal(row, tauxConversion) {
+        var price = parseFloat(row.find('.price').val()) || 0;
+        var quantity = parseInt(row.find('.quantity').val()) || 1;
+        var discount = parseFloat(row.find('.discount').val()) || 0;
+
+        var total = (price * quantity) - discount;
+        if (total < 0) total = 0; // Empêcher un total négatif
+
+        row.find('.total').val((total * tauxConversion).toFixed(2)); // Appliquer la conversion de devise
+        updateTotalHT(tauxConversion);
+    }
+
+    // Mise à jour du prix unitaire lorsqu'on sélectionne une désignation
+    $(document).on('change', '.designation', function () {
+        var selectedOption = $(this).find(':selected');
+        var price = parseFloat(selectedOption.data('price')) || 0;
+        var row = $(this).closest('.row');
+        row.find('.price').val(price); // Mettre à jour le prix unitaire
+        updateTotal(row, getTauxConversion()); // Mise à jour en tenant compte de la devise
+    });
+
+    // Mise à jour du total lorsqu'on modifie quantité ou remise
+    $(document).on('input', '.quantity, .discount', function () {
+        var row = $(this).closest('.row');
+        updateTotal(row, getTauxConversion()); // Conversion lors de modification des quantités/remises
+    });
+
+    // Récupérer le taux de conversion de la devise sélectionnée
+    function getTauxConversion() {
+        var deviseCode = $('#devise').val();
+        var taux = $('#devise option:selected').data('taux');
+        return taux || 1; // Si aucune devise n'est sélectionnée, on laisse le taux à 1 (monnaie locale)
+    }
+
+    // Fonction pour mettre à jour Total HT
+    function updateTotalHT(tauxConversion) {
+        var totalHT = 0;
+        $('.email-repeater .row').each(function () {
+            var row = $(this);
+            var total = parseFloat(row.find('.total').val()) || 0;
+            totalHT += total;
+        });
+
+        // Mise à jour de Total HT
+        $('.total-ht').val((totalHT * tauxConversion).toFixed(2));
+
+        updateTVAandTTC(totalHT, tauxConversion);
+    }
+
+    // Fonction pour mettre à jour TVA et Total TTC
+    function updateTVAandTTC(totalHT, tauxConversion) {
+        var tvaRate = 18; // TVA 18%
+        var tvaValue = (totalHT * tvaRate) / 100; // Valeur de la TVA
+        var totalTTC = totalHT + tvaValue; // Calcul correct du Total TTC
+
+        // Mise à jour de la TVA (valeur fixe à 18)
+        $('.tva').val(tvaRate.toFixed(2)); // TVA en pourcentage
+
+        // Mise à jour du Total TTC
+        $('.total-ttc').val((totalTTC * tauxConversion).toFixed(2));
+
+        updateSolde(totalTTC);
+    }
+
+    // Fonction pour mettre à jour le solde
+    function updateSolde(totalTTC) {
+        var acompte = parseFloat($('.acompte').val()) || 0;
+        var solde = totalTTC - acompte;
+
+        // Mise à jour du solde
+        $('.solde').val(solde.toFixed(2));
+    }
+
+    // Quand l'acompte change, mettre à jour le solde
+    $(document).on('input', '.acompte', function () {
+        var totalTTC = parseFloat($('.total-ttc').val()) || 0;
+        updateSolde(totalTTC);
+    });
+
+    // Mettre à jour les prix lorsque la devise est changée
+    $('#devise').on('change', function () {
+        var tauxConversion = getTauxConversion(); // Récupérer le taux de la devise sélectionnée
+        $('.email-repeater .row').each(function () {
+            updateTotal($(this), tauxConversion);
+        });
+    });
 });
 
 </script>

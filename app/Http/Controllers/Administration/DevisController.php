@@ -10,6 +10,7 @@ use App\Models\Client;
 use App\Models\Designation;
 use App\Models\Devis;
 use App\Models\DevisDetail;
+use App\Models\Devise;
 use App\Models\User;
 use App\Notifications\DevisCreatedNotification;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -24,6 +25,18 @@ class DevisController extends Controller
     {
         $this->middleware('role:Comptable|Commercial');
     }
+
+    public function getDeviseRate($deviseCode)
+    {
+        $devise = Devise::where('code', $deviseCode)->first();
+
+        if ($devise) {
+            return response()->json(['taux_conversion' => $devise->taux_conversion]);
+        }
+
+        return response()->json(['error' => 'Devise non trouvée'], 404);
+    }
+
     
     public function index()
     {
@@ -44,7 +57,8 @@ class DevisController extends Controller
         $clients = Client::all();
         $banques = Banque::all();
         $designations = Designation::all();
-        return view('administration.pages.devis.create', compact('clients','designations','banques'));
+        $devises = Devise::all();
+        return view('administration.pages.devis.create', compact('clients','designations','banques', 'devises'));
 
     }
 
@@ -76,6 +90,10 @@ class DevisController extends Controller
     {
         // Récupérer le devis
         $devis = Devis::findOrFail($id);
+        $creator = $devis->user_id;  // Assure-toi que $devis->user_id est l'utilisateur qui a créé le devis
+
+        $comptables = User::role('Comptable')->where('id', '!=', $creator)->get(); // Exclure le créateur
+
 
         // Vérifier si le statut est "En attente"
         if ($devis->status !== 'En Attente') {
@@ -88,6 +106,15 @@ class DevisController extends Controller
         // Changer le statut en "Approuvé"
         $devis->status = 'Approuvé';
         $devis->save();
+
+
+        foreach ($comptables as $user) {
+            // Envoie la notification
+            $user->notify(new DevisCreatedNotification($devis));
+        
+            // Log de l'envoi de la notification
+            Log::info('DevisCreated notification sent to user ' . $user->id);
+        }
 
         // Rediriger avec un message de succès
         return redirect()->back()->with('success', 'Proforma approuvée avec succès.');
@@ -205,14 +232,7 @@ class DevisController extends Controller
                 $devisDetail->save();
             }
 
-            // Diffuser l'événement après avoir créé le devis
-            $users = User::all(); 
-            foreach ($users as $user) {
-                $user->notify(new DevisCreatedNotification($devis));  // Retirer le délai pour tester
-            }
-
-            Log::info('DevisCreated notification sent to user ' . $user->id);
-
+           
 
 
 

@@ -44,10 +44,10 @@
               </li>
               
 
-              <ul id="notification-list">
+              {{-- <ul id="notification-list">
                 <!-- Les notifications apparaîtront ici -->
               </ul>
-              
+               --}}
               <li class="nav-item nav-icon-hover-bg rounded-circle dropdown">
                   <a class="nav-link position-relative" href="javascript:void(0)" id="drop2" aria-expanded="false">
                       <i class="ti ti-bell-ringing"></i>

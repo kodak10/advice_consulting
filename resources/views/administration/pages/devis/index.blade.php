@@ -119,7 +119,7 @@
                     Aucune Proforma enregistrée.
                 @endforelse
                 
-            </tbody>
+              </tbody>
             
               <tfoot>
                 <!-- start row -->
@@ -139,7 +139,7 @@
       <div class="card card-body">
         <div class="table-responsive">
 
-          <table id="zero_config" class="table table-striped table-bordered text-nowrap align-middle">
+          <table id="zero_config2" class="table table-striped table-bordered text-nowrap align-middle">
             <thead>
               <!-- start row -->
               <tr>
@@ -202,7 +202,7 @@
           </table>
 
 
-          <table id="zero_config2" class="mt-5 table table-striped table-bordered text-nowrap align-middle">
+          <table id="zero_config3" class="mt-5 table table-striped table-bordered text-nowrap align-middle">
             <thead>
               <!-- start row -->
               <tr>

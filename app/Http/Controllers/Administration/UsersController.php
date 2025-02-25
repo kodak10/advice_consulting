@@ -53,7 +53,7 @@ class UsersController extends Controller
             'password' => Hash::make('password'),
             'email_verified_at' => null,
             'status' => 'Actif',
-            'pays_id' => Auth::user()->pays_id,
+            'pays_id' => $request->pays_id,
 
         ]);
 

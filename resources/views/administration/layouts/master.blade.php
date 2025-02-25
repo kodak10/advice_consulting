@@ -75,64 +75,242 @@
 
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> <!-- Inclure SweetAlert2 -->
 
-  <script>
+   <!-- Laravel Echo et Pusher -->
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/laravel-echo/1.11.2/echo.iife.min.js"></script>
+   {{-- <script src="https://js.pusher.com/7.0/pusher.min.js"></script> --}}
+   <script src="https://cdn.jsdelivr.net/npm/pusher-js@7.0.3/dist/web/pusher.min.js"></script>
+
+
+{{-- <script>
     window.Pusher = Pusher;
     window.Echo = new Echo({
+        broadcaster: 'pusher',
+        key: '5a299c7322c90ce58687',  // Utilisez votre clé Pusher ici
+        cluster: 'eu',  // Utilisez votre cluster Pusher ici
+        forceTLS: true,
+        debug: true,
+        reconnect: true,  // Active la reconnexion automatique
+    });
+
+    console.log('Echo initialized:', window.Echo);
+
+    let userId = document.querySelector('meta[name="user-id"]').getAttribute('content');
+
+    // Charger le son de notification
+    const notificationSound = new Audio('/path/to/notification-sound.mp3'); // Remplace par le chemin de ton fichier audio
+
+    if (userId) {
+        let channel = window.Echo.private(`user.${userId}`);
+
+        channel.listen('.devis.created', (event) => {  // ✅ Ajoute un point au début
+            console.log('Notification reçue :', event);
+            
+            // Joue le son de notification
+            notificationSound.play();
+
+            // Affichage avec Toast
+            toastr.info(`Devis numéro : ${event.devis_number}`, 'Nouveau devis créé', {
+                positionClass: 'toast-top-right',  // Position en haut à droite
+                timeOut: 5000,  // Durée avant la disparition du toast (5 secondes)
+                closeButton: true,  // Affiche le bouton pour fermer le toast
+                progressBar: true,  // Affiche une barre de progression
+            });
+
+            // Ajouter à la liste des notifications
+            let notificationList = document.getElementById('notification-list');
+            let newNotification = document.createElement('li');
+            newNotification.classList.add('notification-item');
+            newNotification.innerHTML = `
+                <div>
+                    <strong>Nouveau devis créé</strong><br>
+                    Devis numéro : ${event.devis_number}
+                </div>
+            `;
+            notificationList.appendChild(newNotification);
+
+            // Mettre à jour le nombre de notifications dans l'icône
+            let notificationCount = document.querySelector('.notification');
+            let currentCount = parseInt(notificationCount.textContent || '0');
+            notificationCount.textContent = currentCount + 1;
+        });
+
+        channel.error((error) => {
+            console.log('Erreur avec Pusher:', error);
+            toastr.error(`Erreur de connexion avec Pusher: ${error.message}`, 'Erreur', {
+                positionClass: 'toast-top-right',
+                timeOut: 5000,
+                closeButton: true,
+                progressBar: true,
+            });
+        });
+
+        console.log('Écoute sur le canal:', `user.${userId}`);
+    } else {
+        console.error('❌ Erreur : Impossible de récupérer userId.');
+    }
+</script> --}}
+<!-- Placez le chemin de ton fichier audio dans un attribut HTML -->
+<audio id="notification-sound" data-sound-url="{{ asset('adminAssets/bip.mp4') }}"></audio>
+
+
+{{-- <script>
+  window.Pusher = Pusher;
+  window.Echo = new Echo({
       broadcaster: 'pusher',
-      key: '5a299c7322c90ce58687',
-      cluster: 'eu',
+      key: '5a299c7322c90ce58687',  // Utilisez votre clé Pusher ici
+      cluster: 'eu',  // Utilisez votre cluster Pusher ici
       forceTLS: true,
       debug: true,
-      reconnect: true,
-    });
-  
-    // S'abonner au canal privé
-    let userId = document.querySelector('meta[name="user-id"]').getAttribute('content');
-  
-    window.Echo.private(`user.${userId}`)
-      .listen('DevisCreated', (event) => {
-          console.log('Notification reçue:', event);  // Affiche l'événement dans la console
-  
-          // Affichage avec SweetAlert2
-          Swal.fire({
-              title: 'Nouveau devis créé',
-              text: event.message,
-              icon: 'info',  // Type d'icône pour l'alerte
-              confirmButtonText: 'Ok'
+      reconnect: true,  // Active la reconnexion automatique
+  });
+
+  console.log('Echo initialized:', window.Echo);
+
+  let userId = document.querySelector('meta[name="user-id"]').getAttribute('content');
+
+  // Récupère l'URL de l'audio depuis un attribut HTML
+  const notificationSound = new Audio(document.querySelector('#notification-sound').getAttribute('data-sound-url'));
+
+  if (userId) {
+      let channel = window.Echo.private(`user.${userId}`);
+
+      channel.listen('.devis.created', (event) => {  // ✅ Ajoute un point au début
+          console.log('Notification reçue :', event);
+          
+          // Joue le son de notification
+          notificationSound.play();
+
+          // Affichage avec Toast
+          toastr.info(`Devis numéro : ${event.devis_number}`, 'Nouveau devis créé', {
+              positionClass: 'toast-top-right',  // Position en haut à droite
+              timeOut: 5000,  // Durée avant la disparition du toast (5 secondes)
+              closeButton: true,  // Affiche le bouton pour fermer le toast
+              progressBar: true,  // Affiche une barre de progression
           });
-  
+
           // Ajouter à la liste des notifications
           let notificationList = document.getElementById('notification-list');
           let newNotification = document.createElement('li');
           newNotification.classList.add('notification-item');
           newNotification.innerHTML = `
-            <div>
-              <strong>Nouveau devis créé</strong><br>
-              ${event.message}
-            </div>
+              <div>
+                  <strong>Nouveau devis créé</strong><br>
+                  Devis numéro : ${event.devis_number}
+              </div>
           `;
           notificationList.appendChild(newNotification);
-  
+
           // Mettre à jour le nombre de notifications dans l'icône
           let notificationCount = document.querySelector('.notification');
           let currentCount = parseInt(notificationCount.textContent || '0');
           notificationCount.textContent = currentCount + 1;
-      })
-      .error((error) => {
-          console.log('Erreur avec Pusher:', error);
-          Swal.fire({
-              title: 'Erreur de connexion',
-              text: `Erreur de connexion avec Pusher: ${error.message}`,
-              icon: 'error',
-              confirmButtonText: 'Ok'
-          });
-      })
-      .subscribe(() => {
-          console.log(`Abonnement au canal privé user.${userId} réussi`);
       });
-  </script>
 
-  @stack('scripts') <!-- C'est ici que les scripts seront inclus -->
+      channel.error((error) => {
+          console.log('Erreur avec Pusher:', error);
+          toastr.error(`Erreur de connexion avec Pusher: ${error.message}`, 'Erreur', {
+              positionClass: 'toast-top-right',
+              timeOut: 5000,
+              closeButton: true,
+              progressBar: true,
+          });
+      });
+
+      console.log('Écoute sur le canal:', `user.${userId}`);
+  } else {
+      console.error('❌ Erreur : Impossible de récupérer userId.');
+  }
+</script> --}}
+
+<script>
+    window.Pusher = Pusher;
+    window.Echo = new Echo({
+        broadcaster: 'pusher',
+        key: '5a299c7322c90ce58687',  // Utilisez votre clé Pusher ici
+        cluster: 'eu',  // Utilisez votre cluster Pusher ici
+        forceTLS: true,
+        debug: true,
+        reconnect: true,  // Active la reconnexion automatique
+    });
+
+    console.log('Echo initialized:', window.Echo);
+
+    let userId = document.querySelector('meta[name="user-id"]').getAttribute('content');
+
+    // Charger le son de notification
+    const notificationSound = new Audio(document.querySelector('#notification-sound').getAttribute('data-sound-url'));
+
+    //const notificationSound = new Audio('/path/to/notification-sound.mp3'); // Remplace par le chemin de ton fichier audio
+
+    // Jouer le son uniquement après une interaction avec la page (par exemple, un clic)
+    let soundPlayed = false;
+
+    document.body.addEventListener('click', () => {
+        if (!soundPlayed) {
+            notificationSound.play();
+            soundPlayed = true;  // Empêche la lecture multiple du son
+        }
+    });
+
+    if (userId) {
+        let channel = window.Echo.private(`user.${userId}`);
+
+        channel.listen('.devis.created', (event) => {
+            console.log('Notification reçue :', event);
+
+            // Joue le son de notification après interaction
+            if (!soundPlayed) {
+                notificationSound.play();
+                soundPlayed = true;
+            }
+
+            // Affichage avec Toast
+            toastr.info(`Devis numéro : ${event.devis_number}`, 'Nouveau devis créé', {
+                positionClass: 'toast-top-right',  // Position en haut à droite
+                timeOut: 5000,  // Durée avant la disparition du toast (5 secondes)
+                closeButton: true,  // Affiche le bouton pour fermer le toast
+                progressBar: true,  // Affiche une barre de progression
+            });
+
+            // Ajouter à la liste des notifications
+            let notificationList = document.getElementById('notification-list');
+            let newNotification = document.createElement('li');
+            newNotification.classList.add('notification-item');
+            newNotification.innerHTML = `
+                <div>
+                    <strong>Nouveau devis créé</strong><br>
+                    Devis numéro : ${event.devis_number}
+                </div>
+            `;
+            notificationList.appendChild(newNotification);
+
+            // Mettre à jour le nombre de notifications dans l'icône
+            let notificationCount = document.querySelector('.notification');
+            let currentCount = parseInt(notificationCount.textContent || '0');
+            notificationCount.textContent = currentCount + 1;
+        });
+
+        channel.error((error) => {
+            console.log('Erreur avec Pusher:', error);
+            toastr.error(`Erreur de connexion avec Pusher: ${error.message}`, 'Erreur', {
+                positionClass: 'toast-top-right',
+                timeOut: 5000,
+                closeButton: true,
+                progressBar: true,
+            });
+        });
+
+        console.log('Écoute sur le canal:', `user.${userId}`);
+    } else {
+        console.error('❌ Erreur : Impossible de récupérer userId.');
+    }
+</script>
+
+
+
+
+
+  @stack('scripts') 
 </body>
 
 </html>

@@ -12,6 +12,7 @@ $(function () {
  ****************************************/
 $("#zero_config").DataTable();
 $("#zero_config2").DataTable();
+$("#zero_config3").DataTable();
 
 /****************************************
  *       Default Order Table           *

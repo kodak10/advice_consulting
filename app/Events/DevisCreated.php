@@ -17,17 +17,25 @@ class DevisCreated implements ShouldBroadcast
 
     public $devis;
 
+    
+
     /**
      * Crée une nouvelle instance de l'événement.
      *
      * @param  Devis  $devis
      * @return void
      */
-    public function __construct(Devis $devis)
-    {
-        $this->devis = $devis;
-        Log::info('DevisCreated event dispatched with Devis ID: ' . $devis->id);  // Log pour s'assurer que l'événement est dispatché
-    }
+    // public function __construct(Devis $devis)
+    // {
+    //     $this->devis = $devis;
+    //     Log::info('DevisCreated event dispatched with Devis ID: ' . $devis->id);  // Log pour s'assurer que l'événement est dispatché
+    // }
+
+    public function __construct($user)
+{
+    Log::info("📢 Événement DevisCreated envoyé pour user: {$user->id}");
+}
+
 
     /**
      * Le canal sur lequel diffuser l'événement.

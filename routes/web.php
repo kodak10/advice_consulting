@@ -82,7 +82,8 @@ Route::middleware(['auth', 'verified','check.user.status'])->prefix('dashboard')
         event(new \App\Events\DevisCreated($devis));
     });
     
-    
+    Broadcast::routes();
+
 });
 
 Route::get('/test-role', function () {
@@ -216,7 +217,6 @@ Route::get('/test-role', function () {
 
 Auth::routes(['verify' => true]);
 
-Broadcast::routes();
 // Route::fallback(function () {
 //     return view('administration.pages.maintenance');
 // })->withoutMiddleware(['auth']);

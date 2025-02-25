@@ -92,6 +92,16 @@
                             @csrf
                             <div class="row">
                                 <div class="col-md-12">
+                                    <div class="mb-3 contact-occupation">
+                                        <select class="form-control" name="pays_id" required>
+                                            <option value="1" {{ old('pays_id') == '1' ? 'selected' : '' }}>Côte d'Ivoire</option>
+                                            <option value="2" {{ old('pays_id') == '2' ? 'selected' : '' }}>Tchad</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
                                     <div class="mb-3 contact-name">
                                         <div class="input-group">
                                             <span class="input-group-text"><i class="ti ti-user"></i></span>
@@ -164,17 +174,19 @@
               <thead>
                 <!-- start row -->
                 <tr>
-                  <th>Nom</th>
-                  <th>Email</th>
-                  <th>Téléphone</th>
-                  <th>Role</th>
-                  <th>Statut</th>
-                  <th>Action</th>
+                    <th>Pays</th>
+                    <th>Nom</th>
+                    <th>Email</th>
+                    <th>Téléphone</th>
+                    <th>Role</th>
+                    <th>Statut</th>
+                    <th>Action</th>
                 </tr>
               </thead>
               <tbody>
                 @forelse ($users as $user)
                 <tr>
+                    <td>{{ $user->pays->name }}</td>
                     <td>
                         <h6 class="mb-0">{{ $user->name }}</h6>
                     </td>
@@ -205,6 +217,7 @@
             
               <tfoot>
                 <tr>
+                    <th>Pays</th>
                     <th>Nom</th>
                     <th>Email</th>
                     <th>Téléphone</th>
