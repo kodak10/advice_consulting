@@ -79,7 +79,7 @@
                             <h6 class="mb-0">{{ $devi->num_proforma }}</h6>
                         </td>
                         <td>{{ $devi->client->nom }}</td>
-                        <td>{{ $devi->details->sum('total') }}</td>
+                        <td>{{ $devi->details->sum('total') }} {{ $devi->devise }}</td>
                         <td>{{ $devi->user->name}}</td>
                         <td>{{ $devi->status ?? 'Non renseigné' }}</td>
                         <td>
@@ -166,7 +166,7 @@
                             <h6 class="mb-0">{{ $myFacture->created_at }}</h6>
                         </td>
                         <td>{{ $myFacture->devis->client->nom }}</td>
-                        <td>{{ $myFacture->devis->details->sum('total') }}</td>
+                        <td>{{ $myFacture->devis->details->sum('total') }} {{ $devi->devise }}</td>
                         <td>{{ $myFacture->user->name }}</td>
 
                         <td>{{ $myFacture->devis->status ?? 'Non renseigné' }}</td>

@@ -81,7 +81,7 @@
                         <h6 class="mb-0">{{ $devi->num_proforma }}</h6>
                     </td>
                     <td>{{ $devi->client->nom }}</td>
-                    <td>{{ $devi->details->sum('total') }}</td>
+                    <td>{{ $devi->details->sum('total') }} {{ $devi->devise }}</td>
                     <td class=""><strong>{{ $devi->user->name }}</strong></td>
                     <td>{{ $devi->status ?? 'Non renseigné' }}</td>
 
