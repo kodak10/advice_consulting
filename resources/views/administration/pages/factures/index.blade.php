@@ -58,9 +58,9 @@
 
       <div class="card card-body">
         <div class="table-responsive mb-5">
-            <h3>
-                Liste des Proforma
-            </h3>
+            <h5>
+                Liste des Proformas
+            </h5>
             <table id="zero_config" class="table table-striped table-bordered text-nowrap align-middle">
               <thead>
                 <!-- start row -->
@@ -86,13 +86,13 @@
                     <td>{{ $devi->status ?? 'Non renseigné' }}</td>
 
                     <td>
-                        <a href="{{ route('dashboard.factures.refuse', $devi->id) }}" class="text-primary me-2" title="Réfuser">
+                        <a href="{{ route('dashboard.factures.refuse', $devi->id) }}" class="text-danger me-2" title="Réfuser">
                             <i class="ti ti-square-rounded-x"></i>
                         </a>
                         <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger">
                           <i class="ti ti-download fs-5"></i>
                         </a>
-                        <a href="{{ route('dashboard.factures.create', $devi->id) }}" class="text-primary me-2" title="Etablir la facture">
+                        <a href="{{ route('dashboard.factures.create', $devi->id) }}" class="text-success me-2" title="Etablir la facture">
                           <i class="ti ti-clipboard-list"></i>
                       </a>
                       
@@ -123,57 +123,71 @@
             </table>
         </div>
 
-        <div class="table-responsive mt-5">
-          <h3>
-            Mes factures etablie
-          </h3>
-            <table id="zero_config2" class="table table-striped table-bordered text-nowrap align-middle">
-              <thead>
-                <!-- start row -->
-                <tr>
-                    <th>N° Proforma</th>
-                    <th>Client</th>
-                    <th>Coût</th>
-                    <th>Statut</th>
-                </tr>
-                <!-- end row -->
-              </thead>
-              <tbody>
-                @forelse ($factures as $facture)
-                <tr>
-                    <td>
-                        <h6 class="mb-0">{{ $facture->numero }}</h6>
-                    </td>
-                   <td>
-                      {{ $facture->devis->client->nom }}
-                   </td>
-                    <td>{{ $facture->devis->details->sum('total') }}</td>
-                    <td>{{ $facture->devis->status ?? 'Non renseigné' }}</td>
+       
+      </div>
 
+      <div class="card card-body">
+        <div class="table-responsive">
+          <div class="table-responsive mt-5">
+            <h5>
+              Mes factures établie
+            </h5>
+              <table id="zero_config2" class="table table-striped table-bordered text-nowrap align-middle">
+                <thead>
+                  <!-- start row -->
+                  <tr>
+                      <th>N° Proforma</th>
+                      <th>Client</th>
+                      <th>Coût</th>
+                      <th>Statut</th>
+                      <th>Action</th>
+
+                  </tr>
+                  <!-- end row -->
+                </thead>
+                <tbody>
+                  @forelse ($factures as $facture)
+                  <tr>
+                      <td>
+                          <h6 class="mb-0">{{ $facture->numero }}</h6>
+                      </td>
+                     <td>
+                        {{ $facture->devis->client->nom }}
+                     </td>
+                      <td>{{ $facture->devis->details->sum('total') }} {{ $facture->devis->devise }}</td>
+                      <td>{{ $facture->devis->status ?? 'Non renseigné' }}</td>
+  
+                      <td>
+                        <a href="{{ route('dashboard.factures.download', $facture->id) }}" class="text-primary me-2" title="Télécharger">
+                          <i class="ti ti-download fs-5"></i>
+                        </a>
+                      </td>
                     
+                  </tr>
+  
+  
                   
-                </tr>
+                  @empty
+                      Aucune Facture enregistrée.
+                  @endforelse
+                  
+              </tbody>
+              
+                <tfoot>
+                  <!-- start row -->
+                  <tr>
+                      <th>N° Proforma</th>
+                      <th>Client</th>
+                      <th>Coût</th>
+                      <th>Statut</th>
+                      <th>Action</th>
 
-
-                
-                @empty
-                    Aucune Facture enregistrée.
-                @endforelse
-                
-            </tbody>
-            
-              <tfoot>
-                <!-- start row -->
-                <tr>
-                    <th>N° Proforma</th>
-                    <th>Client</th>
-                    <th>Coût</th>
-                    <th>Statut</th>
-                </tr>
-                <!-- end row -->
-              </tfoot>
-            </table>
-            
+                  </tr>
+                  <!-- end row -->
+                </tfoot>
+              </table>
+              
+          </div>
         </div>
       </div>
     </div>

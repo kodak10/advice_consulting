@@ -69,7 +69,7 @@
                         <h5>Conditions Financières</h5>
                         <div class="row">
                             <div class="col-md-6">
-                                <p><strong>Commande :</strong> {{ $validated['commande'] }}</p>
+                                <p><strong>Commande :</strong> {{ $validated['commande'] }} </p>
                             </div>
                             <div class="col-md-6">
                                 <p><strong>Livraison :</strong> {{ $validated['livraison'] }}</p>
@@ -84,6 +84,7 @@
                     <div class="mb-5">
                         <h5>Banque</h5>
                         <p><strong>Nom de la banque :</strong> {{ $banque->name }}</p>
+                        <p><strong>Numéro du compte:</strong> {{ $banque->num_compte }}</p>
                     </div>
 
                     <!-- Conditions Générales -->
@@ -91,16 +92,16 @@
                         <h5>Conditions Générales</h5>
                         <div class="row">
                             <div class="col-md-4">
-                                <p><strong>Total HT :</strong> {{ $validated['total_ht'] }}</p>
+                                <p><strong>Total HT :</strong> {{ $validated['total_ht'] }} {{ $validated['devise'] }}</p>
                             </div>
                             <div class="col-md-4">
                                 <p><strong>TVA (18%) :</strong> {{ $validated['tva'] }}</p>
                             </div>
                             <div class="col-md-4">
-                                <p><strong>Total TTC :</strong> {{ $validated['total_ttc'] }}</p>
+                                <p><strong>Total TTC :</strong> {{ $validated['total_ttc'] }} {{ $validated['devise'] }}</p>
                             </div>
                             <div class="col-md-4">
-                                <p><strong>Solde :</strong> {{ $validated['solde'] }}</p>
+                                <p><strong>Solde :</strong> {{ $validated['solde'] }} {{ $validated['devise'] }}</p>
                             </div>
                         </div>
                     </div>

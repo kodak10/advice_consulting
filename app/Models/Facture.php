@@ -17,6 +17,7 @@ class Facture extends Model
         'num_bl',
         'remise_speciale',
         'pays_id',
+        'pdf_path'
     ];
 
     public function devis()

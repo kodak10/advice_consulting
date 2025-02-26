@@ -108,7 +108,6 @@
                     <div class="mb-5">
                         <h5>Banque</h5>
                         <p><strong>Nom de la banque :</strong> {{ $banque->name }}</p>
-
                         <p><strong>Numéro de compte :</strong> {{ $banque->num_compte }}</p>
                     </div>
 

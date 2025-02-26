@@ -38,7 +38,7 @@ class AdminController extends Controller
         } 
         
         elseif ($user->hasRole('Comptable')) {
-            $myFactures = Facture::where('pays_id', $user->pays_id)->get();
+            $myFactures = Facture::where('pays_id', $user->pays_id)->where('user_id', $user->id)->get();
             $devis = Devis::where('pays_id', $user->pays_id)
                 ->where('user_id', $user->id)
                 ->where('status', 'Approuvé')

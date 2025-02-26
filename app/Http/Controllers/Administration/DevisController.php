@@ -23,7 +23,9 @@ class DevisController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('role:Comptable|Commercial');
+        // $this->middleware('role:Comptable|Commercial');
+        $this->middleware('role:Comptable|Commercial')->except('download');
+
     }
 
     public function getDeviseRate($deviseCode)

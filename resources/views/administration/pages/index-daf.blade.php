@@ -70,6 +70,8 @@
                         <th>Coût</th>
                         <th>Etabli Par</th>
                         <th>Statut</th>
+                        <th>Action</th>
+
                     </tr>
                     <!-- end row -->
                   </thead>
@@ -80,11 +82,15 @@
                             <h6 class="mb-0">{{ $facture->created_at }}</h6>
                         </td>
                         <td>{{ $facture->devis->client->nom }}</td>
-                        <td>{{ $facture->devis->details->sum('total') }}</td>
+                        <td>{{ $facture->devis->details->sum('total') }} {{ $facture->devis->devise }}</td>
                         <td>{{ $facture->user->name }}</td>
                         <td>{{ $facture->devis->status ?? 'Non renseigné' }}</td>
-                        
-                      
+                        <td>
+                          <a href="{{ route('dashboard.factures.download', $facture->id) }}" class="text-primary me-2" title="Télécharger">
+                            <i class="ti ti-download fs-5"></i>
+                          </a>
+                        </td>
+                       
                     </tr>
     
     
@@ -103,6 +109,8 @@
                         <th>Coût</th>
                         <th>Etabli Par</th>
                         <th>Statut</th>
+                        <th>Action</th>
+
                     </tr>
                     <!-- end row -->
                   </tfoot>
@@ -138,6 +146,8 @@
                           <th>Coût</th>
                           <th>Etabli Par</th>
                           <th>Statut</th>
+                          <th>Action</th>
+
                       </tr>
                       <!-- end row -->
                     </thead>
@@ -151,7 +161,11 @@
                           <td>{{ $devi->details->sum('total') }} {{ $devi->devise }}</td>
                           <td>{{ $devi->user->name }}</td>
                           <td>{{ $devi->status ?? 'Non renseigné' }}</td>
-                          
+                          <td>
+                            <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger">
+                              <i class="ti ti-download fs-5"></i>
+                            </a>
+                          </td>
                         
                       </tr>
       
@@ -170,6 +184,8 @@
                           <th>Coût</th>
                           <th>Etabli Par</th>
                           <th>Statut</th>
+                          <th>Action</th>
+
                       </tr>
                     </tfoot>
                   </table>

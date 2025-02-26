@@ -8,8 +8,11 @@ use App\Models\Client;
 use App\Models\Designation;
 use App\Models\Devis;
 use App\Models\Facture;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class FacturesController extends Controller
 {
@@ -104,44 +107,157 @@ class FacturesController extends Controller
         return "{$month}{$year}-{$counter}{$initials} du {$day}";
     }
 
+    // public function store(Request $request)
+    // {
+    //     // Valider les données du formulaire
+    //     $validated = $request->validate([
+    //         'devis_id' => 'required|exists:devis,id',
+    //         'banque_id' => 'required|exists:banques,id',
+    //         'client_id' => 'required|exists:clients,id',
+
+    //         'num_bc' => 'required|string',
+    //         'num_rap' => 'required|string',
+    //         'num_bl' => 'required|string',
+    //         'remise_speciale' => 'required|string',
+
+    //     ]);
+
+    //     // Récupérer le devis
+    //     $devis = Devis::findOrFail($validated['devis_id']);
+
+    //     $client = Client::find($validated['client_id']);
+    //     $banque = Banque::find($validated['banque_id']);
+
+    //     // Mettre à jour le statut du devis en "Terminé"
+    //     $devis->status = 'Terminé';
+    //     $devis->save();
+
+    //     $customNumber = $this->generateCustomNumber(); // Générer le numéro
+
+    //     // Créer la facture et y ajouter les informations nécessaires
+    //     $facture = new Facture();
+    //     $facture->devis_id = $validated['devis_id'];
+    //     $facture->num_bc = $validated['num_bc'];
+    //     $facture->num_rap = $validated['num_rap'];
+    //     $facture->num_bl = $validated['num_bl'];
+    //     $facture->user_id = Auth::id();
+    //     $facture->remise_speciale = $validated['remise_speciale']; 
+
+    //     $facture->numero = $customNumber;
+    //     $facture->pays_id = Auth::user()->pays_id;
+
+
+    //     $facture->save();
+
+
+    //     // Générer le PDF
+    //     $pdf = PDF::loadView('frontend.pdf.facture', compact('devis', 'client', 'banque'));
+    //     $pdfOutput = $pdf->output();
+
+    //     $imageName = 'facture-' . $facture->id . '.pdf';
+
+    //     // Assurez-vous que le dossier existe
+    //     $directory = 'pdf/factures';
+    //     if (!Storage::disk('public')->exists($directory)) {
+    //         Storage::disk('public')->makeDirectory($directory);
+    //     }
+
+    //     // Enregistrer le PDF dans le dossier storage/app/public/pdf/facture
+    //     $imagePath = $directory . '/' . $imageName;
+    //     Storage::disk('public')->put($imagePath, $pdfOutput);
+
+        
+    //     // Enregistrer le chemin dans la base de données
+    //     $facture->pdf_path = $imagePath;
+    //     $facture->save();
+
+    //     // Rediriger avec un message de succès
+    //     return redirect()->route('dashboard.factures.index')->with('success', 'Facture enregistrée avec succès.');
+    // }
+
     public function store(Request $request)
-    {
+{
+    try {
         // Valider les données du formulaire
         $validated = $request->validate([
             'devis_id' => 'required|exists:devis,id',
+            'banque_id' => 'required|exists:banques,id',
+            'client_id' => 'required|exists:clients,id',
             'num_bc' => 'required|string',
             'num_rap' => 'required|string',
             'num_bl' => 'required|string',
             'remise_speciale' => 'required|string',
-
         ]);
 
-        // Récupérer le devis
+        // Récupérer les données
         $devis = Devis::findOrFail($validated['devis_id']);
+        $client = Client::findOrFail($validated['client_id']);
+        $banque = Banque::findOrFail($validated['banque_id']);
 
-        // Mettre à jour le statut du devis en "Terminé"
+        // Mise à jour du statut du devis
         $devis->status = 'Terminé';
         $devis->save();
 
-        $customNumber = $this->generateCustomNumber(); // Générer le numéro
+        // Génération du numéro personnalisé
+        $customNumber = $this->generateCustomNumber();
 
-        // Créer la facture et y ajouter les informations nécessaires
+        // Création de la facture
         $facture = new Facture();
         $facture->devis_id = $validated['devis_id'];
         $facture->num_bc = $validated['num_bc'];
         $facture->num_rap = $validated['num_rap'];
         $facture->num_bl = $validated['num_bl'];
         $facture->user_id = Auth::id();
-        $facture->remise_speciale = $validated['remise_speciale']; 
-
+        $facture->remise_speciale = $validated['remise_speciale'];
         $facture->numero = $customNumber;
         $facture->pays_id = Auth::user()->pays_id;
 
-
         $facture->save();
 
-        // Rediriger avec un message de succès
+        Log::info('Facture créée avec succès', ['facture_id' => $facture->id]);
+
+        // Génération du PDF
+        $pdf = PDF::loadView('frontend.pdf.facture', compact('devis', 'client', 'banque'));
+        $pdfOutput = $pdf->output();
+
+        $imageName = 'facture-' . $facture->id . '.pdf';
+        $directory = 'pdf/factures';
+
+        // Vérifier et créer le dossier si nécessaire
+        if (!Storage::disk('public')->exists($directory)) {
+            Storage::disk('public')->makeDirectory($directory);
+        }
+
+        // Sauvegarde du fichier PDF
+        $imagePath = $directory . '/' . $imageName;
+        Storage::disk('public')->put($imagePath, $pdfOutput);
+
+        // Mise à jour de la facture avec le chemin du fichier
+        $facture->pdf_path = $imagePath;
+        $facture->save();
+
+        Log::info('PDF généré et enregistré', ['facture_id' => $facture->id, 'pdf_path' => $imagePath]);
+
         return redirect()->route('dashboard.factures.index')->with('success', 'Facture enregistrée avec succès.');
+    } catch (\Illuminate\Validation\ValidationException $e) {
+        Log::error('Validation échouée', ['errors' => $e->errors()]);
+        return redirect()->back()->withErrors($e->errors())->withInput();
+    } catch (\Exception $e) {
+        Log::error('Erreur lors de l\'enregistrement de la facture', ['message' => $e->getMessage()]);
+        return redirect()->back()->with('error', 'Une erreur est survenue lors de l\'enregistrement de la facture.')->withInput();
     }
+}
+
+    public function download($id)
+    {
+        $factures = Facture::findOrFail($id);
+
+        if (!$factures->pdf_path || !Storage::disk('public')->exists($factures->pdf_path)) {
+            return back()->with('error', 'Le fichier demandé n\'existe pas.');
+        }
+
+        return response()->download(storage_path('app/public/' . $factures->pdf_path));
+    }
+
 
 }

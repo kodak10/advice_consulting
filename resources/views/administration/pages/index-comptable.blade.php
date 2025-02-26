@@ -66,7 +66,6 @@
                         <th>N° Proforma</th>
                         <th>Client</th>
                         <th>Coût</th>
-                        <th>Etabli Par</th>
                         <th>Statut</th>
                         <th>Action</th>
                     </tr>
@@ -80,7 +79,6 @@
                         </td>
                         <td>{{ $devi->client->nom }}</td>
                         <td>{{ $devi->details->sum('total') }} {{ $devi->devise }}</td>
-                        <td>{{ $devi->user->name}}</td>
                         <td>{{ $devi->status ?? 'Non renseigné' }}</td>
                         <td>
                           <div class="action-btn text-center">
@@ -123,7 +121,6 @@
                         <th>N° Proforma</th>
                         <th>Client</th>
                         <th>Coût</th>
-                        <th>Etabli Par</th>
                         <th>Statut</th>
                         <th>Action</th>
                     </tr>
@@ -156,6 +153,8 @@
                         <th>Coût</th>
                         <th>Etabli Par</th>
                         <th>Statut</th>
+                        <th>Action</th>
+
                     </tr>
                     <!-- end row -->
                   </thead>
@@ -171,6 +170,11 @@
 
                         <td>{{ $myFacture->devis->status ?? 'Non renseigné' }}</td>
                         
+                        <td>
+                          <a href="{{ route('dashboard.factures.download', $myFacture->id) }}" class="text-primary me-2" title="Télécharger">
+                            <i class="ti ti-download fs-5"></i>
+                          </a>
+                        </td>
                       
                     </tr>
     
@@ -190,6 +194,8 @@
                         <th>Coût</th>
                         <th>Etabli Par</th>
                         <th>Statut</th>
+                        <th>Action</th>
+
                     </tr>
                     <!-- end row -->
                   </tfoot>

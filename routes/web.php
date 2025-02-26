@@ -58,7 +58,9 @@ Route::middleware(['auth', 'verified','check.user.status'])->prefix('dashboard')
     // Route::get('/factures/{id}/create', [FacturesController::class, 'create'])->name('factures.create');
     Route::get('/factures/create/{id}', [FacturesController::class, 'create'])->name('factures.create');
     Route::post('/factures/store', [FacturesController::class, 'store'])->name('factures.store');
-    
+    Route::get('/factures/download/{id}', [FacturesController::class, 'download'])->name('factures.download');
+
+
     Route::resource('banques', BanqueController::class);
 
     Route::resource('messagerie', MessagerieController::class);

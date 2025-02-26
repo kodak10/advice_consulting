@@ -52,7 +52,7 @@
           <div class="card-body">
             <div class="d-sm-flex d-block align-items-center justify-content-between mb-3">
               <div class="mb-3 mb-sm-0">
-                <h4 class="card-title fw-semibold">Liste des Proforma</h4>
+                <h4 class="card-title fw-semibold">Liste des Proformas</h4>
               </div>
               <div>
                 <a href="{{ route('dashboard.devis.create') }}" class="btn btn-success">Faire une Proforma</a>
@@ -82,7 +82,6 @@
                         <th>N° Proforma</th>
                         <th>Client</th>
                         <th>Coût</th>
-                        <th>Etabli Par</th>
                         <th>Statut</th>
                         <th>Action</th>
                     </tr>
@@ -96,7 +95,6 @@
                         </td>
                         <td>{{ $devi->client->nom }}</td>
                         <td>{{ $devi->details->sum('total') }} {{ $devi->devise }}</td>
-                        <td>{{ $devi->user->name}}</td>
                         <td>{{ $devi->status ?? 'Non renseigné' }}</td>
                         <td>
                           <div class="action-btn text-center">
@@ -139,7 +137,6 @@
                         <th>N° Proforma</th>
                         <th>Client</th>
                         <th>Coût</th>
-                        <th>Etabli Par</th>
                         <th>Statut</th>
                         <th>Action</th>
                     </tr>

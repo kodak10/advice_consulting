@@ -69,13 +69,16 @@
                         <h5>Conditions Financières</h5>
                         <div class="row">
                             <div class="col-md-6">
-                                <p><strong>Commande :</strong> {{ $devis->commande }}</p>
+                                <p><strong>Commande :</strong> {{ $devis->commande }} %</p>
                             </div>
                             <div class="col-md-6">
-                                <p><strong>Livraison :</strong> {{ $devis->livraison }}</p>
+                                <p><strong>Livraison :</strong> {{ $devis->livraison }} %</p>
                             </div>
                             <div class="col-md-6">
                                 <p><strong>Validité de l'offre :</strong> {{ $devis->validite }} jours</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Délai de livraison :</strong> {{ $devis->delai }} jours</p>
                             </div>
                         </div>
                     </div>
@@ -84,6 +87,8 @@
                     <div class="mb-5">
                         <h5>Banque</h5>
                         <p><strong>Nom de la banque :</strong> {{ $banque->name }}</p>
+                        <p><strong>Numéro du compte:</strong> {{ $banque->num_compte }}</p>
+
                     </div>
 
                     <!-- Conditions Générales -->
@@ -91,16 +96,16 @@
                         <h5>Conditions Générales</h5>
                         <div class="row">
                             <div class="col-md-4">
-                                <p><strong>Total HT :</strong> {{ $devis->total_ht }}</p>
+                                <p><strong>Total HT :</strong> {{ $devis->total_ht }} {{ $devis->devise }}</p>
                             </div>
                             <div class="col-md-4">
                                 <p><strong>TVA (18%) :</strong> {{ $devis->tva }}</p>
                             </div>
                             <div class="col-md-4">
-                                <p><strong>Total TTC :</strong> {{ $devis->total_ttc }}</p>
+                                <p><strong>Total TTC :</strong> {{ $devis->total_ttc }} {{ $devis->devise }}</p>
                             </div>
                             <div class="col-md-4">
-                                <p><strong>Solde :</strong> {{ $devis->solde }}</p>
+                                <p><strong>Solde :</strong> {{ $devis->solde }} {{ $devis->devise }}</p>
                             </div>
                         </div>
                     </div>
@@ -116,6 +121,8 @@
                 @csrf
                 
                 <input type="hidden" name="devis_id" value="{{ $devis->id }}">
+                <input type="hidden" name="banque_id" value="{{ $devis->banque->id }}">
+                <input type="hidden" name="client_id" value="{{ $devis->client->id }}">
 
                 <!-- Remise Spéciale -->
                 <div class="mb-4">
