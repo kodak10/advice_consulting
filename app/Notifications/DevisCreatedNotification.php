@@ -102,7 +102,7 @@ class DevisCreatedNotification extends Notification
     {
         return [
             'devis_id' => $this->devis->id,
-            'message' => "Un nouveau devis a été créé : " . $this->devis->id,
+            'message' => "Un nouveau devis a été créé"
         ];
     }
 }

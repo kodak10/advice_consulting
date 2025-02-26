@@ -217,7 +217,7 @@ class FacturesController extends Controller
         Log::info('Facture créée avec succès', ['facture_id' => $facture->id]);
 
         // Génération du PDF
-        $pdf = PDF::loadView('frontend.pdf.facture', compact('devis', 'client', 'banque'));
+        $pdf = PDF::loadView('frontend.pdf.facture', compact('devis', 'client', 'banque', 'facture'));
         $pdfOutput = $pdf->output();
 
         $imageName = 'facture-' . $facture->id . '.pdf';
@@ -238,7 +238,10 @@ class FacturesController extends Controller
 
         Log::info('PDF généré et enregistré', ['facture_id' => $facture->id, 'pdf_path' => $imagePath]);
 
-        return redirect()->route('dashboard.factures.index')->with('success', 'Facture enregistrée avec succès.');
+        // Télécharger le fichier PDF
+        return response()->download(storage_path('app/public/' . $imagePath));
+
+        // return redirect()->route('dashboard.factures.index')->with('success', 'Facture enregistrée avec succès.');
     } catch (\Illuminate\Validation\ValidationException $e) {
         Log::error('Validation échouée', ['errors' => $e->errors()]);
         return redirect()->back()->withErrors($e->errors())->withInput();

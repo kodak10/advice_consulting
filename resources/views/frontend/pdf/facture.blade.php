@@ -88,8 +88,8 @@
         <table style="width: 100%; border-collapse: collapse;">
             <tr>
                 <td colspan="3" style="border-bottom: 1px solid #000; padding-bottom: 5px;"><strong>Type règlement facture:</strong> À échéance</td>
-                <td><strong>Délai:</strong> {{ $devis->description_designation }}</td>
-                <td><strong>Agent:</strong> {{ $client->nom }}</td>
+                <td><strong>Délai:</strong> {{ $devis->delai }}</td>
+                <td><strong>Agent:</strong> {{ $devis->user->name }}</td>
             </tr>
         </table>
         
@@ -113,7 +113,6 @@
             </tr>
         </table>
         
-        <h3>Détails</h3>
         <table style="width: 100%; border-collapse: collapse; border: 1px solid #000;">
             <tr>
                 <th>Référence</th>
@@ -123,6 +122,7 @@
                 <th>Total</th>
             </tr>
             <tr>
+                
                 <td>{{ $devis->ref_designation }}</td>
                 <td style="text-align: center; color: red;">{{ $devis->description_designation }}</td>
                 <td>{{ $devis->qte_designation }}</td>
@@ -135,22 +135,28 @@
             <tr>
                 <!-- Informations de paiement (60%) -->
                 <td style="width: 60%; vertical-align: top; padding: 10px; border-right: 1px solid #000;">
-                    <strong>Informations de paiement</strong><br>
-                    <strong>Banque:</strong> VERSUS BANK<br>
-                    <strong>Compte:</strong> C112 01001 012206440008 24
                     
-                    <p><strong>Arrêté la présente somme de :</strong> {{ ucwords((new NumberFormatter('fr', NumberFormatter::SPELLOUT))->format($devis->total_ttc)) }} francs CFA</p>
+
+                    <strong>Informations de paiement</strong><br>
+                    <strong>Banque:</strong> {{ $banque->name }}<br>
+                    <strong>Compte:</strong> {{ $banque->num_compte }}
+                    
+                    <p><strong>Arrêté la présente somme de :</strong> {{ ucwords((new NumberFormatter('fr', NumberFormatter::SPELLOUT))->format($devis->details->sum('total'))) }} {{ $devis->devise }}</p>
 
                 </td>
                 
                 <!-- Totaux (40%) -->
                 <td style="width: 40%; vertical-align: top; padding: 10px;">
-                    <strong>Totaux</strong><br>
-                    <strong>Total HT:</strong> {{ $devis->totall_ht }}<br>
-                    <strong>TVA 18%:</strong> {{ $devis->tva }}<br>
-                    <strong>Total TTC:</strong> {{ $devis->total_ttc }}<br>
-                    <strong>Acompte:</strong> {{ $devis->accompte }}<br>
-                    <strong>Solde:</strong> {{ $devis->solde }}
+                    <td style="width: 40%; vertical-align: top; padding: 10px;">
+                        <strong>Totaux</strong><br>
+                        <strong>Total HT:</strong> {{ $devis->total_ht }} {{ $devis->devise }}<br>
+                        <strong>TVA 18%:</strong> {{ $devis->tva }}<br>
+                        <strong>Total TTC:</strong> {{ $devis->total_ttc }} {{ $devis->devise }}<br>
+                        <strong>Acompte:</strong> {{ $devis->accompte }} {{ $devis->devise }}<br>
+                        <strong>Solde:</strong> {{ $devis->solde }} {{ $devis->devise }}
+                    </td>
+
+                    
                 </td>
             </tr>
         </table>

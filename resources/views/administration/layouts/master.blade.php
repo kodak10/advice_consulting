@@ -238,7 +238,7 @@
     let userId = document.querySelector('meta[name="user-id"]').getAttribute('content');
 
     // Charger le son de notification
-    const notificationSound = new Audio(document.querySelector('#notification-sound').getAttribute('data-sound-url'));
+    // const notificationSound = new Audio(document.querySelector('#notification-sound').getAttribute('data-sound-url'));
 
     //const notificationSound = new Audio('/path/to/notification-sound.mp3'); // Remplace par le chemin de ton fichier audio
 
