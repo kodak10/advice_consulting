@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Administration;
 use App\Http\Controllers\Controller;
 use App\Models\Devis;
 use App\Models\Facture;
+use App\Models\Notification;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
@@ -57,6 +58,25 @@ class AdminController extends Controller
     
         return view('administration.pages.maintenance')->with('error', 'Accès refusé.');
     }
+
+   // Marquer toutes les notifications comme lues
+   public function markAllAsRead()
+   {
+       Auth::user()->unreadNotifications->markAsRead();
+       return response()->json(['success' => true]);
+   }
+
+   // Marquer une notification spécifique comme lue
+   public function markAsRead($id)
+   {
+       $notification = Auth::user()->notifications()->where('id', $id)->first();
+       if ($notification) {
+           $notification->markAsRead();
+           return response()->json(['success' => true]);
+       }
+       return response()->json(['success' => false], 404);
+   }
+
     
 
     // public function indexAdmin()

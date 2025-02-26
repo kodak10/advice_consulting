@@ -25,6 +25,13 @@ Route::middleware(['auth', 'verified','check.user.status'])->prefix('dashboard')
 
     
     Route::get('/', [AdminController::class, 'index']);
+
+    // Route pour marquer toutes les notifications comme lues
+    Route::post('/notifications/mark-all-as-read', [AdminController::class, 'markAllAsRead'])->name('notifications.mark-all-as-read');
+        
+    // Route pour marquer une notification spécifique comme lue
+    Route::post('/notifications/mark-as-read/{id}', [AdminController::class, 'markAsRead'])->name('notifications.mark-as-read');
+
     Route::resource('clients', ClientController::class);
     Route::resource('designations', DesignationsController::class);
     Route::resource('users', UsersController::class);
@@ -57,6 +64,7 @@ Route::middleware(['auth', 'verified','check.user.status'])->prefix('dashboard')
     Route::get('/factures/{id}/refuse', [FacturesController::class, 'refuse'])->name('factures.refuse');
     // Route::get('/factures/{id}/create', [FacturesController::class, 'create'])->name('factures.create');
     Route::get('/factures/create/{id}', [FacturesController::class, 'create'])->name('factures.create');
+    
     Route::post('/factures/store', [FacturesController::class, 'store'])->name('factures.store');
     Route::get('/factures/download/{id}', [FacturesController::class, 'download'])->name('factures.download');
 

@@ -260,4 +260,6 @@ class FacturesController extends Controller
     }
 
 
+    
+
 }

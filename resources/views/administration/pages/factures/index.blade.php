@@ -161,6 +161,7 @@
                         <a href="{{ route('dashboard.factures.download', $facture->id) }}" class="text-primary me-2" title="Télécharger">
                           <i class="ti ti-download fs-5"></i>
                         </a>
+                        
                       </td>
                     
                   </tr>

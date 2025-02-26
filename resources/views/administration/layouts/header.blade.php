@@ -44,23 +44,41 @@
               </li>
               
 
-              {{-- <ul id="notification-list">
-                <!-- Les notifications apparaîtront ici -->
-              </ul>
-               --}}
+             
               <li class="nav-item nav-icon-hover-bg rounded-circle dropdown">
                   <a class="nav-link position-relative" href="javascript:void(0)" id="drop2" aria-expanded="false">
                       <i class="ti ti-bell-ringing"></i>
-                      <div class="notification bg-primary rounded-circle">0</div> <!-- Compteur de notifications -->
+                      <div class="notification bg-primary rounded-circle"></div> <!-- Compteur de notifications -->
                   </a>
                   <div class="dropdown-menu content-dd dropdown-menu-end dropdown-menu-animate-up" aria-labelledby="drop2">
                       <div class="d-flex align-items-center justify-content-between py-3 px-7">
                           <h5 class="mb-0 fs-5 fw-semibold">Notifications</h5>
-                          <span class="badge text-bg-primary rounded-4 px-3 py-1 lh-sm" id="notification-count">5 Nouveau</span>
-                      </div>
-                      <div id="notification-list"></div> <!-- Liste des notifications -->
+                          <span class="badge text-bg-primary rounded-4 px-3 py-1 lh-sm" id="notification-count">
+                            {{ $notifications->count() }} Nouveau{{ $notifications->count() > 1 ? 'x' : '' }}
+                          </span>
+                                              </div>
+
+                      <div id="notification-list" class="message-body" data-simplebar="">
+                        @foreach ($notifications as $notification)
+                            <a href="javascript:void(0)" class="py-6 px-7 d-flex align-items-center dropdown-item">
+                                <span class="me-3">
+                                    <img src="{{ asset('assets/images/profile/user-2.jpg') }}" alt="user" class="rounded-circle" width="48" height="48">
+                                </span>
+                                <div class="w-100">
+                                    <h6 class="mb-1 fw-semibold lh-base">{{ $notification->data['title'] ?? 'Nouvelle Notification' }}</h6>
+                                    <span class="fs-2 d-block text-body-secondary">{{ $notification->data['message'] ?? 'Aucun message disponible' }}</span>
+                                </div>
+                                @if (is_null($notification->read_at))
+                                    <span class="mark-as-read" data-id="{{ $notification->id }}" style="cursor: pointer;">
+                                        📩
+                                    </span>
+                                @endif
+                            </a>
+                        @endforeach
+                    </div>
+                    
                       <div class="py-6 px-7 mb-1">
-                          <button class="btn btn-outline-primary w-100">Voir toutes les notifications</button>
+                          <button class="btn btn-outline-primary w-100" id="mark-all-as-read">Marquer tout comme lu</button>
                       </div>
                   </div>
               </li>

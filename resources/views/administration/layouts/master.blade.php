@@ -308,6 +308,60 @@
 
 
 
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+    // Action "Tout marquer comme lu"
+    document.getElementById("mark-all-as-read").addEventListener("click", function () {
+        fetch("{{ route('dashboard.notifications.mark-all-as-read') }}", {
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+                "Content-Type": "application/json"
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Supprime toutes les notifications et cache le badge
+                document.querySelectorAll(".notification-item").forEach(item => item.remove());
+                document.getElementById("notification-count").style.display = "none";
+            } else {
+                console.error("Erreur lors de la mise à jour des notifications");
+            }
+        })
+        .catch(error => console.error("Erreur:", error));
+    });
+
+    // Action "Masquer individuellement"
+    document.querySelectorAll(".notification-item").forEach(item => {
+        item.addEventListener("click", function () {
+            let notificationId = this.getAttribute("data-id");
+
+            fetch(`{{ route('dashboard.notifications.mark-as-read', ':id') }}`.replace(':id', notificationId), {
+                method: "POST",
+                headers: {
+                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute("content"),
+                    "Content-Type": "application/json"
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Supprime la notification cliquée et met à jour le badge
+                    this.remove();
+                    updateNotificationCount();
+                } else {
+                    console.error("Erreur lors de la mise à jour de la notification");
+                }
+            })
+            .catch(error => console.error("Erreur:", error));
+        });
+    });
+
+   
+});
+
+</script>
 
 
   @stack('scripts') 
