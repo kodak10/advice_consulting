@@ -68,7 +68,7 @@
                                   <input type="file" name="image" class="form-control">
                               </div>
           
-                              <button type="submit" class="btn btn-primary">Télécharger</button>
+                              <button type="submit" class="btn btn-primary">Sauvegarder</button>
                           </form>
                           </div>
         

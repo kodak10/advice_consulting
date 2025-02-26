@@ -6,7 +6,7 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">Récapitulatif de la Proforma</h4>
+                    <h3 class="card-title text-center mb-5">Récapitulatif de la Proforma</h3>
 
                     <!-- Informations du Client -->
                     <div class="mb-5">
@@ -96,19 +96,19 @@
                         <h5>Conditions Générales</h5>
                         <div class="row">
                             <div class="col-md-4">
-                                <p><strong>Total HT :</strong> {{ $validated['total-ht'] }}</p>
+                                <p><strong>Total HT :</strong> {{ $validated['total-ht'] }} {{ $validated['devise'] }}</p>
                             </div>
                             <div class="col-md-4">
                                 <p><strong>TVA :</strong> {{ $validated['tva'] }}%</p>
                             </div>
                             <div class="col-md-4">
-                                <p><strong>Total TTC :</strong> {{ $validated['total-ttc'] }}</p>
+                                <p><strong>Total TTC :</strong> {{ $validated['total-ttc'] }} {{ $validated['devise'] }}</p>
                             </div>
                             <div class="col-md-4">
-                                <p><strong>Acompte :</strong> {{ $validated['acompte'] }}</p>
+                                <p><strong>Acompte :</strong> {{ $validated['acompte'] }} {{ $validated['devise'] }}</p>
                             </div>
                             <div class="col-md-4">
-                                <p><strong>Solde :</strong> {{ $validated['solde'] }}</p>
+                                <p><strong>Solde :</strong> {{ $validated['solde'] }} {{ $validated['devise'] }}</p>
                             </div>
                         </div>
                     </div>
@@ -118,6 +118,8 @@
                         <form  method="POST" action="{{ route('dashboard.devis.store') }}" >
                             @csrf
                             
+                            <input type="hidden" name="devise" value="{{ $validated['devise'] }}">
+
                             <input type="hidden" name="client_id" value="{{ $client->id }}">
                             <input type="hidden" name="banque_id" value="{{ $banque->id }}">
 
@@ -146,14 +148,13 @@
                                 <input type="hidden" name="designations[{{ $index }}][total]" value="{{ $designation['total'] }}">
                             @endforeach
 
-                            <button type="submit" class="btn btn-success">Enregistrer et Télécharger PDF</button>
+                            <button type="submit" class="btn btn-success mr-3">Enregistrer et Télécharger PDF</button>
+                            <a href="{{ route('dashboard.devis.index') }}" class="btn btn-primary">Retour</a>
+
                         </form>
                     </div>
 
-                    <!-- Bouton de Retour -->
-                    <div class="form-actions">
-                        <a href="{{ route('dashboard.devis.create') }}" class="btn btn-primary">Retour</a>
-                    </div>
+                   
                 </div>
             </div>
         </div>

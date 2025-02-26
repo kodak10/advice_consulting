@@ -61,6 +61,18 @@
             </div>
         </div>
 
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Devise</h4>
+                <select name="devise" class="form-control">
+                    <option value="XOF" {{ old('devise', $devis->devise ?? '') == 'XOF' ? 'selected' : '' }}>Franc CFA (XOF)</option>
+                    <option value="EUR" {{ old('devise', $devis->devise ?? '') == 'EUR' ? 'selected' : '' }}>Euro (EUR)</option>
+                    <option value="USD" {{ old('devise', $devis->devise ?? '') == 'USD' ? 'selected' : '' }}>Dollar (USD)</option>
+                </select>
+            </div>
+        </div>
+        
+
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">

@@ -7,13 +7,13 @@
       <div class="card-body px-4 py-3">
         <div class="row align-items-center">
           <div class="col-9">
-            <h4 class="fw-semibold mb-8">Mes Proforma</h4>
+            <h4 class="fw-semibold mb-8">Mes Proformas</h4>
             <nav aria-label="breadcrumb">
               <ol class="breadcrumb">
                 <li class="breadcrumb-item">
                   <a class="text-muted text-decoration-none" href="{{ route('dashboard.') }}">Accueil</a>
                 </li>
-                <li class="breadcrumb-item" aria-current="page">Mes Proforma</li>
+                <li class="breadcrumb-item" aria-current="page">Mes Proformas</li>
               </ol>
             </nav>
           </div>
@@ -64,8 +64,8 @@
       </div>
 
       @if (Auth::user()->hasRole('Commercial'))
-
-            <table id="zero_config" class="table table-striped table-bordered text-nowrap align-middle">
+<h5>Mes Proformas</h5>
+            <table id="zero_config1" class="table table-striped table-bordered text-nowrap align-middle">
               <thead>
                 <!-- start row -->
                 <tr>
@@ -84,7 +84,7 @@
                         <h6 class="mb-0">{{ $devi->num_proforma }}</h6>
                     </td>
                     <td>{{ $devi->client->nom }}</td>
-                    <td>{{ $devi->details->sum('total') }}</td>
+                    <td>{{ $devi->details->sum('total') }} {{ $devi->devise }}</td>
                     <td>{{ $devi->status ?? 'Non renseigné' }}</td>
                     <td>
                       <div class="action-btn text-center">
@@ -93,7 +93,7 @@
                         </a>
                       
 
-                      <a href="{{ route('dashboard.devis.validate', $devi->id) }}" class="text-primary me-2" title="Valider">
+                      <a href="{{ route('dashboard.devis.validate', $devi->id) }}" class="text-success me-2" title="Valider">
                         <i class="ti ti-navigation-check"></i>
                     </a>
 
@@ -137,6 +137,8 @@
       
       @if (Auth::user()->hasRole('Comptable'))
       <div class="card card-body">
+        <h5>Liste des Proformas</h5>
+
         <div class="table-responsive">
 
           <table id="zero_config2" class="table table-striped table-bordered text-nowrap align-middle">
@@ -159,7 +161,7 @@
                       <h6 class="mb-0">{{ $devi->num_proforma }}</h6>
                   </td>
                   <td>{{ $devi->client->nom }}</td>
-                  <td>{{ $devi->details->sum('total') }}</td>
+                  <td>{{ $devi->details->sum('total') }} {{ $devi->devise }}</td>
                   <td>{{ $devi->user->name }}</td>
 
                   <td>{{ $devi->status ?? 'Non renseigné' }}</td>
@@ -168,8 +170,8 @@
                       <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger">
                         <i class="ti ti-download fs-5"></i>
                       </a>
-                      <a href="{{ route('dashboard.factures.refuse', $devi->id) }}" class="text-primary me-2" title="Réfuser">
-                        <i class="ti ti-pencil fs-5"></i>
+                      <a href="{{ route('dashboard.factures.refuse', $devi->id) }}" class="text-danger me-2" title="Réfuser">
+                        <i class="ti ti-square-rounded-minus"></i>
                       </a>
                     
                 
@@ -202,6 +204,15 @@
           </table>
 
 
+          
+
+          
+        </div>
+      </div>
+
+      <div class="card card-body">
+        <h5>Mes Proformas Emises</h5>
+        <div class="table-responsive">
           <table id="zero_config3" class="mt-5 table table-striped table-bordered text-nowrap align-middle">
             <thead>
               <!-- start row -->
@@ -221,7 +232,7 @@
                       <h6 class="mb-0">{{ $devi->num_proforma }}</h6>
                   </td>
                   <td>{{ $devi->client->nom }}</td>
-                  <td>{{ $devi->details->sum('total') }}</td>
+                  <td>{{ $devi->details->sum('total') }} {{ $devi->devise }}</td>
                   <td>{{ $devi->status ?? 'Non renseigné' }}</td>
                   <td>
                     <div class="action-btn text-center">
@@ -230,7 +241,7 @@
                       </a>
                     
 
-                    <a href="{{ route('dashboard.devis.validate', $devi->id) }}" class="text-primary me-2" title="Valider">
+                    <a href="{{ route('dashboard.devis.validate', $devi->id) }}" class="text-success me-2" title="Valider">
                       <i class="ti ti-navigation-check"></i>
                   </a>
 
@@ -270,8 +281,6 @@
               <!-- end row -->
             </tfoot>
           </table>
-
-          
         </div>
       </div>
       @endif

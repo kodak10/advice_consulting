@@ -68,7 +68,7 @@
                     <span>
                         <i class="ti ti-list"></i>
                     </span>
-                    <span class="hide-menu">Mes Proforma</span>
+                    <span class="hide-menu">Mes Proformas</span>
                 </a>
             </li>
 
@@ -167,7 +167,7 @@
                   <span>
                       <i class="ti ti-list"></i>
                   </span>
-                  <span class="hide-menu">Mes Proforma</span>
+                  <span class="hide-menu">Mes Proformas</span>
               </a>
           </li>
 

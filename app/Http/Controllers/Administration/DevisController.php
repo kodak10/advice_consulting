@@ -126,6 +126,8 @@ class DevisController extends Controller
         
         // Valider les données du formulaire
         $validated = $request->validate([
+            'devise' => 'required|string',
+
             'client_id' => 'required|exists:clients,id',  
             'date_emission' => 'required|date',  
             'date_echeance' => 'required|date|after_or_equal:date_emission',  
@@ -190,6 +192,9 @@ class DevisController extends Controller
                 'designations.*.price' => 'required|numeric|min:0',
                 'designations.*.discount' => 'nullable|numeric|min:0',
                 'designations.*.total' => 'required|numeric|min:0',
+
+                'devise' => 'required|string',
+
             ]);
 
             $numProforma = $this->generateNumProforma();
@@ -216,6 +221,8 @@ class DevisController extends Controller
             $devis->num_proforma = $numProforma;
             $devis->status = "En Attente";
             $devis->pays_id = Auth::user()->pays_id;
+            $devis->devise = $validated['devise'];
+
 
             // Sauvegarder le devis
             $devis->save();
@@ -296,6 +303,8 @@ class DevisController extends Controller
 
         // Valider les données du formulaire
         $validated = $request->validate([
+            'devise' => 'required|string',  
+
             'client_id' => 'required|exists:clients,id', 
             'banque_id' => 'required|exists:banques,id',  
  
@@ -372,6 +381,9 @@ class DevisController extends Controller
             'designations.*.price' => 'required|numeric|min:0', 
             'designations.*.discount' => 'nullable|numeric|min:0', 
             'designations.*.total' => 'required|numeric|min:0', 
+
+            'devise' => 'required|string',  
+
         ]);
 
         // Récupérer le devis à mettre à jour
@@ -392,6 +404,7 @@ class DevisController extends Controller
             'total_ttc' => $validated['total-ttc'],
             'acompte' => $validated['acompte'],
             'solde' => $validated['solde'],
+            'devise' => $validated['devise'],
         ]);
 
         // Mettre à jour ou créer les lignes de devis

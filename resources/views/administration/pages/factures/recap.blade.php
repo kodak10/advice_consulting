@@ -6,7 +6,7 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">Récapitulatif de la Proforma</h4>
+                    <h3 class="card-title text-center mb-5">Récapitulatif de la Proforma</h3>
 
                     <!-- Informations du Client -->
                     <div class="mb-5">

@@ -29,7 +29,7 @@
 
 
         <li class="mt-3">
-          <a href="/login" class="btn btn-primary w-100">Se Connecté</a>
+          <a href="/login" class="btn btn-primary w-100">Se Connecter</a>
         </li>
       </ul>
     </div>

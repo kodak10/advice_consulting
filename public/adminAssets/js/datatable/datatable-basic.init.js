@@ -11,6 +11,7 @@ $(function () {
  *       Basic Table                   *
  ****************************************/
 $("#zero_config").DataTable();
+$("#zero_config1").DataTable();
 $("#zero_config2").DataTable();
 $("#zero_config3").DataTable();
 

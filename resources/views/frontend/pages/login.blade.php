@@ -34,7 +34,7 @@
                   </div>
                   <a class="text-primary fw-medium" href="/password-forgot">Mot de passe oublié ?</a>
                 </div>
-                <a href="#" class="btn btn-primary w-100 py-8 mb-4 rounded-2">Se Connecté</a>
+                <a href="#" class="btn btn-primary w-100 py-8 mb-4 rounded-2">Se Connecter</a>
                 
               </form>
             </div>

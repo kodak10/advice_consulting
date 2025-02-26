@@ -102,7 +102,7 @@
                     <strong>Adresse:</strong> {{ $devis->client->adresse }}<br>
                     <strong>Téléphone:</strong> {{ $devis->client->telephone }}<br>
                     <strong>Ville:</strong> {{ $devis->client->ville }}<br>
-                    <strong>ATTN:</strong> 
+                    <strong>ATTN:</strong> {{ $devis->client->attn }}
 
                 </td>
             </tr>
@@ -145,17 +145,17 @@
                     <strong>Banque:</strong> {{ $banque->name }}<br>
                     <strong>Compte:</strong> {{ $banque->num_compte }}
                     
-                    <p><strong>Arrêté la présente somme de :</strong> {{ ucwords((new NumberFormatter('fr', NumberFormatter::SPELLOUT))->format($devis->details->sum('total'))) }} francs CFA</p>
+                    <p><strong>Arrêté la présente somme de :</strong> {{ ucwords((new NumberFormatter('fr', NumberFormatter::SPELLOUT))->format($devis->details->sum('total'))) }} {{ $devis->devise }}</p>
                 </td>
                 
                 <!-- Totaux (40%) -->
                 <td style="width: 40%; vertical-align: top; padding: 10px;">
                     <strong>Totaux</strong><br>
-                    <strong>Total HT:</strong> {{ $devis->total_ht }}<br>
+                    <strong>Total HT:</strong> {{ $devis->total_ht }} {{ $devis->devise }}<br>
                     <strong>TVA 18%:</strong> {{ $devis->tva }}<br>
-                    <strong>Total TTC:</strong> {{ $devis->total_ttc }}<br>
-                    <strong>Acompte:</strong> {{ $devis->accompte }}<br>
-                    <strong>Solde:</strong> {{ $devis->solde }}
+                    <strong>Total TTC:</strong> {{ $devis->total_ttc }} {{ $devis->devise }}<br>
+                    <strong>Acompte:</strong> {{ $devis->accompte }} {{ $devis->devise }}<br>
+                    <strong>Solde:</strong> {{ $devis->solde }} {{ $devis->devise }}
                 </td>
             </tr>
         </table>
