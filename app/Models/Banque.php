@@ -12,6 +12,5 @@ class Banque extends Model
     protected $fillable = [
         'name', 
         'num_compte', 
-
     ];
 }

@@ -22,7 +22,7 @@ class AppServiceProvider extends ServiceProvider
     {
         // Partager les notifications avec toutes les vues
         View::composer('*', function ($view) {
-            if (Auth::check()) { // Vérifier si l'utilisateur est connecté
+            if (Auth::check()) {
                 $notifications = Auth::user()->unreadNotifications;
                 $view->with('notifications', $notifications);
             }

@@ -30,40 +30,31 @@ class DevisCreatedNotification extends Notification
     {
         return ['database', 'broadcast']; // Enregistre dans la base et diffuse en temps réel
     }
-    // public function via($notifiable)
    
     public function toDatabase($notifiable)
     {
         return [
-            // 'message' => "Un nouveau devis a été créé : " . $this->devis->id,
-            // 'devis_id' => $this->devis->id,
-            // 'user_id' => $this->devis->user_id, // L'utilisateur associé au devis
-            // 'devis_number' => $this->devis->num_proforma, // Numéro du devis
-
             'message' => "Un nouveau devis a été créé : ",
             'devis_id' => $this->devis->id,
-            'user_id' => $this->devis->user_id, // L'utilisateur associé au devis
-            'devis_number' => $this->devis->num_proforma, // Numéro du devis
+            'user_id' => $this->devis->user_id, 
+            'devis_number' => $this->devis->num_proforma,
         ];
     }
-
   
     public function toBroadcast($notifiable)
     {
         return new BroadcastMessage([
-            'message' => "Un nouveau devis a été créé : ",
+            'message' => "Un nouveau devis a été créé",
             'devis_id' => $this->devis->id,
-            'user_id' => $this->devis->user_id, // L'utilisateur associé au devis
-            'devis_number' => $this->devis->num_proforma, // Numéro du devis
+            'user_id' => $this->devis->user_id, 
+            'devis_number' => $this->devis->num_proforma, 
         ]);
     }
 
-    
-
     public function receivesBroadcastNotificationsOn(): string
-{
-    return 'users.' . $this->devis->user_id;
-}
+    {
+        return 'users.' . $this->devis->user_id;
+    }
 
 
     /**
@@ -90,9 +81,9 @@ class DevisCreatedNotification extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->line('Un nouveau devis a été créé.')
-                    ->action('Voir le devis', url('/devis/' . $this->devis->id))
-                    ->line('Merci d\'avoir utilisé notre application.');
+        ->line('Un nouveau devis a été créé.')
+        ->action('Voir le devis', url('/devis/' . $this->devis->id))
+        ->line('Merci d\'avoir utilisé notre application.');
     }
 
     /**

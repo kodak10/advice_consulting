@@ -42,7 +42,6 @@ class BanqueController extends Controller
                 'num_compte' => 'required|string|unique:banques,num_compte|min:14|max:20',
             ]);
 
-            // Création et enregistrement de banque
             $banques = new Banque([
                 'name'       => $validatedData['name'],
                 'num_compte' => $validatedData['num_compte'],
@@ -50,7 +49,6 @@ class BanqueController extends Controller
 
             $banques->save();
 
-            // Message de succès
             session()->flash('success', 'Banque ajouté avec succès !');
 
             return response()->json([
@@ -75,7 +73,6 @@ class BanqueController extends Controller
             // Stocker le message détaillé dans la session pour l'affichage dans la vue
             session()->flash('error', $errorString);
         
-            // Retourner un message générique pour le toast
             return response()->json([
                 'success' => false,
                 'message' => "Une erreur est survenue lors de l'enregistrement.",

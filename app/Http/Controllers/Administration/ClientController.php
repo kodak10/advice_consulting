@@ -53,10 +53,8 @@ public function store(Request $request)
             'attn'      => 'nullable|string|max:255',
         ]);
 
-        // Récupérer l'ID de l'utilisateur (ou 1 par défaut)
         $userId = Auth::check() ? Auth::user()->id : 1;
 
-        // Création et enregistrement du client
         $client = new Client([
             'nom'       => $validatedData['nom'],
             'numero_cc' => $validatedData['numero_cc'],
@@ -69,7 +67,6 @@ public function store(Request $request)
 
         $client->save();
 
-        // Message de succès
         session()->flash('success', 'Client ajouté avec succès !');
 
         return response()->json([
@@ -122,7 +119,6 @@ public function store(Request $request)
 
 public function update(Request $request, Client $client)
 {
-    // Validation
     $validatedData = $request->validate([
         'nom' => 'required|string|max:255',
         'numero_cc' => 'required|string|unique:clients,numero_cc,' . $client->id,
@@ -132,7 +128,6 @@ public function update(Request $request, Client $client)
         'attn' => 'nullable|string',
     ]);
 
-    // Mise à jour du client
     try {
         $client->update([
             'nom' => $request->nom,
@@ -143,7 +138,6 @@ public function update(Request $request, Client $client)
             'attn' => $request->attn,
         ]);
 
-         // Message de succès
          session()->flash('success', 'Client mis à jour avec succès!');
 
          return response()->json([
@@ -152,11 +146,9 @@ public function update(Request $request, Client $client)
         ]);
 
     } catch (ValidationException $e) {
-        // Récupérer le tableau des erreurs :
-        // ex : [ 'nom' => ['Le champ nom est obligatoire.'], 'telephone' => ['Le champ téléphone est obligatoire.'], ... ]
+        
         $errors = $e->errors();
     
-        // Transformer le tableau pour obtenir une chaîne avec tous les messages
         $errorMessages = [];
         foreach ($errors as $fieldErrors) {
             foreach ($fieldErrors as $message) {

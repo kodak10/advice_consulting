@@ -22,14 +22,12 @@ class DesignationsController extends Controller
     public function store(Request $request)
     {
         try {
-            // Valider les données du formulaire
             $validatedData = $request->validate([
                 'reference'       => 'required|string|max:10',
                 'description' => 'required|string|max:150',
                 'prix_unitaire' => 'required|string|max:10',
             ]);
 
-            // Création designation du client
             $designation = new Designation([
                 'reference'       => $validatedData['reference'],
                 'description' => $validatedData['description'],
@@ -39,7 +37,6 @@ class DesignationsController extends Controller
 
             $designation->save();
 
-            // Message de succès
             session()->flash('success', 'Désignation ajouté avec succès !');
 
             return response()->json([
@@ -48,11 +45,9 @@ class DesignationsController extends Controller
             ]);
 
         } catch (ValidationException $e) {
-            // Récupérer le tableau des erreurs :
-            // ex : [ 'nom' => ['Le champ nom est obligatoire.'], 'telephone' => ['Le champ téléphone est obligatoire.'], ... ]
+            
             $errors = $e->errors();
         
-            // Transformer le tableau pour obtenir une chaîne avec tous les messages
             $errorMessages = [];
             foreach ($errors as $fieldErrors) {
                 foreach ($fieldErrors as $message) {
@@ -112,21 +107,17 @@ class DesignationsController extends Controller
         ]);
 
     } catch (ValidationException $e) {
-        // Récupérer le tableau des erreurs :
-        // ex : [ 'nom' => ['Le champ nom est obligatoire.'], 'telephone' => ['Le champ téléphone est obligatoire.'], ... ]
+       
         $errors = $e->errors();
     
-        // Transformer le tableau pour obtenir une chaîne avec tous les messages
         $errorMessages = [];
         foreach ($errors as $fieldErrors) {
             foreach ($fieldErrors as $message) {
                 $errorMessages[] = $message;
             }
         }
-        // Séparer les messages par un retour à la ligne (<br>)
         $errorString = implode('<br>', $errorMessages);
     
-        // Stocker le message détaillé dans la session pour l'affichage dans la vue
         session()->flash('error', $errorString);
     
         // Retourner un message générique pour le toast

@@ -64,46 +64,37 @@ class UsersController extends Controller
         return redirect()->route('dashboard.users.index')->with('success', 'Utilisateur ajouté avec succès. Un e-mail de vérification a été envoyé.');
     }
 
-  
-    // Méthode pour désactiver un utilisateur
     public function disable($id)
     {
-        // Récupérer l'utilisateur
         $user = User::findOrFail($id);
 
-        // Mettre à jour le statut en "inactif"
         $user->status = 'Inactif';
         $user->save();
 
-        // Rediriger avec un message de succès
         return redirect()->back()->with('success', 'Utilisateur désactivé avec succès.');
     }
 
-    // Méthode pour Activer un utilisateur
     public function activate($id)
     {
-        // Récupérer l'utilisateur
         $user = User::findOrFail($id);
 
-        // Mettre à jour le statut en "Actif"
         $user->status = 'Actif';
         $user->save();
 
-        // Rediriger avec un message de succès
         return redirect()->back()->with('success', 'Utilisateur activé avec succès.');
     }
 
 
     public function show($id)
     {
-        $user = User::findOrFail($id); // Recherche l'utilisateur avec l'ID fourni
-        return view('administration.pages.users.profil', compact('user')); // Renvoie la vue avec les données de l'utilisateur
+        $user = User::findOrFail($id); 
+        return view('administration.pages.users.profil', compact('user'));
     }
     
 
     public function profile()
     {
-        $user = auth()->user(); // Récupère l'utilisateur connecté  
+        $user = auth()->user();
 
         if (!$user) {
             return redirect()->route('login')->with('error', 'Vous devez être connecté pour accéder à cette page.');
@@ -137,8 +128,6 @@ class UsersController extends Controller
         return back()->with('success', 'Photo de profil mise à jour avec succès !');
     }
 
-
-
     public function resetProfileImage()
     {
         $user = auth()->user();
@@ -158,49 +147,40 @@ class UsersController extends Controller
 
     public function updateInformation(Request $request)
     {
-        // Récupérer l'utilisateur connecté
         $user = auth()->user();
 
-        // Validation des données
         $request->validate([
             'name' => 'required|string|max:255',
             'phone' => 'nullable|string|max:20',
             'adresse' => 'nullable|string|max:255',
         ]);
 
-        // Mettre à jour les informations de l'utilisateur
         $user->update([
             'name' => $request->name,
             'phone' => $request->phone,
             'adresse' => $request->adresse,
         ]);
 
-        // Rediriger avec un message de succès
         return back()->with('success', 'Infomation du profil mis à jour avec succès !');
     }
 
     public function updatePassword(Request $request)
     {
-        // Validation des données
         $request->validate([
             'current_password' => 'required|string|min:8',
             'new_password' => 'required|string|min:8|confirmed',
         ]);
 
-        // Récupérer l'utilisateur connecté
         $user = auth()->user();
 
-        // Vérifier que le mot de passe actuel est correct
         if (!Hash::check($request->current_password, $user->password)) {
             return back()->withErrors(['current_password' => 'Le mot de passe actuel est incorrect.']);
         }
 
-        // Mettre à jour le mot de passe
         $user->update([
             'password' => Hash::make($request->new_password),
         ]);
 
-        // Rediriger avec un message de succès
         return back()->with('success', 'Mot de passe mis à jour avec succès !');
     }
 

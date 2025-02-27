@@ -1,23 +1,21 @@
 <!DOCTYPE html>
-<html lang="fr" dir="ltr" data-bs-theme="dark" data-color-theme="Blue_Theme" data-layout="vertical">
+<html lang="fr" data-bs-theme="dark" data-color-theme="Blue_Theme" data-layout="vertical">
 
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta name="csrf-token" content="{{ csrf_token() }}">
   <meta name="user-id" content="{{ auth()->id() }}">
 
   <!-- Favicon icon-->
   <link rel="shortcut icon" type="image/png" href="{{ asset('adminAssets/images/logos/favicon.png') }}">
 
-  <!-- Core Css -->
   <link rel="stylesheet" href="{{ asset('adminAssets/css/styles.css') }}">
 
   <title>Advice Consulting | Proforma - Factures</title>
-  <meta name="csrf-token" content="{{ csrf_token() }}">
 
-  <!-- External Libraries -->
-  <link rel="stylesheet" href="{{ asset('adminAssets/libs/quill/dist/quill.snow.css') }}">
   <link rel="stylesheet" href="{{ asset('adminAssets/libs/select2/dist/css/select2.min.css') }}">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
   <link rel="stylesheet" href="{{ asset('adminAssets/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css') }}">
@@ -34,9 +32,9 @@
         <img src="{{ asset('adminAssets/images/logos/favicon.png') }}" alt="loader" class="lds-ripple img-fluid">
     </div>
 
-  <div id="main-wrapper">
+    <div id="main-wrapper">
 
-    @include('administration.layouts.aside')
+        @include('administration.layouts.aside')
 
         <div class="page-wrapper">
             @include('administration.layouts.header')
@@ -48,6 +46,7 @@
     </div>
 
     <div class="dark-transparent sidebartoggler"></div>
+
 
   <!-- Laravel Echo et Pusher -->
   <script src="https://cdn.jsdelivr.net/npm/pusher-js@7.0.3/dist/web/pusher.min.js"></script>
@@ -85,10 +84,6 @@
    <script src="https://cdn.jsdelivr.net/npm/pusher-js@7.0.3/dist/web/pusher.min.js"></script>
 
 
-<!-- Placez le chemin de ton fichier audio dans un attribut HTML -->
-<audio id="notification-sound" data-sound-url="{{ asset('adminAssets/bip.mp4') }}"></audio>
-
-
 <script>
     window.Pusher = Pusher;
     window.Echo = new Echo({
@@ -100,36 +95,13 @@
         reconnect: true,  // Active la reconnexion automatique
     });
 
-    console.log('Echo initialized:', window.Echo);
-
     let userId = document.querySelector('meta[name="user-id"]').getAttribute('content');
-
-    // Charger le son de notification
-    // const notificationSound = new Audio(document.querySelector('#notification-sound').getAttribute('data-sound-url'));
-
-    //const notificationSound = new Audio('/path/to/notification-sound.mp3'); // Remplace par le chemin de ton fichier audio
-
-    // Jouer le son uniquement après une interaction avec la page (par exemple, un clic)
-    let soundPlayed = false;
-
-    document.body.addEventListener('click', () => {
-        if (!soundPlayed) {
-            notificationSound.play();
-            soundPlayed = true;  // Empêche la lecture multiple du son
-        }
-    });
 
     if (userId) {
         let channel = window.Echo.private(`user.${userId}`);
 
         channel.listen('.devis.created', (event) => {
             console.log('Notification reçue :', event);
-
-            // Joue le son de notification après interaction
-            if (!soundPlayed) {
-                notificationSound.play();
-                soundPlayed = true;
-            }
 
             // Affichage avec Toast
             toastr.info(`Devis numéro : ${event.devis_number}`, 'Nouveau devis créé', {
@@ -167,7 +139,6 @@
             });
         });
 
-        console.log('Écoute sur le canal:', `user.${userId}`);
     } else {
         console.error('❌ Erreur : Impossible de récupérer userId.');
     }

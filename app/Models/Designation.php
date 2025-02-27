@@ -13,8 +13,8 @@ class Designation extends Model
     ];
 
     public function devis()
-{
-    return $this->belongsToMany(Devis::class, 'devis_designation');
-}
+    {
+        return $this->belongsToMany(Devis::class, 'devis_designation');
+    }
 
 }
