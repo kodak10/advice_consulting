@@ -57,7 +57,6 @@
                              width="120" 
                              height="120">
                         
-                        <!-- Formulaire pour changer l'image -->
                         <div class="row">
                           <div class="col-lg-6">
                             <form action="{{ route('dashboard.profil.image') }}" method="POST" enctype="multipart/form-data">
@@ -72,7 +71,6 @@
                           </form>
                           </div>
         
-                        <!-- Formulaire pour réinitialiser l'image -->
                         <div class="col-lg-6">
                           <form action="{{ route('dashboard.profil.resetImage') }}" method="POST" class="d-inline">
                             @csrf
@@ -95,9 +93,8 @@
                   <p class="card-subtitle mb-4">Pour changer votre mot de passe veuillez confirmer ici</p>
       
                   
-                  <!-- Formulaire de changement de mot de passe -->
                   <form method="POST" action="{{ route('dashboard.profil.updatePassword') }}">
-                      @csrf <!-- Token CSRF pour la sécurité -->
+                      @csrf 
       
                       <div class="mb-3">
                           <label for="current_password" class="form-label">Mot de passe actuel</label>
@@ -122,10 +119,9 @@
                     <h4 class="card-title">Détails personnels</h4>
                     <p class="card-subtitle mb-4">Pour modifier vos informations personnelles, modifiez et enregistrez à partir d'ici</p>
                     
-                    <!-- Formulaire de mise à jour -->
                     <form method="POST" action="{{ route('dashboard.profil.updateInformation') }}">
-                        @csrf <!-- Token CSRF pour la sécurité -->
-                        @method('PUT') <!-- Utilisation de la méthode PUT pour la mise à jour -->
+                        @csrf
+                        @method('PUT')
         
                         <div class="row">
                             <div class="col-lg-6">

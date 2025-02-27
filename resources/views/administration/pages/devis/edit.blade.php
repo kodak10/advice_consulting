@@ -78,9 +78,6 @@
                 <div class="card">
                     <div class="card-body">
                         <h4 class="card-title">Désignations</h4>
-                       
-                        
-
                         <div class="email-repeater mb-3">
                             <div data-repeater-list="designations">
                                 @foreach($devis->details as $detail)

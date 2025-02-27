@@ -84,7 +84,6 @@
             <div class="table-responsive">
                 <table id="zero_config" class="table table-striped table-bordered text-nowrap align-middle">
                   <thead>
-                    <!-- start row -->
                     <tr>
                       <th>Date</th>
                         <th>N° Proforma</th>
@@ -93,7 +92,6 @@
                         <th>Statut</th>
                         <th>Action</th>
                     </tr>
-                    <!-- end row -->
                   </thead>
                   <tbody>
                     @forelse ($devis as $devi)
@@ -143,7 +141,6 @@
                 </tbody>
                 
                   <tfoot>
-                    <!-- start row -->
                     <tr>
                       <th>Date</th>
                         <th>N° Proforma</th>
@@ -152,7 +149,6 @@
                         <th>Statut</th>
                         <th>Action</th>
                     </tr>
-                    <!-- end row -->
                   </tfoot>
                 </table>
             </div>

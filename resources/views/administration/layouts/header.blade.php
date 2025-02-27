@@ -1,7 +1,5 @@
 <header class="topbar">
-    <div class="with-vertical"><!-- ---------------------------------- -->
-      <!-- Start Vertical Layout Header -->
-      <!-- ---------------------------------- -->
+    <div class="with-vertical">
       <nav class="navbar navbar-expand-lg p-0">
         <ul class="navbar-nav">
           <li class="nav-item nav-icon-hover-bg rounded-circle ms-n2">
@@ -9,11 +7,7 @@
               <i class="ti ti-menu-2"></i>
             </a>
           </li>
-          {{-- <li class="nav-item nav-icon-hover-bg rounded-circle d-none d-lg-flex">
-            <a class="nav-link" href="javascript:void(0)" data-bs-toggle="modal" data-bs-target="#exampleModal">
-              <i class="ti ti-search"></i>
-            </a>
-          </li> --}}
+         
         </ul>
 
        
@@ -31,9 +25,7 @@
           <div class="d-flex align-items-center justify-content-between">
             
             <ul class="navbar-nav flex-row ms-auto align-items-center justify-content-center">
-              <!-- ------------------------------- -->
-              <!-- start language Dropdown -->
-              <!-- ------------------------------- -->
+             
               <li class="nav-item nav-icon-hover-bg rounded-circle">
                 <a class="nav-link moon dark-layout" href="javascript:void(0)">
                   <i class="ti ti-moon moon"></i>
@@ -56,7 +48,7 @@
                           <span class="badge text-bg-primary rounded-4 px-3 py-1 lh-sm" id="notification-count">
                             {{ $notifications->count() }} Nouveau{{ $notifications->count() > 1 ? 'x' : '' }}
                           </span>
-                                              </div>
+                        </div>
 
                       <div id="notification-list" class="message-body" data-simplebar="">
                         @foreach ($notifications as $notification)
@@ -83,14 +75,6 @@
                   </div>
               </li>
             
-            
-              <!-- ------------------------------- -->
-              <!-- end notification Dropdown -->
-              <!-- ------------------------------- -->
-
-              <!-- ------------------------------- -->
-              <!-- start profile Dropdown -->
-              <!-- ------------------------------- -->
               <li class="nav-item dropdown">
                 <a class="nav-link pe-0" href="javascript:void(0)" id="drop1" aria-expanded="false">
                   <div class="d-flex align-items-center">
@@ -127,7 +111,7 @@
                           <span class="fs-2 d-block text-body-secondary">Paramètres du compte</span>
                         </div>
                       </a>
-                      <a href="{{ route('dashboard.messagerie.index') }}" class="py-8 px-7 d-flex align-items-center">
+                      {{-- <a href="{{ route('dashboard.messagerie.index') }}" class="py-8 px-7 d-flex align-items-center">
                         <span class="d-flex align-items-center justify-content-center text-bg-light rounded-1 p-6">
                           <img src="{{ asset('adminAssets/images/svgs/icon-inbox.svg') }}" alt="modernize-img" width="24" height="24">
                         </span>
@@ -135,7 +119,7 @@
                           <h6 class="mb-1 fs-3 fw-semibold lh-base">Ma boîte de réception</h6>
                           <span class="fs-2 d-block text-body-secondary">Notifications</span>
                         </div>
-                      </a>
+                      </a> --}}
                       
                     </div>
                     

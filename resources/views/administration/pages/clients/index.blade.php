@@ -46,9 +46,6 @@
             </div>
           <div class="col-md-4 col-xl-9 text-end d-flex justify-content-md-end justify-content-center mt-3 mt-md-0">
             
-
-           
-
             <button type="button" class="btn bg-warning-subtle text-warning px-4 fs-4 " data-bs-toggle="modal" data-bs-target="#addContactModal">
                 <i class="ti ti-users text-white me-1 fs-5"></i> 
                 Ajouter un Client
@@ -142,7 +139,6 @@
         <div class="table-responsive">
             <table id="zero_config" class="table table-striped table-bordered text-nowrap align-middle">
               <thead>
-                <!-- start row -->
                 <tr>
                   <th>Nom</th>
                   <th>N° Téléphone</th>
@@ -150,7 +146,6 @@
                   <th>N°CC</th>
                   <th>Action</th>
                 </tr>
-                <!-- end row -->
               </thead>
               <tbody>
                 @forelse ($clients as $client)
@@ -207,7 +202,6 @@
                                                 </div>
                                             </div>
 
-                                            <!-- Autres champs du formulaire -->
                                             <div class="row">
                                                 <div class="col-md-6">
                                                     <div class="mb-3 contact-occupation">
@@ -265,7 +259,6 @@
             </tbody>
             
               <tfoot>
-                <!-- start row -->
                 <tr>
                     <th>Nom</th>
                     <th>N° Téléphone</th>
@@ -273,7 +266,6 @@
                     <th>N°CC</th>
                     <th>Action</th>
                 </tr>
-                <!-- end row -->
               </tfoot>
             </table>
           </div>
@@ -289,7 +281,6 @@
   document.getElementById('btn-add').addEventListener('click', function(event) {
     event.preventDefault();
 
-    // Récupérer les données du formulaire
     let formData = {
         nom: document.getElementById('c-name').value,
         numero_cc: document.getElementById('c-occupation').value,
@@ -299,7 +290,6 @@
         attn: document.getElementById('c-attn').value,
     };
 
-    // Envoi de la requête avec fetch
     fetch("{{ route('dashboard.clients.store') }}", {
         method: 'POST',
         headers: {
@@ -311,7 +301,6 @@
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // Afficher le toast de succès
             toastr.success(data.message, 'Succès', {
                 positionClass: 'toast-top-right',
                 timeOut: 5000,
@@ -319,20 +308,17 @@
                 progressBar: true,
             });
 
-            // Fermer le modal et recharger la page après un délai
             $('#addContactModal').modal('hide');
             setTimeout(() => {
-                location.reload();  // Recharger la page pour afficher les nouveaux clients
+                location.reload();  
             }, 5000);
         } else {
-            // Afficher le toast d'erreur lorsque data.success est false
             toastr.error(data.message, 'Erreur', {
                 positionClass: 'toast-top-right',
                 timeOut: 20000,
                 closeButton: true,
                 progressBar: true,
             });
-            // Vous pouvez également choisir de recharger la page ou non
             setTimeout(() => {
                 location.reload();
             }, 1000);
@@ -340,7 +326,6 @@
     })
     .catch(error => {
         console.error('Erreur:', error);
-        // En cas d'erreur réseau ou autre, afficher un toast d'erreur générique
         toastr.error("Une erreur est survenue lors de l'ajout du client.", 'Erreur', {
             positionClass: 'toast-top-right',
             timeOut: 20000,

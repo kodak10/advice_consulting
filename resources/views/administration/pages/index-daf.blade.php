@@ -29,7 +29,6 @@
                   </div>
                   
                 </div>
-
                 
               </div>
               <div class="col-sm-5">
@@ -41,102 +40,7 @@
           </div>
         </div>
       </div>
-      
-      
-     
-     
-     
-      
-      
-      {{-- <div class="col-md-12 col-lg-12 d-flex align-items-stretch">
-        <div class="card w-100">
-          <div class="card-body">
-            <div class="d-sm-flex d-block align-items-center justify-content-between mb-3">
-              <div class="mb-3 mb-sm-0">
-                <h4 class="card-title fw-semibold">Factures</h4>
-              </div>
-              <div class="d-flex">
-               
-                <select id="filter-comptable" class="select2 form-control custom-select">
-                  <option value="">Sélectionner un comptable</option>
-                  @foreach($comptables as $user)
-                      <option value="{{ $user->id }}">{{ $user->name }}</option>
-                  @endforeach
-              </select>
-              
-              <div class="input-daterange input-group mr-3" id="date-range">
-                  <input type="text" class="form-control" name="start" id="start-date" placeholder="Date début">
-                  <span class="input-group-text bg-primary b-0 text-white">TO</span>
-                  <input type="text" class="form-control" name="end" id="end-date" placeholder="Date fin">
-              </div>
-
-              
-                <a href="{{ route('dashboard.factures.exportCsv') }}" class="btn btn-success">
-                  Exporter en CSV
-                </a>
-
-            </div>
-            </div>
-            <div class="table-responsive">
-                <table id="zero_config" class="table table-striped table-bordered text-nowrap align-middle">
-                  <thead>
-                    <!-- start row -->
-                    <tr>
-                        <th>Date</th>
-                        <th>Client</th>
-                        <th>Coût</th>
-                        <th>Etabli Par</th>
-                        <th>Statut</th>
-                        <th>Action</th>
-
-                    </tr>
-                    <!-- end row -->
-                  </thead>
-                  <tbody>
-                    @forelse ($factures as $facture)
-                    <tr>
-                        <td>
-                            <h6 class="mb-0">{{ $facture->created_at }}</h6>
-                        </td>
-                        <td>{{ $facture->devis->client->nom }}</td>
-                        <td>{{ $facture->devis->details->sum('total') }} {{ $facture->devis->devise }}</td>
-                        <td>{{ $facture->user->name }}</td>
-                        <td>{{ $facture->devis->status ?? 'Non renseigné' }}</td>
-                        <td>
-                          <a href="{{ route('dashboard.factures.download', $facture->id) }}" class="text-primary me-2" title="Télécharger">
-                            <i class="ti ti-download fs-5"></i>
-                          </a>
-                        </td>
-                       
-                    </tr>
     
-    
-                    
-                    @empty
-                        Aucune Proforma enregistrée.
-                    @endforelse
-                    
-                </tbody>
-                
-                  <tfoot>
-                    <!-- start row -->
-                    <tr>
-                        <th>Date</th>
-                        <th>Client</th>
-                        <th>Coût</th>
-                        <th>Etabli Par</th>
-                        <th>Statut</th>
-                        <th>Action</th>
-
-                    </tr>
-                    <!-- end row -->
-                  </tfoot>
-                </table>
-            </div>
-          </div>
-        </div>
-      </div> --}}
-
       <div class="col-md-12 col-lg-12 d-flex align-items-stretch">
         <div class="card w-100">
             <div class="card-body">
@@ -230,7 +134,6 @@
             <div class="table-responsive">
                 <table id="zero_config2" class="table table-striped table-bordered text-nowrap align-middle">
                     <thead>
-                      <!-- start row -->
                       <tr>
                         <th>Date</th>
 
@@ -242,7 +145,6 @@
                           <th>Action</th>
 
                       </tr>
-                      <!-- end row -->
                     </thead>
                     <tbody>
                       @forelse ($devis as $devi)

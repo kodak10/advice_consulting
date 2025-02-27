@@ -64,10 +64,9 @@
       </div>
 
       @if (Auth::user()->hasRole('Commercial'))
-<h5>Mes Proformas</h5>
+            <h5>Mes Proformas</h5>
             <table id="zero_config1" class="table table-striped table-bordered text-nowrap align-middle">
               <thead>
-                <!-- start row -->
                 <tr>
                   <th>Date</th>
 
@@ -77,7 +76,6 @@
                     <th>Statut</th>
                     <th>Action</th>
                 </tr>
-                <!-- end row -->
               </thead>
               <tbody>
                 @forelse ($mes_devis as $devi)
@@ -96,7 +94,6 @@
                         <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger">
                           <i class="ti ti-download fs-5"></i>
                         </a>
-                      
 
                       <a href="{{ route('dashboard.devis.validate', $devi->id) }}" class="text-success me-2" title="Valider">
                         <i class="ti ti-navigation-check"></i>
@@ -119,7 +116,6 @@
                 </tr>
 
 
-                
                 @empty
                     Aucune Proforma enregistrée.
                 @endforelse
@@ -127,7 +123,6 @@
               </tbody>
             
               <tfoot>
-                <!-- start row -->
                 <tr>
                   <th>Date</th>
 
@@ -137,7 +132,6 @@
                     <th>Statut</th>
                     <th>Action</th>
                 </tr>
-                <!-- end row -->
               </tfoot>
             </table>
       @endif
@@ -150,7 +144,6 @@
 
           <table id="zero_config2" class="table table-striped table-bordered text-nowrap align-middle">
             <thead>
-              <!-- start row -->
               <tr>
                 <th>Date</th>
 
@@ -161,7 +154,6 @@
                   <th>Statut</th>
                   <th>Action</th>
               </tr>
-              <!-- end row -->
             </thead>
             <tbody>
               @forelse ($devis as $devi)
@@ -193,8 +185,6 @@
                 
               </tr>
 
-
-              
               @empty
                   Aucune Proforma enregistrée.
               @endforelse
@@ -202,7 +192,6 @@
           </tbody>
           
             <tfoot>
-              <!-- start row -->
               <tr>
                 <th>Date</th>
 
@@ -213,14 +202,10 @@
                   <th>Statut</th>
                   <th>Action</th>
               </tr>
-              <!-- end row -->
             </tfoot>
           </table>
 
 
-          
-
-          
         </div>
       </div>
 
@@ -229,7 +214,6 @@
         <div class="table-responsive">
           <table id="zero_config3" class="mt-5 table table-striped table-bordered text-nowrap align-middle">
             <thead>
-              <!-- start row -->
               <tr>
                 <th>Date</th>
 
@@ -239,7 +223,6 @@
                   <th>Statut</th>
                   <th>Action</th>
               </tr>
-              <!-- end row -->
             </thead>
             <tbody>
               @forelse ($mes_devis as $devi)
@@ -289,7 +272,6 @@
           </tbody>
           
             <tfoot>
-              <!-- start row -->
               <tr>
                 <th>Date</th>
 
@@ -299,20 +281,14 @@
                   <th>Statut</th>
                   <th>Action</th>
               </tr>
-              <!-- end row -->
             </tfoot>
           </table>
         </div>
       </div>
       @endif
 
-
-
-
-      
     </div>
   
-
 </div>
 @endsection
 

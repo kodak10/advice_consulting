@@ -20,7 +20,6 @@
 
     <form action="{{ route('dashboard.devis.recapUpdate', $devis->id) }}" method="POST">
         @csrf
-        {{-- @method('PUT') --}}
 
         <div class="row">
             <div class="col-lg-8">
@@ -67,40 +66,6 @@
                 <div class="card">
                     <div class="card-body">
                         <h4 class="card-title">Désignations</h4>
-                        {{-- <div class="email-repeater">
-                            <div data-repeater-list="designations">
-                                @foreach ($devis->designations as $designation)
-                                <div data-repeater-item class="row mb-3">
-                                    <div class="col-md-3">
-                                        <select class="select2 form-control designation" name="designations[][designation]">
-                                            <option value="">Sélectionner</option>
-                                            @foreach ($designations as $item)
-                                                <option value="{{ $item->id }}" 
-                                                    data-price="{{ $item->prix_unitaire }}" 
-                                                    {{ $designation->id == $item->id ? 'selected' : '' }}>
-                                                    {{ $item->description }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="col-md-2">
-                                        <input type="number" class="form-control quantity" name="designations[][quantity]" value="{{ $designation->pivot->quantity }}">
-                                    </div>
-                                    <div class="col-md-2">
-                                        <input type="number" class="form-control price" name="designations[][price]" value="{{ $designation->pivot->price }}">
-                                    </div>
-                                    <div class="col-md-2">
-                                        <input type="number" class="form-control total" name="designations[][total]" value="{{ $designation->pivot->total }}" readonly>
-                                    </div>
-                                    <div class="col-md-1">
-                                        <button data-repeater-delete class="btn btn-danger" type="button">X</button>
-                                    </div>
-                                </div>
-                            @endforeach
-                            
-                            </div>
-                            <button type="button" data-repeater-create class="btn btn-primary">Ajouter une autre</button>
-                        </div> --}}
                         <div class="email-repeater mb-3">
                             <div data-repeater-list="designations">
                                 <div data-repeater-item class="row mb-3">

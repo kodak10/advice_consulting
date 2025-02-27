@@ -42,23 +42,20 @@
                     </div>
                 @endif
 
-                <!-- Affichage des erreurs de validation -->
-            @if($errors->any())
-            <div class="alert alert-danger text-danger" role="alert">
-                <ul>
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+                @if($errors->any())
+                    <div class="alert alert-danger text-danger" role="alert">
+                        <ul>
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
 
                 
             </div>
           <div class="col-md-4 col-xl-9 text-end d-flex justify-content-md-end justify-content-center mt-3 mt-md-0">
             
-
-           
 
             <button type="button" class="btn bg-warning-subtle text-warning px-4 fs-4 " data-bs-toggle="modal" data-bs-target="#addContactModal">
                 <i class="ti ti-users text-white me-1 fs-5"></i> 
@@ -172,7 +169,6 @@
         <div class="table-responsive">
             <table id="zero_config" class="table table-striped table-bordered text-nowrap align-middle">
               <thead>
-                <!-- start row -->
                 <tr>
                     <th>Pays</th>
                     <th>Nom</th>

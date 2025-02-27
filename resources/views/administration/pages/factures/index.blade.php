@@ -63,7 +63,6 @@
             </h5>
             <table id="zero_config" class="table table-striped table-bordered text-nowrap align-middle">
               <thead>
-                <!-- start row -->
                 <tr>
                   <th>Date</th>
 
@@ -78,7 +77,6 @@
                     <th>Statut</th>
                     <th>Action</th>
                 </tr>
-                <!-- end row -->
               </thead>
                 @if (Auth::user()->hasRole('Daf'))
                 <tbody>
@@ -113,7 +111,6 @@
                       </td>
                     
                   </tr>
-  
   
                   
                   @empty
@@ -153,8 +150,6 @@
                     
                   </tr>
   
-  
-                  
                   @empty
                       Aucune Proforma
                   @endforelse
@@ -165,7 +160,6 @@
              
             
               <tfoot>
-                <!-- start row -->
                 <tr>
                   <th>Date</th>
 
@@ -180,7 +174,6 @@
                     <th>Statut</th>
                     <th>Action</th>
                 </tr>
-                <!-- end row -->
               </tfoot>
             </table>
         </div>
@@ -196,7 +189,6 @@
             </h5>
               <table id="zero_config2" class="table table-striped table-bordered text-nowrap align-middle">
                 <thead>
-                  <!-- start row -->
                   <tr>
                     <th>Date</th>
 
@@ -212,7 +204,6 @@
                       <th>Action</th>
 
                   </tr>
-                  <!-- end row -->
                 </thead>
 
                 @if(Auth::user()->hasRole('Daf'))
@@ -246,8 +237,6 @@
                     
                   </tr>
   
-  
-                  
                   @empty
                       Aucune Facture enregistrée.
                   @endforelse
@@ -284,8 +273,6 @@
                     
                   </tr>
   
-  
-                  
                   @empty
                       Aucune Facture enregistrée.
                   @endforelse
@@ -295,7 +282,6 @@
                 @endif
               
                 <tfoot>
-                  <!-- start row -->
                   <tr>
                     <th>Date</th>
 
@@ -310,7 +296,6 @@
                       <th>Action</th>
 
                   </tr>
-                  <!-- end row -->
                 </tfoot>
               </table>
               
@@ -326,7 +311,6 @@
             </h5>
               <table id="zero_config3" class="table table-striped table-bordered text-nowrap align-middle">
                 <thead>
-                  <!-- start row -->
                   <tr>
                     <th>Date</th>
 
@@ -337,7 +321,6 @@
                       <th>Action</th>
 
                   </tr>
-                  <!-- end row -->
                 </thead>
                 <tbody>
                   @forelse ($mes_factures as $facture)
@@ -364,7 +347,6 @@
                   </tr>
   
   
-                  
                   @empty
                       Aucune Facture enregistrée.
                   @endforelse
@@ -372,7 +354,6 @@
               </tbody>
               
                 <tfoot>
-                  <!-- start row -->
                   <tr>
                     <th>Date</th>
 
@@ -383,7 +364,6 @@
                       <th>Action</th>
 
                   </tr>
-                  <!-- end row -->
                 </tfoot>
               </table>
               

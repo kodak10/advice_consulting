@@ -29,7 +29,6 @@
                 <div class="card-body">
                     <h3 class="card-title text-center mb-5">Récapitulatif de la Proforma</h3>
 
-                    <!-- Informations du Client -->
                     <div class="mb-5">
                         <h5>Informations du Client</h5>
                         <div class="row">
@@ -45,7 +44,6 @@
                         </div>
                     </div>
 
-                    <!-- Dates -->
                     <div class="mb-5">
                         <h5>Dates</h5>
                         <div class="row">
@@ -58,7 +56,6 @@
                         </div>
                     </div>
 
-                    <!-- Désignations -->
                     <div class="mb-5">
                         <h5>Désignations</h5>
                         <table class="table table-bordered">
@@ -85,7 +82,6 @@
                         </table>
                     </div>
 
-                    <!-- Conditions Financières -->
                     <div class="mb-5">
                         <h5>Conditions Financières</h5>
                         <div class="row">
@@ -104,14 +100,12 @@
                         </div>
                     </div>
 
-                    <!-- Banque -->
                     <div class="mb-5">
                         <h5>Banque</h5>
                         <p><strong>Nom de la banque :</strong> {{ $banque->name }}</p>
                         <p><strong>Numéro de compte :</strong> {{ $banque->num_compte }}</p>
                     </div>
 
-                    <!-- Conditions Générales -->
                     <div class="mb-5">
                         <h5>Conditions Générales</h5>
                         <div class="row">
@@ -133,7 +127,6 @@
                         </div>
                     </div>
 
-                    <!-- Bouton d'enregistrement -->
                     <div class="form-actions">
                         <form method="POST" action="{{ route('dashboard.devis.storeRecap', $devis->id) }}">                            
                             @csrf
@@ -174,7 +167,6 @@
                         </form>
                     </div>
 
-                    <!-- Bouton de Retour -->
                     <div class="form-actions">
                     </div>
                 </div>

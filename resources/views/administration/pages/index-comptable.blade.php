@@ -43,8 +43,6 @@
       </div>
       
       
-     
-      
       
       <div class="col-md-12 col-lg-12 d-flex align-items-stretch">
         <div class="card w-100">
@@ -72,7 +70,6 @@
               </a>
                 
                   <thead>
-                    <!-- start row -->
                     <tr>
                       <th>Date</th>
 
@@ -83,7 +80,6 @@
                         <th>Statut</th>
                         <th>Action</th>
                     </tr>
-                    <!-- end row -->
                   </thead>
                   <tbody>
                     @forelse ($devis as $devi)
@@ -134,7 +130,6 @@
                 </tbody>
                 
                   <tfoot>
-                    <!-- start row -->
                     <tr>
                       <th>Date</th>
                         <th>N° Proforma</th>
@@ -144,7 +139,6 @@
                         <th>Statut</th>
                         <th>Action</th>
                     </tr>
-                    <!-- end row -->
                   </tfoot>
                 </table>
             </div>
@@ -174,7 +168,6 @@
             <div class="table-responsive">
                 <table id="zero_config2" class="table table-striped table-bordered text-nowrap align-middle">
                   <thead>
-                    <!-- start row -->
                     <tr>
                         <th>Date</th>
                         <th>Etabli Par</th>
@@ -184,7 +177,6 @@
                         <th>Action</th>
 
                     </tr>
-                    <!-- end row -->
                   </thead>
                   <tbody>
                     @forelse ($factures as $facture)
@@ -206,8 +198,6 @@
                       
                     </tr>
     
-    
-                    
                     @empty
                         Aucun Devis enregistré.
                     @endforelse
@@ -215,7 +205,6 @@
                 </tbody>
                 
                   <tfoot>
-                    <!-- start row -->
                     <tr>
                         <th>Date</th>
                         <th>Etabli Par</th>
@@ -225,7 +214,6 @@
                         <th>Action</th>
 
                     </tr>
-                    <!-- end row -->
                   </tfoot>
                 </table>
             </div>

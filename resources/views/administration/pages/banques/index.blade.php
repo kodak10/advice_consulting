@@ -115,13 +115,11 @@
         <div class="table-responsive">
             <table id="zero_config" class="table table-striped table-bordered text-nowrap align-middle">
               <thead>
-                <!-- start row -->
                 <tr>
                   <th>Nom</th>
                   <th>Numéro de compte</th>
                   <th>Action</th>
                 </tr>
-                <!-- end row -->
               </thead>
               <tbody>
                 @forelse ($banques as $banque)
@@ -178,7 +176,6 @@
                                                 </div>
                                             </div>
 
-                                            <!-- Autres champs du formulaire -->
                                             <div class="row">
                                                 <div class="col-md-12">
                                                     <div class="mb-3 contact-occupation">
@@ -209,13 +206,11 @@
             </tbody>
             
               <tfoot>
-                <!-- start row -->
                 <tr>
                     <th>Nom</th>
                     <th>Numéro de compte</th>
                     <th>Action</th>
                 </tr>
-                <!-- end row -->
               </tfoot>
             </table>
           </div>
@@ -237,7 +232,7 @@
         num_compte: document.getElementById('numero_compte').value,
     };
     console.log("Numéro de compte:", formData.numero_compte);
-    // Envoi de la requête avec fetch
+
     fetch("{{ route('dashboard.banques.store') }}", {
         method: 'POST',
         headers: {
@@ -257,20 +252,18 @@
                 progressBar: true,
             });
 
-            // Fermer le modal et recharger la page après un délai
             $('#addBanqueModal').modal('hide');
             setTimeout(() => {
                 location.reload();  // Recharger la page pour afficher les nouvelles banques
             }, 3000);
         } else {
-            // Afficher le toast d'erreur lorsque data.success est false
             toastr.error(data.message, 'Erreur', {
                 positionClass: 'toast-top-right',
                 timeOut: 20000,
                 closeButton: true,
                 progressBar: true,
             });
-            // Vous pouvez également choisir de recharger la page ou non
+            
             setTimeout(() => {
                 location.reload();
             }, 1000);
@@ -278,7 +271,6 @@
     })
     .catch(error => {
         console.error('Erreur:', error);
-        // En cas d'erreur réseau ou autre, afficher un toast d'erreur générique
         toastr.error("Une erreur est survenue lors de l'ajout d'une banque.", 'Erreur', {
             positionClass: 'toast-top-right',
             timeOut: 20000,
