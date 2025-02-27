@@ -51,23 +51,21 @@
               <div class="mb-3 mb-sm-0">
                 <h4 class="card-title fw-semibold">Liste des Proformas</h4>
               </div>
-              <div>
+              <div class="d-flex">
+                <div class="input-daterange input-group mr-3" id="date-range">
+                  <input type="text" class="form-control" name="start" id="start-date" placeholder="Date début">
+                  <span class="input-group-text bg-primary b-0 text-white">A</span>
+                  <input type="text" class="form-control" name="end" id="end-date" placeholder="Date fin">
+                </div>
+
                 <a href="{{ route('dashboard.devis.exportCsv') }}" class="btn btn-success">
-                  Exporter en CSV
-              </a>
+                  Exporter
+                </a>
               </div>
             </div>
             <div class="table-responsive">
                 <table id="zero_config" class="table table-striped table-bordered text-nowrap align-middle">
-                  <div class="input-daterange input-group mr-3" id="date-range">
-                    <input type="text" class="form-control" name="start" id="start-date" placeholder="Date début">
-                    <span class="input-group-text bg-primary b-0 text-white">TO</span>
-                    <input type="text" class="form-control" name="end" id="end-date" placeholder="Date fin">
-                </div>
-
-                <a href="{{ route('dashboard.devis.exportCsv') }}" class="btn btn-success">
-                  Exporter en CSV
-              </a>
+                  
                 
                   <thead>
                     <tr>
@@ -153,15 +151,15 @@
               <div class="mb-3 mb-sm-0">
                 <h4 class="card-title fw-semibold">Liste des Factures</h4>
               </div>
-              <div>
+              <div class="d-flex">
                 <div class="input-daterange input-group mr-3" id="date-range">
                   <input type="text" class="form-control" name="start" id="start-date" placeholder="Date début">
-                  <span class="input-group-text bg-primary b-0 text-white">TO</span>
+                  <span class="input-group-text bg-primary b-0 text-white">A</span>
                   <input type="text" class="form-control" name="end" id="end-date" placeholder="Date fin">
               </div>
 
               <a href="{{ route('dashboard.factures.exportCsv') }}" class="btn btn-success">
-                Exporter en CSV
+                Exporter
             </a>             
             </div>
             </div>

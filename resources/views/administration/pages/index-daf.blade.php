@@ -41,7 +41,7 @@
         </div>
       </div>
     
-      <div class="col-md-12 col-lg-12 d-flex align-items-stretch">
+      {{-- <div class="col-md-12 col-lg-12 d-flex align-items-stretch">
         <div class="card w-100">
             <div class="card-body">
                 <div class="d-sm-flex d-block align-items-center justify-content-between mb-3">
@@ -63,7 +63,7 @@
                         </div>
                         
                         <a href="{{ route('dashboard.factures.exportCsv') }}" class="btn btn-success">
-                            Exporter en CSV
+                            Exporter
                         </a>
                     </div>
                 </div>
@@ -111,7 +111,79 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
+
+    <div class="col-md-12 col-lg-12 d-flex align-items-stretch">
+      <div class="card w-100">
+          <div class="card-body">
+              <div class="d-sm-flex d-block align-items-center justify-content-between mb-3">
+                  <div class="mb-3 mb-sm-0">
+                      <h4 class="card-title fw-semibold">Factures</h4>
+                  </div>
+                  <div class="d-flex">
+                      <select id="filter-comptable" class="select2 form-control custom-select">
+                          <option value="">Tous les comptables & Daf</option>
+                          @foreach($comptables as $user)
+                              <option value="{{ $user->name }}">{{ $user->name }}</option>
+                          @endforeach
+                      </select>
+                      
+                      <div class="input-daterange input-group mr-3" id="date-range">
+                          <input type="text" class="form-control" name="start" id="start-date" placeholder="Date début">
+                          <span class="input-group-text bg-primary b-0 text-white">A</span>
+                          <input type="text" class="form-control" name="end" id="end-date" placeholder="Date fin">
+                      </div>
+                      
+                      <a href="{{ route('dashboard.factures.exportCsv') }}" class="btn btn-success">
+                          Exporter
+                      </a>
+                  </div>
+              </div>
+              <div class="table-responsive">
+                  <table id="zero_config" class="table table-striped table-bordered text-nowrap align-middle">
+                      <thead>
+                          <tr>
+                              <th>Date</th>
+                              <th>Client</th>
+                              <th>Coût</th>
+                              <th>Etabli Par</th>
+                              <th>Statut</th>
+                              <th>Action</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          @forelse ($factures as $facture)
+                          <tr>
+                              <td>{{ $facture->created_at }}</td>
+                              <td>{{ $facture->devis->client->nom }}</td>
+                              <td>{{ $facture->devis->details->sum('total') }} {{ $facture->devis->devise }}</td>
+                              <td>{{ $facture->user->name }}</td>
+                              <td>{{ $facture->devis->status ?? 'Non renseigné' }}</td>
+                              <td>
+                                  <a href="{{ route('dashboard.factures.download', $facture->id) }}" class="text-primary me-2" title="Télécharger">
+                                      <i class="ti ti-download fs-5"></i>
+                                  </a>
+                              </td>
+                          </tr>
+                          @empty
+                              <tr><td colspan="6">Aucune Proforma enregistrée.</td></tr>
+                          @endforelse
+                      </tbody>
+                      <tfoot>
+                          <tr>
+                              <th>Date</th>
+                              <th>Client</th>
+                              <th>Coût</th>
+                              <th>Etabli Par</th>
+                              <th>Statut</th>
+                              <th>Action</th>
+                          </tr>
+                      </tfoot>
+                  </table>
+              </div>
+          </div>
+      </div>
+  </div>
 
       <div class="col-md-12 col-lg-12 d-flex align-items-stretch">
         <div class="card w-100">
@@ -120,14 +192,14 @@
               <div class="mb-3 mb-sm-0">
                 <h4 class="card-title fw-semibold">Liste des Proformas </h4>
               </div>
-             <div>
+             <div class="d-flex">
               <div class="input-daterange input-group mr-3" id="date-range">
                 <input type="text" class="form-control" name="start" id="start-date" placeholder="Date début">
-                <span class="input-group-text bg-primary b-0 text-white">TO</span>
+                <span class="input-group-text bg-primary b-0 text-white">A</span>
                 <input type="text" class="form-control" name="end" id="end-date" placeholder="Date fin">
             </div>
             <a href="{{ route('dashboard.devis.exportCsv') }}" class="btn btn-success">
-              Exporter en CSV
+              Exporter
           </a>
              </div>
             </div>
@@ -202,6 +274,54 @@
 @endsection
 
 @push('scripts')
+
+
+<script>
+  $(document).ready(function() {
+      // Initialiser DataTable
+      // $('#zero_config').DataTable({
+      //     "language": {
+      //         "url": "//cdn.datatables.net/plug-ins/1.11.5/i18n/French.json" // Traduction en français
+      //     },
+      //     "order": [[0, 'desc']], // Trier par la première colonne (Date) par défaut
+      //     "columnDefs": [
+      //         { "orderable": false, "targets": [5] } // Désactiver le tri sur la colonne "Action"
+      //     ]
+      // });
+
+      // Appliquer les filtres personnalisés
+      $('#filter-comptable').on('change', function() {
+          var comptableId = $(this).val();
+          $('#zero_config').DataTable().column(3).search(comptableId).draw(); // Filtrer par colonne "Etabli Par"
+      });
+
+      $('#start-date, #end-date').on('change', function() {
+          var startDate = $('#start-date').val();
+          var endDate = $('#end-date').val();
+
+          // Filtrer par plage de dates
+          $('#zero_config').DataTable().draw();
+      });
+
+      // Personnaliser le filtrage par date
+      $.fn.dataTable.ext.search.push(
+          function(settings, data, dataIndex) {
+              var startDate = $('#start-date').val();
+              var endDate = $('#end-date').val();
+              var rowDate = new Date(data[0]); // La colonne "Date" est la première colonne (index 0)
+
+              if ((startDate === '' && endDate === '') ||
+                  (startDate === '' && rowDate <= new Date(endDate)) ||
+                  (new Date(startDate) <= rowDate && endDate === '') ||
+                  (new Date(startDate) <= rowDate && rowDate <= new Date(endDate))) {
+                  return true;
+              }
+              return false;
+          }
+      );
+  });
+</script>
+
 
 <script>
   $(document).ready(function() {

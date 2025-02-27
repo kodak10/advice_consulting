@@ -104,7 +104,7 @@
               </div>
               <div>
                 <a href="{{ route('dashboard.users.exportCsv') }}" class="btn btn-success">
-                  Exporter en CSV
+                  Exporter
                 </a>
               </div>
             </div>

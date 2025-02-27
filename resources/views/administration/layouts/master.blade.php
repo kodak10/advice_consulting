@@ -20,6 +20,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
   <link rel="stylesheet" href="{{ asset('adminAssets/libs/datatables.net-bs5/css/dataTables.bootstrap5.min.css') }}">
   <link rel="stylesheet" href="{{ asset('adminAssets/libs/sweetalert2/dist/sweetalert2.min.css') }}">
+  
   <link rel="stylesheet" href="{{ asset('adminAssets/libs/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css') }}">
 
   @stack('styles')
@@ -48,6 +49,8 @@
 
 
     <script src="{{ asset('adminAssets/js/vendor.min.js') }}"></script>
+
+
     <script src="{{ asset('adminAssets/libs/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('adminAssets/libs/simplebar/dist/simplebar.min.js') }}"></script>
     <script src="{{ asset('adminAssets/js/theme/app.dark.init.js') }}"></script>
@@ -55,8 +58,8 @@
     <script src="{{ asset('adminAssets/js/theme/app.min.js') }}"></script>
     <script src="{{ asset('adminAssets/js/theme/sidebarmenu.js') }}"></script>
 
-    {{-- <script src="{{ asset('adminAssets/js/extra-libs/moment/moment.min.js') }}"></script> --}}
-    
+   
+
     <script src="{{ asset('adminAssets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('adminAssets/js/datatable/datatable-basic.init.js') }}"></script>
 
@@ -64,11 +67,13 @@
     <script src="{{ asset('adminAssets/js/forms/sweet-alert.init.js') }}"></script>
     <script src="{{ asset('adminAssets/js/plugins/toastr-init.js') }}"></script>
 
-    {{-- <script src="{{ asset('adminAssets/libs/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
-    <script src="{{ asset('adminAssets/js/forms/daterangepicker-init.js') }}"></script> --}}
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <script src="{{ asset('adminAssets/js/extra-libs/moment/moment.min.js') }}"></script>
+    <script src="{{ asset('adminAssets/libs/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
+    <script src="{{ asset('adminAssets/js/forms/daterangepicker-init.js') }}"></script>
+    
     <!-- Laravel Echo et Pusher -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/laravel-echo/1.11.2/echo.iife.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/pusher-js@7.0.3/dist/web/pusher.min.js"></script>
