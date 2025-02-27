@@ -69,6 +69,8 @@
               <thead>
                 <!-- start row -->
                 <tr>
+                  <th>Date</th>
+
                     <th>N° Proforma</th>
                     <th>Client</th>
                     <th>Coût</th>
@@ -80,6 +82,9 @@
               <tbody>
                 @forelse ($mes_devis as $devi)
                 <tr>
+                  <td>
+                    <h6 class="mb-0">{{ $devi->created_at }}</h6>
+                  </td>
                     <td>
                         <h6 class="mb-0">{{ $devi->num_proforma }}</h6>
                     </td>
@@ -124,6 +129,8 @@
               <tfoot>
                 <!-- start row -->
                 <tr>
+                  <th>Date</th>
+
                     <th>N° Proforma</th>
                     <th>Client</th>
                     <th>Coût</th>
@@ -145,6 +152,8 @@
             <thead>
               <!-- start row -->
               <tr>
+                <th>Date</th>
+
                   <th>N° Proforma</th>
                   <th>Client</th>
                   <th>Coût</th>
@@ -157,6 +166,9 @@
             <tbody>
               @forelse ($devis as $devi)
               <tr>
+                <td>
+                  <h6 class="mb-0">{{ $devi->created_at }}</h6>
+              </td>
                   <td>
                       <h6 class="mb-0">{{ $devi->num_proforma }}</h6>
                   </td>
@@ -192,6 +204,8 @@
             <tfoot>
               <!-- start row -->
               <tr>
+                <th>Date</th>
+
                   <th>N° Proforma</th>
                   <th>Client</th>
                   <th>Coût</th>
@@ -211,12 +225,14 @@
       </div>
 
       <div class="card card-body">
-        <h5>Mes Proformas Emises</h5>
+        <h5>Historiques</h5>
         <div class="table-responsive">
           <table id="zero_config3" class="mt-5 table table-striped table-bordered text-nowrap align-middle">
             <thead>
               <!-- start row -->
               <tr>
+                <th>Date</th>
+
                   <th>N° Proforma</th>
                   <th>Client</th>
                   <th>Coût</th>
@@ -228,6 +244,9 @@
             <tbody>
               @forelse ($mes_devis as $devi)
               <tr>
+                <td>
+                  <h6 class="mb-0">{{ $devi->created_at }}</h6>
+              </td>
                   <td>
                       <h6 class="mb-0">{{ $devi->num_proforma }}</h6>
                   </td>
@@ -272,6 +291,8 @@
             <tfoot>
               <!-- start row -->
               <tr>
+                <th>Date</th>
+
                   <th>N° Proforma</th>
                   <th>Client</th>
                   <th>Coût</th>

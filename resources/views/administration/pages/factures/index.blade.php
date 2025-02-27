@@ -59,62 +59,124 @@
       <div class="card card-body">
         <div class="table-responsive mb-5">
             <h5>
-                Liste des Proformas
+                Liste des Proformas en Attente
             </h5>
             <table id="zero_config" class="table table-striped table-bordered text-nowrap align-middle">
               <thead>
                 <!-- start row -->
                 <tr>
+                  <th>Date</th>
+
                     <th>N° Proforma</th>
+                    @if(Auth::user()->hasRole('Daf'))
+                    <th>Pays</th>
+
+                    @endif
+                    <th>Etabli Par</th>
                     <th>Client</th>
                     <th>Coût</th>
-                    <th>Etabli Par</th>
                     <th>Statut</th>
                     <th>Action</th>
                 </tr>
                 <!-- end row -->
               </thead>
-              <tbody>
-                @forelse ($devis as $devi)
-                <tr>
+                @if (Auth::user()->hasRole('Daf'))
+                <tbody>
+                  @forelse ($all_devis as $devi)
+                  <tr>
                     <td>
-                        <h6 class="mb-0">{{ $devi->num_proforma }}</h6>
+                      <h6 class="mb-0">{{ $devi->created_at }}</h6>
                     </td>
-                    <td>{{ $devi->client->nom }}</td>
-                    <td>{{ $devi->details->sum('total') }} {{ $devi->devise }}</td>
-                    <td class=""><strong>{{ $devi->user->name }}</strong></td>
-                    <td>{{ $devi->status ?? 'Non renseigné' }}</td>
+                      <td>
+                          <h6 class="mb-0">{{ $devi->num_proforma }}</h6>
+                      </td>
+                      @if(Auth::user()->hasRole('Daf'))
+                        <td>{{ $devi->user->name }}</td>
 
-                    <td>
-                        <a href="{{ route('dashboard.factures.refuse', $devi->id) }}" class="text-danger me-2" title="Réfuser">
-                            <i class="ti ti-square-rounded-x"></i>
+                      @endif
+                      <td>{{ $devi->client->nom }}</td>
+                      <td>{{ $devi->details->sum('total') }} {{ $devi->devise }}</td>
+                      <td class=""><strong>{{ $devi->user->name }}</strong></td>
+                      <td>{{ $devi->status ?? 'Non renseigné' }}</td>
+  
+                      <td>
+                          <a href="{{ route('dashboard.factures.refuse', $devi->id) }}" class="text-danger me-2" title="Réfuser">
+                              <i class="ti ti-square-rounded-x"></i>
+                          </a>
+                          <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger">
+                            <i class="ti ti-download fs-5"></i>
+                          </a>
+                          <a href="{{ route('dashboard.factures.create', $devi->id) }}" class="text-success me-2" title="Etablir la facture">
+                            <i class="ti ti-clipboard-list"></i>
                         </a>
-                        <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger">
-                          <i class="ti ti-download fs-5"></i>
-                        </a>
-                        <a href="{{ route('dashboard.factures.create', $devi->id) }}" class="text-success me-2" title="Etablir la facture">
-                          <i class="ti ti-clipboard-list"></i>
-                      </a>
-                      
-                    </td>
+                        
+                      </td>
+                    
+                  </tr>
+  
+  
                   
-                </tr>
+                  @empty
+                      Aucune Proforma
+                  @endforelse
+                  
+                </tbody>
+                @endif
 
 
-                
-                @empty
-                    Aucune Proforma
-                @endforelse
-                
-            </tbody>
+                @if(Auth::user()->hasRole('Comptable'))
+                <tbody>
+                  @forelse ($devis_pays as $devi)
+                  <tr>
+                    <td>
+                      <h6 class="mb-0">{{ $devi->created_at }}</h6>
+                    </td>
+                      <td>
+                          <h6 class="mb-0">{{ $devi->num_proforma }}</h6>
+                      </td>
+                      <td class=""><strong>{{ $devi->user->name }}</strong></td>
+                      <td>{{ $devi->client->nom }}</td>
+                      <td>{{ $devi->details->sum('total') }} {{ $devi->devise }}</td>
+                      <td>{{ $devi->status ?? 'Non renseigné' }}</td>
+                      <td>
+                          <a href="{{ route('dashboard.factures.refuse', $devi->id) }}" class="text-danger me-2" title="Réfuser">
+                              <i class="ti ti-square-rounded-x"></i>
+                          </a>
+                          <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger">
+                            <i class="ti ti-download fs-5"></i>
+                          </a>
+                          <a href="{{ route('dashboard.factures.create', $devi->id) }}" class="text-success me-2" title="Etablir la facture">
+                            <i class="ti ti-clipboard-list"></i>
+                        </a>
+                        
+                      </td>
+                    
+                  </tr>
+  
+  
+                  
+                  @empty
+                      Aucune Proforma
+                  @endforelse
+                  
+                </tbody>
+                @endif
+
+             
             
               <tfoot>
                 <!-- start row -->
                 <tr>
+                  <th>Date</th>
+
                     <th>N° Proforma</th>
+                    @if(Auth::user()->hasRole('Daf'))
+                    <th>Pays</th>
+
+                    @endif
+                    <th>Etabli Par</th>
                     <th>Client</th>
                     <th>Coût</th>
-                    <th>Etabli Par</th>
                     <th>Statut</th>
                     <th>Action</th>
                 </tr>
@@ -130,12 +192,144 @@
         <div class="table-responsive">
           <div class="table-responsive mt-5">
             <h5>
-              Mes factures établie
+              Liste des factures
             </h5>
               <table id="zero_config2" class="table table-striped table-bordered text-nowrap align-middle">
                 <thead>
                   <!-- start row -->
                   <tr>
+                    <th>Date</th>
+
+                      <th>N° Proforma</th>
+
+                      @if(Auth::user()->hasRole('Daf'))
+                        <th>Pays</th>
+                      @endif
+                      <th>Etabli Par</th>
+                      <th>Client</th>
+                      <th>Coût</th>
+                      <th>Statut</th>
+                      <th>Action</th>
+
+                  </tr>
+                  <!-- end row -->
+                </thead>
+
+                @if(Auth::user()->hasRole('Daf'))
+                <tbody>
+                  @forelse ($all_factures as $facture)
+                  <tr>
+                    <td>
+                      <h6 class="mb-0">{{ $facture->created_at }}</h6>
+                    </td>
+                      <td>
+                          <h6 class="mb-0">{{ $facture->numero }}</h6>
+                      </td>
+                      <td>
+                        <h6 class="mb-0">{{ $facture->pays->name }}</h6>
+                    </td>
+                    <td>
+                      <h6 class="mb-0">{{ $facture->user->name }}</h6>
+                    </td>
+                     <td>
+                        {{ $facture->devis->client->nom }}
+                     </td>
+                      <td>{{ $facture->devis->details->sum('total') }} {{ $facture->devis->devise }}</td>
+                      <td>{{ $facture->devis->status ?? 'Non renseigné' }}</td>
+  
+                      <td>
+                        <a href="{{ route('dashboard.factures.download', $facture->id) }}" class="text-primary me-2" title="Télécharger">
+                          <i class="ti ti-download fs-5"></i>
+                        </a>
+                        
+                      </td>
+                    
+                  </tr>
+  
+  
+                  
+                  @empty
+                      Aucune Facture enregistrée.
+                  @endforelse
+                  
+                </tbody>
+                @endif
+                
+                @if(Auth::user()->hasRole('Comptable'))
+
+                <tbody>
+                  @forelse ($factures_pays as $facture)
+                  <tr>
+                    <td>
+                      <h6 class="mb-0">{{ $facture->created_at }}</h6>
+                    </td>
+                      <td>
+                          <h6 class="mb-0">{{ $facture->numero }}</h6>
+                      </td>
+                      <td>
+                        <h6 class="mb-0">{{ $facture->user->name }}</h6>
+                      </td>
+                     <td>
+                        {{ $facture->devis->client->nom }}
+                     </td>
+                      <td>{{ $facture->devis->details->sum('total') }} {{ $facture->devis->devise }}</td>
+                      <td>{{ $facture->devis->status ?? 'Non renseigné' }}</td>
+  
+                      <td>
+                        <a href="{{ route('dashboard.factures.download', $facture->id) }}" class="text-primary me-2" title="Télécharger">
+                          <i class="ti ti-download fs-5"></i>
+                        </a>
+                        
+                      </td>
+                    
+                  </tr>
+  
+  
+                  
+                  @empty
+                      Aucune Facture enregistrée.
+                  @endforelse
+                  
+                </tbody>
+                  
+                @endif
+              
+                <tfoot>
+                  <!-- start row -->
+                  <tr>
+                    <th>Date</th>
+
+                      <th>N° Proforma</th>
+                      @if(Auth::user()->hasRole('Daf'))
+                        <th>Pays</th>
+                      @endif
+                      <th>Etabli Par</th>
+                      <th>Client</th>
+                      <th>Coût</th>
+                      <th>Statut</th>
+                      <th>Action</th>
+
+                  </tr>
+                  <!-- end row -->
+                </tfoot>
+              </table>
+              
+          </div>
+        </div>
+      </div>
+
+      <div class="card card-body">
+        <div class="table-responsive">
+          <div class="table-responsive mt-5">
+            <h5>
+              Mes factures établie
+            </h5>
+              <table id="zero_config3" class="table table-striped table-bordered text-nowrap align-middle">
+                <thead>
+                  <!-- start row -->
+                  <tr>
+                    <th>Date</th>
+
                       <th>N° Proforma</th>
                       <th>Client</th>
                       <th>Coût</th>
@@ -146,8 +340,11 @@
                   <!-- end row -->
                 </thead>
                 <tbody>
-                  @forelse ($factures as $facture)
+                  @forelse ($mes_factures as $facture)
                   <tr>
+                    <td>
+                      <h6 class="mb-0">{{ $facture->created_at }}</h6>
+                  </td>
                       <td>
                           <h6 class="mb-0">{{ $facture->numero }}</h6>
                       </td>
@@ -177,6 +374,8 @@
                 <tfoot>
                   <!-- start row -->
                   <tr>
+                    <th>Date</th>
+
                       <th>N° Proforma</th>
                       <th>Client</th>
                       <th>Coût</th>

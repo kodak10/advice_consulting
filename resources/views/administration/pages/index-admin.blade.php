@@ -3,7 +3,7 @@
 @section('content')
 <div class="container-fluid">
     <h1 class="fw-semibold mb-3 fs-6 text-center">
-      BIENVENUE SUR LA L'ESPACE DE GESTION DE PROFORMA ET FACTURES
+      BIENVENUE SUR LA L'ESPACE DE GESTION DES FACTURES
     </h1>
     <div class="row">
       <div class="col-lg-12 d-flex align-items-stretch">
@@ -105,7 +105,9 @@
                 <h4 class="card-title fw-semibold">Liste des Utilisateurs</h4>
               </div>
               <div>
-                <a href="{{ route('dashboard.users.index') }}" class="btn btn-success">Ajouter un Utilisateur</a>
+                <a href="{{ route('dashboard.users.exportCsv') }}" class="btn btn-success">
+                  Exporter en CSV
+                </a>
               </div>
             </div>
             <div class="table-responsive">

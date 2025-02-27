@@ -23,9 +23,7 @@ class DevisController extends Controller
 {
     public function __construct()
     {
-        // $this->middleware('role:Comptable|Commercial');
         $this->middleware('role:Comptable|Commercial')->except('download');
-
     }
 
     public function getDeviseRate($deviseCode)
@@ -49,6 +47,7 @@ class DevisController extends Controller
         $mes_devis = Devis::where('pays_id', Auth::user()->pays_id)
         ->where('user_id', Auth::user()->id)
         ->get();
+        
 
         return view('administration.pages.devis.index', compact('devis', 'mes_devis'));
 
@@ -468,6 +467,46 @@ class DevisController extends Controller
 
         return response()->download(storage_path('app/public/' . $devis->pdf_path));
     }
+
+    public function exportCsv()
+    {
+        $fileName = 'devis_export.csv';
+        $devis = Devis::with(['client', 'user', 'details'])->get();
+    
+        $headers = [
+            "Content-type" => "text/csv",
+            "Content-Disposition" => "attachment; filename=$fileName",
+            "Pragma" => "no-cache",
+            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+            "Expires" => "0"
+        ];
+    
+        return response()->stream(function () use ($devis) {
+            $handle = fopen('php://output', 'w');  // Ouvrir le flux de sortie
+            
+            if ($handle === false) {
+                throw new \Exception('Impossible d\'ouvrir php://output pour l\'écriture');
+            }
+    
+            // Entête du fichier CSV
+            fputcsv($handle, ['N° Proforma', 'Client', 'Coût', 'Etabli Par', 'Statut']);
+    
+            // Ajout des données
+            foreach ($devis as $devi) {
+                fputcsv($handle, [
+                    $devi->num_proforma,
+                    $devi->client->nom,
+                    $devi->details->sum('total') . ' ' . $devi->devise,
+                    $devi->user->name,
+                    $devi->status ?? 'Non renseigné'
+                ]);
+            }
+    
+            fclose($handle); // Fermer le flux seulement si $handle est valide
+    
+        }, 200, $headers);
+    }
+    
 
 
    

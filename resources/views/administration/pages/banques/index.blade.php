@@ -139,7 +139,7 @@
                             <form id="delete-form-{{ $banque->id }}" action="{{ route('dashboard.banques.destroy', $banque->id) }}" method="POST" style="display: inline;">
                                 @csrf
                                 @method('DELETE')
-                                <button type="button" class="text-dark delete ms-2" title="Supprimer" style="border: none; background: none;" onclick="confirmDelete({{ $banque->id }})">
+                                <button type="button" class="text-danger delete ms-2" title="Supprimer" style="border: none; background: none;" onclick="confirmDelete({{ $banque->id }})">
                                     <i class="ti ti-trash fs-5"></i>
                                 </button>
                             </form>

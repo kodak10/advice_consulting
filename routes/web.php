@@ -26,6 +26,11 @@ Route::middleware(['auth', 'verified','check.user.status'])->prefix('dashboard')
     
     Route::get('/', [AdminController::class, 'index']);
 
+
+    Route::get('/factures/data', [AdminController::class, 'getFactures'])->name('factures.data');
+
+
+
     // Route pour marquer toutes les notifications comme lues
     Route::post('/notifications/mark-all-as-read', [AdminController::class, 'markAllAsRead'])->name('notifications.mark-all-as-read');
         
@@ -35,6 +40,8 @@ Route::middleware(['auth', 'verified','check.user.status'])->prefix('dashboard')
     Route::resource('clients', ClientController::class);
     Route::resource('designations', DesignationsController::class);
     Route::resource('users', UsersController::class);
+    Route::get('/users/export/csv', [UsersController::class, 'exportCsv'])->name('users.exportCsv');
+
     Route::post('/users', [UsersController::class, 'storeUser'])->name('storeUser');
     Route::get('/users/{id}/disable', [UsersController::class, 'disable'])->name('disable');
     Route::get('/users/{id}/activate', [UsersController::class, 'activate'])->name('activate');
@@ -43,6 +50,7 @@ Route::middleware(['auth', 'verified','check.user.status'])->prefix('dashboard')
     Route::put('/profil/reset-image', [UsersController::class, 'resetProfileImage'])->name('profil.resetImage');
     Route::put('/profile/update', [UsersController::class, 'updateInformation'])->name('profil.updateInformation');
     Route::post('/update-password', [UsersController::class, 'updatePassword'])->name('profil.updatePassword');
+
 
 
     Route::resource('devis', DevisController::class);
@@ -56,6 +64,7 @@ Route::middleware(['auth', 'verified','check.user.status'])->prefix('dashboard')
     Route::get('/devis/{id}/validate', [DevisController::class, 'approuve'])->name('devis.validate');
     Route::get('/devis/download/{id}', [DevisController::class, 'download'])->name('devis.download');
 
+    Route::get('/devis/export/csv', [DevisController::class, 'exportCsv'])->name('devis.exportCsv');
 
     
     //Route::resource('factures', FacturesController::class);
@@ -67,6 +76,7 @@ Route::middleware(['auth', 'verified','check.user.status'])->prefix('dashboard')
     
     Route::post('/factures/store', [FacturesController::class, 'store'])->name('factures.store');
     Route::get('/factures/download/{id}', [FacturesController::class, 'download'])->name('factures.download');
+    Route::get('/factures/export/csv', [FacturesController::class, 'exportCsv'])->name('factures.exportCsv');
 
 
     Route::resource('banques', BanqueController::class);

@@ -37,17 +37,24 @@ class FacturesController extends Controller
     
     public function index()
     {
-        $devis = Devis::where('pays_id', Auth::user()->pays_id)
-        //->where('user_id', Auth::user()->id)
+        $all_devis = Devis::where('status',  'Approuvé')
+        ->get();
+
+        $devis_pays = Devis::where('pays_id', Auth::user()->pays_id)
         ->where('status',  'Approuvé')
         ->get();
 
-        $factures = Facture::where('pays_id', Auth::user()->pays_id)
-        ->where('user_id', Auth::user()->id)
+        $all_factures = Facture::get();
+
+
+        $factures_pays = Facture::where('pays_id', Auth::user()->pays_id)
         ->get();
 
+        $mes_factures = Facture::where('pays_id', Auth::user()->pays_id)
+        ->where('user_id', Auth::user()->id)
+        ->get();
         
-        return view('administration.pages.factures.index', compact('devis', 'factures'));
+        return view('administration.pages.factures.index', compact('all_devis', 'devis_pays', 'all_factures', 'factures_pays', 'mes_factures'));
 
     } 
 
@@ -261,6 +268,47 @@ class FacturesController extends Controller
 
         return response()->download(storage_path('app/public/' . $factures->pdf_path));
     }
+
+
+    public function exportCsv()
+{
+    $fileName = 'factures_export.csv';
+    $factures = Facture::with(['devis.client', 'user', 'devis.details'])->get();
+
+    $headers = [
+        "Content-type" => "text/csv",
+        "Content-Disposition" => "attachment; filename=$fileName",
+        "Pragma" => "no-cache",
+        "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+        "Expires" => "0"
+    ];
+
+    return response()->stream(function () use ($factures) {
+        $handle = fopen('php://output', 'w');
+        
+        if ($handle === false) {
+            throw new \Exception('Impossible d\'ouvrir php://output pour l\'écriture');
+        }
+
+        // Entête du fichier CSV
+        fputcsv($handle, ['Date', 'Client', 'Coût', 'Etabli Par', 'Statut']);
+
+        // Ajout des données
+        foreach ($factures as $facture) {
+            fputcsv($handle, [
+                $facture->created_at,
+                $facture->devis->client->nom,
+                $facture->devis->details->sum('total') . ' ' . $facture->devis->devise,
+                $facture->user->name,
+                $facture->devis->status ?? 'Non renseigné'
+            ]);
+        }
+
+        fclose($handle);
+    }, 200, $headers);
+}
+
+    
 
 
     

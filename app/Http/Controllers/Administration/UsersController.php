@@ -54,14 +54,11 @@ class UsersController extends Controller
             'email_verified_at' => null,
             'status' => 'Actif',
             'pays_id' => $request->pays_id,
-
         ]);
 
         // Assigner le rôle
         $user->assignRole($request->role);
 
-        // Envoyer l'email de vérification
-        //event(new Registered($user));
         $user->notify(new VerifyEmailNotification());
 
         return redirect()->route('dashboard.users.index')->with('success', 'Utilisateur ajouté avec succès. Un e-mail de vérification a été envoyé.');
@@ -206,5 +203,45 @@ class UsersController extends Controller
         // Rediriger avec un message de succès
         return back()->with('success', 'Mot de passe mis à jour avec succès !');
     }
+
+    public function exportCsv()
+{
+    $fileName = 'users_export.csv';
+    $users = User::with(['pays', 'roles'])->get();
+
+    $headers = [
+        "Content-type" => "text/csv",
+        "Content-Disposition" => "attachment; filename=$fileName",
+        "Pragma" => "no-cache",
+        "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+        "Expires" => "0"
+    ];
+
+    return response()->stream(function () use ($users) {
+        $handle = fopen('php://output', 'w');
+
+        if ($handle === false) {
+            throw new \Exception('Impossible d\'ouvrir php://output pour l\'écriture');
+        }
+
+        // Entêtes du fichier CSV
+        fputcsv($handle, ['Pays', 'Nom', 'Email', 'Téléphone', 'Rôle', 'Statut']);
+
+        // Ajout des données
+        foreach ($users as $user) {
+            fputcsv($handle, [
+                $user->pays->name ?? 'Non renseigné',
+                $user->name,
+                $user->email,
+                $user->phone ?? 'Non renseigné',
+                $user->roles->first()->name ?? 'Aucun rôle',
+                $user->status ?? 'Non renseigné'
+            ]);
+        }
+
+        fclose($handle);
+    }, 200, $headers);
+}
+
 
 }

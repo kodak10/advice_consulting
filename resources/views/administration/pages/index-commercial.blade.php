@@ -3,8 +3,7 @@
 @section('content')
 <div class="container-fluid">
     <h1 class="fw-semibold mb-3 fs-6 text-center">
-      BIENVENUE SUR LA L'ESPACE DE GESTION DE PROFORMA ET FACTURES
-    </h1>
+      BIENVENUE SUR LA L'ESPACE DE GESTION DES FACTURES    </h1>
     <div class="row">
       <div class="col-lg-12 d-flex align-items-stretch">
         <div class="card w-100 bg-primary-subtle overflow-hidden shadow-none">
@@ -55,8 +54,16 @@
                 <h4 class="card-title fw-semibold">Liste des Proformas</h4>
               </div>
               <div>
-                <a href="{{ route('dashboard.devis.create') }}" class="btn btn-success">Faire une Proforma</a>
+                <div class="input-daterange input-group mr-3" id="date-range">
+                  <input type="text" class="form-control" name="start" id="start-date" placeholder="Date début">
+                  <span class="input-group-text bg-primary b-0 text-white">TO</span>
+                  <input type="text" class="form-control" name="end" id="end-date" placeholder="Date fin">
               </div>
+
+              <a href="{{ route('dashboard.devis.exportCsv') }}" class="btn btn-success">
+                Exporter en CSV
+            </a>              
+          </div>
             </div>
 
             <div class="row">
@@ -79,6 +86,7 @@
                   <thead>
                     <!-- start row -->
                     <tr>
+                      <th>Date</th>
                         <th>N° Proforma</th>
                         <th>Client</th>
                         <th>Coût</th>
@@ -90,6 +98,9 @@
                   <tbody>
                     @forelse ($devis as $devi)
                     <tr>
+                      <td>
+                        <h6 class="mb-0">{{ $devi->created_at }}</h6>
+                      </td>
                         <td>
                             <h6 class="mb-0">{{ $devi->num_proforma }}</h6>
                         </td>
@@ -134,6 +145,7 @@
                   <tfoot>
                     <!-- start row -->
                     <tr>
+                      <th>Date</th>
                         <th>N° Proforma</th>
                         <th>Client</th>
                         <th>Coût</th>

@@ -199,7 +199,7 @@
                             <a href="{{ route('dashboard.activate', $user->id) }}" class="text-primary" title="Activer">
                                 <i class="ti ti-lock-open fs-5"></i>
                             </a>
-                            <a href="{{ route('dashboard.disable', $user->id) }}" class="text-primary" title="Desactiver">
+                            <a href="{{ route('dashboard.disable', $user->id) }}" class="text-danger" title="Desactiver">
                                 <i class="ti ti-lock fs-5"></i>
                             </a>
                             

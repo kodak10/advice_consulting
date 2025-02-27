@@ -3,8 +3,7 @@
 @section('content')
 <div class="container-fluid">
     <h1 class="fw-semibold mb-3 fs-6 text-center">
-      BIENVENUE SUR LA L'ESPACE DE GESTION DE PROFORMA ET FACTURES
-    
+      BIENVENUE SUR LA L'ESPACE DE GESTION DES FACTURES    
     </h1>
    
   </div>

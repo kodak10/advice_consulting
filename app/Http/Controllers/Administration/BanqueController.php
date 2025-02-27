@@ -11,7 +11,7 @@ class BanqueController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('role:Administrateur');
+        $this->middleware('role:Administrateur|Daf');
     }
     /**
      * Display a listing of the resource.
