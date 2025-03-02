@@ -129,9 +129,11 @@
                       </select>
                       
                       <div class="input-daterange input-group mr-3" id="date-range">
-                          <input type="text" class="form-control" name="start" id="start-date" placeholder="Date début">
-                          <span class="input-group-text bg-primary b-0 text-white">A</span>
-                          <input type="text" class="form-control" name="end" id="end-date" placeholder="Date fin">
+                        <input type="date" name="start" id="start-date" class="form-control mydatepicker">
+                        <span class="input-group-text bg-primary b-0 text-white">A</span>
+
+                        <input type="date" name="end" id="end-date" class="form-control mydatepicker">
+   
                       </div>
                       
                       <a href="{{ route('dashboard.factures.exportCsv') }}" class="btn btn-success">
@@ -194,9 +196,10 @@
               </div>
              <div class="d-flex">
               <div class="input-daterange input-group mr-3" id="date-range">
-                <input type="text" class="form-control" name="start" id="start-date" placeholder="Date début">
-                <span class="input-group-text bg-primary b-0 text-white">A</span>
-                <input type="text" class="form-control" name="end" id="end-date" placeholder="Date fin">
+               <input type="date" name="start" id="start-date2" class="form-control mydatepicker">
+                        <span class="input-group-text bg-primary b-0 text-white">A</span>
+
+                        <input type="date" name="end" id="end-date2" class="form-control mydatepicker">
             </div>
             <a href="{{ route('dashboard.devis.exportCsv') }}" class="btn btn-success">
               Exporter
@@ -204,7 +207,7 @@
              </div>
             </div>
             <div class="table-responsive">
-                <table id="zero_config2" class="table table-striped table-bordered text-nowrap align-middle">
+                <table id="zero_config1" class="table table-striped table-bordered text-nowrap align-middle">
                     <thead>
                       <tr>
                         <th>Date</th>
@@ -278,53 +281,6 @@
 
 <script>
   $(document).ready(function() {
-      // Initialiser DataTable
-      // $('#zero_config').DataTable({
-      //     "language": {
-      //         "url": "//cdn.datatables.net/plug-ins/1.11.5/i18n/French.json" // Traduction en français
-      //     },
-      //     "order": [[0, 'desc']], // Trier par la première colonne (Date) par défaut
-      //     "columnDefs": [
-      //         { "orderable": false, "targets": [5] } // Désactiver le tri sur la colonne "Action"
-      //     ]
-      // });
-
-      // Appliquer les filtres personnalisés
-      $('#filter-comptable').on('change', function() {
-          var comptableId = $(this).val();
-          $('#zero_config').DataTable().column(3).search(comptableId).draw(); // Filtrer par colonne "Etabli Par"
-      });
-
-      $('#start-date, #end-date').on('change', function() {
-          var startDate = $('#start-date').val();
-          var endDate = $('#end-date').val();
-
-          // Filtrer par plage de dates
-          $('#zero_config').DataTable().draw();
-      });
-
-      // Personnaliser le filtrage par date
-      $.fn.dataTable.ext.search.push(
-          function(settings, data, dataIndex) {
-              var startDate = $('#start-date').val();
-              var endDate = $('#end-date').val();
-              var rowDate = new Date(data[0]); // La colonne "Date" est la première colonne (index 0)
-
-              if ((startDate === '' && endDate === '') ||
-                  (startDate === '' && rowDate <= new Date(endDate)) ||
-                  (new Date(startDate) <= rowDate && endDate === '') ||
-                  (new Date(startDate) <= rowDate && rowDate <= new Date(endDate))) {
-                  return true;
-              }
-              return false;
-          }
-      );
-  });
-</script>
-
-
-<script>
-  $(document).ready(function() {
       var table = $('#zero_config').DataTable();
   
       $('#filter-comptable').on('change', function() {
@@ -357,7 +313,40 @@
           }
       );
   });
-  </script>
+</script>
   
   
+<script>
+  $(document).ready(function() {
+      var table = $('#zero_config1').DataTable();
+  
+      
+  
+      $('#start-date, #end-date').on('change', function() {
+          var startDate = $('#start-date2').val();
+          var endDate = $('#end-date2').val();
+          
+          if (startDate && endDate) {
+              table.draw();
+          }
+      });
+  
+      $.fn.dataTable.ext.search.push(
+          function(settings, data, dataIndex) {
+              var startDate = $('#start-date2').val();
+              var endDate = $('#end-date2').val();
+              var date = new Date(data[0]); // Assuming the date is in the first column
+  
+              if ((!startDate && !endDate) ||
+                  (!startDate && date <= new Date(endDate)) ||
+                  (new Date(startDate) <= date && !endDate) ||
+                  (new Date(startDate) <= date && date <= new Date(endDate))) {
+                  return true;
+              }
+              return false;
+          }
+      );
+  });
+</script>
+
 @endpush

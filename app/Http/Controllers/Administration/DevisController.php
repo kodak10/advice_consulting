@@ -232,7 +232,7 @@ class DevisController extends Controller
             }
 
             // Générer le PDF
-            $pdf = PDF::loadView('frontend.pdf.devis', compact('devis', 'client', 'banque'));
+            $pdf = PDF::loadView('frontend.pdf.devis2', compact('devis', 'client', 'banque'));
             $pdfOutput = $pdf->output();
 
             $imageName = 'devis-' . $devis->id . '.pdf';

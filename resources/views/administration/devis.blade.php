@@ -5,142 +5,85 @@
     <meta charset="utf-8" />
     <title>Facture Proforma</title>
     <style>
-        /* Définir les marges et le format A4 */
-        @page {
-            size: A4;
-            margin: 20mm; /* Marges autour du contenu */
-        }
-
-        /* Mise en page de base */
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            font-size: 12px;
-            line-height: 1.5;
+            
+            margin: 20px;
         }
-
         table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
         }
-
         th, td {
             border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
         }
-
         th {
             background-color: #4CAF50;
             color: white;
             font-weight: bold;
         }
-
         tr:nth-child(even) {
             background-color: #f9f9f9;
         }
-
         tr:hover {
             background-color: #f1f1f1;
         }
-
         .header {
             background-color: #4CAF50;
             color: white;
             font-size: 1.2em;
             text-align: center;
-            font-weight: bold;
         }
-
         .highlight {
             background-color: #ffeb3b;
         }
-
         .center {
             text-align: center;
         }
-
         .right {
             text-align: right;
         }
-
         .total {
             background-color: #4CAF50;
             color: white;
             font-weight: bold;
         }
-
         .info-client {
             background-color: #f4f4f4;
         }
-
         .conditions {
             background-color: #e8f5e9; /* Couleur de fond pour les conditions financières */
         }
-
         .prices {
             background-color: #fff3e0; /* Couleur de fond pour les prix */
-        }
-
-        /* Ajustement pour l'impression */
-        @media print {
-            body {
-                font-size: 12px;
-                margin: 0;
-                padding: 0;
-            }
-
-            table {
-                margin-left: auto;
-                margin-right: auto;
-                width: 100%;
-            }
-
-            .header {
-                font-size: 1.5em;
-            }
-
-            th, td {
-                padding: 5px;
-                font-size: 10px;
-            }
-
-            .center {
-                text-align: center;
-            }
-
-            .right {
-                text-align: right;
-            }
-
-            .total {
-                font-weight: bold;
-            }
-
-            .info-client {
-                background-color: #f4f4f4;
-            }
         }
     </style>
 </head>
 
 <body>
     <table>
-        <!-- Informations de la facture -->
+        <!-- En-tête de la facture -->
+        <!-- <tr>
+            <td colspan="12" class="header">FACTURE PROFORMA</td>
+        </tr> -->
+
+        <!-- Informations de la facture (ligne par ligne) -->
         <tr>
             <td colspan="6"></td>
-            <td colspan="6"><strong>{{ $devis->client->nom }}</strong></td>
-        </tr>
+            <td colspan="6"><strong>{{ $devis->client->nom }}</td>
+        </tr>.
+        <div class=></div>
         <tr>
-            <td colspan="6">Facture proforma [Référence de la facture]</td>
+            <td colspan="6">Facture proforma<strong></strong> [Référence de la facture]</td>
             <td colspan="6"><strong>Adresse:</strong> {{ $devis->client->adresse }}</td>
         </tr>
+
+        <!-- Informations du client (ligne par ligne) -->
         <tr class="info-client">
-            <td colspan="6">Date émission: {{ $devis->date_emission }}</td>
+            <td colspan="6">Date emmission: {{ $devis->date_emission }}</td>
             <td colspan="6"><strong>Téléphone:</strong> {{ $devis->client->telephone }}</td>
         </tr>
         <tr class="info-client">
@@ -171,17 +114,18 @@
 
         <!-- Lignes de produits -->
         @foreach ($devis->details as $devisDetail)
-            <tr>
-                <td>{{ $devisDetail->designation->reference }}</td>
-                <td>{{ $devisDetail->designation->description }}</td>
-                <td>{{ $devisDetail->quantite }}</td>
-                <td>{{ $devisDetail->prix_unitaire }}</td>
-                <td>{{ $devisDetail->remise }}</td>
-                <td>{{ $devisDetail->total }}</td>
-            </tr>
+                <tr>
+                    <td>{{ $devisDetail->designation->reference }}</td>
+                    <td>{{ $devisDetail->designation->description }}</td>
+                    <td>{{ $devisDetail->quantite }}</td>
+                    <td>{{ $devisDetail->prix_unitaire }}</td>
+                    <td>{{ $devisDetail->remise }}</td>
+                    <td>{{ $devisDetail->total }}</td>
+                </tr>
         @endforeach
+        <!-- Fin des lignes de produits -->
 
-        <!-- Conditions financières et Prix -->
+        <!-- Conditions financières (côté gauche) et Prix (côté droit) -->
         <tr>
             <td colspan="6" class="conditions">
                 <strong>Commande :</strong> {{ $devis->commande }}

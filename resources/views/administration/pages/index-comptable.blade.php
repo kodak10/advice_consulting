@@ -53,9 +53,10 @@
               </div>
               <div class="d-flex">
                 <div class="input-daterange input-group mr-3" id="date-range">
-                  <input type="text" class="form-control" name="start" id="start-date" placeholder="Date début">
+                  <input type="date" name="start" id="start-date" class="form-control mydatepicker">
                   <span class="input-group-text bg-primary b-0 text-white">A</span>
-                  <input type="text" class="form-control" name="end" id="end-date" placeholder="Date fin">
+
+                  <input type="date" name="end" id="end-date" class="form-control mydatepicker">
                 </div>
 
                 <a href="{{ route('dashboard.devis.exportCsv') }}" class="btn btn-success">
@@ -153,9 +154,10 @@
               </div>
               <div class="d-flex">
                 <div class="input-daterange input-group mr-3" id="date-range">
-                  <input type="text" class="form-control" name="start" id="start-date" placeholder="Date début">
-                  <span class="input-group-text bg-primary b-0 text-white">A</span>
-                  <input type="text" class="form-control" name="end" id="end-date" placeholder="Date fin">
+                  <input type="date" name="start" id="start-date" class="form-control mydatepicker">
+                        <span class="input-group-text bg-primary b-0 text-white">A</span>
+
+                        <input type="date" name="end" id="end-date" class="form-control mydatepicker">
               </div>
 
               <a href="{{ route('dashboard.factures.exportCsv') }}" class="btn btn-success">
