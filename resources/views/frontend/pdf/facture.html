@@ -95,16 +95,17 @@
         
         <table style="width: 100%; margin-top: 10px; border-collapse: collapse;">
             <tr>
-                <td style="width: 50%; border-top: 1px solid #000; padding-top: 5px;">
-                    <strong>Date emission:</strong> {{ $facture->created_at }} <br>
-                    <strong>N° Pro-forma:</strong> {{ $facture->numero }} <br>
-                    <strong>N° BC:</strong>{{ $facture->num_bc }} <br>
-                    <strong>N° Rap Activ:</strong> {{ $facture->num_rap }}<br>
-                    <strong>N° BL:</strong> {{ $facture->num_bl }}<br>
+                <td style="width: 40%; border-top: 1px solid #000; padding-top: 5px;">
+                    <strong>Date emission:</strong> {{ $devis->date_emmision }} <br>
+                    <strong>N° Pro-forma:</strong> {{ $devis->num_proforma }} <br>
+                    <strong>N° BC:</strong> <br>
+                    <strong>N° Rap Activ:</strong> <br>
+                    <strong>N° BL:</strong> <br>
                 </td>
-                <td style="width: 50%; border-top: 1px solid #000; padding-top: 5px;">
+                <td style="width: 60%; border-top: 1px solid #000; padding-top: 5px;">
+                    <strong>Client</strong><br>
                     <strong>Nom:</strong> {{ $devis->client->nom }}<br>
-                    <strong>N°CC:</strong> {{ $devis->client->numero_cc }}<br>
+                    <strong>N°CC:</strong> <br>
                     <strong>Adresse:</strong> {{ $devis->client->adresse }}<br>
                     <strong>Téléphone:</strong> {{ $devis->client->telephone }}<br>
                     <strong>Ville:</strong> {{ $devis->client->ville }}
@@ -118,44 +119,44 @@
                 <th>Description</th>
                 <th>Quantité</th>
                 <th>Prix unitaire</th>
-                <th>Remise</th>
                 <th>Total</th>
             </tr>
-        
-            @foreach ($facture->devis->details as $detail)
-                <tr>
-                    <td>{{ $detail->designation->reference }}</td>
-                    <td class="width: 30%">{{ $detail->designation->description }}</td>
-                    <td>{{ $detail->quantite }}</td>
-                    <td>{{ floor($detail->prix_unitaire) }}</td>
-                    <td>{{ floor($detail->remise) }}</td>
-                    <td>{{ floor($detail->total) }} </td>                
-                </tr>
-            @endforeach
+            <tr>
+                
+                <td>{{ $devis->ref_designation }}</td>
+                <td style="text-align: center; color: red;">{{ $devis->description_designation }}</td>
+                <td>{{ $devis->qte_designation }}</td>
+                <td>{{ $devis->prixUnitaire_designation }}</td>
+                <td>{{ $devis->total_designation }}</td>
+            </tr>
         </table>
-        
         
         <table style="width: 100%; margin-top: 10px; border-collapse: collapse; border: 1px solid #000;">
             <tr>
                 <!-- Informations de paiement (60%) -->
-                <td  style="width: 60%; vertical-align: top; padding: 10px; border-right: 1px solid #000;">
+                <td style="width: 60%; vertical-align: top; padding: 10px; border-right: 1px solid #000;">
                     
 
-                    <p>Veuillez libeller votre chèque au nom de : <strong>ADVICE CONSULTING PAYS</strong></p>
-                    <strong>Banque:</strong> {{ $banque->name }}
+                    <strong>Informations de paiement</strong><br>
+                    <strong>Banque:</strong> {{ $banque->name }}<br>
                     <strong>Compte:</strong> {{ $banque->num_compte }}
                     
-                    <p><strong>Arrêté la présente somme de :</strong> {{ ucwords((new NumberFormatter('fr', NumberFormatter::SPELLOUT))->format($devis->solde)) }} {{ $devis->devise }}</p>
+                    <p><strong>Arrêté la présente somme de :</strong> {{ ucwords((new NumberFormatter('fr', NumberFormatter::SPELLOUT))->format($devis->details->sum('total'))) }} {{ $devis->devise }}</p>
 
                 </td>
                 
                 <!-- Totaux (40%) -->
                 <td style="width: 40%; vertical-align: top; padding: 10px;">
-                    <strong>Total HT:</strong> {{ floor($devis->devis) }}<br> 
-                    <strong>TVA:</strong> {{ $devis->tva }} %<br>
-                    <strong>Total TTC:</strong> {{ floor($devis->total_ttc) }} <br>
-                    <strong>Acompte:</strong> {{ floor($devis->acompte) }} <br>
-                    <strong>Solde:</strong> {{ floor($devis->solde) }}
+                    <td style="width: 40%; vertical-align: top; padding: 10px;">
+                        <strong>Totaux</strong><br>
+                        <strong>Total HT:</strong> {{ $devis->total_ht }} {{ $devis->devise }}<br>
+                        <strong>TVA 18%:</strong> {{ $devis->tva }}<br>
+                        <strong>Total TTC:</strong> {{ $devis->total_ttc }} {{ $devis->devise }}<br>
+                        <strong>Acompte:</strong> {{ $devis->accompte }} {{ $devis->devise }}<br>
+                        <strong>Solde:</strong> {{ $devis->solde }} {{ $devis->devise }}
+                    </td>
+
+                    
                 </td>
             </tr>
         </table>

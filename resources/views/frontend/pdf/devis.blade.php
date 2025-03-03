@@ -175,9 +175,9 @@
                 <td>{{ $devisDetail->designation->reference }}</td>
                 <td>{{ $devisDetail->designation->description }}</td>
                 <td>{{ $devisDetail->quantite }}</td>
-                <td>{{ $devisDetail->prix_unitaire }}</td>
-                <td>{{ $devisDetail->remise }}</td>
-                <td>{{ $devisDetail->total }}</td>
+                <td>{{ floor($devisDetail->prix_unitaire) }}</td>
+                <td>{{ floor($devisDetail->remise) }}</td>
+                <td>{{ floor($devisDetail->total) }} </td>
             </tr>
         @endforeach
 
@@ -187,7 +187,7 @@
                 <strong>Commande :</strong> {{ $devis->commande }}
             </td>
             <td colspan="6" class="prices">
-                <strong>Total HT :</strong> {{ $devis->total_ht }} {{ $devis->devise }}
+                <strong>Total HT :</strong> {{ floor($devis->total_ht) }}
             </td>
         </tr>
         <tr>
@@ -195,7 +195,7 @@
                 <strong>Validité de l'offre :</strong> {{ $devis->validite }}
             </td>
             <td colspan="6" class="prices">
-                <strong>TVA 18% :</strong> {{ $devis->tva }}
+                <strong>TVA :</strong> {{ $devis->tva }} %
             </td>
         </tr>
         <tr>
@@ -203,7 +203,7 @@
                 <strong>Délai de livraison :</strong> {{ $devis->delai }}
             </td>
             <td colspan="6" class="prices">
-                <strong>TOTAL TTC :</strong> {{ $devis->total_ttc }} {{ $devis->devise }}
+                <strong>TOTAL TTC :</strong>{{ floor($devis->total_ttc) }}
             </td>
         </tr>
         <tr>
@@ -212,16 +212,16 @@
                 <strong>ADVICE CONSULTING</strong>
             </td>
             <td colspan="6" class="prices">
-                <strong>Acompte :</strong> {{ $devis->accompte }} {{ $devis->devise }}
+                <strong>Acompte :</strong> {{ floor($devis->acompte) }}
             </td>
         </tr>
         <tr>
             <td colspan="6" class="conditions">
-                <strong>Banque :</strong> {{ $banque->name }}<br>
+                <strong>Banque :</strong> {{ $banque->name }}
                 <strong>N° compte :</strong> {{ $banque->num_compte }}
             </td>
             <td colspan="6" class="prices">
-                <strong>Solde :</strong> {{ $devis->solde }} {{ $devis->devise }}
+                <strong>Solde :</strong> {{ floor($devis->solde) }}
             </td>
         </tr>
 
@@ -229,7 +229,7 @@
         <tr>
             <td colspan="6">
                 Arrêté la présence facture à la somme de 
-                {{ ucwords((new NumberFormatter('fr', NumberFormatter::SPELLOUT))->format($devis->details->sum('total'))) }} {{ $devis->devise }}
+                {{ ucwords((new NumberFormatter('fr', NumberFormatter::SPELLOUT))->format($devis->solde)) }} {{ $devis->devise }}
             </td>
             <td colspan="6" class="info-client">
                 <strong>Le Service Commercial</strong><br>
