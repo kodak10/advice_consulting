@@ -225,31 +225,73 @@
 @endsection
 
 @push('scripts')
-  <script>
-    $(document).ready(function() {
-    let table = $('#zero_config1').DataTable({
-        "processing": true,
-        "serverSide": true,
-        "ajax": {
-            "url": "",
-            "data": function (d) {
-                d.start_date = $('#start_date').val();
-                d.end_date = $('#end_date').val();
-            }
-        },
-        "columns": [
-            { "data": "num_proforma" },
-            { "data": "client.nom" },
-            { "data": "total" },
-            { "data": "status" },
-            { "data": "action", "orderable": false, "searchable": false }
-        ]
-    });
+<script>
+  $(document).ready(function() {
+      var table = $('#zero_config').DataTable();
+  
+      $('#filter-comptable').on('change', function() {
+          var comptableId = this.value;
+          table.column(3).search(comptableId).draw();
+      });
+  
+      $('#start-date, #end-date').on('change', function() {
+          var startDate = $('#start-date').val();
+          var endDate = $('#end-date').val();
+          
+          if (startDate && endDate) {
+              table.draw();
+          }
+      });
+  
+      $.fn.dataTable.ext.search.push(
+          function(settings, data, dataIndex) {
+              var startDate = $('#start-date').val();
+              var endDate = $('#end-date').val();
+              var date = new Date(data[0]); // Assuming the date is in the first column
+  
+              if ((!startDate && !endDate) ||
+                  (!startDate && date <= new Date(endDate)) ||
+                  (new Date(startDate) <= date && !endDate) ||
+                  (new Date(startDate) <= date && date <= new Date(endDate))) {
+                  return true;
+              }
+              return false;
+          }
+      );
+  });
+</script>
+  
 
-    $('#filter').click(function() {
-        table.ajax.reload(); // Recharge les données avec le filtre
-    });
-});
-
-  </script>
+{{-- <script>
+  $(document).ready(function() {
+      var table = $('#zero_config1').DataTable();
+  
+    
+  
+      $('#start-date, #end-date').on('change', function() {
+          var startDate = $('#start-date1').val();
+          var endDate = $('#end-date1').val();
+          
+          if (startDate && endDate) {
+              table.draw();
+          }
+      });
+  
+      $.fn.dataTable.ext.search.push(
+          function(settings, data, dataIndex) {
+              var startDate = $('#start-date').val();
+              var endDate = $('#end-date').val();
+              var date = new Date(data[0]); // Assuming the date is in the first column
+  
+              if ((!startDate && !endDate) ||
+                  (!startDate && date <= new Date(endDate)) ||
+                  (new Date(startDate) <= date && !endDate) ||
+                  (new Date(startDate) <= date && date <= new Date(endDate))) {
+                  return true;
+              }
+              return false;
+          }
+      );
+  });
+</script> --}}
 @endpush

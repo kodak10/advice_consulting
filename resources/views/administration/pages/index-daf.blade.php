@@ -196,10 +196,10 @@
               </div>
              <div class="d-flex">
               <div class="input-daterange input-group mr-3" id="date-range">
-               <input type="date" name="start" id="start-date2" class="form-control mydatepicker">
+               <input type="date" name="start" id="start-date1" class="form-control mydatepicker">
                         <span class="input-group-text bg-primary b-0 text-white">A</span>
 
-                        <input type="date" name="end" id="end-date2" class="form-control mydatepicker">
+                        <input type="date" name="end" id="end-date1" class="form-control mydatepicker">
             </div>
             <a href="{{ route('dashboard.devis.exportCsv') }}" class="btn btn-success">
               Exporter
@@ -278,7 +278,7 @@
 
 @push('scripts')
 
-
+{{-- factures --}}
 <script>
   $(document).ready(function() {
       var table = $('#zero_config').DataTable();
@@ -314,17 +314,20 @@
       );
   });
 </script>
-  
-  
+
+
+
+{{-- factures --}}
+
 <script>
   $(document).ready(function() {
       var table = $('#zero_config1').DataTable();
   
       
   
-      $('#start-date, #end-date').on('change', function() {
-          var startDate = $('#start-date2').val();
-          var endDate = $('#end-date2').val();
+      $('#start-date1, #end-date1').on('change', function() {
+          var startDate = $('#start-date1').val();
+          var endDate = $('#end-date1').val();
           
           if (startDate && endDate) {
               table.draw();
@@ -333,8 +336,8 @@
   
       $.fn.dataTable.ext.search.push(
           function(settings, data, dataIndex) {
-              var startDate = $('#start-date2').val();
-              var endDate = $('#end-date2').val();
+              var startDate = $('#start-date1').val();
+              var endDate = $('#end-date1').val();
               var date = new Date(data[0]); // Assuming the date is in the first column
   
               if ((!startDate && !endDate) ||
@@ -348,5 +351,8 @@
       );
   });
 </script>
+  
+  
+
 
 @endpush
