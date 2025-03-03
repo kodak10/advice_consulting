@@ -166,7 +166,13 @@ class FacturesController extends Controller
             $facture->save();
 
             // Télécharger le fichier PDF
-            return response()->download(storage_path('app/public/' . $imagePath));
+            // return response()->download(storage_path('app/public/' . $imagePath));
+
+            return redirect()->route('dashboard.factures.index')
+            ->with('pdf_path', $imagePath)
+            ->with('success', 'Facture enregsitré avec succès.');
+
+
 
             // return redirect()->route('dashboard.factures.index')->with('success', 'Facture enregistrée avec succès.');
         } catch (\Illuminate\Validation\ValidationException $e) {

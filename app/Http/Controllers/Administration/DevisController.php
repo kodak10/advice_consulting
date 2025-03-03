@@ -255,7 +255,12 @@ class DevisController extends Controller
             ]);
 
             // Télécharger le fichier PDF
-            return response()->download(storage_path('app/public/' . $imagePath));
+            // return response()->download(storage_path('app/public/' . $imagePath));
+
+            return redirect()->route('dashboard.devis.index')
+            ->with('pdf_path', $imagePath)
+            ->with('success', 'Devis enregistré avec succès.');
+
 
         } catch (\Exception $e) {
             Log::error("Erreur lors de la génération ou de l'enregistrement du PDF: " . $e->getMessage());

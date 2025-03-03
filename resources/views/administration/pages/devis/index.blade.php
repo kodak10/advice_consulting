@@ -293,6 +293,28 @@
 @endsection
 
 @push('scripts')
+@if(session('success'))
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Succès',
+            text: "{{ session('success') }}",
+            timer: 3000,
+            showConfirmButton: false
+        });
+    </script>
+@endif
+
+@if(session('pdf_path'))
+    <script>
+        window.onload = function() {
+            let link = document.createElement('a');
+            link.href = "{{ asset('storage/' . session('pdf_path')) }}";
+            link.download = "{{ basename(session('pdf_path')) }}";
+            link.click();
+        }
+    </script>
+@endif
 
 <script>
   function confirmDelete(devisId) {
