@@ -164,5 +164,36 @@
 
 
 @push('scripts')
+<script>
+  $(document).ready(function() {
+      var table = $('#zero_config').DataTable();
   
+      
+  
+      $('#start-date, #end-date').on('change', function() {
+          var startDate = $('#start-date').val();
+          var endDate = $('#end-date').val();
+          
+          if (startDate && endDate) {
+              table.draw();
+          }
+      });
+  
+      $.fn.dataTable.ext.search.push(
+          function(settings, data, dataIndex) {
+              var startDate = $('#start-date').val();
+              var endDate = $('#end-date').val();
+              var date = new Date(data[0]); // Assuming the date is in the first column
+  
+              if ((!startDate && !endDate) ||
+                  (!startDate && date <= new Date(endDate)) ||
+                  (new Date(startDate) <= date && !endDate) ||
+                  (new Date(startDate) <= date && date <= new Date(endDate))) {
+                  return true;
+              }
+              return false;
+          }
+      );
+  });
+</script>
 @endpush
