@@ -178,9 +178,9 @@ class BanqueController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Banque $client)
+    public function destroy(Banque $banque)
     {
-        $client->delete();
+        $banque->delete();
         return redirect()->route('dashboard.banques.index')->with('success', 'Banque supprimé avec succès');
     }
 }
