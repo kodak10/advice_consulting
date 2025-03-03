@@ -154,10 +154,10 @@
               </div>
               <div class="d-flex">
                 <div class="input-daterange input-group mr-3" id="date-range">
-                  <input type="date" name="start" id="start-date" class="form-control mydatepicker">
+                  <input type="date" name="start" id="start-date1" class="form-control mydatepicker">
                         <span class="input-group-text bg-primary b-0 text-white">A</span>
 
-                        <input type="date" name="end" id="end-date" class="form-control mydatepicker">
+                        <input type="date" name="end" id="end-date1" class="form-control mydatepicker">
               </div>
 
               <a href="{{ route('dashboard.factures.exportCsv') }}" class="btn btn-success">
@@ -166,7 +166,7 @@
             </div>
             </div>
             <div class="table-responsive">
-                <table id="zero_config2" class="table table-striped table-bordered text-nowrap align-middle">
+                <table id="zero_config1" class="table table-striped table-bordered text-nowrap align-middle">
                   <thead>
                     <tr>
                         <th>Date</th>
@@ -225,14 +225,12 @@
 @endsection
 
 @push('scripts')
+
 <script>
   $(document).ready(function() {
       var table = $('#zero_config').DataTable();
   
-      $('#filter-comptable').on('change', function() {
-          var comptableId = this.value;
-          table.column(3).search(comptableId).draw();
-      });
+      
   
       $('#start-date, #end-date').on('change', function() {
           var startDate = $('#start-date').val();
@@ -260,15 +258,15 @@
       );
   });
 </script>
-  
 
-{{-- <script>
+
+<script>
   $(document).ready(function() {
       var table = $('#zero_config1').DataTable();
   
-    
+      
   
-      $('#start-date, #end-date').on('change', function() {
+      $('#start-date1, #end-date1').on('change', function() {
           var startDate = $('#start-date1').val();
           var endDate = $('#end-date1').val();
           
@@ -279,8 +277,8 @@
   
       $.fn.dataTable.ext.search.push(
           function(settings, data, dataIndex) {
-              var startDate = $('#start-date').val();
-              var endDate = $('#end-date').val();
+              var startDate = $('#start-date1').val();
+              var endDate = $('#end-date1').val();
               var date = new Date(data[0]); // Assuming the date is in the first column
   
               if ((!startDate && !endDate) ||
@@ -293,5 +291,5 @@
           }
       );
   });
-</script> --}}
+</script>
 @endpush
