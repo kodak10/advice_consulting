@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Administration;
 
 use App\Http\Controllers\Controller;
+use App\Models\Pays;
 use App\Models\User;
 use App\Notifications\VerifyEmailNotification;
 use Illuminate\Auth\Events\Registered;
@@ -28,7 +29,8 @@ class UsersController extends Controller
     public function index()
     {
         $users = User::all();
-        return view('administration.pages.users.index', compact('users'));
+        $payss = Pays::all();
+        return view('administration.pages.users.index', compact('users', 'payss'));
     }
 
     public function storeUser(Request $request)

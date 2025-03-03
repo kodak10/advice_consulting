@@ -91,9 +91,13 @@
                                 <div class="col-md-12">
                                     <div class="mb-3 contact-occupation">
                                         <select class="form-control" name="pays_id" required>
-                                            <option value="1" {{ old('pays_id') == '1' ? 'selected' : '' }}>Côte d'Ivoire</option>
-                                            <option value="2" {{ old('pays_id') == '2' ? 'selected' : '' }}>Tchad</option>
+                                            @foreach ($payss as $pays)
+                                                <option value="{{ $pays->id }}" {{ old('pays_id') == $pays->id ? 'selected' : '' }}>
+                                                    {{ $pays->name }}
+                                                </option>
+                                            @endforeach
                                         </select>
+                                        
                                     </div>
                                 </div>
                             </div>
