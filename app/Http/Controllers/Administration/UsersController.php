@@ -22,7 +22,7 @@ class UsersController extends Controller
 
     public function __construct()
     {
-        // Bloquer uniquement l'accès aux méthodes create et store pour les non "Daf" ou "Comptable"
+         // Bloquer uniquement l'accès aux méthodes create et store pour les non "Daf" ou "Comptable"
         $this->middleware('role:Administrateur')->only(['index', 'storeUser', 'disable', 'activate', 'disable']);
     }
 

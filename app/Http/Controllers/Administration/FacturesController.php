@@ -196,83 +196,26 @@ class FacturesController extends Controller
     }
 
 
-//     public function exportCsv()
-// {
-//     $fileName = 'factures_export.csv';
-//     $factures = Facture::with(['devis.client', 'user', 'devis.details'])->get();
-
-//     $headers = [
-//         "Content-type" => "text/csv",
-//         "Content-Disposition" => "attachment; filename=$fileName",
-//         "Pragma" => "no-cache",
-//         "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
-//         "Expires" => "0"
-//     ];
-
-//     return response()->stream(function () use ($factures) {
-//         $handle = fopen('php://output', 'w');
-        
-//         if ($handle === false) {
-//             throw new \Exception('Impossible d\'ouvrir php://output pour l\'écriture');
-//         }
-
-//         // Entête du fichier CSV
-//         fputcsv($handle, ['Date', 'Client', 'Coût', 'Etabli Par', 'Statut']);
-
-//         // Ajout des données
-//         foreach ($factures as $facture) {
-//             fputcsv($handle, [
-//                 $facture->created_at,
-//                 $facture->devis->client->nom,
-//                 $facture->devis->details->sum('total') . ' ' . $facture->devis->devise,
-//                 $facture->user->name,
-//                 $facture->devis->status ?? 'Non renseigné'
-//             ]);
-//         }
-
-//         fclose($handle);
-//     }, 200, $headers);
-// }
-    public function exportCsv()
-    {
-        // Créer une nouvelle instance de Spreadsheet
-    $spreadsheet = new Spreadsheet();
-    $sheet = $spreadsheet->getActiveSheet();
-
+public function exportCsv()
+{
     // Données à exporter
     $factures = Facture::with(['devis.client', 'user', 'devis.details'])->get();
 
-    // Titre du document
-    $sheet->setCellValue('A1', 'Export des Factures');
-    $sheet->mergeCells('A1:F1'); // Fusionner les cellules pour le titre
-    $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(16);
-    $sheet->getStyle('A1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+    // Créer un fichier CSV
+    $csvFileName = 'factures_export_' . date('Y-m-d_H-i-s') . '.csv';
+    $csvFile = fopen('php://temp', 'w');  // Créer un flux temporaire pour écrire dans le fichier
 
-    // Date d'export
-    $sheet->setCellValue('A2', 'Date d\'export : ' . date('d/m/Y H:i:s'));
-    $sheet->mergeCells('A2:F2');
-    $sheet->getStyle('A2')->getFont()->setItalic(true);
-    $sheet->getStyle('A2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-
-    // En-têtes des colonnes
-    $sheet->setCellValue('A4', 'Date de Création');
-    $sheet->setCellValue('B4', 'Client');
-    $sheet->setCellValue('C4', 'Coût Total');
-    $sheet->setCellValue('D4', 'Devise');
-    $sheet->setCellValue('E4', 'Établi Par');
-    $sheet->setCellValue('F4', 'Statut');
-
-    // Style des en-têtes
-    $headerStyle = [
-        'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
-        'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '4F81BD']], // Fond bleu
-        'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER],
-        'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]], // Bordures fines
-    ];
-    $sheet->getStyle('A4:F4')->applyFromArray($headerStyle);
+    // Ajouter l'entête du CSV
+    fputcsv($csvFile, [
+        'Date de Création',
+        'Client',
+        'Coût Total',
+        'Devise',
+        'Établi Par',
+        'Statut'
+    ]);
 
     // Remplir les données
-    $row = 5;
     $totalCost = 0;
     foreach ($factures as $facture) {
         $clientName = $facture->devis->client->nom ?? 'Client inconnu';
@@ -281,42 +224,33 @@ class FacturesController extends Controller
         $totalCost += $cost;
         $devise = $facture->devis->devise ?? 'USD';
 
-        $sheet->setCellValue('A' . $row, $facture->created_at->format('d/m/Y H:i:s'));
-        $sheet->setCellValue('B' . $row, $clientName);
-        $sheet->setCellValue('C' . $row, number_format($cost, 2, ',', ' '));
-        $sheet->setCellValue('D' . $row, $devise);
-        $sheet->setCellValue('E' . $row, $userName);
-        $sheet->setCellValue('F' . $row, $facture->devis->status ?? 'Non renseigné');
-
-        // Style des lignes de données
-        $sheet->getStyle('A' . $row . ':F' . $row)->getBorders()
-            ->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
-        $row++;
+        fputcsv($csvFile, [
+            $facture->created_at->format('d/m/Y H:i:s'),
+            $clientName,
+            number_format($cost, 2, ',', ' '),
+            $devise,
+            $userName,
+            $facture->devis->status ?? 'Non renseigné'
+        ]);
     }
 
-    // Ligne du total
-    $sheet->setCellValue('B' . $row, 'Total');
-    $sheet->setCellValue('C' . $row, number_format($totalCost, 2, ',', ' '));
-    $sheet->getStyle('B' . $row . ':C' . $row)->getFont()->setBold(true);
-    $sheet->getStyle('B' . $row . ':C' . $row)->getBorders()
-        ->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+    // Ajouter la ligne du total
+    fputcsv($csvFile, [
+        'Total',
+        '',
+        number_format($totalCost, 2, ',', ' ')
+    ]);
 
-    // Ajuster la largeur des colonnes
-    foreach (range('A', 'F') as $column) {
-        $sheet->getColumnDimension($column)->setAutoSize(true);
-    }
+    // Rewind pour être sûr de lire depuis le début du fichier temporaire
+    rewind($csvFile);
 
-    // Enregistrer le fichier
-    $writer = new Xlsx($spreadsheet);
-    $fileName = 'factures_export_' . date('Y-m-d_H-i-s') . '.xlsx';
-    $tempFile = tempnam(sys_get_temp_dir(), $fileName);
-    $writer->save($tempFile);
+    // Retourner le fichier CSV en téléchargement
+    return response(stream_get_contents($csvFile), 200, [
+        'Content-Type' => 'text/csv',
+        'Content-Disposition' => 'attachment; filename="' . $csvFileName . '"',
+    ]); // Assurez-vous de supprimer le fichier après l'envoi
+}
 
-    // Télécharger le fichier
-    return response()->download($tempFile, $fileName, [
-        'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    ])->deleteFileAfterSend(true);
-    }
 
     
 

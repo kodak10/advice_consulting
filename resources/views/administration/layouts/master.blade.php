@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <meta name="user-id" content="{{ auth()->id() }}">
+  <meta name="user_id" content="{{ auth()->id() }}">
 
   <!-- Favicon icon-->
   <link rel="shortcut icon" type="image/png" href="{{ asset('adminAssets/images/logos/favicon.png') }}">
@@ -80,33 +80,42 @@
 
 
     <script>
+        // Initialisation de Pusher et Laravel Echo
         window.Pusher = Pusher;
         window.Echo = new Echo({
             broadcaster: 'pusher',
-            key: '5a299c7322c90ce58687',  // clé Pusher
-            cluster: 'eu',  
+            key: '5a299c7322c90ce58687',  // Clé Pusher
+            cluster: 'eu',
             forceTLS: true,
             debug: true,
             reconnect: true,  // Active la reconnexion automatique
         });
-
-        let userId = document.querySelector('meta[name="user-id"]').getAttribute('content');
-
+    
+        // Gestion de la reconnexion Pusher
+        window.Echo.connector.pusher.connection.bind('reconnect', (attempts) => {
+            console.log('Pusher reconnecté après', attempts, 'tentatives');
+        });
+    
+        // Récupération de l'ID de l'utilisateur
+        let userId = document.querySelector('meta[name="user_id"]').getAttribute('content');
+    
         if (userId) {
+            // Souscription au canal privé de l'utilisateur
             let channel = window.Echo.private(`user.${userId}`);
-
+    
+            // Ecoute de l'événement 'devis.created'
             channel.listen('.devis.created', (event) => {
                 console.log('Notification reçue :', event);
-
-                // Affichage avec Toast
+    
+                // Affichage de la notification avec Toastr
                 toastr.info(`Devis numéro : ${event.devis_number}`, 'Nouveau devis créé', {
-                    positionClass: 'toast-top-right',  
-                    timeOut: 5000,  
-                    closeButton: true,  
+                    positionClass: 'toast-top-right',
+                    timeOut: 5000,
+                    closeButton: true,
                     progressBar: true,
                 });
-
-                // Ajouter à la liste des notifications
+    
+                // Ajouter à la liste des notifications dans l'UI
                 let notificationList = document.getElementById('notification-list');
                 let newNotification = document.createElement('li');
                 newNotification.classList.add('notification-item');
@@ -117,12 +126,14 @@
                     </div>
                 `;
                 notificationList.appendChild(newNotification);
-
+    
+                // Mise à jour du compteur de notifications
                 let notificationCount = document.querySelector('.notification');
                 let currentCount = parseInt(notificationCount.textContent || '0');
                 notificationCount.textContent = currentCount + 1;
             });
-
+    
+            // Gestion des erreurs d'abonnement au canal
             channel.error((error) => {
                 console.log('Erreur avec Pusher:', error);
                 toastr.error(`Erreur de connexion avec Pusher: ${error.message}`, 'Erreur', {
@@ -132,11 +143,26 @@
                     progressBar: true,
                 });
             });
-
+    
+            // Vérification du succès de l'abonnement
+            channel.listenForWhisper('pusher:subscription_succeeded', () => {
+                console.log("Abonnement réussi au canal.");
+            });
+    
         } else {
             console.error('❌ Erreur : Impossible de récupérer userId.');
         }
+    
+        // Optionnel : gestion des erreurs de connexion WebSocket
+        window.Echo.connector.pusher.connection.bind('failed', () => {
+            console.log("La connexion Pusher a échoué.");
+        });
+    
+        window.Echo.connector.pusher.connection.bind('connected', () => {
+            console.log("La connexion Pusher est établie.");
+        });
     </script>
+    
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {

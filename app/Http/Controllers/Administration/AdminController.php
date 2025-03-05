@@ -35,7 +35,8 @@ class AdminController extends Controller
             $devis = Devis::where('status', '!=', 'En Attente')
             ->where('status', '!=', 'En Attente')
                 ->get();
-            $factures = Facture::all();
+            $factures = Facture::limit(10)->get();
+            
     
             $comptables = User::role('Comptable')->get(); 
 

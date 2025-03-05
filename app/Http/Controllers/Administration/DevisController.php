@@ -25,6 +25,9 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 
+use Illuminate\Support\Facades\Notification;
+
+
 class DevisController extends Controller
 {
     public function __construct()
@@ -98,7 +101,8 @@ class DevisController extends Controller
         $devis = Devis::findOrFail($id);
         $creator = $devis->user_id;
 
-        $comptables = User::role('Comptable')->where('pays_id', Auth::user()->pays_id)
+        $comptables = User::role('Comptable')
+        ->where('pays_id', Auth::user()->pays_id)
         ->where('id', '!=', $creator)
         ->get();
 
@@ -110,9 +114,8 @@ class DevisController extends Controller
         $devis->status = 'Approuvé';
         $devis->save();
 
-        foreach ($comptables as $user) {
-            $user->notify(new DevisCreatedNotification($devis));
-        }
+        Notification::send($comptables, new DevisCreatedNotification($devis));
+
 
         return redirect()->back()->with('success', 'Proforma approuvée avec succès.');
     }
@@ -253,9 +256,6 @@ class DevisController extends Controller
                 'client_id', 'date_emission', 'date_echeance', 'commande', 'livraison', 'validite',
                 'banque_id', 'total_ht', 'tva', 'total_ttc', 'acompte', 'solde', 'designations'
             ]);
-
-            // Télécharger le fichier PDF
-            // return response()->download(storage_path('app/public/' . $imagePath));
 
             return redirect()->route('dashboard.devis.index')
             ->with('pdf_path', $imagePath)
@@ -428,86 +428,6 @@ class DevisController extends Controller
 
         return response()->download(storage_path('app/public/' . $devis->pdf_path));
     }
-
-    // public function exportCsv()
-    // {
-    //     $fileName = 'devis_export_' . date('Y-m-d_H-i-s') . '.csv';
-    //     $devis = Devis::with(['client', 'user', 'details'])->get();
-    
-    //     $headers = [
-    //         "Content-type"        => "text/csv",
-    //         "Content-Disposition" => "attachment; filename=$fileName",
-    //         "Pragma"             => "no-cache",
-    //         "Cache-Control"       => "must-revalidate, post-check=0, pre-check=0",
-    //         "Expires"             => "0"
-    //     ];
-    
-    //     return response()->stream(function () use ($devis) {
-    //         $handle = fopen('php://output', 'w');
-    
-    //         if ($handle === false) {
-    //             throw new \Exception('Impossible d\'ouvrir php://output pour l\'écriture');
-    //         }
-    
-    //         // Ligne de titre
-    //         fputcsv($handle, ['Export des Devis', '', '', '', '', '', '']);
-            
-    //         // Date d'export
-    //         fputcsv($handle, ['Date d\'export : ' . date('d/m/Y'), '', '', '', '', '', '']);
-            
-    //         // Ligne vide pour l'espacement
-    //         fputcsv($handle, ['', '', '', '', '', '', '']);
-    
-    //         // En-têtes des colonnes
-    //         fputcsv($handle, [
-    //             'N° Proforma',
-    //             'Client',
-    //             'Coût Total',
-    //             'Devise',
-    //             'Établi Par',
-    //             'Statut',
-    //             'Date de Création'
-    //         ]);
-    
-    //         // Données des devis
-    //         $totalCost = 0;
-    //         foreach ($devis as $devi) {
-    //             $clientName = $devi->client ? $devi->client->nom : 'Client inconnu';
-    //             $userName = $devi->user ? $devi->user->name : 'Utilisateur inconnu';
-    //             $cost = $devi->details->sum('total');
-    //             $totalCost += $cost;
-    //             $devise = $devi->devise ?? 'USD';
-    
-    //             fputcsv($handle, [
-    //                 $devi->num_proforma ?? 'N/A',
-    //                 $clientName,
-    //                 number_format($cost, 2, ',', ' '),
-    //                 $devise,
-    //                 $userName,
-    //                 $devi->status ?? 'Non renseigné',
-    //                 $devi->created_at->format('d/m/Y H:i:s')
-    //             ]);
-    //         }
-    
-    //         // Ligne vide pour l'espacement
-    //         fputcsv($handle, ['', '', '', '', '', '', '']);
-    
-    //         // Total des coûts
-    //         fputcsv($handle, [
-    //             'Total',
-    //             '',
-    //             number_format($totalCost, 2, ',', ' '),
-    //             '',
-    //             '',
-    //             '',
-    //             ''
-    //         ]);
-    
-    //         fclose($handle);
-    //     }, 200, $headers);
-    // }
-
-  
     
     public function exportCsv(Request $request)
     {
@@ -533,87 +453,47 @@ class DevisController extends Controller
         // Récupérer les données filtrées
         $devis = $query->get();
     
-        // Créer un nouveau fichier Excel
-        $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
+        // Créer un fichier CSV
+        $csvFileName = 'devis_export_' . date('Y-m-d_H-i-s') . '.csv';
+        $csvFile = fopen('php://temp', 'w');  // Créer un flux temporaire pour écrire dans le fichier
     
-        // Titre du document
-        $sheet->setCellValue('A1', 'Export des Devis');
-        $sheet->mergeCells('A1:G1'); // Fusionner les cellules pour le titre
-        $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(16);
-        $sheet->getStyle('A1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-    
-        // Date d'export
-        $sheet->setCellValue('A2', 'Date d\'export : ' . date('d/m/Y H:i:s'));
-        $sheet->mergeCells('A2:G2');
-        $sheet->getStyle('A2')->getFont()->setItalic(true);
-        $sheet->getStyle('A2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-    
-        // En-têtes des colonnes
-        $sheet->setCellValue('A4', 'Date de Création');
-        $sheet->setCellValue('B4', 'N° Proforma');
-        $sheet->setCellValue('C4', 'Client');
-        $sheet->setCellValue('D4', 'Coût Total');
-        $sheet->setCellValue('E4', 'Devise');
-        $sheet->setCellValue('F4', 'Établi Par');
-        $sheet->setCellValue('G4', 'Statut');
-    
-        // Style des en-têtes
-        $headerStyle = [
-            'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
-            'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '4F81BD']], // Fond bleu
-            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER],
-            'borders' => ['allBorders' => ['borderStyle' => Border::BORDER_THIN]], // Bordures fines
-        ];
-        $sheet->getStyle('A4:G4')->applyFromArray($headerStyle);
+        // Ajouter l'entête du CSV
+        fputcsv($csvFile, [
+            'Date de Création',
+            'N° Proforma',
+            'Client',
+            'Coût Total',
+            'Devise',
+            'Établi Par',
+            'Statut'
+        ]);
     
         // Remplir les données
-        $row = 5;
-        $totalCost = 0;
         foreach ($devis as $devi) {
             $clientName = $devi->client ? $devi->client->nom : 'Client inconnu';
             $userName = $devi->user ? $devi->user->name : 'Utilisateur inconnu';
             $cost = $devi->details->sum('total');
-            $totalCost += $cost;
             $devise = $devi->devise ?? 'USD';
     
-            $sheet->setCellValue('A' . $row, $devi->created_at->format('d/m/Y H:i:s'));
-            $sheet->setCellValue('B' . $row, $devi->num_proforma ?? 'N/A');
-            $sheet->setCellValue('C' . $row, $clientName);
-            $sheet->setCellValue('D' . $row, number_format($cost, 2, ',', ' '));
-            $sheet->setCellValue('E' . $row, $devise);
-            $sheet->setCellValue('F' . $row, $userName);
-            $sheet->setCellValue('G' . $row, $devi->status ?? 'Non renseigné');
-    
-            // Style des lignes de données
-            $sheet->getStyle('A' . $row . ':G' . $row)->getBorders()
-                ->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
-            $row++;
+            fputcsv($csvFile, [
+                $devi->created_at->format('d/m/Y H:i:s'),
+                $devi->num_proforma ?? 'N/A',
+                $clientName,
+                number_format($cost, 2, ',', ' '),
+                $devise,
+                $userName,
+                $devi->status ?? 'Non renseigné'
+            ]);
         }
     
-        // Ligne du total
-        $sheet->setCellValue('C' . $row, 'Total');
-        $sheet->setCellValue('D' . $row, number_format($totalCost, 2, ',', ' '));
-        $sheet->getStyle('C' . $row . ':D' . $row)->getFont()->setBold(true);
-        $sheet->getStyle('C' . $row . ':D' . $row)->getBorders()
-            ->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
-    
-        // Ajuster la largeur des colonnes
-        foreach (range('A', 'G') as $column) {
-            $sheet->getColumnDimension($column)->setAutoSize(true);
-        }
-    
-        // Enregistrer le fichier
-        $writer = new Xlsx($spreadsheet);
-        $fileName = 'devis_export_' . date('Y-m-d_H-i-s') . '.xlsx';
-        $tempFile = tempnam(sys_get_temp_dir(), $fileName);
-        $writer->save($tempFile);
-    
-        // Télécharger le fichier
-        return response()->download($tempFile, $fileName, [
-            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        ])->deleteFileAfterSend(true);
+        // Retourner le fichier CSV en téléchargement
+        rewind($csvFile);  // Rewind pour être sûr de lire depuis le début
+        return response(stream_get_contents($csvFile), 200, [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $csvFileName . '"',
+        ]); // Assurez-vous de supprimer le fichier après l'envoi
     }
+    
     
 
 }

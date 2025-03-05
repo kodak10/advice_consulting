@@ -3,12 +3,13 @@
 namespace App\Notifications;
 
 use App\Models\Devis;
+use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-use Illuminate\Broadcasting\PrivateChannel;
+use Illuminate\Support\Facades\Auth;
 
 class DevisCreatedNotification extends Notification
 {
@@ -34,7 +35,7 @@ class DevisCreatedNotification extends Notification
     public function toDatabase($notifiable)
     {
         return [
-            'message' => "Un nouveau devis a été créé : ",
+            'message' => "Un nouveau devis a été créé",
             'devis_id' => $this->devis->id,
             'user_id' => $this->devis->user_id, 
             'devis_number' => $this->devis->num_proforma,
@@ -60,9 +61,23 @@ class DevisCreatedNotification extends Notification
     /**
      * Canal de diffusion.
      */
+    // public function broadcastOn()
+    // {
+    //     return new PrivateChannel('user.' . $this->devis->user_id);
+    // }
+
     public function broadcastOn()
     {
-        return new PrivateChannel('user.' . $this->devis->user_id);
+        // Diffuse uniquement aux utilisateurs qui ne sont pas le créateur du devis
+        $channels = ['user.' . $this->devis->user_id];
+
+        // Ajouter une condition pour exclure l'utilisateur qui a créé le devis
+        if ($this->devis->user_id != Auth::id()) {
+            return $channels;
+        }
+
+        // Si l'utilisateur est le créateur, ne diffuse pas
+        return [];
     }
 
     
