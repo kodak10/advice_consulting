@@ -362,6 +362,7 @@
                 $(this).slideDown();
                 initializeSelect2($(this)); 
                 $(this).find('.discount').val(0); 
+                $(this).find('.quantity').val(1);
                 updateRowData($(this));
             },
             hide: function (deleteElement) {

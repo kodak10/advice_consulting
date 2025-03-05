@@ -18,7 +18,7 @@ class AdminController extends Controller
 {
 
 
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
     
@@ -32,16 +32,51 @@ class AdminController extends Controller
         } 
         
         elseif ($user->hasRole('Daf')) {
-            $devis = Devis::where('status', '!=', 'En Attente')
-            ->where('status', '!=', 'En Attente')
-                ->get();
-            $factures = Facture::limit(10)->get();
-            
-    
-            $comptables = User::role('Comptable')->get(); 
+            $devisQuery = Devis::where('status', '!=', 'En Attente');
 
+            // Filtre par période
+            if ($request->has('start2') && $request->start2 != "") {
+                $devisQuery->where('created_at', '>=', $request->start2);
+            }
+    
+            if ($request->has('end2') && $request->end2 != "") {
+                $devisQuery->where('created_at', '<=', $request->end2);
+            }
+
+            // Récupérer les devis
+            $devis = $devisQuery->get();
+    
+
+            $facturesQuery = Facture::query();
+        
+            // Filtre par comptable
+            if ($request->has('comptable') && $request->comptable != "") {
+                $facturesQuery->whereHas('user', function($query) use ($request) {
+                    $query->where('name', $request->comptable);
+                });
+            }
+        
+            // Filtre par date de début
+            if ($request->has('start') && $request->start != "") {
+                $facturesQuery->where('created_at', '>=', $request->start);
+            }
+        
+            // Filtre par date de fin
+            if ($request->has('end') && $request->end != "") {
+                // Ajout de 23:59:59 à la date de fin pour inclure toute la journée
+                $endDate = $request->end . ' 23:59:59';
+                $facturesQuery->where('created_at', '<=', $endDate);
+            }
+        
+            // Limiter le nombre de factures (ou paginer si nécessaire)
+            $factures = $facturesQuery->paginate(10); // Utilisez `paginate` pour la pagination dynamique
+        
+            $comptables = User::role('Comptable')->get();
+        
             return view('administration.pages.index-daf', compact('devis', 'factures', 'comptables'));
-        } 
+        }
+        
+        
         
         elseif ($user->hasRole('Comptable')) {
             $factures = Facture::where('pays_id', $user->pays_id)->get();

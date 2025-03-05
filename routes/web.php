@@ -22,7 +22,8 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified','check.user.status'])->prefix('dashboard')->name('dashboard.')->group(function () {
 
-    Route::get('/', [AdminController::class, 'index']);
+    Route::match(['get', 'post'], '/', [AdminController::class, 'index']);
+
 
 
     Route::get('/factures/data', [AdminController::class, 'getFactures'])->name('factures.data');

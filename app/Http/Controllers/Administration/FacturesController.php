@@ -173,6 +173,13 @@ class FacturesController extends Controller
             $facture->pdf_path = $imagePath;
             $facture->save();
 
+            if(Auth::user()->role('Daf')){
+                $this->approuve($facture->id);
+
+            }
+
+    
+
             // Télécharger le fichier PDF
             return redirect()->route('dashboard.factures.index')
             ->with('pdf_path', $imagePath)

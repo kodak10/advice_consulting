@@ -139,7 +139,7 @@
      <div class="card card-body">
         <div class="table-responsive mb-5">
             <h5>
-                Liste des Proformas en Attente
+                En attente de Facture
             </h5>
             <table id="zero_config" class="table table-striped table-bordered text-nowrap align-middle">
               <thead>
@@ -388,6 +388,11 @@
         </div>
       </div>
 
+      
+    </div>
+        
+      @endif
+     
       <div class="card card-body">
         <div class="table-responsive">
           <div class="table-responsive mt-5">
@@ -455,11 +460,6 @@
           </div>
         </div>
       </div>
-    </div>
-        
-      @endif
-     
-  
 
 </div>
 @endsection
