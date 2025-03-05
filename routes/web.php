@@ -15,35 +15,29 @@ use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Route;
 
 
-
-
 Route::get('/', function () {
     return view('frontend.pages.index');
 });
 
 
-
 Route::middleware(['auth', 'verified','check.user.status'])->prefix('dashboard')->name('dashboard.')->group(function () {
 
-    
     Route::get('/', [AdminController::class, 'index']);
 
 
     Route::get('/factures/data', [AdminController::class, 'getFactures'])->name('factures.data');
 
-
-
     // Route pour marquer toutes les notifications comme lues
     Route::post('/notifications/mark-all-as-read', [AdminController::class, 'markAllAsRead'])->name('notifications.mark-all-as-read');
-        
     // Route pour marquer une notification spécifique comme lue
     Route::post('/notifications/mark-as-read/{id}', [AdminController::class, 'markAsRead'])->name('notifications.mark-as-read');
 
+
     Route::resource('clients', ClientController::class);
     Route::resource('designations', DesignationsController::class);
+
     Route::resource('users', UsersController::class);
     Route::get('/users/export/csv', [UsersController::class, 'exportCsv'])->name('users.exportCsv');
-
     Route::post('/users', [UsersController::class, 'storeUser'])->name('storeUser');
     Route::get('/users/{id}/disable', [UsersController::class, 'disable'])->name('disable');
     Route::get('/users/{id}/activate', [UsersController::class, 'activate'])->name('activate');
@@ -54,75 +48,35 @@ Route::middleware(['auth', 'verified','check.user.status'])->prefix('dashboard')
     Route::post('/update-password', [UsersController::class, 'updatePassword'])->name('profil.updatePassword');
 
 
-
     Route::resource('devis', DevisController::class);
     Route::post('/devis/create', [DevisController::class, 'recap'])->name('devis.recap');
-
-
     Route::post('/devis/{id}/edit/recap', [DevisController::class, 'recapUpdate'])->name('devis.recapUpdate');
     Route::put('/devis/{id}/store-recap', [DevisController::class, 'storeRecap'])->name('devis.storeRecap');
-    //Route::match(['post', 'put'], '/devis/{id}/store-recap', [DevisController::class, 'storeRecap'])->name('devis.storeRecap');
     Route::get('/edit/{id}/edit/recap');
     Route::get('/devis/{id}/validate', [DevisController::class, 'approuve'])->name('devis.validate');
     Route::get('/devis/download/{id}', [DevisController::class, 'download'])->name('devis.download');
-
     Route::get('/devis/export/csv', [DevisController::class, 'exportCsv'])->name('devis.exportCsv');
 
     
-    //Route::resource('factures', FacturesController::class);
     Route::get('/factures', [FacturesController::class, 'index'])->name('factures.index');
-
     Route::get('/factures/{id}/refuse', [FacturesController::class, 'refuse'])->name('factures.refuse');
-    // Route::get('/factures/{id}/create', [FacturesController::class, 'create'])->name('factures.create');
     Route::get('/factures/create/{id}', [FacturesController::class, 'create'])->name('factures.create');
-    
     Route::post('/factures/store', [FacturesController::class, 'store'])->name('factures.store');
     Route::get('/factures/download/{id}', [FacturesController::class, 'download'])->name('factures.download');
     Route::get('/factures/export/csv', [FacturesController::class, 'exportCsv'])->name('factures.exportCsv');
+    Route::get('/factures/{id}/validate', [FacturesController::class, 'approuve'])->name('factures.validate');
 
 
     Route::resource('banques', BanqueController::class);
 
-    // Route::resource('messagerie', MessagerieController::class);
 
     Broadcast::routes();
 
-    Route::get('/test', function () {
-        // Créez ou trouvez un devis existant
-        $devis = \App\Models\Devis::first(); // Récupère le premier devis de la base de données
-    
-        // Si aucun devis n'existe, vous pouvez en créer un temporaire pour tester
-        if (!$devis) {
-            $devis = \App\Models\Devis::create([
-                'client_id' => 1, // Assurez-vous que vous avez un client avec l'ID 1
-                'total' => 1000, // Exemple de total
-                'date' => now(), // Exemple de date
-            ]);
-        }
-    
-        // Déclenche l'événement avec l'instance de Devis
-        event(new \App\Events\DevisCreated($devis));
-    });
-    
-    Broadcast::routes();
-
 });
-
-Route::get('/test-role', function () {
-    if (Auth::check()) {
-        $roleName = Auth::user()->roles->first()->name;
-        dd($roleName); // Affiche le rôle
-    } else {
-        dd('Utilisateur non connecté');
-    }
-});
-
-
 
 Auth::routes(['verify' => true]);
 
 
-
-// Route::fallback(function () {
-//     return view('administration.pages.maintenance');
-// })->withoutMiddleware(['auth']);
+Route::fallback(function () {
+    return view('administration.pages.maintenance');
+})->withoutMiddleware(['auth']);

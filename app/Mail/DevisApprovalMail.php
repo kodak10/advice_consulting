@@ -29,12 +29,10 @@ class DevisApprovalMail extends Mailable
 
     public function build()
     {
-        // Vérifiez que l'utilisateur est authentifié
         if (!Auth::check()) {
             throw new \Exception("Aucun utilisateur authentifié.");
         }
     
-        // Récupérez l'utilisateur authentifié
         $user = Auth::user();
     
         return $this->subject('Devis Approuvé')
@@ -48,9 +46,7 @@ class DevisApprovalMail extends Mailable
                         'as' => 'devis_' . $this->devis->num_proforma . '.pdf',
                         'mime' => 'application/pdf',
                     ])
-                    // Définir l'expéditeur comme l'email de l'utilisateur authentifié
                     ->from($user->email, $user->name)
-                    // Ajouter un destinataire
                     ->to($this->devis->client->email);
     }
 

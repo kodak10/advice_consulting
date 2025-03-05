@@ -56,7 +56,87 @@
       
 
 
+     @if(Auth::user()->role('Commercial'))
       <div class="card card-body">
+        <div class="table-responsive mb-5">
+            <h5>
+                Mes factures
+            </h5>
+            <table id="zero_config4" class="table table-striped table-bordered text-nowrap align-middle">
+              <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>N° Proforma</th>
+                    <th>Client</th>
+                    <th>Coût</th>
+                    <th>Statut</th>
+                    <th>Action</th>
+                </tr>
+              </thead>
+                <tbody>
+                  @forelse ($factureCommercials as $factureCommercial)
+                  <tr>
+                    <td>
+                      <h6 class="mb-0">{{ $factureCommercial->created_at }}</h6>
+                    </td>
+                    <td>
+                      <h6 class="mb-0">{{ $factureCommercial->devis->num_proforma }}</h6>
+                    </td>
+                    <td>
+                      <h6 class="mb-0">{{ $factureCommercial->devis->client->nom }}</h6>
+                    </td>
+                    <td>
+                      <h6 class="mb-0">{{ $factureCommercial->devis->total_ttc }} {{ $factureCommercial->devis->devise }}</h6>
+                    </td>
+                    <td>
+                      <h6 class="mb-0">{{ $factureCommercial->devis->status }}</h6>
+                    </td>
+                  
+                    
+                      <td>
+                          
+                          <a href="{{ route('dashboard.factures.download', $factureCommercial->id) }}" class="text-primary me-2" title="Télécharger">
+                            <i class="ti ti-download fs-5"></i>
+                          </a>
+                        
+                        
+                      </td>
+                    
+                  </tr>
+
+                  
+                  @empty
+                      Aucune Proforma
+                  @endforelse
+                  
+                </tbody>
+
+
+              
+
+            
+            
+              <tfoot>
+                <tr>
+                    <th>Date</th>
+                    <th>N° Proforma</th>
+                    <th>Client</th>
+                    <th>Coût</th>
+                    <th>Statut</th>
+                    <th>Action</th>
+                </tr>
+              </tfoot>
+            </table>
+        </div>
+
+      
+      </div>
+      
+     @endif
+      
+
+     @if(Auth::user()->hasAnyRole(['Daf', 'Comptable']))
+     <div class="card card-body">
         <div class="table-responsive mb-5">
             <h5>
                 Liste des Proformas en Attente
@@ -232,6 +312,11 @@
                         <a href="{{ route('dashboard.factures.download', $facture->id) }}" class="text-primary me-2" title="Télécharger">
                           <i class="ti ti-download fs-5"></i>
                         </a>
+                        @if(Auth::user()->hasRole('Daf'))
+                          <a href="{{ route('dashboard.factures.validate', $facture->id) }}" class="text-success me-2" title="Approuvé la facture">
+                            <i class="ti ti-download fs-5"></i>
+                          </a>
+                        @endif
                         
                       </td>
                     
@@ -371,6 +456,9 @@
         </div>
       </div>
     </div>
+        
+      @endif
+     
   
 
 </div>

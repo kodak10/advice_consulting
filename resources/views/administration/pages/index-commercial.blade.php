@@ -113,21 +113,7 @@
                             </a>
                           
     
-                          <a href="{{ route('dashboard.devis.validate', $devi->id) }}" class="text-primary me-2" title="Valider">
-                            <i class="ti ti-navigation-check"></i>
-                        </a>
-    
-                              <a href="{{ route('dashboard.devis.edit', $devi->id) }}" class="text-primary me-2" title="Modifier">
-                                  <i class="ti ti-pencil fs-5"></i>
-                              </a>
-                      
-                              <form id="delete-form-{{ $devi->id }}" action="{{ route('dashboard.devis.destroy', $devi->id) }}" method="POST" class="d-inline-block">
-                                @csrf
-                                @method('DELETE')
-                                <button type="button" class="btn btn-link text-danger p-0 border-0" title="Supprimer" onclick="confirmDelete({{ $devi->id }})">
-                                    <i class="ti ti-trash fs-5"></i>
-                                </button>
-                            </form>
+                        
                           </div>
                       </td>
                       

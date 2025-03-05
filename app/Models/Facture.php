@@ -38,4 +38,8 @@ class Facture extends Model
     {
         return $this->belongsTo(Pays::class);
     }
+    public function creator()
+    {
+        return $this->devis->creator(); // Relation indirecte via Devis
+    }
 }

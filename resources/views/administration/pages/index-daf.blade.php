@@ -4,7 +4,7 @@
 <div class="container-fluid">
     <h1 class="fw-semibold mb-3 fs-6 text-center">
       BIENVENUE SUR LA L'ESPACE DE GESTION DES FACTURES    </h1>
-    <div class="row">
+    <div class="row" >
       <div class="col-lg-12 d-flex align-items-stretch">
         <div class="card w-100 bg-primary-subtle overflow-hidden shadow-none">
           <div class="card-body position-relative">
@@ -154,7 +154,7 @@
                           </tr>
                       </thead>
                       <tbody>
-                          @forelse ($factures as $facture)
+                          @foreach ($factures as $facture)
                           <tr>
                               <td>{{ $facture->created_at }}</td>
                               <td>{{ $facture->devis->client->nom }}</td>
@@ -167,9 +167,8 @@
                                   </a>
                               </td>
                           </tr>
-                          @empty
-                              <tr><td colspan="6">Aucune Proforma enregistrée.</td></tr>
-                          @endforelse
+                         
+                          @endforeach
                       </tbody>
                       <tfoot>
                           <tr>

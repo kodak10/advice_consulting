@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Administration;
 
 use App\Http\Controllers\Controller;
+use App\Mail\FactureMail;
 use App\Models\Banque;
 use App\Models\Client;
 use App\Models\Designation;
@@ -12,13 +13,14 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class FacturesController extends Controller
 {
@@ -58,8 +60,14 @@ class FacturesController extends Controller
         $mes_factures = Facture::where('pays_id', Auth::user()->pays_id)
         ->where('user_id', Auth::user()->id)
         ->get();
-        
-        return view('administration.pages.factures.index', compact('all_devis', 'devis_pays', 'all_factures', 'factures_pays', 'mes_factures'));
+
+        $factureCommercials = Facture::with(['devis.client'])
+        ->whereHas('devis', function ($query) {
+            $query->where('user_id', Auth::user()->id);
+        })
+        ->get(); 
+
+        return view('administration.pages.factures.index', compact('all_devis', 'devis_pays', 'all_factures', 'factures_pays', 'mes_factures', 'factureCommercials'));
 
     } 
 
@@ -130,7 +138,7 @@ class FacturesController extends Controller
             $client = Client::findOrFail($validated['client_id']);
             $banque = Banque::findOrFail($validated['banque_id']);
 
-            $devis->status = 'Terminé';
+            $devis->status = 'En Attente du Daf';
             $devis->save();
 
             $customNumber = $this->generateCustomNumber();
@@ -166,8 +174,6 @@ class FacturesController extends Controller
             $facture->save();
 
             // Télécharger le fichier PDF
-            // return response()->download(storage_path('app/public/' . $imagePath));
-
             return redirect()->route('dashboard.factures.index')
             ->with('pdf_path', $imagePath)
             ->with('success', 'Facture enregsitré avec succès.');
@@ -183,6 +189,40 @@ class FacturesController extends Controller
             return redirect()->back()->with('error', 'Une erreur est survenue lors de l\'enregistrement de la facture.')->withInput();
         }
     }
+
+
+    public function approuve($id)
+{
+    $facture = Facture::findOrFail($id);
+
+    if ($facture->devis->status !== 'En Attente du Daf') {
+        return redirect()->back()->with('error', 'La facture à déjà été validé');
+    }
+
+    // Récupérer l'utilisateur qui a créé le devis
+    $creator = $facture->devis->user; 
+    $creatorEmail = $creator->email; // ✅ Récupérer son email
+    $creatorName = $creator->name; // ✅ Récupérer son nom
+
+    // Vérifier si le PDF existe et récupérer le chemin
+    $pdfPath = storage_path('app/public/' . $facture->pdf_path);
+
+    if (!file_exists($pdfPath)) {
+        return redirect()->back()->with('error', 'Le fichier PDF n\'existe pas.');
+    }
+
+    // Récupérer l'email du client
+    $clientEmail = $facture->devis->client->email;
+
+    // Envoyer l'e-mail au client avec le fichier PDF en pièce jointe
+    Mail::send(new FactureMail($facture, $pdfPath, $creatorEmail, $creatorName, $clientEmail));
+    
+    $facture->devis->status = 'Terminé';
+    $facture->devis->save();
+
+    return redirect()->back()->with('success', 'Facture envoyée avec succès.');
+}
+
 
     public function download($id)
     {

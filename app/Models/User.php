@@ -56,4 +56,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->belongsTo(Pays::class);
     }
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'user_id'); // Assure-toi que 'user_id' est bien la colonne qui stocke le créateur du devis
+    }
 }
