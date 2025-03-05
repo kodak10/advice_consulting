@@ -99,9 +99,14 @@
                         </div>
 
                         <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <div class="mb-3 contact-occupation">
                             <input type="text" id="c-adresse" class="form-control" placeholder="Adresse">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3 contact-email">
+                            <input type="email" id="c-email" class="form-control" placeholder="Email" required>
                             </div>
                         </div>
                         </div>
@@ -141,6 +146,7 @@
               <thead>
                 <tr>
                   <th>Nom</th>
+                  <th>Email</th>
                   <th>N° Téléphone</th>
                   <th>Adresse</th>
                   <th>N°CC</th>
@@ -152,6 +158,9 @@
                 <tr>
                     <td>
                         <h6 class="mb-0">{{ $client->nom }}</h6>
+                    </td>
+                    <td>
+                        <h6 class="mb-0">{{ $client->email }}</h6>
                     </td>
                     <td>{{ $client->telephone }}</td>
                     <td>{{ $client->ville }}</td>
@@ -217,9 +226,15 @@
                                             </div>
 
                                             <div class="row">
-                                                <div class="col-md-12">
+                                                <div class="col-md-6">
                                                     <div class="mb-3 contact-occupation">
                                                         <input type="text" id="c-adresse{{ $client->id }}" class="form-control" placeholder="Adresse" name="adresse" value="{{ $client->adresse }}">
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6">
+                                                    <div class="mb-3 contact-occupation">
+                                                        <input type="email" id="c-email{{ $client->id }}" class="form-control" placeholder="Email" name="email" value="{{ $client->email }}">
                                                     </div>
                                                 </div>
                                             </div>
@@ -261,6 +276,7 @@
               <tfoot>
                 <tr>
                     <th>Nom</th>
+                    <th>Email</th>
                     <th>N° Téléphone</th>
                     <th>Adresse</th>
                     <th>N°CC</th>
@@ -283,6 +299,7 @@
 
     let formData = {
         nom: document.getElementById('c-name').value,
+        email: document.getElementById('c-email').value,
         numero_cc: document.getElementById('c-occupation').value,
         telephone: document.getElementById('c-phone').value,
         adresse: document.getElementById('c-adresse').value,

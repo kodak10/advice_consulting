@@ -31,9 +31,11 @@ class ClientController extends Controller
 
         return response()->json([
             'nom' => $client->nom,
+            'email' => $client->email,
             'adresse' => $client->adresse,
             'telephone' => $client->telephone,
             'ville' => $client->ville,
+            'attn' => $client->attn,
         ]);
     }
 
@@ -46,6 +48,7 @@ public function store(Request $request)
         // Valider les données du formulaire
         $validatedData = $request->validate([
             'nom'       => 'required|string|max:255',
+            'email'     => 'required|email|unique:clients',
             'numero_cc' => 'required|string|max:255',
             'telephone' => 'required|string|max:255',
             'adresse'   => 'required|string|max:255',
@@ -57,6 +60,7 @@ public function store(Request $request)
 
         $client = new Client([
             'nom'       => $validatedData['nom'],
+            'email'       => $validatedData['email'],
             'numero_cc' => $validatedData['numero_cc'],
             'telephone' => $validatedData['telephone'],
             'adresse'   => $validatedData['adresse'],
@@ -121,6 +125,7 @@ public function update(Request $request, Client $client)
 {
     $validatedData = $request->validate([
         'nom' => 'required|string|max:255',
+        'email'     => 'required|email|unique:clients',
         'numero_cc' => 'required|string|unique:clients,numero_cc,' . $client->id,
         'telephone' => 'nullable|string',
         'adresse' => 'nullable|string',
@@ -131,6 +136,7 @@ public function update(Request $request, Client $client)
     try {
         $client->update([
             'nom' => $request->nom,
+            'email' => $request->email,
             'numero_cc' => $request->numero_cc,
             'telephone' => $request->telephone,
             'adresse' => $request->adresse,

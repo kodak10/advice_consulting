@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Administration;
 use App\Events\DevisCreated;
 use App\Events\TestEvent;
 use App\Http\Controllers\Controller;
+use App\Mail\DevisApprovalMail;
 use App\Models\Banque;
 use App\Models\Client;
 use App\Models\Designation;
@@ -17,15 +18,16 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
+use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
+
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
-
-use Illuminate\Support\Facades\Notification;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 
 class DevisController extends Controller
@@ -111,10 +113,31 @@ class DevisController extends Controller
             return redirect()->back()->with('error', 'La Proforma ne peut être approuvé que s\'il est en attente.');
         }
 
+        // Vérifier si le PDF existe et récupérer le chemin
+        $pdfPath = storage_path('app/public/' . $devis->pdf_path);
+
+
+        if (!file_exists($pdfPath)) {
+            return redirect()->back()->with('error', 'Le fichier PDF n\'existe pas.');
+        }
+
+        // Récupérer l'email du client
+        $clientEmail = $devis->client->email;
+
+        // Envoyer l'e-mail au client avec le fichier PDF en pièce jointe
+        Mail::send(new DevisApprovalMail($devis, $pdfPath, Auth::user()->name, $clientEmail));
+
+
+
+        Notification::send($comptables, new DevisCreatedNotification($devis));
+
+
         $devis->status = 'Approuvé';
         $devis->save();
 
-        Notification::send($comptables, new DevisCreatedNotification($devis));
+        
+
+
 
 
         return redirect()->back()->with('success', 'Proforma approuvée avec succès.');
@@ -428,7 +451,7 @@ class DevisController extends Controller
 
         return response()->download(storage_path('app/public/' . $devis->pdf_path));
     }
-    
+
     public function exportCsv(Request $request)
     {
         // Récupérer les paramètres de filtrage (exemple : statut, date, etc.)
