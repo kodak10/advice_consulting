@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Administration;
 
 use App\Http\Controllers\Controller;
+use App\Mail\DevisRefusedMail;
 use App\Mail\FactureMail;
 use App\Models\Banque;
 use App\Models\Client;
@@ -10,12 +11,16 @@ use App\Models\Designation;
 use App\Models\Devis;
 use App\Models\Facture;
 use App\Models\Pays;
+use App\Models\User;
+use App\Notifications\FactureApprovalNotification;
+
 use Barryvdh\DomPDF\Facade\Pdf;
+use DevisRefusedNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
@@ -49,24 +54,17 @@ class FacturesController extends Controller
         $payss = Pays::get();
         $user = Auth::user();
 
-        $all_devis = Devis::where('status',  'Approuvé')
-        ->get();
+        $all_devis = Devis::whereIn('status', ['Approuvé', 'En Attente du Daf'])->get();
 
         $devis_pays = Devis::where('pays_id', Auth::user()->pays_id)
         ->where('status',  'Approuvé')
         ->get();
 
-        // $all_factures = Facture::get();
-
-        // $factures_pays = Facture::where('pays_id', Auth::user()->pays_id)
-        // ->get();
-
-        // $mes_factures = Facture::where('pays_id', Auth::user()->pays_id)
-        // ->where('user_id', Auth::user()->id)
-        // ->get();
-
-
         $facturesQuery = Facture::query();
+
+        $facturesQuery->whereHas('devis', function ($query) {
+            $query->where('status', 'Terminé');
+        });
 
         // Filtre par pays (uniquement pour les Dafs)
         if ($user->hasRole('Daf') && $request->has('pays') && $request->pays != "") {
@@ -110,14 +108,23 @@ class FacturesController extends Controller
     public function refuse($id)
     {
         $devis = Devis::findOrFail($id);
-
+    
         if ($devis->status !== 'Approuvé') {
-            return redirect()->back()->with('error', 'Vous ne pouvez supprimer cete Proforma que si son statut est "Approuvé".');
+            return redirect()->back()->with('error', 'Vous ne pouvez supprimer cette Proforma que si son statut est "Approuvé".');
         }
-
+    
+        // Changer le statut du devis à "Refusé"
         $devis->status = 'Réfusé';
         $devis->save();
-
+    
+        // Envoi de la notification par email
+        $creator = $devis->user;  // L'utilisateur qui a créé le devis (ou tout autre destinataire)
+        Mail::to($creator->email)->send(new DevisRefusedMail($devis));
+    
+        // Envoi de la notification par broadcast
+        // Vous pouvez utiliser une notification broadcast pour l'interface en temps réel
+        Notification::send($creator, new DevisRefusedNotification($devis));
+    
         return redirect()->back()->with('success', 'Proforma Réfusée avec succès.');
     }
 
@@ -131,6 +138,10 @@ class FacturesController extends Controller
         
         if ($devis->status === 'Réfusé') {
             return redirect()->back()->with('error', "Cette proforma a déjà été refusée.");
+        }
+
+        if ($devis->status === 'En Attente du Daf') {
+            return redirect()->back()->with('error', "Cette proforma a déjà l'objet de facture.<br> Vous pouvez l'approuvé ou la réfusée");
         }
         
         $client = $devis->client;
@@ -209,7 +220,32 @@ class FacturesController extends Controller
             $facture->pdf_path = $imagePath;
             $facture->save();
 
-            if(Auth::user()->role('Daf')){
+
+            $daf = User::role('Daf')->get(); // Récupère tous les utilisateurs ayant le rôle "Daf"
+
+            // Vérifie si des utilisateurs Daf existent
+            if ($daf->count() > 0) {
+                Log::info('Envoi de la notification de facture pour approbation.', [
+                    'facture_id' => $facture->id,
+                    'comptables_count' => $daf->count(),
+                    'facture_num' => $facture->numero,
+                ]);
+
+                // Envoie la notification
+                Notification::send($daf, new FactureApprovalNotification($facture));
+
+                // Log après envoi
+                Log::info('Notification envoyée avec succès aux utilisateurs Daf.', [
+                    'facture_id' => $facture->id,
+                    'daf' => $daf->pluck('name')->toArray(), // Les noms des utilisateurs Daf
+                ]);
+            } else {
+                Log::warning('Aucun utilisateur Daf trouvé pour la notification.', [
+                    'facture_id' => $facture->id,
+                ]);
+            }
+
+            if(Auth::user()->hasRole('Daf')){
                 $this->approuve($facture->id);
 
             }
@@ -238,6 +274,7 @@ class FacturesController extends Controller
 {
     $facture = Facture::findOrFail($id);
 
+    // dd($facture);
     if ($facture->devis->status !== 'En Attente du Daf') {
         return redirect()->back()->with('error', 'La facture à déjà été validé');
     }
@@ -263,7 +300,7 @@ class FacturesController extends Controller
     $facture->devis->status = 'Terminé';
     $facture->devis->save();
 
-    return redirect()->back()->with('success', 'Facture envoyée avec succès.');
+    return redirect()->back()->with('success', 'Facture envoyée avec succès au client.');
 }
 
 

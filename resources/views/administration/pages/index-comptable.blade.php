@@ -51,18 +51,43 @@
               <div class="mb-3 mb-sm-0">
                 <h4 class="card-title fw-semibold">Liste des Proformas</h4>
               </div>
-              <div class="d-flex">
+              {{-- <div class="d-flex">
                 <div class="input-daterange input-group mr-3" id="date-range">
                   <input type="date" name="start" id="start-date" class="form-control mydatepicker">
                   <span class="input-group-text bg-primary b-0 text-white">A</span>
 
                   <input type="date" name="end" id="end-date" class="form-control mydatepicker">
                 </div>
+                <input type="hidden" name="pays_id" value="{{ Auth::user()->pays_id }}">
 
                 <a href="{{ route('dashboard.devis.exportCsv') }}" class="btn btn-success">
                   Exporter
                 </a>
-              </div>
+              </div> --}}
+
+              <form method="POST" action="{{ route('dashboard.') }}" class="d-flex">
+                @csrf
+                <div class="d-flex">
+                    <!-- Filtre par période de création des devis -->
+                    <div class="input-daterange input-group mr-3" id="date-range">
+                        <input type="date" name="start" id="start-date" class="form-control mydatepicker" value="{{ request('start') }}">
+                        <span class="input-group-text bg-primary b-0 text-white">A</span>
+                        <input type="date" name="end" id="end-date" class="form-control mydatepicker" value="{{ request('end') }}">
+                    </div>
+            
+                    <!-- Champ caché pour le pays -->
+                    <input type="hidden" name="pays_id" value="{{ Auth::user()->pays_id }}">
+            
+                    <!-- Bouton pour filtrer -->
+                    <button type="submit" class="btn btn-primary ml-3">Filtrer</button>
+            
+                    <!-- Bouton pour exporter en CSV -->
+                    <a href="{{ route('dashboard.devis.exportCsv') }}" class="btn btn-success ml-3">
+                        Exporter
+                    </a>
+                </div>
+            </form>
+            
             </div>
             <div class="table-responsive">
                 <table id="zero_config" class="table table-striped table-bordered text-nowrap align-middle">
@@ -135,18 +160,26 @@
               <div class="mb-3 mb-sm-0">
                 <h4 class="card-title fw-semibold">Liste des Factures</h4>
               </div>
-              <div class="d-flex">
-                <div class="input-daterange input-group mr-3" id="date-range">
-                  <input type="date" name="start" id="start-date1" class="form-control mydatepicker">
+              <form method="POST" action="{{ route('dashboard.') }}" class="d-flex">
+                @csrf
+                <div class="d-flex">
+                    <!-- Filtre par période de création des factures -->
+                    <div class="input-daterange input-group mr-3" id="date-range">
+                        <input type="date" name="start" id="start-date1" class="form-control mydatepicker" value="{{ request('start') }}">
                         <span class="input-group-text bg-primary b-0 text-white">A</span>
-
-                        <input type="date" name="end" id="end-date1" class="form-control mydatepicker">
-              </div>
-
-              <a href="{{ route('dashboard.factures.exportCsv') }}" class="btn btn-success">
-                Exporter
-            </a>             
-            </div>
+                        <input type="date" name="end" id="end-date1" class="form-control mydatepicker" value="{{ request('end') }}">
+                    </div>
+            
+                    <!-- Bouton pour filtrer -->
+                    <button type="submit" class="btn btn-primary ml-3">Filtrer</button>
+            
+                    <!-- Bouton pour exporter en CSV -->
+                    <a href="{{ route('dashboard.factures.exportCsv') }}" class="btn btn-success ml-3">
+                        Exporter
+                    </a>
+                </div>
+            </form>
+            
             </div>
             <div class="table-responsive">
                 <table id="zero_config1" class="table table-striped table-bordered text-nowrap align-middle">
@@ -206,73 +239,3 @@
     </div>
   </div>
 @endsection
-
-@push('scripts')
-
-<script>
-  $(document).ready(function() {
-      var table = $('#zero_config').DataTable();
-  
-      
-  
-      $('#start-date, #end-date').on('change', function() {
-          var startDate = $('#start-date').val();
-          var endDate = $('#end-date').val();
-          
-          if (startDate && endDate) {
-              table.draw();
-          }
-      });
-  
-      $.fn.dataTable.ext.search.push(
-          function(settings, data, dataIndex) {
-              var startDate = $('#start-date').val();
-              var endDate = $('#end-date').val();
-              var date = new Date(data[0]); // Assuming the date is in the first column
-  
-              if ((!startDate && !endDate) ||
-                  (!startDate && date <= new Date(endDate)) ||
-                  (new Date(startDate) <= date && !endDate) ||
-                  (new Date(startDate) <= date && date <= new Date(endDate))) {
-                  return true;
-              }
-              return false;
-          }
-      );
-  });
-</script>
-
-
-<script>
-  $(document).ready(function() {
-      var table = $('#zero_config1').DataTable();
-  
-      
-  
-      $('#start-date1, #end-date1').on('change', function() {
-          var startDate = $('#start-date1').val();
-          var endDate = $('#end-date1').val();
-          
-          if (startDate && endDate) {
-              table.draw();
-          }
-      });
-  
-      $.fn.dataTable.ext.search.push(
-          function(settings, data, dataIndex) {
-              var startDate = $('#start-date1').val();
-              var endDate = $('#end-date1').val();
-              var date = new Date(data[0]); // Assuming the date is in the first column
-  
-              if ((!startDate && !endDate) ||
-                  (!startDate && date <= new Date(endDate)) ||
-                  (new Date(startDate) <= date && !endDate) ||
-                  (new Date(startDate) <= date && date <= new Date(endDate))) {
-                  return true;
-              }
-              return false;
-          }
-      );
-  });
-</script>
-@endpush

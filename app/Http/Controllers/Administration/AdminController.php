@@ -45,7 +45,7 @@ class AdminController extends Controller
         
             // Si une recherche est effectuée, appliquer la pagination, sinon limiter à 10
             if ($request->has('start2') || $request->has('end2')) {
-                $devis = $devisQuery->paginate(10);
+                $devis = $devisQuery->get();
             } else {
                 $devis = $devisQuery->limit(10)->get();
             }
@@ -72,7 +72,7 @@ class AdminController extends Controller
         
             // Si une recherche est effectuée, appliquer la pagination, sinon limiter à 10
             if ($request->has('comptable') || $request->has('start') || $request->has('end')) {
-                $factures = $facturesQuery->paginate(10);
+                $factures = $facturesQuery->get();
             } else {
                 $factures = $facturesQuery->limit(10)->get();
             }
@@ -87,21 +87,72 @@ class AdminController extends Controller
         
         
         elseif ($user->hasRole('Comptable')) {
-            $factures = Facture::where('pays_id', $user->pays_id)->get();
+            // $factures = Facture::where('pays_id', $user->pays_id)->get();
 
-            $devis = Devis::where('pays_id', $user->pays_id)
-                ->where('status', '!=', 'En Attente')
-                ->get();
+            // Requête de base pour les factures
+            $facturesQuery = Facture::where('pays_id', $user->pays_id);
+            
+            // Filtre par période
+            if ($request->has('start') && $request->start != "") {
+                $facturesQuery->where('created_at', '>=', $request->start);
+            }
 
-                
+            if ($request->has('end') && $request->end != "") {
+                $facturesQuery->where('created_at', '<=', $request->end);
+            }
+
+            // Appliquer la pagination ou la récupération sans limite
+            if ($request->has('start') || $request->has('end')) {
+                $factures = $facturesQuery->get();
+            } else {
+                $factures = $facturesQuery->limit(10)->get();  // Limiter à 10 si pas de filtre
+            }
+
+
+            $devisQuery = Devis::where('pays_id', $user->pays_id)
+                ->where('status', '!=', 'En Attente');
+        
+            // Filtre par période
+            if ($request->has('start') && $request->start != "") {
+                $devisQuery->where('created_at', '>=', $request->start);
+            }
+        
+            if ($request->has('end') && $request->end != "") {
+                $devisQuery->where('created_at', '<=', $request->end);
+            }
+        
+            // Si une recherche est effectuée, appliquer la pagination, sinon limiter à 10
+            if ($request->has('start') || $request->has('end')) {
+                $devis = $devisQuery->get();
+            } else {
+                $devis = $devisQuery->limit(10)->get();
+            }
     
             return view('administration.pages.index-comptable', compact('devis', 'factures'));
         } 
         
         elseif ($user->hasRole('Commercial')) {
-            $devis = Devis::where('pays_id', $user->pays_id)
-                ->where('user_id', $user->id)
-                ->get();
+
+            // Requête de base pour les devis du commercial
+            $devisQuery = Devis::where('pays_id', $user->pays_id)
+                            ->where('user_id', $user->id);  // Seul les devis du commercial connecté
+
+            // Filtre par période (date de création)
+            if ($request->has('start') && $request->start != "") {
+                $devisQuery->where('created_at', '>=', $request->start);
+            }
+
+            if ($request->has('end') && $request->end != "") {
+                $devisQuery->where('created_at', '<=', $request->end);
+            }
+
+            // Appliquer la pagination ou la récupération sans limite
+            if ($request->has('start') || $request->has('end')) {
+                $devis = $devisQuery->get();
+            } else {
+                $devis = $devisQuery->limit(10)->get();  // Limiter à 10 si pas de filtre
+            }
+
     
             return view('administration.pages.index-commercial', compact('devis'));
         }

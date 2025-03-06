@@ -53,18 +53,26 @@
                 <div class="mb-3 mb-sm-0">
                   <h4 class="card-title fw-semibold">Liste des Proformas</h4>
                 </div>
-                <div class="d-flex">
-                  <div class="input-daterange input-group mr-3" id="date-range">
-                    <input type="date" name="start" id="start-date" class="form-control mydatepicker">
-                    <span class="input-group-text bg-primary b-0 text-white">A</span>
-
-                    <input type="date" name="end" id="end-date" class="form-control mydatepicker">
+                <form method="POST" action="{{ route('dashboard.') }}" class="d-flex">
+                  @csrf
+                  <div class="d-flex">
+                      <!-- Filtre par période de création des devis -->
+                      <div class="input-daterange input-group mr-3" id="date-range">
+                          <input type="date" name="start" id="start-date" class="form-control mydatepicker" value="{{ request('start') }}">
+                          <span class="input-group-text bg-primary b-0 text-white">A</span>
+                          <input type="date" name="end" id="end-date" class="form-control mydatepicker" value="{{ request('end') }}">
+                      </div>
+              
+                      <!-- Bouton pour filtrer -->
+                      <button type="submit" class="btn btn-primary ml-3">Filtrer</button>
+              
+                      <!-- Bouton pour exporter en CSV -->
+                      <a href="{{ route('dashboard.devis.exportCsv') }}" class="btn btn-success ml-3">
+                          Exporter
+                      </a>
                   </div>
-
-                  <a href="{{ route('dashboard.devis.exportCsv') }}" class="btn btn-success">
-                    Exporter
-                </a>              
-              </div>
+              </form>
+              
             </div>
 
             <div class="row">
@@ -147,40 +155,3 @@
     </div>
   </div>
 @endsection
-
-
-@push('scripts')
-<script>
-  $(document).ready(function() {
-      var table = $('#zero_config').DataTable();
-  
-      
-  
-      $('#start-date, #end-date').on('change', function() {
-          var startDate = $('#start-date').val();
-          var endDate = $('#end-date').val();
-          
-          if (startDate && endDate) {
-              table.draw();
-          }
-      });
-  
-      $.fn.dataTable.ext.search.push(
-          function(settings, data, dataIndex) {
-              var startDate = $('#start-date').val();
-              var endDate = $('#end-date').val();
-              var date = new Date(data[0]); // Assuming the date is in the first column
-  
-              if ((!startDate && !endDate) ||
-                  (!startDate && date <= new Date(endDate)) ||
-                  (new Date(startDate) <= date && !endDate) ||
-                  (new Date(startDate) <= date && date <= new Date(endDate))) {
-                  return true;
-              }
-              return false;
-          }
-      );
-  });
-</script>
-
-@endpush

@@ -178,16 +178,26 @@
                       <td>{{ $devi->status ?? 'Non renseigné' }}</td>
   
                       <td>
+                        <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger">
+                          <i class="ti ti-download fs-5"></i>
+                        </a>
                           <a href="{{ route('dashboard.factures.refuse', $devi->id) }}" class="text-danger me-2" title="Réfuser">
                               <i class="ti ti-square-rounded-x"></i>
                           </a>
-                          <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger">
-                            <i class="ti ti-download fs-5"></i>
-                          </a>
+                          
                           <a href="{{ route('dashboard.factures.create', $devi->id) }}" class="text-success me-2" title="Etablir la facture">
                             <i class="ti ti-clipboard-list"></i>
                         </a>
-                        
+                        @if ($devi->facture) 
+                            <a href="{{ route('dashboard.factures.validate', $devi->facture->id) }}" class="text-success me-2" title="Approuver la facture">
+                                <i class="ti ti-download fs-5"></i>
+                            </a>
+                        @else
+                            <span class="text-muted">Aucune facture</span>
+                        @endif
+
+
+
                       </td>
                     
                   </tr>
@@ -216,15 +226,17 @@
                       <td>{{ $devi->details->sum('total') }} {{ $devi->devise }}</td>
                       <td>{{ $devi->status ?? 'Non renseigné' }}</td>
                       <td>
+                        <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger">
+                          <i class="ti ti-download fs-5"></i>
+                        </a>
                           <a href="{{ route('dashboard.factures.refuse', $devi->id) }}" class="text-danger me-2" title="Réfuser">
                               <i class="ti ti-square-rounded-x"></i>
                           </a>
-                          <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger">
-                            <i class="ti ti-download fs-5"></i>
-                          </a>
+                          
                           <a href="{{ route('dashboard.factures.create', $devi->id) }}" class="text-success me-2" title="Etablir la facture">
                             <i class="ti ti-clipboard-list"></i>
                         </a>
+                        
                         
                       </td>
                     
@@ -268,10 +280,10 @@
               <h5>
                 Historiques des factures
               </h5>
-              <form method="GET" action="{{ route('dashboard.factures.index') }}">
+              <form method="POST" action="{{ route('dashboard.factures.index') }}">
                 @csrf
                 <div class="d-flex">
-                 @if(Auth::user()->role('Daf'))
+                 @if(Auth::user()->hasRole('Daf'))
                  <select name="pays" id="filter-pays" class="select2 form-control custom-select">
                   <option value="">Tous les pays</option>
                   @foreach ($payss as $pays )
@@ -325,7 +337,7 @@
                   </tr>
                 </thead>
 
-                @if(Auth::user()->hasRole('Daf'))
+                @if(Auth::user()->hasRole(['Daf', 'Comptable']))
                 <tbody>
                   @forelse ($all_factures as $facture)
                   <tr>
@@ -335,9 +347,12 @@
                       <td>
                           <h6 class="mb-0">{{ $facture->numero }}</h6>
                       </td>
+                      @if(Auth::user()->hasRole('Daf'))
                       <td>
                         <h6 class="mb-0">{{ $facture->pays->name }}</h6>
                     </td>
+                      @endif
+                     
                     <td>
                       <h6 class="mb-0">{{ $facture->user->name }}</h6>
                     </td>
@@ -351,11 +366,7 @@
                         <a href="{{ route('dashboard.factures.download', $facture->id) }}" class="text-primary me-2" title="Télécharger">
                           <i class="ti ti-download fs-5"></i>
                         </a>
-                        @if(Auth::user()->hasRole('Daf'))
-                          <a href="{{ route('dashboard.factures.validate', $facture->id) }}" class="text-success me-2" title="Approuvé la facture">
-                            <i class="ti ti-download fs-5"></i>
-                          </a>
-                        @endif
+                       
                         
                       </td>
                     
@@ -368,42 +379,7 @@
                 </tbody>
                 @endif
                 
-                @if(Auth::user()->hasRole('Comptable'))
-
-                {{-- <tbody>
-                  @forelse ($factures_pays as $facture)
-                  <tr>
-                    <td>
-                      <h6 class="mb-0">{{ $facture->created_at }}</h6>
-                    </td>
-                      <td>
-                          <h6 class="mb-0">{{ $facture->numero }}</h6>
-                      </td>
-                      <td>
-                        <h6 class="mb-0">{{ $facture->user->name }}</h6>
-                      </td>
-                     <td>
-                        {{ $facture->devis->client->nom }}
-                     </td>
-                      <td>{{ $facture->devis->details->sum('total') }} {{ $facture->devis->devise }}</td>
-                      <td>{{ $facture->devis->status ?? 'Non renseigné' }}</td>
-  
-                      <td>
-                        <a href="{{ route('dashboard.factures.download', $facture->id) }}" class="text-primary me-2" title="Télécharger">
-                          <i class="ti ti-download fs-5"></i>
-                        </a>
-                        
-                      </td>
-                    
-                  </tr>
-  
-                  @empty
-                      Aucune Facture enregistrée.
-                  @endforelse
-                  
-                </tbody> --}}
-                  
-                @endif
+              
               
                 <tfoot>
                   <tr>
