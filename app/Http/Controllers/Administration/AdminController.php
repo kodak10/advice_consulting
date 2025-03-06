@@ -33,20 +33,23 @@ class AdminController extends Controller
         
         elseif ($user->hasRole('Daf')) {
             $devisQuery = Devis::where('status', '!=', 'En Attente');
-
+        
             // Filtre par période
             if ($request->has('start2') && $request->start2 != "") {
                 $devisQuery->where('created_at', '>=', $request->start2);
             }
-    
+        
             if ($request->has('end2') && $request->end2 != "") {
                 $devisQuery->where('created_at', '<=', $request->end2);
             }
-
-            // Récupérer les devis
-            $devis = $devisQuery->get();
-    
-
+        
+            // Si une recherche est effectuée, appliquer la pagination, sinon limiter à 10
+            if ($request->has('start2') || $request->has('end2')) {
+                $devis = $devisQuery->paginate(10);
+            } else {
+                $devis = $devisQuery->limit(10)->get();
+            }
+        
             $facturesQuery = Facture::query();
         
             // Filtre par comptable
@@ -63,18 +66,23 @@ class AdminController extends Controller
         
             // Filtre par date de fin
             if ($request->has('end') && $request->end != "") {
-                // Ajout de 23:59:59 à la date de fin pour inclure toute la journée
                 $endDate = $request->end . ' 23:59:59';
                 $facturesQuery->where('created_at', '<=', $endDate);
             }
         
-            // Limiter le nombre de factures (ou paginer si nécessaire)
-            $factures = $facturesQuery->paginate(10); // Utilisez `paginate` pour la pagination dynamique
+            // Si une recherche est effectuée, appliquer la pagination, sinon limiter à 10
+            if ($request->has('comptable') || $request->has('start') || $request->has('end')) {
+                $factures = $facturesQuery->paginate(10);
+            } else {
+                $factures = $facturesQuery->limit(10)->get();
+            }
         
             $comptables = User::role('Comptable')->get();
         
             return view('administration.pages.index-daf', compact('devis', 'factures', 'comptables'));
         }
+        
+        
         
         
         

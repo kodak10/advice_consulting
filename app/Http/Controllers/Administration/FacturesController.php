@@ -9,11 +9,12 @@ use App\Models\Client;
 use App\Models\Designation;
 use App\Models\Devis;
 use App\Models\Facture;
+use App\Models\Pays;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -43,8 +44,11 @@ class FacturesController extends Controller
     }
 
     
-    public function index()
+    public function index(Request $request)
     {
+        $payss = Pays::get();
+        $user = Auth::user();
+
         $all_devis = Devis::where('status',  'Approuvé')
         ->get();
 
@@ -52,14 +56,46 @@ class FacturesController extends Controller
         ->where('status',  'Approuvé')
         ->get();
 
-        $all_factures = Facture::get();
+        // $all_factures = Facture::get();
 
-        $factures_pays = Facture::where('pays_id', Auth::user()->pays_id)
-        ->get();
+        // $factures_pays = Facture::where('pays_id', Auth::user()->pays_id)
+        // ->get();
 
-        $mes_factures = Facture::where('pays_id', Auth::user()->pays_id)
-        ->where('user_id', Auth::user()->id)
-        ->get();
+        // $mes_factures = Facture::where('pays_id', Auth::user()->pays_id)
+        // ->where('user_id', Auth::user()->id)
+        // ->get();
+
+
+        $facturesQuery = Facture::query();
+
+        // Filtre par pays (uniquement pour les Dafs)
+        if ($user->hasRole('Daf') && $request->has('pays') && $request->pays != "") {
+            $facturesQuery->where('pays_id', $request->pays);
+        } else {
+            $facturesQuery->where('pays_id', $user->pays_id); // Restreindre aux factures du pays de l'utilisateur
+        }
+    
+        // Filtre "Mes factures"
+        if ($request->has('my') && $request->my != "") {
+            $facturesQuery->where('user_id', $user->id);
+        }
+    
+        // Filtre par période
+        if ($request->has('start') && $request->start != "") {
+            $facturesQuery->where('created_at', '>=', $request->start);
+        }
+    
+        if ($request->has('end') && $request->end != "") {
+            $endDate = $request->end . ' 23:59:59'; // Pour inclure toute la journée
+            $facturesQuery->where('created_at', '<=', $endDate);
+        }
+    
+        // Gestion de l'affichage initial et de la pagination
+        if ($request->has('pays') || $request->has('my') || $request->has('start') || $request->has('end')) {
+            $all_factures = $facturesQuery->paginate(10); // Paginer les résultats filtrés
+        } else {
+            $all_factures = $facturesQuery->limit(10)->get(); // Afficher seulement 10 factures au départ
+        }
 
         $factureCommercials = Facture::with(['devis.client'])
         ->whereHas('devis', function ($query) {
@@ -67,7 +103,7 @@ class FacturesController extends Controller
         })
         ->get(); 
 
-        return view('administration.pages.factures.index', compact('all_devis', 'devis_pays', 'all_factures', 'factures_pays', 'mes_factures', 'factureCommercials'));
+        return view('administration.pages.factures.index', compact('all_devis', 'devis_pays', 'all_factures', 'factureCommercials', 'payss'));
 
     } 
 

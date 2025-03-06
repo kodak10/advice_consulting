@@ -56,7 +56,7 @@
       
 
 
-     @if(Auth::user()->role('Commercial'))
+     @if(Auth::user()->hasRole('Commercial'))
       <div class="card card-body">
         <div class="table-responsive mb-5">
             <h5>
@@ -264,9 +264,48 @@
       <div class="card card-body">
         <div class="table-responsive">
           <div class="table-responsive mt-5">
-            <h5>
-              Liste des factures
-            </h5>
+            <div>
+              <h5>
+                Historiques des factures
+              </h5>
+              <form method="GET" action="{{ route('dashboard.factures.index') }}">
+                @csrf
+                <div class="d-flex">
+                 @if(Auth::user()->role('Daf'))
+                 <select name="pays" id="filter-pays" class="select2 form-control custom-select">
+                  <option value="">Tous les pays</option>
+                  @foreach ($payss as $pays )
+                  <option value="{{ $pays->id }}" {{ request('pays') == $pays->id ? 'selected' : '' }}>
+                    {{ $pays->name }}
+                  </option>
+
+                  @endforeach
+                 
+              </select>
+                 @endif
+                    <select name="my" id="filter-my" class="select2 form-control custom-select">
+                      <option value="">
+                        Toutes les factures
+                      </option>
+                      <option value="{{ Auth::user()->id }}" {{ request('my') == Auth::user()->id ? 'selected' : '' }}>
+                        Mes factures
+                      </option>
+                    </select>
+            
+                    <div class="input-daterange input-group mr-3" id="date-range">
+                        <input type="date" name="start" id="start-date" class="form-control mydatepicker" value="{{ request('start') }}">
+                        <span class="input-group-text bg-primary b-0 text-white">A</span>
+                        <input type="date" name="end" id="end-date" class="form-control mydatepicker" value="{{ request('end') }}">
+                    </div>
+            
+                    <button type="submit" id="filter-button" class="btn btn-primary">
+                        Appliquer
+                    </button>
+            
+                   
+                </div>
+            </form>
+            </div>
               <table id="zero_config2" class="table table-striped table-bordered text-nowrap align-middle">
                 <thead>
                   <tr>
@@ -331,7 +370,7 @@
                 
                 @if(Auth::user()->hasRole('Comptable'))
 
-                <tbody>
+                {{-- <tbody>
                   @forelse ($factures_pays as $facture)
                   <tr>
                     <td>
@@ -362,7 +401,7 @@
                       Aucune Facture enregistrée.
                   @endforelse
                   
-                </tbody>
+                </tbody> --}}
                   
                 @endif
               
@@ -393,7 +432,7 @@
         
       @endif
      
-      <div class="card card-body">
+      {{-- <div class="card card-body">
         <div class="table-responsive">
           <div class="table-responsive mt-5">
             <h5>
@@ -459,7 +498,7 @@
               
           </div>
         </div>
-      </div>
+      </div> --}}
 
 </div>
 @endsection

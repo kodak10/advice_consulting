@@ -60,6 +60,7 @@ Route::middleware(['auth', 'verified','check.user.status'])->prefix('dashboard')
 
     
     Route::get('/factures', [FacturesController::class, 'index'])->name('factures.index');
+    
     Route::get('/factures/{id}/refuse', [FacturesController::class, 'refuse'])->name('factures.refuse');
     Route::get('/factures/create/{id}', [FacturesController::class, 'create'])->name('factures.create');
     Route::post('/factures/store', [FacturesController::class, 'store'])->name('factures.store');
