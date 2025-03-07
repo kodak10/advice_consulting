@@ -108,7 +108,6 @@ class DevisController extends Controller
         ->where('id', '!=', $creator)
         ->get();
 
-
         if ($devis->status !== 'En Attente') {
             return redirect()->back()->with('error', 'La Proforma ne peut être approuvé que s\'il est en attente.');
         }
@@ -116,29 +115,18 @@ class DevisController extends Controller
         // Vérifier si le PDF existe et récupérer le chemin
         $pdfPath = storage_path('app/public/' . $devis->pdf_path);
 
-
         if (!file_exists($pdfPath)) {
             return redirect()->back()->with('error', 'Le fichier PDF n\'existe pas.');
         }
 
-        // Récupérer l'email du client
         $clientEmail = $devis->client->email;
 
         // Envoyer l'e-mail au client avec le fichier PDF en pièce jointe
-        Mail::send(new DevisApprovalMail($devis, $pdfPath, Auth::user()->name, $clientEmail));
-
-
-
+        // Mail::send(new DevisApprovalMail($devis, $pdfPath, Auth::user()->name, $clientEmail));
         Notification::send($comptables, new DevisCreatedNotification($devis));
-
 
         $devis->status = 'Approuvé';
         $devis->save();
-
-        
-
-
-
 
         return redirect()->back()->with('success', 'Proforma approuvée avec succès.');
     }

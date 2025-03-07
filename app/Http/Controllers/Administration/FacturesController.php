@@ -295,7 +295,7 @@ class FacturesController extends Controller
     $clientEmail = $facture->devis->client->email;
 
     // Envoyer l'e-mail au client avec le fichier PDF en pièce jointe
-    Mail::send(new FactureMail($facture, $pdfPath, $creatorEmail, $creatorName, $clientEmail));
+    //Mail::send(new FactureMail($facture, $pdfPath, $creatorEmail, $creatorName, $clientEmail));
     
     $facture->devis->status = 'Terminé';
     $facture->devis->save();

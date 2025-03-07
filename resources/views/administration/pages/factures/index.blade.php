@@ -86,7 +86,7 @@
                       <h6 class="mb-0">{{ $factureCommercial->devis->client->nom }}</h6>
                     </td>
                     <td>
-                      <h6 class="mb-0">{{ $factureCommercial->devis->total_ttc }} {{ $factureCommercial->devis->devise }}</h6>
+                      <h6 class="mb-0">{{ $factureCommercial->devis->details->sum('total') }} {{ $factureCommercial->devis->devise }}</h6>
                     </td>
                     <td>
                       <h6 class="mb-0">{{ $factureCommercial->devis->status }}</h6>
@@ -165,16 +165,18 @@
                     <td>
                       <h6 class="mb-0">{{ $devi->created_at }}</h6>
                     </td>
-                      <td>
-                          <h6 class="mb-0">{{ $devi->num_proforma }}</h6>
-                      </td>
-                      @if(Auth::user()->hasRole('Daf'))
-                        <td>{{ $devi->user->name }}</td>
+                    <td>
+                      <h6 class="mb-0">{{ $devi->num_proforma }}</h6>
+                    </td>
+                    @if(Auth::user()->hasRole('Daf'))
+                    <td>
+                      <h6 class="mb-0">{{ $devi->pays->name }}</h6>
+                    </td>
 
-                      @endif
+                    @endif
+                    <td>{{ $devi->user->name }}</td>
                       <td>{{ $devi->client->nom }}</td>
                       <td>{{ $devi->details->sum('total') }} {{ $devi->devise }}</td>
-                      <td class=""><strong>{{ $devi->user->name }}</strong></td>
                       <td>{{ $devi->status ?? 'Non renseigné' }}</td>
   
                       <td>
@@ -349,7 +351,7 @@
                       </td>
                       @if(Auth::user()->hasRole('Daf'))
                       <td>
-                        <h6 class="mb-0">{{ $facture->pays->name }}</h6>
+                        <h6 class="mb-0">{{ $facture->devis->pays->name }}</h6>
                     </td>
                       @endif
                      
