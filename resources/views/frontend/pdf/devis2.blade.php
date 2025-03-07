@@ -183,32 +183,29 @@
             <td colspan="6"><strong>N°CC:</strong> {{ $devis->client->numero_cc }}</td>
         </tr>
 
-        <!-- Message d'introduction -->
         <tr>
             <td colspan="12">
                 Merci de nous consulter, veuillez trouver notre meilleure offre pour la maintenance de votre scanner.
             </td>
         </tr>
 
-        <!-- En-tête du tableau des produits -->
         <tr>
-            <th colspan="2">Référence</th>
-            <th colspan="2">Description</th>
-            <th colspan="2">Quantité</th>
+            <th colspan="1">Référence</th>
+            <th colspan="3">Description</th>
+            <th colspan="1">Quantité</th>
             <th colspan="2">Prix unitaire</th>
             <th colspan="2">Remise</th>
-            <th colspan="2">Total</th>
+            <th colspan="3">Total</th>
         </tr>
         
-        <!-- Lignes de produits -->
         @foreach ($devis->details as $devisDetail)
             <tr>
-                <td colspan="2">{{ $devisDetail->designation->reference }}</td>
-                <td colspan="2">{{ $devisDetail->designation->description }}</td>
-                <td colspan="2">{{ $devisDetail->quantite }}</td>
-                <td colspan="2">{{ $devisDetail->prix_unitaire }}</td>
-                <td colspan="2">{{ $devisDetail->remise }}</td>
-                <td colspan="2">{{ $devisDetail->total }}</td>
+                <td colspan="1">{{ $devisDetail->designation->reference }}</td>
+                <td colspan="3">{{ $devisDetail->designation->description }}</td>
+                <td colspan="1">{{ $devisDetail->quantite }}</td>
+                <td colspan="2">{{ floor($devisDetail->prix_unitaire) }}</td>
+                <td colspan="2">{{ floor($devisDetail->remise) }}</td>
+                <td colspan="3">{{ floor($devisDetail->total) }}</td>
             </tr>
         @endforeach
         
@@ -219,7 +216,7 @@
                 <strong>Commande :</strong> {{ $devis->commande }}% <strong>Livraison {{ $devis->livraison }} %</strong>
             </td>
             <td colspan="6" class="prices">
-                <strong>Total HT :</strong> {{ $devis->total_ht }} {{ $devis->devise }}
+                <strong>Total HT :</strong> {{ floor($devis->total_ht) }}
             </td>
         </tr>
         <tr>
@@ -227,7 +224,7 @@
                 <strong>Validité de l'offre :</strong> {{ $devis->validite }} jours
             </td>
             <td colspan="6" class="prices">
-                <strong>TVA 18% :</strong> {{ $devis->tva }}
+                <strong>TVA :</strong> {{ $devis->tva }} %
             </td>
         </tr>
         <tr>
@@ -235,7 +232,7 @@
                 <strong>Délai de livraison :</strong> {{ $devis->delai }}
             </td>
             <td colspan="6" class="prices">
-                <strong>TOTAL TTC :</strong> {{ $devis->total_ttc }} {{ $devis->devise }}
+                <strong>TOTAL TTC :</strong> {{ floor($devis->total_ttc) }}
             </td>
         </tr>
         <tr>
@@ -244,7 +241,7 @@
                 <strong>ADVICE CONSULTING</strong> ou faire un virement en notre faveur sur le compte ci-dessous:
             </td>
             <td colspan="6" class="prices">
-                <strong>Acompte :</strong> {{ $devis->acompte }} {{ $devis->devise }}
+                <strong>Acompte :</strong> {{ floor($devis->acompte) }}
             </td>
         </tr>
         <tr>
@@ -253,7 +250,7 @@
                 <strong>N° compte :</strong> {{ $banque->num_compte }}
             </td>
             <td colspan="6" class="prices">
-                <strong>Solde :</strong> {{ $devis->solde }} {{ $devis->devise }}
+                <strong>Solde :</strong> {{ floor($devis->solde) }}
             </td>
         </tr>
 
@@ -261,7 +258,7 @@
         <tr>
             <td colspan="6">
                 Arrêté la présence facture à la somme de 
-                {{ ucwords((new NumberFormatter('fr', NumberFormatter::SPELLOUT))->format($devis->details->sum('total'))) }} {{ $devis->devise }} <br>
+                {{ ucwords((new NumberFormatter('fr', NumberFormatter::SPELLOUT))->format($devis->solde)) }} {{ $devis->devise }} <br>
                 <br>
                 Veuillez confirmer votre accord par la mention "<strong>Bon pour accord</strong>"  suivi de votre signature
             </td>
@@ -277,7 +274,7 @@
     <!-- Informations de l'entreprise -->
     <table class="company-info" width="100%">
         <tr>
-            <td class="footer">SARL au capital de 2000000 FCFA - Cocody - Angré - Villa - Adresse: 08 BP 3667 Abidjan - Tel: +225 22 54 50 53 - Fax: +225 22 54 50 53 - N°CC: 0906802 G</td>
+            <td class="footer">SARL au capital de 2000000 FCFA - Cocody - Angré - Villa - Adresse: 08 BP 3667 Abidjan - Tel: +225 22 54 50 53 - Fax: +225 22 54 50 53 - N°CC:0906802 G</td>
         </tr>
     </table>
 </body>

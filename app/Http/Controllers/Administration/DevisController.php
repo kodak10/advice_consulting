@@ -382,6 +382,8 @@ class DevisController extends Controller
             ]);
 
             $devis = Devis::findOrFail($id);
+            $client = Client::find($validated['client_id']);
+            $banque = Banque::find($validated['banque_id']);
 
             $devis->update([
                 'client_id' => $validated['client_id'],
@@ -400,6 +402,15 @@ class DevisController extends Controller
                 'devise' => $validated['devise'],
             ]);
 
+            // Récupérer les IDs des nouvelles désignations envoyées
+            $designationIds = collect($validated['designations'])->pluck('id')->toArray();
+
+            // Supprimer les anciennes désignations qui ne sont plus présentes
+            DevisDetail::where('devis_id', $devis->id)
+            ->whereNotIn('designation_id', $designationIds)
+            ->delete();
+
+            // Parcourir les nouvelles désignations et faire l'update ou le create
             foreach ($validated['designations'] as $designationData) {
                 DevisDetail::updateOrCreate(
                     ['devis_id' => $devis->id, 'designation_id' => $designationData['id']],
@@ -411,6 +422,44 @@ class DevisController extends Controller
                     ]
                 );
             }
+
+            // foreach ($validated['designations'] as $designationData) {
+            //     DevisDetail::updateOrCreate(
+            //         ['devis_id' => $devis->id, 'designation_id' => $designationData['id']],
+            //         [
+            //             'quantite' => $designationData['quantity'],
+            //             'prix_unitaire' => $designationData['price'],
+            //             'remise' => $designationData['discount'],
+            //             'total' => $designationData['total'],
+            //         ]
+            //     );
+            // }
+
+
+            // Vérifier si un fichier PDF existe déjà et le supprimer
+            if ($devis->pdf_path && Storage::disk('public')->exists($devis->pdf_path)) {
+                Storage::disk('public')->delete($devis->pdf_path);
+            }
+
+            // Générer le nouveau PDF
+            $pdf = PDF::loadView('frontend.pdf.devis2', compact('devis', 'client', 'banque'));
+            $pdfOutput = $pdf->output();
+
+            $imageName = 'devis-' . $devis->id . '.pdf';
+            $directory = 'pdf/devis';
+
+            // Vérifier et créer le répertoire si nécessaire
+            if (!Storage::disk('public')->exists($directory)) {
+                Storage::disk('public')->makeDirectory($directory);
+            }
+
+            $imagePath = $directory . '/' . $imageName;
+            Storage::disk('public')->put($imagePath, $pdfOutput);
+
+            // Mettre à jour le chemin du PDF dans la base de données
+            $devis->update(['pdf_path' => $imagePath]);
+
+
 
             return redirect()->route('dashboard.devis.index')->with('success', 'Proforma mise à jour avec succès.');
 

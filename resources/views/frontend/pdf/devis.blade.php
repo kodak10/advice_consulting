@@ -161,23 +161,23 @@
 
         <!-- En-tête du tableau des produits -->
         <tr>
-            <th>Référence</th>
-            <th>Description</th>
-            <th>Quantité</th>
-            <th>Prix unitaire</th>
-            <th>Remise</th>
-            <th>Total</th>
+            <th colspan="1">Référence</th>
+            <th colspan="3">Description</th>
+            <th colspan="1">Quantité</th>
+            <th colspan="2">Prix unitaire</th>
+            <th colspan="2">Remise</th>
+            <th colspan="2">Total</th>
         </tr>
 
         <!-- Lignes de produits -->
         @foreach ($devis->details as $devisDetail)
             <tr>
-                <td>{{ $devisDetail->designation->reference }}</td>
-                <td>{{ $devisDetail->designation->description }}</td>
-                <td>{{ $devisDetail->quantite }}</td>
-                <td>{{ floor($devisDetail->prix_unitaire) }}</td>
-                <td>{{ floor($devisDetail->remise) }}</td>
-                <td>{{ floor($devisDetail->total) }} </td>
+                <td colspan="1">{{ $devisDetail->designation->reference }}</td>
+                <td colspan="3">{{ $devisDetail->designation->description }}</td>
+                <td colspan="1">{{ $devisDetail->quantite }}</td>
+                <td colspan="2">{{ floor($devisDetail->prix_unitaire) }}</td>
+                <td colspan="2">{{ floor($devisDetail->remise) }}</td>
+                <td colspan="2">{{ floor($devisDetail->total) }} </td>
             </tr>
         @endforeach
 

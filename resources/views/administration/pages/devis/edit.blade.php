@@ -217,24 +217,36 @@
                         <div class="row">
                             <div class="col-4">
                                 <label class="form-label">Total HT <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control total-ht" name="total-ht" value="{{ old('total-ht', session('data.total-ht', 0)) }}" readonly>
+                                <input type="number" class="form-control total-ht" name="total-ht" value="{{ old('total-ht', session('data.total-ht', $devis->total_ht ?? 0)) }}" readonly>
 
                                 
                             </div>
-                            <div class="col-4">
+                            {{-- <div class="col-4">
                                 <label class="form-label">TVA (%) : <span class="text-danger">*</span></label>
                                 <input type="number" class="form-control tva" name="tva"  value="{{ old('tva', session('data.tva', 18)) }}" readonly>
                                 
+                            </div> --}}
+
+                            <div class="col-4">
+                                <label class="form-label">TVA (%) : <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <input type="number" class="form-control tva" name="tva" value="{{ old('tva', session('data.tva', $devis->tva ?? 0)) }}"
+                                    readonly>
+                                    <div class="input-group-text">
+                                        <input type="checkbox" class="toggle-tva">
+                                    </div>
+                                </div>
                             </div>
+
                             <div class="col-4">
                                 <div class="mb-4">
                                     <label class="form-label">Total TTC <span class="text-danger">*</span></label>
-                                    <input type="number" class="form-control total-ttc"  name="total-ttc"  value="{{ old('total-ttc', session('data.total-ttc', 0)) }}" readonly>
+                                    <input type="number" class="form-control total-ttc"  name="total-ttc"  value="{{ old('total-ttc', session('data.total-ttc', $devis->total_ttc ?? 0)) }}" readonly>
                                 </div>
                             </div>
                             <div class="col-4">
                                 <label class="form-label">Acompte <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control acompte"  name="acompte"  value="{{ old('acompte', session('data.acompte', 0)) }}">
+                                <input type="number" class="form-control acompte"  name="acompte"  value="{{ old('acompte', session('data.acompte', $devis->acompte ?? 0)) }}">
 
 
                                
@@ -242,7 +254,7 @@
                             </div>
                             <div class="col-4">
                                 <label class="form-label">Solde <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control solde"  name="solde"  value="{{ old('solde', session('data.solde', 0)) }}" readonly>
+                                <input type="number" class="form-control solde"  name="solde"  value="{{ old('solde', session('data.solde', $devis->solde ?? 0)) }}" readonly>
                             </div>
                         </div>
                     </div>
@@ -259,7 +271,7 @@
 @endsection
 
 @push('scripts')
-<script>
+{{-- <script>
     $(document).ready(function () {
     function updateTotal(row) {
         var price = parseFloat(row.find('.price').val()) || 0;
@@ -334,6 +346,19 @@
         updateSolde(totalTTC);
     });
 
+     // Activation/désactivation de la TVA en fonction de la case à cocher
+     $(document).on('change', '.toggle-tva', function () {
+            var tvaInput = $('.tva');
+
+            if ($(this).is(':checked')) {
+                tvaInput.prop('readonly', false).val(0);
+            } else {
+                tvaInput.prop('readonly', true).val(18);
+            }
+
+            updateTVAandTTC();
+        });
+
     // Chaque fois qu'une ligne est ajoutée
     $(document).on('click', '[data-repeater-create]', function () {
         updateTotalHT();
@@ -346,8 +371,103 @@
 
 });
 
-</script>
+</script> --}}
 
+<script>
+    $(document).ready(function () {
+        function updateTotal(row) {
+            var price = parseFloat(row.find('.price').val()) || 0;
+            var quantity = parseInt(row.find('.quantity').val()) || 1;
+            var discount = parseFloat(row.find('.discount').val()) || 0;
+
+            var total = (price * quantity) - discount;
+            if (total < 0) total = 0; // Empêcher un total négatif
+
+            row.find('.total').val(total.toFixed(2)); // Afficher avec 2 décimales
+            updateTotalHT();
+        }
+
+        // Mise à jour du prix unitaire lorsqu'on sélectionne une désignation
+        $(document).on('change', '.designation', function () {
+            var selectedOption = $(this).find(':selected');
+            var price = parseFloat(selectedOption.data('price')) || 0;
+            var row = $(this).closest('.row');
+
+            row.find('.price').val(price); // Mettre à jour le prix unitaire
+            updateTotal(row);
+        });
+
+        // Mise à jour du total lorsqu'on modifie quantité ou remise
+        $(document).on('input', '.quantity, .discount', function () {
+            var row = $(this).closest('.row');
+            updateTotal(row);
+        });
+
+        // Fonction pour mettre à jour Total HT
+        function updateTotalHT() {
+            var totalHT = 0;
+            $('.email-repeater .row').each(function () {
+                var row = $(this);
+                var total = parseFloat(row.find('.total').val()) || 0;
+                totalHT += total;
+            });
+
+            $('.total-ht').val(totalHT.toFixed(2));
+
+            updateTVAandTTC();
+        }
+
+        // Fonction pour mettre à jour TVA et Total TTC
+        function updateTVAandTTC() {
+            var totalHT = parseFloat($('.total-ht').val()) || 0;
+            var tvaRate = parseFloat($('.tva').val()) || 0;
+            var tvaValue = (totalHT * tvaRate) / 100;
+            var totalTTC = totalHT + tvaValue;
+
+            $('.total-ttc').val(totalTTC.toFixed(2));
+            updateSolde(totalTTC);
+        }
+
+        // Fonction pour mettre à jour le solde
+        function updateSolde(totalTTC) {
+            var acompte = parseFloat($('.acompte').val()) || 0;
+            var solde = totalTTC - acompte;
+
+            $('.solde').val(solde.toFixed(2));
+        }
+
+        // Quand l'acompte change, mettre à jour le solde
+        $(document).on('input', '.acompte', function () {
+            updateSolde(parseFloat($('.total-ttc').val()) || 0);
+        });
+
+        // Activation/désactivation de la TVA en fonction de la case à cocher
+        $(document).on('change', '.toggle-tva', function () {
+            var tvaInput = $('.tva');
+
+            if ($(this).is(':checked')) {
+                tvaInput.prop('readonly', false).val(0);
+            } else {
+                tvaInput.prop('readonly', true).val(18);
+            }
+
+            updateTVAandTTC();
+        });
+
+        // Recalculer la TVA et le total lorsque la TVA change
+        $(document).on('input', '.tva', function () {
+            updateTVAandTTC();
+        });
+
+        // Mettre à jour après ajout ou suppression d'une ligne
+        $(document).on('click', '[data-repeater-create], [data-repeater-delete]', function () {
+            updateTotalHT();
+        });
+
+        // Initialiser le calcul au chargement de la page
+        updateTotalHT();
+    });
+</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.repeater/1.2.1/jquery.repeater.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
