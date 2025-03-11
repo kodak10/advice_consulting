@@ -34,7 +34,7 @@
               </div>
               <div class="col-sm-5">
                 <div class="welcome-bg-img mb-n7 text-end">
-                  <img src="{{ asset('adminAssets/images/backgrounds/welcome-bg.svg') }}" alt="modernize-img" class="img-fluid">
+                  {{-- <img src="{{ asset('adminAssets/images/backgrounds/welcome-bg.svg') }}" alt="modernize-img" class="img-fluid"> --}}
                 </div>
               </div>
             </div>
@@ -112,7 +112,7 @@
                             <h6 class="mb-0">{{ $devi->num_proforma }}</h6>
                         </td>
                         <td>{{ $devi->client->nom }}</td>
-                        <td>{{ $devi->details->sum('total') }} {{ $devi->devise }}</td>
+                        <td>{{ $devi->total_ttc }} {{ $devi->devise }}</td>
                         <td>{{ $devi->status ?? 'Non renseigné' }}</td>
                         <td>
                           <div class="action-btn text-center">

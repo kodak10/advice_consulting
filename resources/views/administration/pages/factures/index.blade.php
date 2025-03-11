@@ -53,9 +53,6 @@
         </div>
       </div>
 
-      
-
-
      @if(Auth::user()->hasRole('Commercial'))
       <div class="card card-body">
         <div class="table-responsive mb-5">
@@ -86,7 +83,7 @@
                       <h6 class="mb-0">{{ $factureCommercial->devis->client->nom }}</h6>
                     </td>
                     <td>
-                      <h6 class="mb-0">{{ $factureCommercial->devis->details->sum('total') }} {{ $factureCommercial->devis->devise }}</h6>
+                      <h6 class="mb-0">{{ $factureCommercial->devis->total_ttc }} {{ $factureCommercial->devis->devise }}</h6>
                     </td>
                     <td>
                       <h6 class="mb-0">{{ $factureCommercial->devis->status }}</h6>
@@ -135,7 +132,7 @@
      @endif
       
 
-     @if(Auth::user()->hasAnyRole(['Daf', 'Comptable']))
+     @if(Auth::user()->hasAnyRole(['Daf', 'Comptable', 'DG']))
      <div class="card card-body">
         <div class="table-responsive mb-5">
             <h5>
@@ -147,7 +144,7 @@
                   <th>Date</th>
 
                     <th>N° Proforma</th>
-                    @if(Auth::user()->hasRole('Daf'))
+                    @if(Auth::user()->hasRole(['Daf','DG']))
                     <th>Pays</th>
 
                     @endif
@@ -158,7 +155,7 @@
                     <th>Action</th>
                 </tr>
               </thead>
-                @if (Auth::user()->hasRole('Daf'))
+                @if (Auth::user()->hasRole(['Daf','DG']))
                 <tbody>
                   @forelse ($all_devis as $devi)
                   <tr>
@@ -168,7 +165,7 @@
                     <td>
                       <h6 class="mb-0">{{ $devi->num_proforma }}</h6>
                     </td>
-                    @if(Auth::user()->hasRole('Daf'))
+                    @if(Auth::user()->hasRole(['Daf','DG']))
                     <td>
                       <h6 class="mb-0">{{ $devi->pays->name }}</h6>
                     </td>
@@ -176,14 +173,14 @@
                     @endif
                     <td>{{ $devi->user->name }}</td>
                       <td>{{ $devi->client->nom }}</td>
-                      <td>{{ $devi->details->sum('total') }} {{ $devi->devise }}</td>
+                      <td>{{ $devi->total_ttc }} {{ $devi->devise }}</td>
                       <td>{{ $devi->status ?? 'Non renseigné' }}</td>
   
                       <td>
-                        <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger">
+                        <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger la proforma">
                           <i class="ti ti-download fs-5"></i>
                         </a>
-                          <a href="{{ route('dashboard.factures.refuse', $devi->id) }}" class="text-danger me-2" title="Réfuser">
+                          <a href="{{ route('dashboard.factures.refuse', $devi->id) }}" class="text-danger me-2" title="Réfuser la proforma">
                               <i class="ti ti-square-rounded-x"></i>
                           </a>
                           
@@ -192,7 +189,7 @@
                         </a>
                         @if ($devi->facture) 
                             <a href="{{ route('dashboard.factures.validate', $devi->facture->id) }}" class="text-success me-2" title="Approuver la facture">
-                                <i class="ti ti-download fs-5"></i>
+                                <i class="ti ti-copy-check"></i>
                             </a>
                         @else
                             <span class="text-muted">Aucune facture</span>
@@ -258,7 +255,7 @@
                   <th>Date</th>
 
                     <th>N° Proforma</th>
-                    @if(Auth::user()->hasRole('Daf'))
+                    @if(Auth::user()->hasRole(['Daf','DG']))
                     <th>Pays</th>
 
                     @endif
@@ -285,7 +282,7 @@
               <form method="POST" action="{{ route('dashboard.factures.index') }}">
                 @csrf
                 <div class="d-flex">
-                 @if(Auth::user()->hasRole('Daf'))
+                 @if(Auth::user()->hasRole(['Daf','DG']))
                  <select name="pays" id="filter-pays" class="select2 form-control custom-select">
                   <option value="">Tous les pays</option>
                   @foreach ($payss as $pays )
@@ -327,7 +324,7 @@
 
                       <th>N° Proforma</th>
 
-                      @if(Auth::user()->hasRole('Daf'))
+                      @if(Auth::user()->hasRole(['Daf','DG']))
                         <th>Pays</th>
                       @endif
                       <th>Etabli Par</th>
@@ -339,7 +336,7 @@
                   </tr>
                 </thead>
 
-                @if(Auth::user()->hasRole(['Daf', 'Comptable']))
+                @if(Auth::user()->hasRole(['Daf', 'Comptable', 'Daf']))
                 <tbody>
                   @forelse ($all_factures as $facture)
                   <tr>
@@ -349,7 +346,7 @@
                       <td>
                           <h6 class="mb-0">{{ $facture->numero }}</h6>
                       </td>
-                      @if(Auth::user()->hasRole('Daf'))
+                      @if(Auth::user()->hasRole(['Daf', 'DG']))
                       <td>
                         <h6 class="mb-0">{{ $facture->devis->pays->name }}</h6>
                     </td>
@@ -361,7 +358,7 @@
                      <td>
                         {{ $facture->devis->client->nom }}
                      </td>
-                      <td>{{ $facture->devis->details->sum('total') }} {{ $facture->devis->devise }}</td>
+                      <td>{{ $facture->devis->total_ttc }} {{ $facture->devis->devise }}</td>
                       <td>{{ $facture->devis->status ?? 'Non renseigné' }}</td>
   
                       <td>
@@ -388,7 +385,7 @@
                     <th>Date</th>
 
                       <th>N° Proforma</th>
-                      @if(Auth::user()->hasRole('Daf'))
+                      @if(Auth::user()->hasRole(['Daf', 'DG']))
                         <th>Pays</th>
                       @endif
                       <th>Etabli Par</th>

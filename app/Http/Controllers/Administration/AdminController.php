@@ -30,8 +30,9 @@ class AdminController extends Controller
     
             return view('administration.pages.index-admin', compact('users', 'userTotal', 'userActif', 'userInactif'));
         } 
+
         
-        elseif ($user->hasRole('Daf')) {
+        elseif ($user->hasRole(['DG', 'DAF'])) {
             $devisQuery = Devis::where('status', '!=', 'En Attente');
         
             // Filtre par période
@@ -45,9 +46,10 @@ class AdminController extends Controller
         
             // Si une recherche est effectuée, appliquer la pagination, sinon limiter à 10
             if ($request->has('start2') || $request->has('end2')) {
-                $devis = $devisQuery->get();
+                $devis = $devisQuery->orderBy('created_at', 'desc')->get();
             } else {
-                $devis = $devisQuery->limit(10)->get();
+                $devis = $devisQuery->orderBy('created_at', 'desc')->limit(10)->get();
+
             }
         
             $facturesQuery = Facture::query();
@@ -72,9 +74,9 @@ class AdminController extends Controller
         
             // Si une recherche est effectuée, appliquer la pagination, sinon limiter à 10
             if ($request->has('comptable') || $request->has('start') || $request->has('end')) {
-                $factures = $facturesQuery->get();
+                $factures = $facturesQuery->orderBy('created_at', 'desc')->get();
             } else {
-                $factures = $facturesQuery->limit(10)->get();
+                $factures = $facturesQuery->orderBy('created_at', 'desc')->limit(10)->get();
             }
         
             $comptables = User::role('Comptable')->get();

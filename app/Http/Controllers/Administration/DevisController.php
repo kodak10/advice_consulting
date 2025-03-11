@@ -34,7 +34,7 @@ class DevisController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('role:Comptable|Commercial')->except('download', 'exportCsv');
+        $this->middleware('role:Comptable|Commercial|DG')->except('download', 'exportCsv');
     }
 
     public function getDeviseRate($deviseCode)
@@ -58,9 +58,11 @@ class DevisController extends Controller
         $mes_devis = Devis::where('pays_id', Auth::user()->pays_id)
         ->where('user_id', Auth::user()->id)
         ->get();
+
+        $devisAlls = Devis::get();
         
 
-        return view('administration.pages.devis.index', compact('devis', 'mes_devis'));
+        return view('administration.pages.devis.index', compact('devis', 'mes_devis', 'devisAlls'));
 
     } 
 

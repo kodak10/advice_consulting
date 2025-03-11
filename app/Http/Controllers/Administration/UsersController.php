@@ -22,7 +22,7 @@ class UsersController extends Controller
 
     public function __construct()
     {
-         // Bloquer uniquement l'accès aux méthodes create et store pour les non "Daf" ou "Comptable"
+        // Bloquer uniquement l'accès aux méthodes create et store pour les non "Daf" ou "Comptable"
         $this->middleware('role:Administrateur')->only(['index', 'storeUser', 'disable', 'activate', 'disable']);
     }
 
@@ -40,8 +40,10 @@ class UsersController extends Controller
             'email' => 'required|email|unique:users',
             'phone' => 'nullable|regex:/^[0-9]+$/|max:10',
             'adresse' => 'nullable|string|max:150',
-            'role' => 'required|in:Administrateur,Daf,Commercial,Comptable',
+            'role' => 'required|in:Administrateur,Daf,Commercial,Comptable,DG',
         ]);
+
+        // dd($request);
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
@@ -61,7 +63,7 @@ class UsersController extends Controller
         // Assigner le rôle
         $user->assignRole($request->role);
 
-        $user->notify(new VerifyEmailNotification());
+        // $user->notify(new VerifyEmailNotification());
 
         return redirect()->route('dashboard.users.index')->with('success', 'Utilisateur ajouté avec succès. Un e-mail de vérification a été envoyé.');
     }

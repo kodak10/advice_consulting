@@ -103,7 +103,7 @@
                                 <p><strong>Total HT :</strong> {{ $validated['total_ht'] }}</p>
                             </div>
                             <div class="col-md-4">
-                                <p><strong>TVA (18%) :</strong> {{ $validated['tva'] }}</p>
+                                <p><strong>TVA :</strong> {{ $validated['tva'] }}%</p>
                             </div>
                             <div class="col-md-4">
                                 <p><strong>Total TTC :</strong> {{ $validated['total_ttc'] }}</p>

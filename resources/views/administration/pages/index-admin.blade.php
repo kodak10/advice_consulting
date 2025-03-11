@@ -35,7 +35,7 @@
               </div>
               <div class="col-sm-5">
                 <div class="welcome-bg-img mb-n7 text-end">
-                  <img src="{{ asset('adminAssets/images/backgrounds/welcome-bg.svg') }}" alt="modernize-img" class="img-fluid">
+                  {{-- <img src="{{ asset('adminAssets/images/backgrounds/welcome-bg.svg') }}" alt="modernize-img" class="img-fluid"> --}}
                 </div>
               </div>
             </div>

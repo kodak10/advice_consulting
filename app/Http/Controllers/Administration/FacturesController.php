@@ -37,7 +37,7 @@ class FacturesController extends Controller
         // Bloquer l'accès aux méthodes sauf 'create', 'refuse', 'store' pour Daf
         // MAIS laisser le Comptable accéder à tout
         $this->middleware(function ($request, $next) {
-            if (Auth::check() && Auth::user()->hasRole('Comptable')) {
+            if (Auth::check() && (Auth::user()->hasRole('Comptable') || Auth::user()->hasRole('DG'))) {
                 return $next($request); // Comptable a accès à tout
             }
 
@@ -221,7 +221,7 @@ class FacturesController extends Controller
             $facture->save();
 
 
-            $daf = User::role('Daf')->get(); // Récupère tous les utilisateurs ayant le rôle "Daf"
+            $daf = User::role(['DG', 'Daf'])->get(); // Récupère tous les utilisateurs ayant le rôle "Daf" et DG
 
             // Vérifie si des utilisateurs Daf existent
             if ($daf->count() > 0) {
@@ -232,7 +232,7 @@ class FacturesController extends Controller
                 ]);
 
                 // Envoie la notification
-                Notification::send($daf, new FactureApprovalNotification($facture));
+                // Notification::send($daf, new FactureApprovalNotification($facture));
 
                 // Log après envoi
                 Log::info('Notification envoyée avec succès aux utilisateurs Daf.', [
@@ -240,12 +240,12 @@ class FacturesController extends Controller
                     'daf' => $daf->pluck('name')->toArray(), // Les noms des utilisateurs Daf
                 ]);
             } else {
-                Log::warning('Aucun utilisateur Daf trouvé pour la notification.', [
+                Log::warning('Aucun utilisateur Daf ou DG trouvé pour la notification.', [
                     'facture_id' => $facture->id,
                 ]);
             }
 
-            if(Auth::user()->hasRole('Daf')){
+            if(Auth::user()->hasRole(['DG', 'Daf'])){
                 $this->approuve($facture->id);
 
             }

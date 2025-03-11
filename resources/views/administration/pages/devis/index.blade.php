@@ -87,7 +87,7 @@
                         <h6 class="mb-0">{{ $devi->num_proforma }}</h6>
                     </td>
                     <td>{{ $devi->client->nom }}</td>
-                    <td>{{ $devi->details->sum('total') }} {{ $devi->devise }}</td>
+                    <td>{{ $devi->total_ttc }} {{ $devi->devise }}</td>
                     <td>{{ $devi->status ?? 'Non renseigné' }}</td>
                     <td>
                       <div class="action-btn text-center">
@@ -165,7 +165,7 @@
                       <h6 class="mb-0">{{ $devi->num_proforma }}</h6>
                   </td>
                   <td>{{ $devi->client->nom }}</td>
-                  <td>{{ $devi->details->sum('total') }} {{ $devi->devise }}</td>
+                  <td>{{ $devi->total_ttc }} {{ $devi->devise }}</td>
                   <td>{{ $devi->user->name }}</td>
 
                   <td>{{ $devi->status ?? 'Non renseigné' }}</td>
@@ -234,7 +234,160 @@
                       <h6 class="mb-0">{{ $devi->num_proforma }}</h6>
                   </td>
                   <td>{{ $devi->client->nom }}</td>
-                  <td>{{ $devi->details->sum('total') }} {{ $devi->devise }}</td>
+                  <td>{{ $devi->total_ttc }} {{ $devi->devise }}</td>
+                  <td>{{ $devi->status ?? 'Non renseigné' }}</td>
+                  <td>
+                    <div class="action-btn text-center">
+                      <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger">
+                        <i class="ti ti-download fs-5"></i>
+                      </a>
+                    
+
+                    <a href="{{ route('dashboard.devis.validate', $devi->id) }}" class="text-success me-2" title="Valider">
+                      <i class="ti ti-navigation-check"></i>
+                  </a>
+
+                        <a href="{{ route('dashboard.devis.edit', $devi->id) }}" class="text-primary me-2" title="Modifier">
+                            <i class="ti ti-pencil fs-5"></i>
+                        </a>
+                
+                        <form id="delete-form-{{ $devi->id }}" action="{{ route('dashboard.devis.destroy', $devi->id) }}" method="POST" class="d-inline-block">
+                          @csrf
+                          @method('DELETE')
+                          <button type="button" class="btn btn-link text-danger p-0 border-0" title="Supprimer" onclick="confirmDelete({{ $devi->id }})">
+                              <i class="ti ti-trash fs-5"></i>
+                          </button>
+                      </form>
+                    </div>
+                </td>
+                
+              </tr>
+
+
+              
+              @empty
+                  Aucune Proforma enregistrée.
+              @endforelse
+              
+          </tbody>
+          
+            <tfoot>
+              <tr>
+                <th>Date</th>
+
+                  <th>N° Proforma</th>
+                  <th>Client</th>
+                  <th>Coût</th>
+                  <th>Statut</th>
+                  <th>Action</th>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+      @endif
+
+
+
+      @if (Auth::user()->hasRole('DG'))
+      <div class="card card-body">
+        <h5>Liste des Proformas</h5>
+
+        <div class="table-responsive">
+
+          <table id="zero_config2" class="table table-striped table-bordered text-nowrap align-middle">
+            <thead>
+              <tr>
+                <th>Date</th>
+
+                  <th>N° Proforma</th>
+                  <th>Client</th>
+                  <th>Coût</th>
+                  <th>Etabli Par</th>
+                  <th>Statut</th>
+                  <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              @forelse ($devisAlls as $devi)
+              <tr>
+                  <td>
+                    <h6 class="mb-0">{{ $devi->created_at }}</h6>
+                  </td>
+                  <td>
+                      <h6 class="mb-0">{{ $devi->num_proforma }}</h6>
+                  </td>
+                  <td>{{ $devi->client->nom }}</td>
+                  <td>{{ $devi->total_ttc }} {{ $devi->devise }}</td>
+                  <td>{{ $devi->user->name }}</td>
+
+                  <td>{{ $devi->status ?? 'Non renseigné' }}</td>
+                  <td>
+                    <div class="action-btn text-center">
+                      <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger">
+                        <i class="ti ti-download fs-5"></i>
+                      </a>
+                      <a href="{{ route('dashboard.factures.refuse', $devi->id) }}" class="text-danger me-2" title="Réfuser">
+                        <i class="ti ti-square-rounded-minus"></i>
+                      </a>
+                    
+                
+                      </form>
+                    </div>
+                </td>
+                
+              </tr>
+
+              @empty
+                  Aucune Proforma enregistrée.
+              @endforelse
+              
+          </tbody>
+          
+            <tfoot>
+              <tr>
+                <th>Date</th>
+
+                  <th>N° Proforma</th>
+                  <th>Client</th>
+                  <th>Coût</th>
+                  <th>Etabli Par</th>
+                  <th>Statut</th>
+                  <th>Action</th>
+              </tr>
+            </tfoot>
+          </table>
+
+
+        </div>
+      </div>
+
+      <div class="card card-body">
+        <h5>Historiques</h5>
+        <div class="table-responsive">
+          <table id="zero_config3" class="mt-5 table table-striped table-bordered text-nowrap align-middle">
+            <thead>
+              <tr>
+                <th>Date</th>
+
+                  <th>N° Proforma</th>
+                  <th>Client</th>
+                  <th>Coût</th>
+                  <th>Statut</th>
+                  <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              @forelse ($mes_devis as $devi)
+              <tr>
+                <td>
+                  <h6 class="mb-0">{{ $devi->created_at }}</h6>
+              </td>
+                  <td>
+                      <h6 class="mb-0">{{ $devi->num_proforma }}</h6>
+                  </td>
+                  <td>{{ $devi->client->nom }}</td>
+                  <td>{{ $devi->total_ttc }} {{ $devi->devise }}</td>
                   <td>{{ $devi->status ?? 'Non renseigné' }}</td>
                   <td>
                     <div class="action-btn text-center">

@@ -31,6 +31,84 @@
           <!-- Daf - Factures, designation ,client -->
           <!-- ------------------------------- -->
 
+          @if (Auth::user()->hasRole('DG'))
+          <li class="nav-small-cap">
+            <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+            <span class="hide-menu">Proforma</span>
+        </li>
+
+        <li class="sidebar-item">
+            <a class="sidebar-link {{ Request::is('dashboard/devis') ? 'active' : '' }}" href="{{ route('dashboard.devis.index') }}"  aria-expanded="false">
+                <span>
+                    <i class="ti ti-list"></i>
+                </span>
+                <span class="hide-menu">Mes Proformas</span>
+            </a>
+        </li>
+
+        <li class="sidebar-item">
+            <a class="sidebar-link {{ Request::is('dashboard/devis/create') ? 'active' : '' }}" href="{{ route('dashboard.devis.create') }}"  aria-expanded="false">
+                <span>
+                    <i class="ti ti-receipt"></i> 
+                </span>
+                <span class="hide-menu">Faire une Proforma</span>
+            </a>
+        </li>
+
+        
+      <li class="nav-small-cap">
+        <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+        <span class="hide-menu">Factures</span>
+      </li>
+      
+      <li class="sidebar-item">
+        <a class="sidebar-link {{ Request::is('dashboard/factures') ? 'active' : '' }}" href="{{ route('dashboard.factures.index') }}"  aria-expanded="false">
+          <span>
+            <i class="ti ti-list"></i>
+          </span>
+          <span class="hide-menu">Mes Factures</span>
+        </a>
+      </li>
+
+      <li class="sidebar-item">
+        <a class="sidebar-link " href="{{ route('dashboard.factures.index') }}"  aria-expanded="false">
+          <span>
+            <i class="ti ti-file-invoice"></i> 
+          </span>
+          <span class="hide-menu">Faire une Facture</span>
+        </a>
+      </li>
+
+      <li class="nav-small-cap">
+        <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
+        <span class="hide-menu">Gestions</span>
+      </li>        
+
+      <li class="sidebar-item">
+        <a class="sidebar-link {{ Request::is('dashboard/clients') ? 'active' : '' }}" href="{{ route('dashboard.clients.index') }}"  aria-expanded="false">
+          <span>
+            <i class="ti ti-user-plus"></i> 
+          </span>
+          <span class="hide-menu">Compte Clients</span>
+        </a>
+      </li>
+
+      <li class="sidebar-item">
+        <a class="sidebar-link {{ Request::is('dashboard/designations') ? 'active' : '' }}" href="{{ route('dashboard.designations.index') }}"  aria-expanded="false">
+          <span>
+            <i class="ti ti-pencil"></i>
+          </span>
+          <span class="hide-menu">Désignations</span>
+        </a>
+      </li>
+
+      
+         
+
+          @endif
+
+
+
           @if (Auth::user()->hasRole('Daf'))
           <li class="nav-small-cap">
             <i class="ti ti-dots nav-small-cap-icon fs-4"></i>
@@ -263,9 +341,10 @@
         <!-- Administrateur -->
         <!-- ------------------------------- -->
 
-        @if (Auth::user()->hasRole('Administrateur'))
+        @if (Auth::user()->hasRole(['Administrateur|DG']))
 
-        
+        @if (Auth::user()->hasRole(['Administrateur']))
+
           <li class="sidebar-item">
               <a class="sidebar-link {{ Request::is('dashboard/users') ? 'active' : '' }}" 
                 href="{{ route('dashboard.users.index') }}" 
@@ -277,6 +356,8 @@
                 <span class="hide-menu">Accès Utilisateurs</span>
               </a>
           </li>
+
+          @endif
 
           <li class="sidebar-item">
             <a class="sidebar-link {{ Request::is('dashboard/banques') ? 'active' : '' }}" 

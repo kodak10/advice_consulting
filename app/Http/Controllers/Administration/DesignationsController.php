@@ -11,11 +11,12 @@ class DesignationsController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('role:Comptable|Commercial');
+        $this->middleware('role:Comptable|Commercial|DG');
     }
     public function index()
     {
-        $designations = Designation::all();
+        $designations = Designation::orderBy('description', 'asc')->get();
+
         return view('administration.pages.designations.index', compact('designations'));
     }
 
@@ -145,7 +146,7 @@ class DesignationsController extends Controller
     public function destroy(Designation $designation)
     {
         $designation->delete();
-        return redirect()->route('dashboard.designations.index')->with('success', 'designations supprimé avec succès');
+        return redirect()->route('dashboard.designations.index')->with('success', 'Désignation supprimé avec succès');
     }
 
 }

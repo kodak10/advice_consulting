@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Role::create(['name' => 'Administrateur']);
+        Role::create(['name' => 'DG']);
         Role::create(['name' => 'Daf']);
         Role::create(['name' => 'Commercial']);
         Role::create(['name' => 'Comptable']);

@@ -93,7 +93,7 @@
                                 <p><strong>Total HT :</strong> {{ $devis->total_ht }} {{ $devis->devise }}</p>
                             </div>
                             <div class="col-md-4">
-                                <p><strong>TVA (18%) :</strong> {{ $devis->tva }}</p>
+                                <p><strong>TVA :</strong> {{ $devis->tva }} %</p>
                             </div>
                             <div class="col-md-4">
                                 <p><strong>Total TTC :</strong> {{ $devis->total_ttc }} {{ $devis->devise }}</p>

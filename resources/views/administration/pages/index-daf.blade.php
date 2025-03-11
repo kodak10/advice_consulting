@@ -33,7 +33,7 @@
               </div>
               <div class="col-sm-5">
                 <div class="welcome-bg-img mb-n7 text-end">
-                  <img src="{{ asset('adminAssets/images/backgrounds/welcome-bg.svg') }}" alt="modernize-img" class="img-fluid">
+                  {{-- <img src="{{ asset('adminAssets/images/backgrounds/welcome-bg.svg') }}" alt="modernize-img" class="img-fluid"> --}}
                 </div>
               </div>
             </div>
@@ -101,7 +101,7 @@
                               <td>{{ $facture->user->pays->name }}</td>
                               <td>{{ $facture->user->name }}</td>
                               <td>{{ $facture->devis->client->nom }}</td>
-                              <td>{{ $facture->devis->details->sum('total') }} {{ $facture->devis->devise }}</td>
+                              <td>{{ $facture->devis->total_ttc }} {{ $facture->devis->devise }}</td>
                               <td>{{ $facture->devis->status ?? 'Non renseigné' }}</td>
                               <td>
                                   <a href="{{ route('dashboard.factures.download', $facture->id) }}" class="text-primary me-2" title="Télécharger">
@@ -187,7 +187,7 @@
 
                           
                           <td>{{ $devi->client->nom }}</td>
-                          <td>{{ $devi->details->sum('total') }} {{ $devi->devise }}</td>
+                          <td>{{ $devi->total_ttc }} {{ $devi->devise }}</td>
                           <td>{{ $devi->status ?? 'Non renseigné' }}</td>
                           <td>
                             <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger">
