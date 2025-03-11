@@ -52,7 +52,7 @@ class DevisController extends Controller
     public function index()
     {
         $devis = Devis::where('pays_id', Auth::user()->pays_id)
-        ->where('status', 'Approuvé')
+        ->where('status', 'Facturé')
         ->get();
 
         $mes_devis = Devis::where('pays_id', Auth::user()->pays_id)
@@ -110,8 +110,8 @@ class DevisController extends Controller
         ->where('id', '!=', $creator)
         ->get();
 
-        if ($devis->status !== 'En Attente') {
-            return redirect()->back()->with('error', 'La Proforma ne peut être approuvé que s\'il est en attente.');
+        if ($devis->status !== 'En Attente de validation') {
+            return redirect()->back()->with('error', 'La Proforma ne peut être Facturé que s\'il est en attente.');
         }
 
         // Vérifier si le PDF existe et récupérer le chemin
@@ -127,10 +127,10 @@ class DevisController extends Controller
         // Mail::send(new DevisApprovalMail($devis, $pdfPath, Auth::user()->name, $clientEmail));
         Notification::send($comptables, new DevisCreatedNotification($devis));
 
-        $devis->status = 'Approuvé';
+        $devis->status = 'Facturé';
         $devis->save();
 
-        return redirect()->back()->with('success', 'Proforma approuvée avec succès.');
+        return redirect()->back()->with('success', 'Proforma Facturé avec succès.');
     }
 
 
@@ -205,6 +205,8 @@ class DevisController extends Controller
                 'designations.*.total' => 'required|numeric|min:0',
 
                 'devise' => 'required|string',
+                'texte' => 'required',
+
 
             ]);
 
@@ -229,9 +231,10 @@ class DevisController extends Controller
             $devis->delai = $validated['delai'];
             $devis->user_id = Auth::user()->id;
             $devis->num_proforma = $numProforma;
-            $devis->status = "En Attente";
+            $devis->status = "En Attente de validation";
             $devis->pays_id = Auth::user()->pays_id;
             $devis->devise = $validated['devise'];
+            $devis->texte = $validated['texte'];
 
             $devis->save();
 
@@ -289,8 +292,8 @@ class DevisController extends Controller
         $designations = Designation::all();
 
 
-        if ($devis->status !== 'En Attente') {
-            return redirect()->back()->with('error', 'Vous ne pouvez modifier cette Proforma que si son statut est "en attente".');
+        if ($devis->status !== 'En Attente de validation') {
+            return redirect()->back()->with('error', 'Vous ne pouvez modifier cette Proforma que si son statut est "En attente de validation".');
         }
 
         return view('administration.pages.devis.edit', compact('devis','clients','banques', 'designations'));
@@ -301,6 +304,7 @@ class DevisController extends Controller
         // dd($request);
         $validated = $request->validate([
             'devise' => 'required|string',  
+            'texte' => 'required',  
 
             'client_id' => 'required|exists:clients,id', 
             'banque_id' => 'required|exists:banques,id',  
@@ -369,6 +373,8 @@ class DevisController extends Controller
                 'designations.*.total' => 'required|numeric|min:0', 
 
                 'devise' => 'required|string',  
+                'texte' => 'required',  
+
             ]);
 
             $devis = Devis::findOrFail($id);
@@ -390,6 +396,8 @@ class DevisController extends Controller
                 'acompte' => $validated['acompte'],
                 'solde' => $validated['solde'],
                 'devise' => $validated['devise'],
+                'texte' => $validated['texte'],
+
             ]);
 
             // Récupérer les IDs des nouvelles désignations envoyées
@@ -450,8 +458,11 @@ class DevisController extends Controller
             $devis->update(['pdf_path' => $imagePath]);
 
 
+            return redirect()->route('dashboard.devis.index')
+            ->with('pdf_path', $imagePath)
+            ->with('success', 'Devis enregistré avec succès.');
 
-            return redirect()->route('dashboard.devis.index')->with('success', 'Proforma mise à jour avec succès.');
+            // return redirect()->route('dashboard.devis.index')->with('success', 'Proforma mise à jour avec succès.');
 
         } catch (\Illuminate\Validation\ValidationException $e) {
             return redirect()->route('dashboard.devis.index')
@@ -471,8 +482,8 @@ class DevisController extends Controller
     {
         $devis = Devis::findOrFail($id);
 
-        if ($devis->status !== 'En Attente') {
-            return redirect()->back()->with('error', 'Vous ne pouvez supprimer cette Proforma que si son statut est "en attente".');
+        if ($devis->status !== 'En Attente de validation') {
+            return redirect()->back()->with('error', 'Vous ne pouvez supprimer cette Proforma que si son statut est "En attente de validation".');
         }
 
         $devis->delete();
@@ -524,7 +535,7 @@ class DevisController extends Controller
             'Date de Création',
             'N° Proforma',
             'Client',
-            'Coût Total',
+            'Montant Total',
             'Devise',
             'Établi Par',
             'Statut'

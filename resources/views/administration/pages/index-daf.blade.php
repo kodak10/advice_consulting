@@ -88,7 +88,7 @@
                             <th>Pays</th>
                             <th>Etabli Par</th>
                             <th>Client</th>
-                            <th>Coût</th>
+                            <th>Montant</th>
                             <th>Statut</th>
                             <th>Action</th>
                           </tr>
@@ -119,7 +119,7 @@
                               <th>Pays</th>
                               <th>Etabli Par</th>
                               <th>Client</th>
-                              <th>Coût</th>
+                              <th>Montant</th>
                               <th>Statut</th>
                               <th>Action</th>
                           </tr>
@@ -167,7 +167,7 @@
                         <th>Pays</th>
                         <th>Etabli Par</th>
                           <th>Client</th>
-                          <th>Coût</th>
+                          <th>Montant</th>
                           <th>Statut</th>
                           <th>Action</th>
 
@@ -212,7 +212,7 @@
                         <th>Pays</th>
                         <th>Etabli Par</th>
                           <th>Client</th>
-                          <th>Coût</th>
+                          <th>Montant</th>
                           <th>Statut</th>
                           <th>Action</th>
 

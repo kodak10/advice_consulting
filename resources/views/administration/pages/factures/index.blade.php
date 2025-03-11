@@ -65,7 +65,7 @@
                     <th>Date</th>
                     <th>N° Proforma</th>
                     <th>Client</th>
-                    <th>Coût</th>
+                    <th>Montant</th>
                     <th>Statut</th>
                     <th>Action</th>
                 </tr>
@@ -118,7 +118,7 @@
                     <th>Date</th>
                     <th>N° Proforma</th>
                     <th>Client</th>
-                    <th>Coût</th>
+                    <th>Montant</th>
                     <th>Statut</th>
                     <th>Action</th>
                 </tr>
@@ -150,7 +150,7 @@
                     @endif
                     <th>Etabli Par</th>
                     <th>Client</th>
-                    <th>Coût</th>
+                    <th>Montant</th>
                     <th>Statut</th>
                     <th>Action</th>
                 </tr>
@@ -261,7 +261,7 @@
                     @endif
                     <th>Etabli Par</th>
                     <th>Client</th>
-                    <th>Coût</th>
+                    <th>Montant</th>
                     <th>Statut</th>
                     <th>Action</th>
                 </tr>
@@ -329,7 +329,7 @@
                       @endif
                       <th>Etabli Par</th>
                       <th>Client</th>
-                      <th>Coût</th>
+                      <th>Montant</th>
                       <th>Statut</th>
                       <th>Action</th>
 
@@ -390,7 +390,7 @@
                       @endif
                       <th>Etabli Par</th>
                       <th>Client</th>
-                      <th>Coût</th>
+                      <th>Montant</th>
                       <th>Statut</th>
                       <th>Action</th>
 
@@ -420,7 +420,7 @@
 
                       <th>N° Proforma</th>
                       <th>Client</th>
-                      <th>Coût</th>
+                      <th>Montant</th>
                       <th>Statut</th>
                       <th>Action</th>
 
@@ -463,7 +463,7 @@
 
                       <th>N° Proforma</th>
                       <th>Client</th>
-                      <th>Coût</th>
+                      <th>Montant</th>
                       <th>Statut</th>
                       <th>Action</th>
 

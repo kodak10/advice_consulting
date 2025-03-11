@@ -54,16 +54,16 @@ class FacturesController extends Controller
         $payss = Pays::get();
         $user = Auth::user();
 
-        $all_devis = Devis::whereIn('status', ['Approuvé', 'En Attente du Daf'])->get();
+        $all_devis = Devis::whereIn('status', ['Facturé', 'En Attente du Daf'])->get();
 
         $devis_pays = Devis::where('pays_id', Auth::user()->pays_id)
-        ->where('status',  'Approuvé')
+        ->where('status',  'Facturé')
         ->get();
 
         $facturesQuery = Facture::query();
 
         $facturesQuery->whereHas('devis', function ($query) {
-            $query->where('status', 'Terminé');
+            $query->where('status', 'Soldé');
         });
 
         // Filtre par pays (uniquement pour les Dafs)
@@ -109,8 +109,8 @@ class FacturesController extends Controller
     {
         $devis = Devis::findOrFail($id);
     
-        if ($devis->status !== 'Approuvé') {
-            return redirect()->back()->with('error', 'Vous ne pouvez supprimer cette Proforma que si son statut est "Approuvé".');
+        if ($devis->status !== 'Facturé') {
+            return redirect()->back()->with('error', 'Vous ne pouvez supprimer cette Proforma que si son statut est "Facturé".');
         }
     
         // Changer le statut du devis à "Refusé"
@@ -132,7 +132,7 @@ class FacturesController extends Controller
     {
         $devis = Devis::with('client', 'banque', 'details.designation')->findOrFail($id);
 
-        if ($devis->status === 'Terminé') {
+        if ($devis->status === 'Soldé') {
             return redirect()->back()->with('error', "Cette proforma a déjà fait l'objet d'une facture.");
         }
         
@@ -141,7 +141,7 @@ class FacturesController extends Controller
         }
 
         if ($devis->status === 'En Attente du Daf') {
-            return redirect()->back()->with('error', "Cette proforma a déjà l'objet de facture.<br> Vous pouvez l'approuvé ou la réfusée");
+            return redirect()->back()->with('error', "Cette proforma a déjà l'objet de facture.<br> Vous pouvez la facturé ou la réfusée");
         }
         
         $client = $devis->client;
@@ -297,7 +297,7 @@ class FacturesController extends Controller
     // Envoyer l'e-mail au client avec le fichier PDF en pièce jointe
     //Mail::send(new FactureMail($facture, $pdfPath, $creatorEmail, $creatorName, $clientEmail));
     
-    $facture->devis->status = 'Terminé';
+    $facture->devis->status = 'Soldé';
     $facture->devis->save();
 
     return redirect()->back()->with('success', 'Facture envoyée avec succès au client.');
@@ -329,7 +329,7 @@ public function exportCsv()
     fputcsv($csvFile, [
         'Date de Création',
         'Client',
-        'Coût Total',
+        'Montant Total',
         'Devise',
         'Établi Par',
         'Statut'

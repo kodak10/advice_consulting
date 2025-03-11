@@ -35,7 +35,7 @@ class DevisApprovalMail extends Mailable
     
         $user = Auth::user();
     
-        return $this->subject('Devis Approuvé')
+        return $this->subject('Devis Facturé')
                     ->view('administration.vues.devisEmail')
                     ->with([
                         'devisNumber' => $this->devis->num_proforma,

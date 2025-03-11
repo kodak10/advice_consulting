@@ -132,6 +132,16 @@
                             @csrf
                             @method('PUT')
 
+                            <div class="mb-5">
+                                <h5>Phrase</h5>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <input type="text" name="texte" class="form-control" value="{{ $validated['texte'] }}">
+                                    </div>
+                                    
+                                </div>
+                            </div>
+
                             <input type="hidden" name="devise" value="{{ $validated['devise'] }}">
 
                             <input type="hidden" name="client_id" value="{{ $client->id }}">

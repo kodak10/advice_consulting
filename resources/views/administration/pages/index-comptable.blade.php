@@ -100,7 +100,7 @@
                         <th>N° Proforma</th>
                         <th>Etabli Par</th>
                         <th>Client</th>
-                        <th>Coût</th>
+                        <th>Montant</th>
                         <th>Statut</th>
                         <th>Action</th>
                     </tr>
@@ -142,7 +142,7 @@
                         <th>N° Proforma</th>
                         <th>Etabli Par</th>
                         <th>Client</th>
-                        <th>Coût</th>
+                        <th>Montant</th>
                         <th>Statut</th>
                         <th>Action</th>
                     </tr>
@@ -188,7 +188,7 @@
                         <th>Date</th>
                         <th>Etabli Par</th>
                         <th>Client</th>
-                        <th>Coût</th>
+                        <th>Montant</th>
                         <th>Statut</th>
                         <th>Action</th>
 
@@ -225,7 +225,7 @@
                         <th>Date</th>
                         <th>Etabli Par</th>
                         <th>Client</th>
-                        <th>Coût</th>
+                        <th>Montant</th>
                         <th>Statut</th>
                         <th>Action</th>
 

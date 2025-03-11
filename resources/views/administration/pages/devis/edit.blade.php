@@ -193,14 +193,13 @@
                         <select class="select2 form-control @error('banque_id') is-invalid @enderror" name="banque_id">
                             <option value="none">Sélectionner une banque</option>
                             @foreach ($banques as $banque)
-                                <option value="{{ $banque->id }}" {{ $banque->banque_id == $banque->id ? 'selected' : '' }}>
+                                <option value="{{ $banque->id }}" {{ old('banque_id', $devis->banque_id ?? '') == $banque->id ? 'selected' : '' }}>
                                     {{ $banque->name }}
                                 </option>
                             @endforeach
-
-                            
-
                         </select>
+                        
+
                         @error('banque_id')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -264,6 +263,7 @@
         
 
         <div class="form-actions mb-5">
+            <input type="hidden" name="texte" value="{{ old('texte', $devis->texte ?? 0) }}">
             <button type="submit" class="btn btn-success">Suivant</button>
         </div>
     </form>

@@ -107,10 +107,22 @@
                         </div>
                     </div>
 
+                    
+
                     <div class="form-actions">
                         <form  method="POST" action="{{ route('dashboard.devis.store') }}" >
                             @csrf
                             
+                            <div class="mb-5">
+                                <h5>Phrase</h5>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <input class="form-control" type="text" name="texte" value="Merci de nous consulter, veuillez trouver notre meilleure offre ">
+                                    </div>
+                                    
+                                </div>
+                            </div>
+
                             <input type="hidden" name="devise" value="{{ $validated['devise'] }}">
 
                             <input type="hidden" name="client_id" value="{{ $client->id }}">

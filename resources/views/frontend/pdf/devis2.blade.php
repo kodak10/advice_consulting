@@ -35,8 +35,8 @@
         }
 
         th {
-            background-color: #0064c9;
-            color: white;
+            background-color: #f4f4f4;
+            color: #000000;
             font-weight: bold;
         }
 
@@ -49,7 +49,7 @@
         }
 
         .header {
-            background-color: #0064c9;
+            background-color: #f4f4f4;
             color: white;
             font-size: 1.2em;
             text-align: center;
@@ -69,22 +69,18 @@
         }
 
         .total {
-            background-color: #0064c9;
+            background-color: #f4f4f4;
             color: white;
             font-weight: bold;
         }
 
         .info-client {
-            background-color: #f4f4f4;
+            /* background-color: #f4f4f4; */
         }
 
-        .conditions {
-            background-color: #e8f5e9; /* Couleur de fond pour les conditions financières */
-        }
+        
 
-        .prices {
-            background-color: #fff3e0; /* Couleur de fond pour les prix */
-        }
+       
 
         /* Divider en bas */
         .divider {
@@ -155,11 +151,50 @@
             }
 
         }
+        .no-border {
+            border: none;
+            border-collapse: collapse; /* Facultatif : fusionner les bordures entre les cellules */
+        }
+
+        .no-border td,
+        .no-border th {
+            border: none; /* Assurer qu'aucune bordure n'est appliquée sur les cellules */
+        }
+
+        .no-border td:last-child{
+            color: #022344;
+            font-weight: bold;
+            font-size: 14px;
+
+        }
+        .no-border img{
+            height: 80px;
+        }
+        .ligne {
+            height: 2px;
+            width: 100%;
+            background-color: #c54f00;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 
 <body>
     
+    <table class="no-border">
+        <tr>
+            <!-- Image avec colspan correctement défini -->
+            <td colspan="5">
+                <img src="{{ public_path('assets/images/logo.png') }}" alt="Logo" style="width: 100%; max-width: 200px;">
+            </td>
+            <!-- Texte avec colspan également correctement défini -->
+            <td colspan="7">
+                MONETIQUE - TECHNOLOGIE - VENTE - INGENIERIE - ETUDE
+            </td>
+        </tr>
+    </table>
+    <div class="ligne"></div>
+
     <table>
         <!-- Informations de la facture -->
         <tr>
@@ -185,7 +220,7 @@
 
         <tr>
             <td colspan="12">
-                Merci de nous consulter, veuillez trouver notre meilleure offre pour la maintenance de votre scanner.
+                {{ $devis->texte }}            
             </td>
         </tr>
 
@@ -269,7 +304,6 @@
         </tr>
     </table>
 
-   
 
     <!-- Informations de l'entreprise -->
     <table class="company-info" width="100%">

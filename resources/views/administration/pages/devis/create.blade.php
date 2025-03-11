@@ -84,14 +84,25 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">Dévise</h4>
-                    <select name="devise" class="form-control">
-                        <option value="XOF" selected>Franc CFA (XOF)</option>
-                        <option value="EUR">Euro (EUR)</option>
-                        <option value="USD">Dollar (USD)</option>
-                    </select>
-                    
+                    <div class="col-lg-6">
+                        <select name="devise" class="form-control">
+                            @php
+                                $deviseUser = Auth::user()->pays->devise ?? 'XOF'; // Devise par défaut si non définie
+                            @endphp
+                            
+                            <option value="XOF" {{ $deviseUser == 'XOF' ? 'selected' : '' }}>Franc CFA (XOF)</option>
+                            <option value="XAF" {{ $deviseUser == 'XAF' ? 'selected' : '' }}>Franc Guinéen (XAF)</option>
+                            <option value="EUR" {{ $deviseUser == 'EUR' ? 'selected' : '' }}>Euro (EUR)</option>
+                            <option value="USD" {{ $deviseUser == 'USD' ? 'selected' : '' }}>Dollar (USD)</option>
+                        </select>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <input type="number" name="taux">
+                    </div>
                 </div>
             </div>
+            
             <div class="row">
                 <div class="col-lg-12">
                     <div class="card">
@@ -155,20 +166,21 @@
                                 <div class="col-lg-6">
                                     <div class="">
                                         <label class="form-label">Commande (%)</label>
-                                        <input type="number" name="commande" class="form-control mydatepicker 
+                                        <input type="number" name="commande" class="form-control 
                                             @error('commande') is-invalid @enderror" 
-                                            value="{{ old('commande', session('data.commande')) }}">
+                                            value="{{ old('commande', session('data.commande', 0)) }}" id="commande" max="100">
                                         @error('commande')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
                                 </div>
+                                
                                 <div class="col-lg-6">
                                     <div class="">
                                         <label class="form-label">Livraison (%)</label>
-                                        <input type="number" name="livraison" class="form-control mydatepicker 
+                                        <input type="number" name="livraison" class="form-control 
                                             @error('livraison') is-invalid @enderror" 
-                                            value="{{ old('livraison', session('data.livraison')) }}">
+                                            value="{{ old('livraison', session('data.livraison', 0)) }}" id="livraison" max="100">
                                         @error('livraison')
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
@@ -254,8 +266,7 @@
                                 </div>
                                 <div class="col-4">
                                     <label class="form-label">Acompte <span class="text-danger">*</span></label>
-                                    <input type="number" class="form-control acompte"  name="acompte"  value="{{ old('acompte', session('data.acompte', 0)) }}">
-
+                                    <input type="number" class="form-control acompte" id="acompte" name="acompte" value="{{ old('acompte', session('data.acompte', 0)) }}" readonly>
                                 </div>
                                 <div class="col-4">
                                     <label class="form-label">Solde <span class="text-danger">*</span></label>
@@ -363,7 +374,101 @@
 
 
 <script>
+    let timeout;
+
+    // Fonction pour mettre à jour l'autre champ
+    function updateFields() {
+        // Clear the timeout to reset the delay each time
+        clearTimeout(timeout);
+
+        // Set a new timeout to delay the update
+        timeout = setTimeout(function() {
+            let commande = parseFloat(document.getElementById('commande').value) || 0;
+            let livraison = parseFloat(document.getElementById('livraison').value) || 0;
+
+            // Limiter les valeurs à 100 maximum
+            if (commande > 100) {
+                commande = 100;
+                document.getElementById('commande').value = commande;
+            }
+            if (livraison > 100) {
+                livraison = 100;
+                document.getElementById('livraison').value = livraison;
+            }
+
+            // Si l'utilisateur modifie le champ "commande"
+            if (document.activeElement.id === 'commande') {
+                console.log("Commande modifiée:", commande); // Debug
+                // Si commande est 100, mettre livraison à 0
+                if (commande === 100) {
+                    document.getElementById('livraison').value = 0;
+                } else {
+                    // Calculer la valeur restante pour livraison
+                    livraison = 100 - commande;
+                    if (livraison < 0) livraison = 0; // Empêcher la valeur négative
+                    document.getElementById('livraison').value = livraison;
+                }
+            }
+
+            // Si l'utilisateur modifie le champ "livraison"
+            if (document.activeElement.id === 'livraison') {
+                console.log("Livraison modifiée:", livraison); // Debug
+                // Si livraison est 100, mettre commande à 0
+                if (livraison === 100) {
+                    document.getElementById('commande').value = 0;
+                } else {
+                    // Calculer la valeur restante pour commande
+                    commande = 100 - livraison;
+                    if (commande < 0) commande = 0; // Empêcher la valeur négative
+                    document.getElementById('commande').value = commande;
+                }
+            }
+
+            // Si l'un des champs est vide (0), réinitialiser l'autre champ à 0
+            if (commande === 0) {
+                document.getElementById('livraison').value = 0;
+            }
+            if (livraison === 0) {
+                document.getElementById('commande').value = 0;
+            }
+
+            // Mettre à jour l'acompte après chaque modification
+            updateAcompte();
+        }, 100); // Délai de 100ms pour éviter les mises à jour trop rapides
+    }
+
+    // Ajouter un écouteur d'événements sur les deux champs pour mettre à jour l'autre après un délai
+    document.getElementById('commande').addEventListener('input', updateFields);
+    document.getElementById('livraison').addEventListener('input', updateFields);
+
+    // Fonction pour mettre à jour l'acompte
+    function updateAcompte() {
+        var totalTTC = parseFloat($('.total-ttc').val()) || 0; // Récupérer le total TTC
+        var commande = parseFloat($('#commande').val()) || 0; // Pourcentage de commande
+        console.log("Total TTC:", totalTTC);  // Debug
+        console.log("Commande (%):", commande); // Debug
+        var acompte = (totalTTC * commande) / 100; // Calcul de l'acompte
+        console.log("Acompte calculé:", acompte); // Debug
+
+        $('.acompte').val(acompte.toFixed(2)); // Mettre à jour l'acompte
+        updateSolde(totalTTC); // Mettre à jour le solde
+    }
+
+    // Fonction pour mettre à jour le solde
+    function updateSolde(totalTTC) {
+        var acompte = parseFloat($('.acompte').val()) || 0;
+        var solde = totalTTC - acompte;
+        console.log("Solde calculé:", solde); // Debug
+
+        $('.solde').val(solde.toFixed(2));
+    }
+</script>
+
+
+
+<script>
     $(document).ready(function () {
+        // Fonction pour mettre à jour le total d'une ligne
         function updateTotal(row) {
             var price = parseFloat(row.find('.price').val()) || 0;
             var quantity = parseInt(row.find('.quantity').val()) || 1;
@@ -402,7 +507,6 @@
             });
 
             $('.total-ht').val(totalHT.toFixed(2));
-
             updateTVAandTTC();
         }
 
@@ -414,7 +518,17 @@
             var totalTTC = totalHT + tvaValue;
 
             $('.total-ttc').val(totalTTC.toFixed(2));
-            updateSolde(totalTTC);
+            updateAcompte(); // Mettre à jour l'acompte après chaque modification de TTC
+        }
+
+        // Fonction pour mettre à jour l'acompte
+        function updateAcompte() {
+            var totalTTC = parseFloat($('.total-ttc').val()) || 0; // Récupérer le total TTC
+            var commande = parseFloat($('#commande').val()) || 0; // Pourcentage de commande
+            var acompte = (totalTTC * commande) / 100; // Calcul de l'acompte
+
+            $('.acompte').val(acompte.toFixed(2)); // Mettre à jour l'acompte
+            updateSolde(totalTTC); // Mettre à jour le solde
         }
 
         // Fonction pour mettre à jour le solde
@@ -428,6 +542,11 @@
         // Quand l'acompte change, mettre à jour le solde
         $(document).on('input', '.acompte', function () {
             updateSolde(parseFloat($('.total-ttc').val()) || 0);
+        });
+
+        // Quand le pourcentage de commande change, mettre à jour l'acompte
+        $(document).on('input', '#commande', function () {
+            updateAcompte(); // Recalculer l'acompte quand la commande change
         });
 
         // Activation/désactivation de la TVA en fonction de la case à cocher
@@ -458,130 +577,138 @@
     });
 </script>
 
-<script>
-    document.getElementById('btn-add').addEventListener('click', function(event) {
-      event.preventDefault();
-  
-      // Récupérer les données du formulaire
-      let formData = {
-          nom: document.getElementById('c-name').value,
-          numero_cc: document.getElementById('c-occupation').value,
-          telephone: document.getElementById('c-phone').value,
-          adresse: document.getElementById('c-adresse').value,
-          ville: document.getElementById('c-ville').value,
-          attn: document.getElementById('c-attn').value,
-      };
-  
-      // Envoi de la requête avec fetch
-      fetch("{{ route('dashboard.clients.store') }}", {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-              'X-CSRF-TOKEN': '{{ csrf_token() }}',
-          },
-          body: JSON.stringify(formData)
-      })
-      .then(response => response.json())
-      .then(data => {
-          if (data.success) {
-              // Afficher le toast de succès
-              toastr.success(data.message, 'Succès', {
-                  positionClass: 'toast-top-right',
-                  timeOut: 5000,
-                  closeButton: true,
-                  progressBar: true,
-              });
-  
-              // Fermer le modal et recharger la page après un délai
-              $('#addContactModal').modal('hide');
-              setTimeout(() => {
-                  location.reload();  // Recharger la page pour afficher les nouveaux clients
-              }, 5000);
-          } else {
-              // Afficher le toast d'erreur lorsque data.success est false
-              toastr.error(data.message, 'Erreur', {
-                  positionClass: 'toast-top-right',
-                  timeOut: 20000,
-                  closeButton: true,
-                  progressBar: true,
-              });
-              // Vous pouvez également choisir de recharger la page ou non
-              setTimeout(() => {
-                  location.reload();
-              }, 1000);
-          }
-      })
-      .catch(error => {
-          console.error('Erreur:', error);
-          // En cas d'erreur réseau ou autre, afficher un toast d'erreur générique
-          toastr.error("Une erreur est survenue lors de l'ajout du client.", 'Erreur', {
-              positionClass: 'toast-top-right',
-              timeOut: 20000,
-              closeButton: true,
-              progressBar: true,
-          });
-          setTimeout(() => {
-              location.reload();
-          }, 1000);
-      });
-  });
-  
-  </script>
-
-
-
-
 
 <script>
-$(document).ready(function () {
-    // Initialisation du répéteur
-    $('.email-repeater').repeater({
-        initEmpty: false,
-        defaultValues: {},
-        show: function () {
-            $(this).slideDown();
-            initializeSelect2($(this));
-            $(this).find('.discount').val(0);
-            $(this).find('.quantity').val(1);
-        },
-        hide: function (deleteElement) {
-            $(this).slideUp(deleteElement);
-        }
-    });
-
-    // Fonction pour initialiser Select2
-    function initializeSelect2(container) {
-        container.find('.designation').select2({
-            width: '100%',
-            placeholder: "Sélectionner",
-            allowClear: true
+    $(document).ready(function () {
+        // Initialisation du répéteur
+        $('.email-repeater').repeater({
+            initEmpty: false,
+            defaultValues: {},
+            show: function () {
+                $(this).slideDown();
+                initializeSelect2($(this));
+                $(this).find('.discount').val(0);
+                $(this).find('.quantity').val(1);
+            },
+            hide: function (deleteElement) {
+                $(this).slideUp(deleteElement);
+            }
         });
-    }
-
     
-    initializeSelect2($(document));
-
-    $(document).on('change', '.designation', function () {
-        let selectedOption = $(this).find(':selected');
-        let id = selectedOption.data('id');
-        let price = selectedOption.data('price') || 0;
-        
-        let row = $(this).closest('[data-repeater-item]');
-        row.find('.designation-id').val(id);
-        row.find('.price').val(price).trigger('input');
+        // Fonction pour initialiser Select2
+        function initializeSelect2(container) {
+            container.find('.designation').select2({
+                width: '100%',
+                placeholder: "Sélectionner",
+                allowClear: true
+            });
+        }
+    
+        initializeSelect2($(document));
+    
+        // Mise à jour des champs lors de la sélection d'une désignation
+        $(document).on('change', '.designation', function () {
+            let selectedOption = $(this).find(':selected');
+            let id = selectedOption.data('id');
+            let price = selectedOption.data('price') || 0;
+    
+            let row = $(this).closest('[data-repeater-item]');
+            row.find('.designation-id').val(id);
+            row.find('.price').val(price).trigger('input');
+        });
+    
+        // Calcul automatique du total pour chaque ligne
+        $(document).on('input', '.quantity, .price, .discount', function () {
+            let row = $(this).closest('[data-repeater-item]');
+            let quantity = parseFloat(row.find('.quantity').val()) || 0;
+            let price = parseFloat(row.find('.price').val()) || 0;
+            let discount = parseFloat(row.find('.discount').val()) || 0;
+    
+            let total = (quantity * price) - discount;
+            row.find('.total').val(total.toFixed(2));
+    
+            // Mettre à jour le Total HT après chaque modification
+            updateTotalHT();
+        });
+    
+        // Fonction pour mettre à jour Total HT
+        function updateTotalHT() {
+            let totalHT = 0;
+            $('.email-repeater [data-repeater-item]').each(function () {
+                let total = parseFloat($(this).find('.total').val()) || 0;
+                totalHT += total;
+            });
+    
+            $('.total-ht').val(totalHT.toFixed(2));
+            updateTVAandTTC(); // Mettre à jour TVA et Total TTC
+        }
+    
+        // Fonction pour mettre à jour TVA et Total TTC
+        function updateTVAandTTC() {
+            let totalHT = parseFloat($('.total-ht').val()) || 0;
+            let tvaRate = parseFloat($('.tva').val()) || 0;
+            let tvaValue = (totalHT * tvaRate) / 100;
+            let totalTTC = totalHT + tvaValue;
+    
+            $('.total-ttc').val(totalTTC.toFixed(2));
+            updateAcompte(); // Mettre à jour l'acompte après chaque modification de TTC
+        }
+    
+        // Fonction pour mettre à jour l'acompte
+        function updateAcompte() {
+            let totalTTC = parseFloat($('.total-ttc').val()) || 0; // Récupérer le total TTC
+            let commande = parseFloat($('#commande').val()) || 0; // Pourcentage de commande
+            let acompte = (totalTTC * commande) / 100; // Calcul de l'acompte
+    
+            $('.acompte').val(acompte.toFixed(2)); // Mettre à jour l'acompte
+            updateSolde(totalTTC); // Mettre à jour le solde
+        }
+    
+        // Fonction pour mettre à jour le solde
+        function updateSolde(totalTTC) {
+            let acompte = parseFloat($('.acompte').val()) || 0;
+            let solde = totalTTC - acompte;
+    
+            $('.solde').val(solde.toFixed(2));
+        }
+    
+        // Quand l'acompte change, mettre à jour le solde
+        $(document).on('input', '.acompte', function () {
+            updateSolde(parseFloat($('.total-ttc').val()) || 0);
+        });
+    
+        // Quand le pourcentage de commande change, mettre à jour l'acompte
+        $(document).on('input', '#commande', function () {
+            updateAcompte(); // Recalculer l'acompte quand la commande change
+        });
+    
+        // Activation/désactivation de la TVA en fonction de la case à cocher
+        $(document).on('change', '.toggle-tva', function () {
+            let tvaInput = $('.tva');
+    
+            if ($(this).is(':checked')) {
+                tvaInput.prop('readonly', false).val(0);
+            } else {
+                tvaInput.prop('readonly', true).val(18);
+            }
+    
+            updateTVAandTTC();
+        });
+    
+        // Recalculer la TVA et le total lorsque la TVA change
+        $(document).on('input', '.tva', function () {
+            updateTVAandTTC();
+        });
+    
+        // Mettre à jour après ajout ou suppression d'une ligne
+        $(document).on('click', '[data-repeater-create], [data-repeater-delete]', function () {
+            updateTotalHT();
+        });
+    
+        // Initialiser le calcul au chargement de la page
+        updateTotalHT();
     });
-
-    // Calcul automatique du total
-    $(document).on('input', '.quantity, .price, .discount', function () {
-        let row = $(this).closest('[data-repeater-item]');
-        let quantity = parseFloat(row.find('.quantity').val()) || 0;
-        let price = parseFloat(row.find('.price').val()) || 0;
-        let discount = parseFloat(row.find('.discount').val()) || 0;
-
-        let total = (quantity * price) - discount;
-        row.find('.total').val(total.toFixed(2));
-    });
-});
 </script>
+
 
 @endpush

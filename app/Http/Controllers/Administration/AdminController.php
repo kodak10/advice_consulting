@@ -33,7 +33,7 @@ class AdminController extends Controller
 
         
         elseif ($user->hasRole(['DG', 'DAF'])) {
-            $devisQuery = Devis::where('status', '!=', 'En Attente');
+            $devisQuery = Devis::where('status', '!=', 'En Attente de validation');
         
             // Filtre par période
             if ($request->has('start2') && $request->start2 != "") {
@@ -112,7 +112,7 @@ class AdminController extends Controller
 
 
             $devisQuery = Devis::where('pays_id', $user->pays_id)
-                ->where('status', '!=', 'En Attente');
+                ->where('status', '!=', 'En Attente de validation');
         
             // Filtre par période
             if ($request->has('start') && $request->start != "") {

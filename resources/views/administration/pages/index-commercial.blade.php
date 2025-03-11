@@ -97,7 +97,7 @@
                       <th>Date</th>
                         <th>N° Proforma</th>
                         <th>Client</th>
-                        <th>Coût</th>
+                        <th>Montant</th>
                         <th>Statut</th>
                         <th>Action</th>
                     </tr>
@@ -140,7 +140,7 @@
                       <th>Date</th>
                         <th>N° Proforma</th>
                         <th>Client</th>
-                        <th>Coût</th>
+                        <th>Montant</th>
                         <th>Statut</th>
                         <th>Action</th>
                     </tr>

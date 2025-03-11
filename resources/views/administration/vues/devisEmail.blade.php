@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Devis Approuvé</title>
+    <title>Proforma Facturé</title>
 </head>
 <body>
     <h2>Bonjour {{ $clientName }},</h2>
     <p>
-        Votre proforma N°: <strong>{{ $devisNumber }}</strong> a été approuvé par {{ $userName }}.
+        Votre proforma N°: <strong>{{ $devisNumber }}</strong> a été Facturé par {{ $userName }}.
     </p>
     <p>
         Vous trouverez ci-joint le fichier PDF de votre Proforma.

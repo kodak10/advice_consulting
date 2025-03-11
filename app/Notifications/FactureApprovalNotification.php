@@ -28,7 +28,7 @@ class FactureApprovalNotification extends Notification
                     ->line('Une nouvelle facture nécessite votre approbation.')
                     ->line('Numéro de la facture : ' . $this->facture->numero)
                     ->line('Client : ' . $this->facture->devis->client->nom)
-                    ->line('Coût total : ' . $this->facture->devis->details->sum('total') . ' ' . $this->facture->devis->devise)
+                    ->line('Montant total : ' . $this->facture->devis->details->sum('total') . ' ' . $this->facture->devis->devise)
                     ->action('Voir la facture', route('dashboard.factures.create', $this->facture->id))
                     ->line('Merci de prendre une décision sur cette facture.');
     }

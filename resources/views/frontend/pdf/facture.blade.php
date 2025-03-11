@@ -1,171 +1,311 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8" />
     <title>Facture</title>
-    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}"> <!-- Lien vers Bootstrap localement -->
     <style>
+        /* Définir les marges et le format A4 */
+        @page {
+            size: A4;
+            margin: 20mm; /* Marges autour du contenu */
+        }
+
+        /* Mise en page de base */
         body {
             font-family: Arial, sans-serif;
-            margin: 200px 0px 0px 0px; /* Marge importante en haut, petite sur les côtés */
+            margin: 0;
             padding: 0;
-        }
-        .invoice-container {
-            width: 100%; /* Utiliser toute la largeur de la page */
-            padding: 20px;
-            margin: auto;
-        }
-        
-        .header {
-            
-            justify-content: space-between;
-            align-content: center;
-            background-color: #b3a8a2;
-            padding-bottom: 10px;
             width: 100%;
-            text-align: center;
+            height: 100%;
+            font-size: 12px;
+            line-height: 1.5;
         }
-       
-        .info-client-container {
-   
-}
 
-
-
-.info {
-    width: 40%;
-}
-
-.client-container {
-    width: 60%;
-   
-}
-
-        .section-title {
-            background: #f0f0f0;
-            padding: 5px;
-            font-weight: bold;
-            width: 150px;
-        }
-        .client-info {
-            flex-grow: 1;
-            /* margin-left: 10px; */
-            border: 1px solid #ddd;
-            padding: 5px;
-        }
-        
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
+            margin-bottom: 20px;
         }
+
         th, td {
-            border: 1px solid #000;
+            border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
         }
+
         th {
-            background: #f0f0f0;
+            background-color: #f4f4f4;
+            color: #000000;
+            font-weight: bold;
         }
-        .payment-footer-container {
-            display: flex;
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
         }
-        .payment {
-            flex: 2; /* Partie Banque plus large */
+
+        tr:hover {
+            background-color: #f1f1f1;
         }
-        .footer {
-            flex: 1; /* Partie Totaux plus petite */
+
+        .header {
+            background-color: #f4f4f4;
+            color: white;
+            font-size: 1.2em;
+            text-align: center;
+            font-weight: bold;
         }
-        .signature {
-            margin-top: 30px;
-            font-style: italic;
+
+        .highlight {
+            background-color: #ffeb3b;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .right {
+            text-align: right;
+        }
+
+        .total {
+            background-color: #f4f4f4;
+            color: white;
+            font-weight: bold;
+        }
+
+        .info-client {
+            /* background-color: #f4f4f4; */
+        }
+
+        
+
+       
+
+        /* Divider en bas */
+        .divider {
+            border-top: 3px solid #000000;
+            margin: 20px 0;
+        }
+        .footer{
+                font-size: 9px !important;
+                color: #0064c9 !important;
+            }
+
+        /* Informations de l'entreprise */
+        .company-info {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 12px;
+            border-top: 3px solid #000000;
+            padding: 10px 0;
+        }
+
+        
+        
+
+        .company-info td {
+            border: none;
+            padding: 5px;
+        }
+
+        /* Ajustement pour l'impression */
+        @media print {
+            body {
+                font-size: 12px;
+                margin: 0;
+                padding: 0;
+            }
+
+            table {
+                margin-left: auto;
+                margin-right: auto;
+                width: 100%;
+            }
+
+            .header {
+                font-size: 1.5em;
+            }
+
+            th, td {
+                padding: 5px;
+                font-size: 10px;
+            }
+
+            .center {
+                text-align: center;
+            }
+
+            .right {
+                text-align: right;
+            }
+
+            .total {
+                font-weight: bold;
+            }
+
+            .info-client {
+                background-color: #f4f4f4;
+            }
+
+        }
+        .no-border {
+            border: none;
+            border-collapse: collapse; /* Facultatif : fusionner les bordures entre les cellules */
+        }
+
+        .no-border td,
+        .no-border th {
+            border: none; /* Assurer qu'aucune bordure n'est appliquée sur les cellules */
+        }
+
+        .no-border td:last-child{
+            color: #022344;
+            font-weight: bold;
+            font-size: 14px;
+
+        }
+        .no-border img{
+            height: 80px;
+        }
+        .ligne {
+            height: 2px;
+            width: 100%;
+            background-color: #c54f00;
+            margin-bottom: 20px;
+        }
+
+        .vide{
+            height: 200px;
         }
     </style>
 </head>
+
 <body>
-    <div class="invoice-container">
-        <table style="width: 100%; border-collapse: collapse;">
-            <tr>
-                <td colspan="3" style="border-bottom: 1px solid #000; padding-bottom: 5px;"><strong>Type règlement facture:</strong> À échéance</td>
-                <td><strong>Délai:</strong> {{ $devis->delai }}</td>
-                <td><strong>Agent:</strong> {{ $devis->user->name }}</td>
-            </tr>
-        </table>
-        
-        <table style="width: 100%; margin-top: 10px; border-collapse: collapse;">
-            <tr>
-                <td style="width: 50%; border-top: 1px solid #000; padding-top: 5px;">
-                    <strong>Date emission:</strong> {{ $facture->created_at }} <br>
-                    <strong>N° Pro-forma:</strong> {{ $facture->numero }} <br>
-                    <strong>N° BC:</strong>{{ $facture->num_bc }} <br>
-                    <strong>N° Rap Activ:</strong> {{ $facture->num_rap }}<br>
-                    <strong>N° BL:</strong> {{ $facture->num_bl }}<br>
-                </td>
-                <td style="width: 50%; border-top: 1px solid #000; padding-top: 5px;">
-                    <strong>Nom:</strong> {{ $devis->client->nom }}<br>
-                    <strong>N°CC:</strong> {{ $devis->client->numero_cc }}<br>
-                    <strong>Adresse:</strong> {{ $devis->client->adresse }}<br>
-                    <strong>Téléphone:</strong> {{ $devis->client->telephone }}<br>
-                    <strong>Ville:</strong> {{ $devis->client->ville }}
-                </td>
-            </tr>
-        </table>
-        
-        <table style="width: 100%; border-collapse: collapse; border: 1px solid #000;">
-            <tr>
-                <th>Référence</th>
-                <th>Description</th>
-                <th>Quantité</th>
-                <th>Prix unitaire</th>
-                <th>Remise</th>
-                <th>Total</th>
-            </tr>
-        
-            @foreach ($facture->devis->details as $detail)
-                <tr>
-                    <td>{{ $detail->designation->reference }}</td>
-                    <td class="width: 30%">{{ $detail->designation->description }}</td>
-                    <td>{{ $detail->quantite }}</td>
-                    <td>{{ floor($detail->prix_unitaire) }}</td>
-                    <td>{{ floor($detail->remise) }}</td>
-                    <td>{{ floor($detail->total) }} </td>                
-                </tr>
-            @endforeach
-        </table>
-        
-        
-        <table style="width: 100%; margin-top: 10px; border-collapse: collapse; border: 1px solid #000;">
-            <tr>
-                <!-- Informations de paiement (60%) -->
-                <td  style="width: 60%; vertical-align: top; padding: 10px; border-right: 1px solid #000;">
-                    
-
-                    <p>Veuillez libeller votre chèque au nom de : <strong>ADVICE CONSULTING PAYS</strong></p>
-                    <strong>Banque:</strong> {{ $banque->name }}
-                    <strong>Compte:</strong> {{ $banque->num_compte }}
-                    
-                    <p><strong>Arrêté la présente somme de :</strong> {{ ucwords((new NumberFormatter('fr', NumberFormatter::SPELLOUT))->format($devis->solde)) }} {{ $devis->devise }}</p>
-
-                </td>
-                
-                <!-- Totaux (40%) -->
-                <td style="width: 40%; vertical-align: top; padding: 10px;">
-                    <strong>Total HT:</strong> {{ floor($devis->devis) }}<br> 
-                    <strong>TVA:</strong> {{ $devis->tva }} %<br>
-                    <strong>Total TTC:</strong> {{ floor($devis->total_ttc) }} <br>
-                    <strong>Acompte:</strong> {{ floor($devis->acompte) }} <br>
-                    <strong>Solde:</strong> {{ floor($devis->solde) }}
-                </td>
-            </tr>
-        </table>
-        
-        
-        
-        <div class="signature" style="margin-top: 20px;">
-            <p><strong>Cachet et signature:</strong></p>
-        </div>
-    </div>
     
+    <div class="vide">
+
+    </div>
+    <table class="no-border">
+        <tr>
+            <td colspan="3">
+                Type de règlement : <div class="box">A écheance</div>
+            </td>
+            <td colspan="3">
+                Délai : <div class="box">{{ $devis->delai }}</div>
+            </td>
+            <!-- Texte avec colspan également correctement défini -->
+            <td colspan="6">
+                Agent
+            </td>
+        </tr>
+    </table>
+    <div class="ligne"></div>
+
+    <table>
+        <!-- Informations de la facture -->
+        <tr>
+            <td colspan="6">Date: {{ $devis->date_emission }}</td>
+            <td colspan="6"><strong>Client</strong></td>
+        </tr>
+        <tr>
+            <td colspan="6">Echéance : {{ $devis->date_echeance }}</td>
+            <td colspan="6">{{ $devis->client->nom }}</td>
+        </tr>
+        <tr class="info-client">
+            <td colspan="6">N° Pro-Forma {{ $devis->facture->numero }}</td>
+            <td colspan="6"><strong>N° CC:</strong> {{ $devis->client->numero_cc }}</td>
+        </tr>
+        <tr class="info-client">
+            <td colspan="6">N° BC: {{ $devis->facture->num_bc }}</td>
+            <td colspan="6"><strong>Adresse:</strong> {{ $devis->client->adresse }}</td>
+        </tr>
+        <tr class="info-client">
+            <td colspan="6">N° Rap Rap activ: {{ $devis->facture->num_rap }}</td>
+            <td colspan="6"><strong>Téléphone</strong> {{ $devis->client->telephone }}</td>
+        </tr>
+
+        <tr>
+            <td colspan="6"><strong>N° BL</strong> {{ $devis->facture->num_bl }}</td>
+            <td colspan="6"><strong>Ville :</strong> {{ $devis->client->ville }}</td>
+        </tr>
+
+        <tr>
+            <th colspan="1">Référence</th>
+            <th colspan="4">Description</th>
+            <th colspan="1">Quantité</th>
+            <th colspan="2">Prix unitaire</th>
+            <th colspan="4">Total</th>
+        </tr>
+        
+        @foreach ($devis->details as $devisDetail)
+            <tr>
+                <td colspan="1">{{ $devisDetail->designation->reference }}</td>
+                <td colspan="4">{{ $devisDetail->designation->description }}</td>
+                <td colspan="1">{{ $devisDetail->quantite }}</td>
+                <td colspan="2">{{ floor($devisDetail->prix_unitaire) }}</td>
+                <td colspan="4">{{ floor($devisDetail->total) }}</td>
+            </tr>
+        @endforeach
+        
+
+        <!-- Conditions financières et Prix -->
+        <tr>
+            <td colspan="6" class="conditions">
+                Veuillez libeller votre chèque au de Advice Consulting
+            </td>
+            <td colspan="6" class="prices">
+                <strong>Total HT :</strong> {{ floor($devis->total_ht) }}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="6" class="conditions">
+                <strong> Banque :</strong> {{ $banque->name }} N° Compte {{ $banque->num_compte }}
+
+            </td>
+            <td colspan="6" class="prices">
+                <strong>TVA :</strong> {{ $devis->tva }} %
+            </td>
+        </tr>
+        <tr>
+            <td colspan="6" class="conditions">
+                <strong>Arrêté la présence facture à la somme de 
+            </td>
+            <td colspan="6" class="prices">
+                <strong>TOTAL TTC :</strong> {{ floor($devis->total_ttc) }}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="6" class="conditions">
+                {{ ucwords((new NumberFormatter('fr', NumberFormatter::SPELLOUT))->format($devis->solde)) }} {{ $devis->devise }} <br>
+            </td>
+            <td colspan="6" class="prices">
+                <strong>Acompte :</strong> {{ floor($devis->acompte) }}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="6" class="conditions">
+                
+            </td>
+            <td colspan="6" class="prices">
+                <strong>Solde :</strong> {{ floor($devis->solde) }}
+            </td>
+        </tr>
+
+        <!-- Signature et accord -->
+        <tr>
+            <td colspan="6">
+                Cachet et signature
+            </td>
+            <td colspan="6" class="info-client">
+               
+            </td>
+        </tr>
+    </table>
+
+
 </body>
+
 </html>

@@ -72,7 +72,7 @@
 
                     <th>N° Proforma</th>
                     <th>Client</th>
-                    <th>Coût</th>
+                    <th>Montant</th>
                     <th>Statut</th>
                     <th>Action</th>
                 </tr>
@@ -128,7 +128,7 @@
 
                     <th>N° Proforma</th>
                     <th>Client</th>
-                    <th>Coût</th>
+                    <th>Montant</th>
                     <th>Statut</th>
                     <th>Action</th>
                 </tr>
@@ -149,7 +149,7 @@
 
                   <th>N° Proforma</th>
                   <th>Client</th>
-                  <th>Coût</th>
+                  <th>Montant</th>
                   <th>Etabli Par</th>
                   <th>Statut</th>
                   <th>Action</th>
@@ -197,7 +197,7 @@
 
                   <th>N° Proforma</th>
                   <th>Client</th>
-                  <th>Coût</th>
+                  <th>Montant</th>
                   <th>Etabli Par</th>
                   <th>Statut</th>
                   <th>Action</th>
@@ -219,7 +219,7 @@
 
                   <th>N° Proforma</th>
                   <th>Client</th>
-                  <th>Coût</th>
+                  <th>Montant</th>
                   <th>Statut</th>
                   <th>Action</th>
               </tr>
@@ -277,7 +277,7 @@
 
                   <th>N° Proforma</th>
                   <th>Client</th>
-                  <th>Coût</th>
+                  <th>Montant</th>
                   <th>Statut</th>
                   <th>Action</th>
               </tr>
@@ -302,7 +302,7 @@
 
                   <th>N° Proforma</th>
                   <th>Client</th>
-                  <th>Coût</th>
+                  <th>Montant</th>
                   <th>Etabli Par</th>
                   <th>Statut</th>
                   <th>Action</th>
@@ -350,7 +350,7 @@
 
                   <th>N° Proforma</th>
                   <th>Client</th>
-                  <th>Coût</th>
+                  <th>Montant</th>
                   <th>Etabli Par</th>
                   <th>Statut</th>
                   <th>Action</th>
@@ -372,7 +372,7 @@
 
                   <th>N° Proforma</th>
                   <th>Client</th>
-                  <th>Coût</th>
+                  <th>Montant</th>
                   <th>Statut</th>
                   <th>Action</th>
               </tr>
@@ -430,7 +430,7 @@
 
                   <th>N° Proforma</th>
                   <th>Client</th>
-                  <th>Coût</th>
+                  <th>Montant</th>
                   <th>Statut</th>
                   <th>Action</th>
               </tr>
