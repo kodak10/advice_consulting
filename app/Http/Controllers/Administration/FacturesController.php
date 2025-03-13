@@ -3,8 +3,6 @@
 namespace App\Http\Controllers\Administration;
 
 use App\Http\Controllers\Controller;
-use App\Mail\DevisRefusedMail;
-use App\Mail\FactureMail;
 use App\Models\Banque;
 use App\Models\Client;
 use App\Models\Designation;
@@ -12,10 +10,9 @@ use App\Models\Devis;
 use App\Models\Facture;
 use App\Models\Pays;
 use App\Models\User;
-use App\Notifications\FactureApprovalNotification;
 
+use App\Notifications\FactureApprovalNotification;
 use Barryvdh\DomPDF\Facade\Pdf;
-use DevisRefusedNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -27,6 +24,8 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use App\Notifications\FactureApprovedNotification;
+use App\Notifications\DevisRefusedNotification;  // Importation correcte de la notification
 
 class FacturesController extends Controller
 {
@@ -67,10 +66,10 @@ class FacturesController extends Controller
         });
 
         // Filtre par pays (uniquement pour les Dafs)
-        if ($user->hasRole('Daf') && $request->has('pays') && $request->pays != "") {
+        if ($user->hasRole(['Daf', 'DG']) && $request->has('pays') && $request->pays != "") {
             $facturesQuery->where('pays_id', $request->pays);
         } else {
-            $facturesQuery->where('pays_id', $user->pays_id); // Restreindre aux factures du pays de l'utilisateur
+            $facturesQuery->where('pays_id', $user->pays_id);
         }
     
         // Filtre "Mes factures"
@@ -105,43 +104,80 @@ class FacturesController extends Controller
 
     } 
 
-    public function refuse($id)
-    {
-        $devis = Devis::findOrFail($id);
+    // public function refuse($id, Request $request)
+    // {
+    //     $devis = Devis::findOrFail($id);
     
-        if ($devis->status !== 'Facturé') {
-            return redirect()->back()->with('error', 'Vous ne pouvez supprimer cette Proforma que si son statut est "Facturé".');
-        }
+    //     $validated = $request->validate([
+    //         'message' => 'required|string|min:10', // Minimum 10 caractères pour le message
+    //     ]);
+
+    //     if ($devis->status !== 'Facturé') {
+    //         return redirect()->back()->with('error', 'Vous ne pouvez supprimer cette Proforma que si son statut est "Facturé".');
+    //     }
     
-        // Changer le statut du devis à "Refusé"
-        $devis->status = 'Réfusé';
-        $devis->save();
+    //     $creator = $devis->user;  // L'utilisateur qui a créé le devis (ou tout autre destinataire)
+        
+    //     // Envoi de la notification par broadcast
+    //     // Vous pouvez utiliser une notification broadcast pour l'interface en temps réel
+    //    Notification::send($creator, new DevisRefusedNotification($devis));
     
-        // Envoi de la notification par email
-        $creator = $devis->user;  // L'utilisateur qui a créé le devis (ou tout autre destinataire)
-        Mail::to($creator->email)->send(new DevisRefusedMail($devis));
-    
-        // Envoi de la notification par broadcast
-        // Vous pouvez utiliser une notification broadcast pour l'interface en temps réel
-        Notification::send($creator, new DevisRefusedNotification($devis));
-    
-        return redirect()->back()->with('success', 'Proforma Réfusée avec succès.');
+       
+    //     // Changer le statut du devis à "Refusé"
+    //     $devis->status = 'Réfusé';
+    //     $devis->message = $validated['message'];
+
+    //     $devis->save();
+
+    //     return redirect()->back()->with('success', 'Proforma Réfusée avec succès.');
+    // }
+
+    public function refuse($id, Request $request)
+{
+    // Trouver le devis par son ID
+    $devis = Devis::findOrFail($id);
+
+    // Validation du message
+    $validated = $request->validate([
+        'message' => 'required|string|min:10', // Minimum 10 caractères pour le message
+    ]);
+
+    // Vérification du statut du devis avant la mise à jour
+    if ($devis->status !== "Soldé") {
+        // Si le statut n'est pas "Facturé", ne pas permettre le refus
+        return redirect()->route('dashboard.factures.index')->with('error', 'Vous ne pouvez refuser cette Proforma que si son statut est "Facturé"');
     }
+
+    // Changer le statut du devis à "Réfusé"
+    $devis->status = 'Réfusé';
+    $devis->message = $validated['message'];
+    $devis->save();
+
+    // Notification de refus envoyée à l'utilisateur créateur
+    $creator = $devis->user;  // L'utilisateur qui a créé le devis
+    Notification::send($creator, new DevisRefusedNotification($devis));
+
+    // Retourner à la page de liste avec un message de succès
+    return redirect()->route('dashboard.factures.index')->with('success', 'Proforma Réfusée avec succès.');
+}
+
 
     public function create($id)
     {
         $devis = Devis::with('client', 'banque', 'details.designation')->findOrFail($id);
 
-        if ($devis->status === 'Soldé') {
-            return redirect()->back()->with('error', "Cette proforma a déjà fait l'objet d'une facture.");
-        }
-        
-        if ($devis->status === 'Réfusé') {
-            return redirect()->back()->with('error', "Cette proforma a déjà été refusée.");
-        }
+        $factures = Facture::where('devis_id', $devis->id)->first();
 
-        if ($devis->status === 'En Attente du Daf') {
-            return redirect()->back()->with('error', "Cette proforma a déjà l'objet de facture.<br> Vous pouvez la facturé ou la réfusée");
+      
+        
+        
+        // if ($devis->status === 'Réfusé') {
+        //     return redirect()->back()->with('error', "Cette proforma a déjà été refusée.");
+        // }
+
+
+        if ($factures && $factures->status === 'Réfusé') {
+            return redirect()->back()->with('error', "Cette proforma a déjà l'objet de facture.<br> Vous pouvez la facturé ou la réfusée.");
         }
         
         $client = $devis->client;
@@ -181,9 +217,18 @@ class FacturesController extends Controller
                 'remise_speciale' => 'required|string',
             ]);
 
+
+
             $devis = Devis::findOrFail($validated['devis_id']);
             $client = Client::findOrFail($validated['client_id']);
             $banque = Banque::findOrFail($validated['banque_id']);
+
+
+            $factures = Facture::where('devis_id', $devis->id)->first();
+            if ($factures && $factures->status === 'Soldé') {
+                return redirect()->back()->with('error', "Cette proforma a déjà fait l'objet d'une facture.");
+            }
+
 
             $devis->status = 'En Attente du Daf';
             $devis->save();
@@ -199,6 +244,7 @@ class FacturesController extends Controller
             $facture->remise_speciale = $validated['remise_speciale'];
             $facture->numero = $customNumber;
             $facture->pays_id = Auth::user()->pays_id;
+            $facture->status = 'Soldé';
 
             $facture->save();
 
@@ -270,38 +316,56 @@ class FacturesController extends Controller
     }
 
 
-    public function approuve($id)
-{
-    $facture = Facture::findOrFail($id);
-
-    // dd($facture);
-    if ($facture->devis->status !== 'En Attente du Daf') {
-        return redirect()->back()->with('error', 'La facture à déjà été validé');
-    }
-
-    // Récupérer l'utilisateur qui a créé le devis
-    $creator = $facture->devis->user; 
-    $creatorEmail = $creator->email; // ✅ Récupérer son email
-    $creatorName = $creator->name; // ✅ Récupérer son nom
-
-    // Vérifier si le PDF existe et récupérer le chemin
-    $pdfPath = storage_path('app/public/' . $facture->pdf_path);
-
-    if (!file_exists($pdfPath)) {
-        return redirect()->back()->with('error', 'Le fichier PDF n\'existe pas.');
-    }
-
-    // Récupérer l'email du client
-    $clientEmail = $facture->devis->client->email;
-
-    // Envoyer l'e-mail au client avec le fichier PDF en pièce jointe
-    //Mail::send(new FactureMail($facture, $pdfPath, $creatorEmail, $creatorName, $clientEmail));
     
-    $facture->devis->status = 'Soldé';
-    $facture->devis->save();
-
-    return redirect()->back()->with('success', 'Facture envoyée avec succès au client.');
-}
+    public function approuve($id)
+    {
+        // Log: Début du traitement
+        Log::info('Début de la validation de la facture', ['facture_id' => $id]);
+    
+        $facture = Facture::findOrFail($id);
+    
+        if ($facture->devis->status !== 'En Attente du Daf') {
+            // Log: Condition échouée, statut incorrect
+            Log::warning('La facture a déjà été validée ou n\'est pas en attente de validation', ['facture_id' => $id, 'status' => $facture->devis->status]);
+            
+            return redirect()->back()->with('error', 'La facture à déjà été validée');
+        }
+    
+        // Log: Facture trouvée, vérification du PDF
+        Log::info('Facture trouvée, vérification du PDF', ['facture_id' => $id, 'pdf_path' => $facture->pdf_path]);
+    
+        // Vérifier si le PDF existe
+        $pdfPath = storage_path('app/public/' . $facture->pdf_path);
+        if (!file_exists($pdfPath)) {
+            // Log: Erreur, le fichier PDF n'existe pas
+            Log::error('Le fichier PDF n\'existe pas', ['pdf_path' => $pdfPath]);
+            
+            return redirect()->back()->with('error', 'Le fichier PDF n\'existe pas.');
+        }
+    
+        // Log: PDF trouvé
+        Log::info('Le fichier PDF existe', ['pdf_path' => $pdfPath]);
+    
+        // Récupérer l'utilisateur ayant créé la facture
+        $creator = $facture->user;
+        Log::info('Utilisateur ayant créé la facture', ['user_id' => $creator->id, 'user_name' => $creator->name]);
+    
+        // Modifier le statut de la facture
+        $facture->devis->status = 'Soldé';
+        $facture->devis->save();
+    
+        // Log: Statut mis à jour
+        Log::info('Statut du devis mis à jour', ['facture_id' => $id, 'new_status' => 'Soldé']);
+    
+        // Envoyer la notification via base de données
+        $creator->notify(new FactureApprovedNotification($facture));
+    
+        // Log: Notification envoyée
+        Log::info('Notification envoyée à l\'utilisateur', ['user_id' => $creator->id]);
+    
+        return redirect()->back()->with('success', 'Facture enregistré avec succès.');
+    }
+    
 
 
     public function download($id)

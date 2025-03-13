@@ -85,9 +85,37 @@
                     <td>
                       <h6 class="mb-0">{{ $factureCommercial->devis->total_ttc }} {{ $factureCommercial->devis->devise }}</h6>
                     </td>
+
+
                     <td>
-                      <h6 class="mb-0">{{ $factureCommercial->devis->status }}</h6>
-                    </td>
+                      {{ $factureCommercial->status ?? 'Non renseigné' }}
+                  
+                      <!-- Afficher l'icône si le statut est "Réfusé" -->
+                      @if($factureCommercial->status === 'Réfusé')
+                          <!-- Icône d'œil pour ouvrir le modal -->
+                          <i class="ti ti-eye" data-bs-toggle="modal" data-bs-target="#refusModal{{ $factureCommercial->id }}"></i>
+                      @endif
+                  </td>
+                  
+                  <!-- Modal pour afficher le message de refus -->
+                  <div class="modal fade" id="refusModal{{ $factureCommercial->id }}" tabindex="-1" aria-labelledby="refusModalLabel{{ $factureCommercial->id }}" aria-hidden="true">
+                      <div class="modal-dialog">
+                          <div class="modal-content">
+                              <div class="modal-header">
+                                  <h5 class="modal-title" id="refusModalLabel{{ $factureCommercial->id }}">Message de Refus</h5>
+                                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                              </div>
+                              <div class="modal-body">
+                                  {{ $factureCommercial->message ?? 'Aucun message fourni.' }}
+                              </div>
+                              <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+
+                  
                   
                     
                       <td>
@@ -180,9 +208,7 @@
                         <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger la proforma">
                           <i class="ti ti-download fs-5"></i>
                         </a>
-                          <a href="{{ route('dashboard.factures.refuse', $devi->id) }}" class="text-danger me-2" title="Réfuser la proforma">
-                              <i class="ti ti-square-rounded-x"></i>
-                          </a>
+                       
                           
                           <a href="{{ route('dashboard.factures.create', $devi->id) }}" class="text-success me-2" title="Etablir la facture">
                             <i class="ti ti-clipboard-list"></i>
@@ -192,7 +218,7 @@
                                 <i class="ti ti-copy-check"></i>
                             </a>
                         @else
-                            <span class="text-muted">Aucune facture</span>
+                            
                         @endif
 
 
@@ -228,9 +254,7 @@
                         <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger">
                           <i class="ti ti-download fs-5"></i>
                         </a>
-                          <a href="{{ route('dashboard.factures.refuse', $devi->id) }}" class="text-danger me-2" title="Réfuser">
-                              <i class="ti ti-square-rounded-x"></i>
-                          </a>
+                        
                           
                           <a href="{{ route('dashboard.factures.create', $devi->id) }}" class="text-success me-2" title="Etablir la facture">
                             <i class="ti ti-clipboard-list"></i>
@@ -336,7 +360,7 @@
                   </tr>
                 </thead>
 
-                @if(Auth::user()->hasRole(['Daf', 'Comptable', 'Daf']))
+                @if(Auth::user()->hasRole(['Daf', 'Comptable', 'DG']))
                 <tbody>
                   @forelse ($all_factures as $facture)
                   <tr>
@@ -372,7 +396,7 @@
                   </tr>
   
                   @empty
-                      Aucune Facture enregistrée.
+                      
                   @endforelse
                   
                 </tbody>

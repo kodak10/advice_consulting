@@ -9,7 +9,7 @@ class Notification extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['id', 'type', 'notifiable_id', 'notifiable_type', 'data', 'read_at'];
+    protected $fillable = ['id', 'type', 'notifiable_id', 'notifiable_type', 'data', 'read_at', 'title'];
 
     /**
      * Convertir le champ `data` en tableau automatiquement.

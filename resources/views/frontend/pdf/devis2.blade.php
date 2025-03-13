@@ -202,7 +202,7 @@
             <td colspan="6"><strong>{{ $devis->client->nom }}</strong></td>
         </tr>
         <tr>
-            <td colspan="6">Facture proforma</td>
+            <td colspan="6">FACTURE PROFORMA</td>
             <td colspan="6"><strong>Adresse:</strong> {{ $devis->client->adresse }}</td>
         </tr>
         <tr class="info-client">

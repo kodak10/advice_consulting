@@ -57,6 +57,7 @@ Route::middleware(['auth', 'verified','check.user.status'])->prefix('dashboard')
     Route::get('/devis/{id}/validate', [DevisController::class, 'approuve'])->name('devis.validate');
     Route::get('/devis/download/{id}', [DevisController::class, 'download'])->name('devis.download');
     Route::get('/devis/export/csv', [DevisController::class, 'exportCsv'])->name('devis.exportCsv');
+    Route::get('/devis/{id}/refuse', [DevisController::class, 'refuse'])->name('devis.refuse');
 
     
    // Route::get('/factures', [FacturesController::class, 'index'])

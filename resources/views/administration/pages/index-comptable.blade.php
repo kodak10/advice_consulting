@@ -117,7 +117,35 @@
                         <td>{{ $devi->user->name }}</td>
                         <td>{{ $devi->client->nom }}</td>
                         <td>{{ $devi->total_ttc }} {{ $devi->devise }}</td>
-                        <td>{{ $devi->status ?? 'Non renseigné' }}</td>
+
+                        <td>
+                          {{ $devi->status ?? 'Non renseigné' }}
+                      
+                          <!-- Afficher l'icône si le statut est "Réfusé" -->
+                          @if($devi->status === 'Réfusé')
+                              <!-- Icône d'œil pour ouvrir le modal -->
+                              <i class="ti ti-eye" data-bs-toggle="modal" data-bs-target="#refusModal{{ $devi->id }}"></i>
+                          @endif
+                      </td>
+                      
+                      <!-- Modal pour afficher le message de refus -->
+                      <div class="modal fade" id="refusModal{{ $devi->id }}" tabindex="-1" aria-labelledby="refusModalLabel{{ $devi->id }}" aria-hidden="true">
+                          <div class="modal-dialog">
+                              <div class="modal-content">
+                                  <div class="modal-header">
+                                      <h5 class="modal-title" id="refusModalLabel{{ $devi->id }}">Message de Refus</h5>
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                  </div>
+                                  <div class="modal-body">
+                                      {{ $devi->message ?? 'Aucun message fourni.' }}
+                                  </div>
+                                  <div class="modal-footer">
+                                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+
                         <td>
                           <div class="action-btn text-center">
                             <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger">
@@ -204,7 +232,34 @@
                         <td>{{ $facture->devis->client->nom }}</td>
                         <td>{{ $facture->devis->details->sum('total') }} {{ $facture->devis->devise }}</td>
 
-                        <td>{{ $facture->devis->status ?? 'Non renseigné' }}</td>
+                        <td>
+                          {{ $facture->status ?? 'Non renseigné' }}
+                      
+                          <!-- Afficher l'icône si le statut est "Réfusé" -->
+                          @if($facture->status === 'Réfusé')
+                              <!-- Icône d'œil pour ouvrir le modal -->
+                              <i class="ti ti-eye" data-bs-toggle="modal" data-bs-target="#refusModal{{ $facture->id }}"></i>
+                          @endif
+                      </td>
+                      
+                      <!-- Modal pour afficher le message de refus -->
+                      <div class="modal fade" id="refusModal{{ $facture->id }}" tabindex="-1" aria-labelledby="refusModalLabel{{ $facture->id }}" aria-hidden="true">
+                          <div class="modal-dialog">
+                              <div class="modal-content">
+                                  <div class="modal-header">
+                                      <h5 class="modal-title" id="refusModalLabel{{ $facture->id }}">Message de Refus</h5>
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                  </div>
+                                  <div class="modal-body">
+                                      {{ $facture->message ?? 'Aucun message fourni.' }}
+                                  </div>
+                                  <div class="modal-footer">
+                                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+
                         
                         <td>
                           <a href="{{ route('dashboard.factures.download', $facture->id) }}" class="text-primary me-2" title="Télécharger">

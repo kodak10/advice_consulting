@@ -1,44 +1,75 @@
 <?php
+
 namespace App\Notifications;
 
 use App\Models\Devis;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Notifications\Messages\BroadcastMessage;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Notifications\Messages\DatabaseMessage;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 
 class DevisRefusedNotification extends Notification
 {
-    protected $devis;
+    public $devis;
 
     public function __construct(Devis $devis)
     {
         $this->devis = $devis;
     }
 
+    /**
+     * Get the notification's delivery channels.
+     *
+     * @param  mixed  $notifiable
+     * @return array<int, string>
+     */
     public function via($notifiable)
     {
-        return ['mail', 'broadcast'];
+        return ['database', 'broadcast']; // Notification via la base de données et broadcast
     }
 
-    public function toMail($notifiable)
+    /**
+     * Enregistrer la notification dans la base de données.
+     *
+     * @param  mixed  $notifiable
+     * @return array
+     */
+    public function toDatabase($notifiable)
     {
-        return (new MailMessage)
-                    ->line('Le devis "' . $this->devis->num_proforma . '" a été refusé.')
-                    ->action('Voir les détails', url('/devis/' . $this->devis->id))
-                    ->line('Merci de votre compréhension.');
+        return [
+            'title' => 'Proforma',
+            'icon' => 'ti-circle-minus',
+            'message' => 'La Proforma ' . $this->devis->reference . ' a été refusé.',
+            'devis_id' => $this->devis->id,
+        ];
     }
 
+    /**
+     * Diffuser la notification via le broadcast.
+     *
+     * @param  mixed  $notifiable
+     * @return \Illuminate\Notifications\Messages\BroadcastMessage
+     */
     public function toBroadcast($notifiable)
     {
         return new BroadcastMessage([
-            'message' => 'Le devis "' . $this->devis->num_proforma . '" a été refusé.',
-            'devis_id' => $this->devis->id
+            'title' => 'Proforma',
+            'message' => 'La Proforma ' . $this->devis->reference . ' a été refusé.',
+            'devis_id' => $this->devis->id,
         ]);
     }
 
-    public function broadcastOn()
+    /**
+     * Représentation sous forme de tableau.
+     *
+     * @param  mixed  $notifiable
+     * @return array
+     */
+    public function toArray($notifiable)
     {
-        return new Channel('devis-refused');
+        return [
+            'title' => 'Proforma',
+            'message' => 'La Proforma ' . $this->devis->reference . ' a été refusé.',
+            'devis_id' => $this->devis->id,
+        ];
     }
 }

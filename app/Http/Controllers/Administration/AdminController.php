@@ -32,7 +32,7 @@ class AdminController extends Controller
         } 
 
         
-        elseif ($user->hasRole(['DG', 'DAF'])) {
+        elseif ($user->hasRole(['DG', 'Daf'])) {
             $devisQuery = Devis::where('status', '!=', 'En Attente de validation');
         
             // Filtre par période

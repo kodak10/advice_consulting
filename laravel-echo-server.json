@@ -3,8 +3,8 @@
 	"authEndpoint": "/broadcasting/auth",
 	"clients": [
 		{
-			"appId": "6ff650ab803982b9",
-			"key": "8f8227c39d73e53757f233fecc288210"
+			"appId": "fa641f2216f50243",
+			"key": "7d3eaaab6b0e9c8ce6ac1b43d8c10397"
 		}
 	],
 	"database": "redis",
@@ -17,13 +17,13 @@
 	"devMode": true,
 	"host": null,
 	"port": "6001",
-	"protocol": "http",
+	"protocol": "http",  
 	"socketio": {},
 	"secureOptions": 67108864,
-	"sslCertPath": "",
-	"sslKeyPath": "",
-	"sslCertChainPath": "",
-	"sslPassphrase": "",
+	"sslCertPath": null,
+	"sslKeyPath": null,
+	"sslCertChainPath": null,
+	"sslPassphrase": null,
 	"subscribers": {
 		"http": true,
 		"redis": true

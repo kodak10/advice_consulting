@@ -178,7 +178,7 @@
         }
 
         .vide{
-            height: 200px;
+            height: 150px;
         }
     </style>
 </head>

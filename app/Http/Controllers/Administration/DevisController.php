@@ -14,17 +14,18 @@ use App\Models\DevisDetail;
 use App\Models\Devise;
 use App\Models\User;
 use App\Notifications\DevisCreatedNotification;
+use App\Notifications\DevisRefusedNotification;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -100,38 +101,96 @@ class DevisController extends Controller
         return $numProforma;
     }
 
+   
     public function approuve($id)
-    {
-        $devis = Devis::findOrFail($id);
-        $creator = $devis->user_id;
+{
+    // Récupérer le devis
+    $devis = Devis::findOrFail($id);
+    $creator = $devis->user_id;
 
-        $comptables = User::role('Comptable')
+    // Vérifier le statut du devis
+    if ($devis->status !== 'En Attente de validation') {
+        return redirect()->back()->with('error', 'La Proforma ne peut être Facturée que si elle est en Attente de validation.');
+    }
+
+    // Vérifier si le PDF existe
+    $pdfPath = storage_path('app/public/' . $devis->pdf_path);
+    if (!file_exists($pdfPath)) {
+        return redirect()->back()->with('error', 'Le fichier PDF n\'existe pas.');
+    }
+
+    // Récupérer l'email du client
+    $clientEmail = $devis->client->email;
+    if (empty($clientEmail)) {
+        return redirect()->back()->with('error', 'L\'email du client est manquant.');
+    }
+
+    // Récupérer les emails des comptables
+    $comptables = User::role(['Comptable', 'DG'])
         ->where('pays_id', Auth::user()->pays_id)
         ->where('id', '!=', $creator)
         ->get();
 
-        if ($devis->status !== 'En Attente de validation') {
-            return redirect()->back()->with('error', 'La Proforma ne peut être Facturé que s\'il est en attente.');
-        }
+    // Emails en copie (CC)
+    $ccEmails = 'comptable@example.com,directeur@example.com'; // Remplacez par les emails réels
 
-        // Vérifier si le PDF existe et récupérer le chemin
-        $pdfPath = storage_path('app/public/' . $devis->pdf_path);
+    // Sujet et corps de l'email
+    $subject = "Facture pour votre devis";
+    $body = "Bonjour,\n\nVeuillez trouver ci-joint la facture associée à votre devis.\n\nCordialement, \n" . Auth::user()->name;
 
-        if (!file_exists($pdfPath)) {
-            return redirect()->back()->with('error', 'Le fichier PDF n\'existe pas.');
-        }
+    // Générer l'URL publique du fichier PDF (exemple avec un stockage public)
+    $pdfUrl = asset('storage/' . $devis->pdf_path); // Assurez-vous que le fichier est accessible publiquement
 
-        $clientEmail = $devis->client->email;
+    // Générer l'URL Gmail
+    $gmailUrl = "https://mail.google.com/mail/?view=cm&fs=1&tf=1" .
+        "&to=" . urlencode($clientEmail) .
+        "&cc=" . urlencode($ccEmails) .
+        "&su=" . urlencode($subject) .
+        "&body=" . urlencode($body) .
+        "&attach=" . urlencode($pdfUrl); // Utilisez l'URL publique du fichier PDF
 
-        // Envoyer l'e-mail au client avec le fichier PDF en pièce jointe
-        // Mail::send(new DevisApprovalMail($devis, $pdfPath, Auth::user()->name, $clientEmail));
-        Notification::send($comptables, new DevisCreatedNotification($devis));
+    Notification::send($comptables, new DevisCreatedNotification($devis));
 
-        $devis->status = 'Facturé';
-        $devis->save();
+    
+    // Mettre à jour le statut du devis
+    $devis->status = 'Facturé';
+    $devis->save();
 
-        return redirect()->back()->with('success', 'Proforma Facturé avec succès.');
+    // Rediriger vers la page index avec l'URL Gmail
+    return redirect()->route('dashboard.devis.index')->with('gmailUrl', $gmailUrl);
+}
+
+    
+public function refuse($id, Request $request)
+{
+    // Trouver le devis par son ID
+    $devis = Devis::findOrFail($id);
+
+    // Validation du message
+    $validated = $request->validate([
+        'message' => 'required|string|min:10', // Minimum 10 caractères pour le message
+    ]);
+
+    // Vérification du statut du devis avant la mise à jour
+    if ($devis->status !== "Facturé") {
+        // Si le statut n'est pas "Facturé", ne pas permettre le refus
+        return redirect()->route('dashboard.devis.index')->with('error', 'Vous ne pouvez refuser cette Proforma que si son statut est "Facturé"');
     }
+
+    // Changer le statut du devis à "Réfusé"
+    $devis->status = 'Réfusé';
+    $devis->message = $validated['message'];
+    $devis->save();
+
+    // Notification de refus envoyée à l'utilisateur créateur
+    $creator = $devis->user;  // L'utilisateur qui a créé le devis
+    Notification::send($creator, new DevisRefusedNotification($devis));
+
+    // Retourner à la page de liste avec un message de succès
+    return redirect()->route('dashboard.devis.index')->with('success', 'Proforma Réfusée avec succès.');
+}
+    
+
 
 
     public function recap(Request $request)
@@ -275,7 +334,7 @@ class DevisController extends Controller
 
             return redirect()->route('dashboard.devis.index')
             ->with('pdf_path', $imagePath)
-            ->with('success', 'Devis enregistré avec succès.');
+            ->with('success', 'Proforma enregistré avec succès.');
 
 
         } catch (\Exception $e) {
@@ -292,9 +351,10 @@ class DevisController extends Controller
         $designations = Designation::all();
 
 
-        if ($devis->status !== 'En Attente de validation') {
-            return redirect()->back()->with('error', 'Vous ne pouvez modifier cette Proforma que si son statut est "En attente de validation".');
+        if ($devis->status !== 'En Attente de validation' && $devis->status !== 'Réfusé') {
+            return redirect()->back()->with('error', 'Vous ne pouvez modifier cette Proforma que si son statut est "En Attente de validation" ou "Réfusé".');
         }
+        
 
         return view('administration.pages.devis.edit', compact('devis','clients','banques', 'designations'));
     }
@@ -397,6 +457,7 @@ class DevisController extends Controller
                 'solde' => $validated['solde'],
                 'devise' => $validated['devise'],
                 'texte' => $validated['texte'],
+                'status' => "En Attente de validation",
 
             ]);
 
@@ -460,7 +521,7 @@ class DevisController extends Controller
 
             return redirect()->route('dashboard.devis.index')
             ->with('pdf_path', $imagePath)
-            ->with('success', 'Devis enregistré avec succès.');
+            ->with('success', 'Proforma enregistré avec succès.');
 
             // return redirect()->route('dashboard.devis.index')->with('success', 'Proforma mise à jour avec succès.');
 

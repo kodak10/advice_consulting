@@ -137,14 +137,41 @@
 
                 <button type="submit" class="btn btn-success">Enregistrer</button>
 
-                <a href="{{ route('dashboard.factures.refuse', $devis->id) }}" class="btn btn-danger">
-                    Refuser la facture
-                </a>
+                <button type="button" class="btn bg-danger-subtle text-warning px-4 fs-4 " data-bs-toggle="modal" data-bs-target="#refuseModal">
+                    Refuser
+                  </button>
+
+                 
 
                 <a href="{{ route('dashboard.factures.index') }}" class="btn btn-secondary">
                     Retour
                 </a>
             </form>
+
+             <!-- Modal -->
+             <div class="modal fade" id="refuseModal" tabindex="-1" aria-labelledby="refuseModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="refuseModalLabel">Motif du refus</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form method="GET" action="{{ route('dashboard.factures.refuse', $devis->id ) }}">
+                                @csrf
+                                <div class="mb-3">
+                                    <label for="refuse_message" class="form-label">Message de refus</label>
+                                    <textarea class="form-control" id="refuse_message" name="message" rows="4" required></textarea>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                    <button type="submit" class="btn btn-danger">Envoyer</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+              </div>
 
             <div>
                 @if(session('success'))

@@ -217,6 +217,13 @@
 
     </script>
 
+<script>
+    Echo.channel('facture.' + userId)
+    .listen('FactureApproved', (event) => {
+        alert(event.message); // Affiche un message en temps réel
+    });
+
+</script>
 
 
 

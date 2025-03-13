@@ -35,7 +35,9 @@ class DevisCreatedNotification extends Notification
     public function toDatabase($notifiable)
     {
         return [
-            'message' => "Un nouveau devis a été créé",
+            'title' => "Proforma",
+            'icon'  => 'ti-circle-plus',
+            'message' => "Une nouvelle Proforma a été créé",
             'devis_id' => $this->devis->id,
             'user_id' => $this->devis->user_id, 
             'devis_number' => $this->devis->num_proforma,
@@ -45,7 +47,9 @@ class DevisCreatedNotification extends Notification
     public function toBroadcast($notifiable)
     {
         return new BroadcastMessage([
-            'message' => "Un nouveau devis a été créé",
+            'title' => "Proforma",
+            'icon'  => 'ti-circle-plus',
+            'message' => "Une nouvelle Proforma a été créé",
             'devis_id' => $this->devis->id,
             'user_id' => $this->devis->user_id, 
             'devis_number' => $this->devis->num_proforma, 
@@ -90,17 +94,7 @@ class DevisCreatedNotification extends Notification
         return 'devis.created';
     }
 
-    /**
-     * Représentation par email.
-     */
-    public function toMail(object $notifiable): MailMessage
-    {
-        return (new MailMessage)
-        ->line('Un nouveau devis a été créé.')
-        ->action('Voir le devis', url('/devis/' . $this->devis->id))
-        ->line('Merci d\'avoir utilisé notre application.');
-    }
-
+    
     /**
      * Représentation sous forme de tableau.
      */
@@ -108,7 +102,7 @@ class DevisCreatedNotification extends Notification
     {
         return [
             'devis_id' => $this->devis->id,
-            'message' => "Un nouveau devis a été créé"
+            'message' => "Une nouvelle Proforma a été créé"
         ];
     }
 }

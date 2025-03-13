@@ -464,8 +464,6 @@
     }
 </script>
 
-
-
 <script>
     $(document).ready(function () {
         // Fonction pour mettre à jour le total d'une ligne

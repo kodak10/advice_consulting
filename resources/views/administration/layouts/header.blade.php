@@ -54,10 +54,10 @@
                         @foreach ($notifications as $notification)
                             <a href="javascript:void(0)" class="py-6 px-7 d-flex align-items-center dropdown-item">
                                 <span class="me-3">
-                                    <img src="{{ asset('assets/images/profile/user-2.jpg') }}" alt="user" class="rounded-circle" width="48" height="48">
+                                  <i class="ti {{ $notification->data['icon'] }}"  width="64" height="64"></i>
                                 </span>
                                 <div class="w-100">
-                                    <h6 class="mb-1 fw-semibold lh-base">{{ $notification->data['title'] ?? 'Nouvelle Notification' }}</h6>
+                                    <h6 class="mb-1 fw-semibold lh-base">{{ $notification->data['title'] }}</h6>
                                     <span class="fs-2 d-block text-body-secondary">{{ $notification->data['message'] ?? 'Aucun message disponible' }}</span>
                                 </div>
                                 @if (is_null($notification->read_at))

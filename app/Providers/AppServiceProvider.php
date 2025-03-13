@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
 
@@ -24,8 +25,10 @@ class AppServiceProvider extends ServiceProvider
         View::composer('*', function ($view) {
             if (Auth::check()) {
                 $notifications = Auth::user()->unreadNotifications;
+                Log::info('Notifications: ', $notifications->toArray());
                 $view->with('notifications', $notifications);
             }
         });
+        
     }
 }
