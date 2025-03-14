@@ -2,19 +2,19 @@
 
 namespace App\Notifications;
 
-use App\Models\Devis;
+use App\Models\Facture;
 use Illuminate\Notifications\Notification;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\DatabaseMessage;
 
-class DevisRefusedNotification extends Notification
+class FactureCreatedNotification extends Notification
 {
-    public $devis;
+    public $facture;
 
     // Le constructeur prend une facture comme paramètre
-    public function __construct(Devis $devis)
+    public function __construct(Facture $facture)
     {
-        $this->devis = $devis;
+        $this->facture = $facture;
     }
 
     /**
@@ -37,10 +37,10 @@ class DevisRefusedNotification extends Notification
     public function toDatabase($notifiable)
     {
         return [
-            'title' => 'Proforma Refusée',  // Titre de la notification
-            'icon' => 'ti-circle-minus',   // Icône pour l'interface
-            'message' => 'La Proforma ' . $this->devis->num_proforma . ' a été refusée.',  // Message de la notification
-            'devis_id' => $this->devis->id,  // ID de la facture pour plus de détails
+            'title' => 'Facture Créée',  // Titre de la notification
+            'icon' => 'ti-check',   
+            'message' => 'Le devis N°' . $this->facture->devis->num_proforma . ' a été créée.',
+            'facture_id' => $this->facture->id, 
         ];
     }
 
@@ -53,9 +53,9 @@ class DevisRefusedNotification extends Notification
     public function toBroadcast($notifiable)
     {
         return new BroadcastMessage([
-            'title' => 'Proforma Refusée',
-            'message' => 'La Proforma ' . $this->devis->num_proforma . ' a été refusée.',
-            'devis_id' => $this->devis->id,  // ID de la facture
+            'title' => 'Facture Créée',
+            'message' => 'Le devis N°' . $this->facture->devis->num_proforma . ' a été créée.',
+            'facture_id' => $this->facture->id,  
         ]);
     }
 
@@ -68,9 +68,9 @@ class DevisRefusedNotification extends Notification
     public function toArray($notifiable)
     {
         return [
-            'title' => 'Proforma Refusée',
-            'message' => 'La Proforma ' . $this->devis->num_proforma . ' a été refusée.',
-            'devis_id' => $this->devis->id,  // ID de la facture pour les liens ou détails supplémentaires
+            'title' => 'Facture Créée',
+            'message' => 'Le devis N°' . $this->facture->devis->num_proforma . ' a été créée.',
+            'facture_id' => $this->facture->id,  // ID de la facture pour les liens ou détails supplémentaires
         ];
     }
 }

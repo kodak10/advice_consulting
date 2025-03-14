@@ -137,9 +137,15 @@
 
                 <button type="submit" class="btn btn-success">Enregistrer</button>
 
-                <button type="button" class="btn bg-danger-subtle text-warning px-4 fs-4 " data-bs-toggle="modal" data-bs-target="#refuseModal">
-                    Refuser
-                  </button>
+                @if(Auth::user()->hasRole('Comptable'))
+                    <button type="button" class="btn bg-danger-subtle text-warning px-4 fs-4 " data-bs-toggle="modal" data-bs-target="#refuseDevisModal">
+                        Refuser
+                    </button>
+                @else
+                    <button type="button" class="btn bg-danger-subtle text-warning px-4 fs-4 " data-bs-toggle="modal" data-bs-target="#refuseModal">
+                        Refuser daf
+                    </button>
+                @endif
 
                  
 
@@ -148,7 +154,7 @@
                 </a>
             </form>
 
-             <!-- Modal -->
+             <!-- Modal Facture-->
              <div class="modal fade" id="refuseModal" tabindex="-1" aria-labelledby="refuseModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -157,35 +163,66 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form method="GET" action="{{ route('dashboard.factures.refuse', $devis->id ) }}">
-                                @csrf
-                                <div class="mb-3">
-                                    <label for="refuse_message" class="form-label">Message de refus</label>
-                                    <textarea class="form-control" id="refuse_message" name="message" rows="4" required></textarea>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                                    <button type="submit" class="btn btn-danger">Envoyer</button>
-                                </div>
-                            </form>
+                            @if ($devis->facture)
+                                <form method="POST" action="{{ route('dashboard.factures.refuse', $devis->facture->id ) }}">
+                                    @csrf
+                                    <div class="mb-3">
+                                        <label for="refuse_message" class="form-label">Message de refus</label>
+                                        <textarea class="form-control" id="refuse_message" name="message" rows="4" required></textarea>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                        <button type="submit" class="btn btn-danger">Envoyer</button>
+                                    </div>
+                                </form>
+                            @else
+                                <p>Aucune facture associée à cette proforma.</p>
+                            @endif
                         </div>
                     </div>
                 </div>
               </div>
 
-            <div>
-                @if(session('success'))
-                    <div class="alert alert-success text-success" role="alert">
-                        {{ session('success') }}
-                    </div>
-                @endif
 
-                @if(session('error'))
-                    <div class="alert alert-danger text-danger" role="alert">
-                        {!! session('error') !!}
+              <!-- Modal Proforma-->
+             <div class="modal fade" id="refuseDevisModal" tabindex="-1" aria-labelledby="refuseDevisModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="refuseDevisModalLabel">Motif du refus</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                                <form method="POST" action="{{ route('dashboard.devis.refuse', $devis->id ) }}">
+                                    @csrf
+                                    <div class="mb-3">
+                                        <label for="refuse_message" class="form-label">Message de refus</label>
+                                        <textarea class="form-control" id="refuse_message" name="message" rows="4" required></textarea>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                        <button type="submit" class="btn btn-danger">Envoyer</button>
+                                    </div>
+                                </form>
+                            
+                        </div>
                     </div>
-                @endif
-            </div>
+                </div>
+              </div>
+
+                <div>
+                    @if(session('success'))
+                        <div class="alert alert-success text-success" role="alert">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    @if(session('error'))
+                        <div class="alert alert-danger text-danger" role="alert">
+                            {!! session('error') !!}
+                        </div>
+                    @endif
+                </div>
         </div>
     </div>
 </div>

@@ -205,9 +205,20 @@
                       <td>{{ $devi->status ?? 'Non renseigné' }}</td>
   
                       <td>
-                        <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger la proforma">
-                          <i class="ti ti-download fs-5"></i>
-                        </a>
+
+                        @if(Auth::user()->hasRole(['Daf', 'DG']))
+                          @if ($devi->facture) 
+                            <a href="{{ route('dashboard.factures.download', $devi->id) }}" class="text-primary me-2" title="Télécharger la proforma">
+                              <i class="ti ti-download fs-5"></i>
+                            </a>
+                          @else
+                              
+                          @endif
+                        @else
+                          <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger la proforma">
+                            <i class="ti ti-download fs-5"></i>
+                          </a>
+                        @endif
                        
                           
                           <a href="{{ route('dashboard.factures.create', $devi->id) }}" class="text-success me-2" title="Etablir la facture">

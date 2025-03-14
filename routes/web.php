@@ -57,13 +57,13 @@ Route::middleware(['auth', 'verified','check.user.status'])->prefix('dashboard')
     Route::get('/devis/{id}/validate', [DevisController::class, 'approuve'])->name('devis.validate');
     Route::get('/devis/download/{id}', [DevisController::class, 'download'])->name('devis.download');
     Route::get('/devis/export/csv', [DevisController::class, 'exportCsv'])->name('devis.exportCsv');
-    Route::get('/devis/{id}/refuse', [DevisController::class, 'refuse'])->name('devis.refuse');
+    Route::post('/devis/{id}/refuse', [DevisController::class, 'refuse'])->name('devis.refuse');
 
     
    // Route::get('/factures', [FacturesController::class, 'index'])
     Route::match(['get', 'post'], '/factures', [FacturesController::class, 'index'])->name('factures.index');
 
-    Route::get('/factures/{id}/refuse', [FacturesController::class, 'refuse'])->name('factures.refuse');
+    Route::post('/factures/{id}/refuse', [FacturesController::class, 'refuse'])->name('factures.refuse');
     Route::get('/factures/create/{id}', [FacturesController::class, 'create'])->name('factures.create');
     Route::post('/factures/store', [FacturesController::class, 'store'])->name('factures.store');
     Route::get('/factures/download/{id}', [FacturesController::class, 'download'])->name('factures.download');

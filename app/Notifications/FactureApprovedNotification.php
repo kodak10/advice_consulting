@@ -30,7 +30,7 @@ class FactureApprovedNotification extends Notification
             'icon'  => 'ti-clipboard-data',
             'title' => 'Facture',
             'facture_id' => $this->facture->id,
-            'message' => 'La facture pour la proforma ' . $this->facture->devis->reference . ' a été validée.',
+            'message' => 'La facture N°' . $this->facture->numero . ' a été approuvée.',
             'url' => url('/factures/' . $this->facture->id)
         ];
     }

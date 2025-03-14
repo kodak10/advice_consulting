@@ -15,6 +15,7 @@ use App\Models\Devise;
 use App\Models\User;
 use App\Notifications\DevisCreatedNotification;
 use App\Notifications\DevisRefusedNotification;
+
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
