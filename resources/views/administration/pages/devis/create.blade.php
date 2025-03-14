@@ -84,22 +84,35 @@
             <div class="card">
                 <div class="card-body">
                     <h4 class="card-title">Dévise</h4>
-                    <div class="col-lg-6">
-                        <select id="devise" name="devise" class="form-control">
-                            @php
-                                $deviseUser = Auth::user()->pays->devise ?? 'XOF'; // Devise par défaut en CFA (XOF) si non définie
-                            @endphp
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <select id="devise" name="devise" class="form-control">
+                                @php
+                                    $deviseUser = Auth::user()->pays->devise ?? 'XOF'; // Devise par défaut en CFA (XOF) si non définie
+                                @endphp
+                                
+                                <option value="XOF" {{ $deviseUser == 'XOF' ? 'selected' : '' }}>Franc CFA (XOF)</option>
+                                <option value="EUR" {{ $deviseUser == 'EUR' ? 'selected' : '' }}>Euro (EUR)</option>
+                                <option value="USD" {{ $deviseUser == 'USD' ? 'selected' : '' }}>Dollar (USD)</option>
+                                <option value="GBP" {{ $deviseUser == 'GBP' ? 'selected' : '' }}>Livre Sterling (GBP)</option>
+                                <option value="GNF" {{ $deviseUser == 'GNF' ? 'selected' : '' }}>Franc Guinéen (GNF)</option> <!-- Option ajoutée pour le Franc Guinéen -->
+                            </select>
                             
-                            <option value="XOF" {{ $deviseUser == 'XOF' ? 'selected' : '' }}>Franc CFA (XOF)</option>
-                            <option value="EUR" {{ $deviseUser == 'EUR' ? 'selected' : '' }}>Euro (EUR)</option>
-                            <option value="USD" {{ $deviseUser == 'USD' ? 'selected' : '' }}>Dollar (USD)</option>
-                            <option value="GBP" {{ $deviseUser == 'GBP' ? 'selected' : '' }}>Livre Sterling (GBP)</option>
-                        </select>
+                        </div>
+                        
+                        <div class="col-lg-6">
+                            <div class="input-group devise">
+                                <!-- Le champ de saisie est désactivé par défaut (readonly) -->
+                                <input type="number" id="taux" name="taux" value="{{ old('taux', 1) }}" readonly class="form-control">
+                                
+                                <!-- Le bouton checkbox pour activer/désactiver l'édition -->
+                                <div class="input-group-text">
+                                    <input type="checkbox" id="toggle-taux" class="toggle-taux">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     
-                    <div class="col-lg-6">
-                        <input type="number" id="taux" name="taux" value="1" readonly>
-                    </div>
                     
                     
                 </div>
@@ -133,14 +146,14 @@
                                         <input type="number" class="form-control quantity" name="designations[][quantity]" placeholder="Qte" value="1" min="1">
                                     </div>
                                     <div class="col-md-2 mt-3 mt-md-0">
-                                        <input type="number" class="form-control price" name="designations[][price]" placeholder="PU">
+                                        <input type="number" step="0.01" class="form-control price" name="designations[][price]" placeholder="PU">
                                     </div>
                                     <div class="col-md-2 mt-3 mt-md-0">
                                         <input type="number" class="form-control discount" name="designations[][discount]" placeholder="Remise" value="0" min="0">
                                     </div>
                                     <div class="col-md-2 mt-3 mt-md-0">
                                         
-                                        <input type="text" class="form-control total" name="designations[][total]" placeholder="Total" readonly>
+                                        <input type="text" step="0.01" class="form-control total" name="designations[][total]" placeholder="Total" readonly>
                                     </div>
                                     <div class="col-md-1 mt-3 mt-md-0">
                                         <button data-repeater-delete class="btn bg-danger-subtle text-danger" type="button">
@@ -466,7 +479,7 @@
     }
 </script>
 
-<script>
+{{-- <script>
     $(document).ready(function () {
         // Fonction pour mettre à jour le total d'une ligne
         function updateTotal(row) {
@@ -711,23 +724,269 @@
 </script>
 
 <script>
-    // Récupérer les taux de conversion depuis l'objet PHP
     const rates = @json($rates);
 
-    document.getElementById('devise').addEventListener('change', function () {
-    const selectedDevise = this.value; // Devise choisie par l'utilisateur
-    const tauxInput = document.getElementById('taux');
-
-    // Vérifier si le taux existe dans les données récupérées
-    if (rates && rates[selectedDevise] !== undefined) {
-        // Mettre à jour le champ avec le taux correct
-        tauxInput.value = rates[selectedDevise].toFixed(2); // Formatage du taux avec 2 décimales
-    } else {
-        tauxInput.value = 0; // Si le taux est inexistant ou non défini
+    // Fonction pour mettre à jour le prix converti
+    function updateConvertedPrice() {
+        const taux = parseFloat(document.getElementById('taux').value) || 1.0;
+        document.querySelectorAll('.product-row').forEach(row => {
+            const priceOriginal = parseFloat(row.querySelector('.price-original').value) || 0;
+            const priceConverted = priceOriginal * taux;
+            row.querySelector('.price-converted').value = priceConverted.toFixed(2);
+            updateTotal(row); // Recalculer le total
+        });
     }
-});
+
+    // Fonction pour mettre à jour le total d'une ligne
+    function updateTotal(row) {
+        const priceConverted = parseFloat(row.querySelector('.price-converted').value) || 0;
+        const quantity = parseFloat(row.querySelector('.quantity').value) || 1;
+        const total = priceConverted * quantity;
+        row.querySelector('.total').value = total.toFixed(2);
+    }
+
+    // Écouteur d'événement pour le changement de devise
+    document.getElementById('devise').addEventListener('change', function () {
+        const selectedDevise = this.value;
+        const tauxInput = document.getElementById('taux');
+
+        if (rates[selectedDevise] !== undefined) {
+            tauxInput.value = rates[selectedDevise].toFixed(2);
+        } else {
+            tauxInput.value = 1.0; // Taux par défaut
+        }
+
+        updateConvertedPrice(); // Mettre à jour les prix convertis
+    });
+
+    // Écouteur d'événement pour le changement du taux de conversion
+    document.getElementById('taux').addEventListener('input', function () {
+        updateConvertedPrice(); // Mettre à jour les prix convertis
+    });
+
+    // Écouteur d'événement pour activer/désactiver le champ taux
+    document.getElementById('toggle-taux').addEventListener('change', function () {
+        const tauxInput = document.getElementById('taux');
+        if (this.checked) {
+            tauxInput.removeAttribute('readonly');  // Activer la saisie
+        } else {
+            tauxInput.setAttribute('readonly', true);  // Désactiver la saisie
+        }
+        updateConvertedPrice(); // Mettre à jour les prix convertis
+    });
+
+    // Écouteur d'événement pour le changement de quantité
+    document.querySelectorAll('.quantity').forEach(input => {
+        input.addEventListener('input', function () {
+            const row = this.closest('.product-row');
+            updateTotal(row); // Mettre à jour le total de la ligne
+        });
+    });
+
+    // Initialisation au chargement de la page
+    $(document).ready(function () {
+        updateConvertedPrice(); // Mettre à jour les prix convertis au chargement
+    });
+</script> --}}
 
 
+<script>
+    $(document).ready(function () {
+        // Fonction pour mettre à jour le total d'une ligne
+        function updateTotal(row) {
+            var price = parseFloat(row.find('.price').val()) || 0;
+            var quantity = parseInt(row.find('.quantity').val()) || 1;
+            var discount = parseFloat(row.find('.discount').val()) || 0;
+
+            var total = (price * quantity) - discount;
+            if (total < 0) total = 0; // Empêcher un total négatif
+
+            row.find('.total').val(total.toFixed(2)); // Afficher avec 2 décimales
+            updateTotalHT();
+        }
+
+        // Fonction pour mettre à jour le prix en fonction du taux
+        function updatePriceWithTaux(row) {
+            var selectedOption = row.find('.designation').find(':selected');
+            var priceOriginal = parseFloat(selectedOption.data('price')) || 0;
+            var taux = parseFloat($('#taux').val()) || 1.0;
+
+            var priceConverted = priceOriginal / taux; // Diviser par le taux
+            row.find('.price').val(priceConverted.toFixed(2)); // Mettre à jour le champ .price
+            updateTotal(row); // Recalculer le total
+        }
+
+        // Mise à jour du prix unitaire lorsqu'on sélectionne une désignation
+        $(document).on('change', '.designation', function () {
+            var row = $(this).closest('[data-repeater-item]');
+            updatePriceWithTaux(row); // Mettre à jour le prix avec le taux
+        });
+
+        // Mise à jour du total lorsqu'on modifie quantité ou remise
+        $(document).on('input', '.quantity, .discount', function () {
+            var row = $(this).closest('[data-repeater-item]');
+            updateTotal(row);
+        });
+
+        // Fonction pour mettre à jour Total HT
+        function updateTotalHT() {
+            var totalHT = 0;
+            $('[data-repeater-list="designations"] [data-repeater-item]').each(function () {
+                var total = parseFloat($(this).find('.total').val()) || 0;
+                totalHT += total;
+            });
+
+            $('.total-ht').val(totalHT.toFixed(2));
+            updateTVAandTTC();
+        }
+
+        // Fonction pour mettre à jour TVA et Total TTC
+        function updateTVAandTTC() {
+            var totalHT = parseFloat($('.total-ht').val()) || 0;
+            var tvaRate = parseFloat($('.tva').val()) || 0;
+            var tvaValue = (totalHT * tvaRate) / 100;
+            var totalTTC = totalHT + tvaValue;
+
+            $('.total-ttc').val(totalTTC.toFixed(2));
+            updateAcompte(); // Mettre à jour l'acompte après chaque modification de TTC
+        }
+
+        // Fonction pour mettre à jour l'acompte
+        function updateAcompte() {
+            var totalTTC = parseFloat($('.total-ttc').val()) || 0;
+            var commande = parseFloat($('#commande').val()) || 0;
+            var acompte = (totalTTC * commande) / 100;
+
+            $('.acompte').val(acompte.toFixed(2));
+            updateSolde(totalTTC);
+        }
+
+        // Fonction pour mettre à jour le solde
+        function updateSolde(totalTTC) {
+            var acompte = parseFloat($('.acompte').val()) || 0;
+            var solde = totalTTC - acompte;
+
+            $('.solde').val(solde.toFixed(2));
+        }
+
+        // Quand l'acompte change, mettre à jour le solde
+        $(document).on('input', '.acompte', function () {
+            updateSolde(parseFloat($('.total-ttc').val()) || 0);
+        });
+
+        // Quand le pourcentage de commande change, mettre à jour l'acompte
+        $(document).on('input', '#commande', function () {
+            updateAcompte();
+        });
+
+        // Activation/désactivation de la TVA en fonction de la case à cocher
+        $(document).on('change', '.toggle-tva', function () {
+            var tvaInput = $('.tva');
+
+            if ($(this).is(':checked')) {
+                tvaInput.prop('readonly', false).val(0);
+            } else {
+                tvaInput.prop('readonly', true).val(18);
+            }
+
+            updateTVAandTTC();
+        });
+
+        // Recalculer la TVA et le total lorsque la TVA change
+        $(document).on('input', '.tva', function () {
+            updateTVAandTTC();
+        });
+
+        // Mettre à jour après ajout ou suppression d'une ligne
+        $(document).on('click', '[data-repeater-create], [data-repeater-delete]', function () {
+            updateTotalHT();
+        });
+
+        // Initialiser le calcul au chargement de la page
+        updateTotalHT();
+    });
 </script>
 
+
+<script>
+    $(document).ready(function () {
+        // Initialisation du répéteur
+        $('.email-repeater').repeater({
+            initEmpty: false,
+            defaultValues: {},
+            show: function () {
+                $(this).slideDown();
+                initializeSelect2($(this));
+                $(this).find('.discount').val(0);
+                $(this).find('.quantity').val(1);
+            },
+            hide: function (deleteElement) {
+                $(this).slideUp(deleteElement);
+            }
+        });
+
+        // Fonction pour initialiser Select2
+        function initializeSelect2(container) {
+            container.find('.designation').select2({
+                width: '100%',
+                placeholder: "Sélectionner",
+                allowClear: true
+            });
+        }
+
+        initializeSelect2($(document));
+
+        // Mise à jour des champs lors de la sélection d'une désignation
+        $(document).on('change', '.designation', function () {
+            let selectedOption = $(this).find(':selected');
+            let id = selectedOption.data('id');
+            let priceOriginal = selectedOption.data('price') || 0;
+            let taux = parseFloat($('#taux').val()) || 1.0;
+
+            let priceConverted = priceOriginal / taux; // Diviser par le taux
+            let row = $(this).closest('[data-repeater-item]');
+            row.find('.designation-id').val(id);
+            row.find('.price').val(priceConverted.toFixed(2)).trigger('input');
+        });
+    });
+</script>
+
+<script>
+    const rates = @json($rates);
+
+    // Fonction pour mettre à jour tous les prix en fonction du taux
+    function updateAllPricesWithTaux() {
+        const taux = parseFloat($('#taux').val()) || 1.0;
+        $('[data-repeater-item]').each(function () {
+            var selectedOption = $(this).find('.designation').find(':selected');
+            var priceOriginal = parseFloat(selectedOption.data('price')) || 0;
+            var priceConverted = priceOriginal / taux; // Diviser par le taux
+            $(this).find('.price').val(priceConverted.toFixed(2)).trigger('input');
+        });
+    }
+
+    // Écouteur d'événement pour le changement de devise
+    $('#devise').on('change', function () {
+        const selectedDevise = this.value;
+        const tauxInput = $('#taux');
+
+        if (rates[selectedDevise] !== undefined) {
+            tauxInput.val(rates[selectedDevise].toFixed(2));
+        } else {
+            tauxInput.val(1.0); // Taux par défaut
+        }
+
+        updateAllPricesWithTaux(); // Mettre à jour tous les prix
+    });
+
+    // Écouteur d'événement pour le changement du taux de conversion
+    $('#taux').on('input', function () {
+        updateAllPricesWithTaux(); // Mettre à jour tous les prix
+    });
+
+    // Initialisation au chargement de la page
+    $(document).ready(function () {
+        updateAllPricesWithTaux(); // Mettre à jour les prix au chargement
+    });
+</script>
 @endpush
