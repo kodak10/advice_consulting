@@ -85,21 +85,23 @@
                 <div class="card-body">
                     <h4 class="card-title">Dévise</h4>
                     <div class="col-lg-6">
-                        <select name="devise" class="form-control">
+                        <select id="devise" name="devise" class="form-control">
                             @php
-                                $deviseUser = Auth::user()->pays->devise ?? 'XOF'; // Devise par défaut si non définie
+                                $deviseUser = Auth::user()->pays->devise ?? 'XOF'; // Devise par défaut en CFA (XOF) si non définie
                             @endphp
                             
                             <option value="XOF" {{ $deviseUser == 'XOF' ? 'selected' : '' }}>Franc CFA (XOF)</option>
-                            <option value="XAF" {{ $deviseUser == 'XAF' ? 'selected' : '' }}>Franc Guinéen (XAF)</option>
                             <option value="EUR" {{ $deviseUser == 'EUR' ? 'selected' : '' }}>Euro (EUR)</option>
                             <option value="USD" {{ $deviseUser == 'USD' ? 'selected' : '' }}>Dollar (USD)</option>
+                            <option value="GBP" {{ $deviseUser == 'GBP' ? 'selected' : '' }}>Livre Sterling (GBP)</option>
                         </select>
                     </div>
-
+                    
                     <div class="col-lg-6">
-                        <input type="number" name="taux">
+                        <input type="number" id="taux" name="taux" value="1" readonly>
                     </div>
+                    
+                    
                 </div>
             </div>
             
@@ -708,5 +710,24 @@
     });
 </script>
 
+<script>
+    // Récupérer les taux de conversion depuis l'objet PHP
+    const rates = @json($rates);
+
+    document.getElementById('devise').addEventListener('change', function () {
+    const selectedDevise = this.value; // Devise choisie par l'utilisateur
+    const tauxInput = document.getElementById('taux');
+
+    // Vérifier si le taux existe dans les données récupérées
+    if (rates && rates[selectedDevise] !== undefined) {
+        // Mettre à jour le champ avec le taux correct
+        tauxInput.value = rates[selectedDevise].toFixed(2); // Formatage du taux avec 2 décimales
+    } else {
+        tauxInput.value = 0; // Si le taux est inexistant ou non défini
+    }
+});
+
+
+</script>
 
 @endpush

@@ -30,6 +30,7 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use Illuminate\Support\Facades\Http; 
 
 
 class DevisController extends Controller
@@ -68,15 +69,51 @@ class DevisController extends Controller
 
     } 
 
-    public function create()
-    {
-        $clients = Client::all();
-        $banques = Banque::all();
-        $designations = Designation::all();
-        $devises = Devise::all();
-        return view('administration.pages.devis.create', compact('clients','designations','banques', 'devises'));
+    // public function create()
+    // {
+    //     $clients = Client::all();
+    //     $banques = Banque::all();
+    //     $designations = Designation::all();
+    //     $devises = Devise::all();
+    //     return view('administration.pages.devis.create', compact('clients','designations','banques', 'devises'));
 
+    // }
+
+
+    public function create()
+{
+    // Récupérer les données des clients, banques, etc.
+    $clients = Client::all();
+    $banques = Banque::all();
+    $designations = Designation::all();
+    $devises = Devise::all();
+    
+    // Récupérer les taux de change pour toutes les devises
+    $apiKey = env('EXCHANGE_RATE_API_KEY');
+    $baseCurrency = 'XOF'; // Devise de base (ici, XOF)
+    
+    // Envoi de la requête à l'API d'ExchangeRate
+    $response = Http::get("https://v6.exchangerate-api.com/v6/{$apiKey}/latest/{$baseCurrency}");
+    
+    // Vérifier la réponse de l'API
+    if ($response->successful()) {
+        $rates = $response->json()['conversion_rates']; // Récupère toutes les devises et leurs taux
+        
+        // Calculer le taux pour chaque devise
+        foreach ($rates as $devise => $taux) {
+            // Inverser le taux pour que 1 XOF = taux de la devise
+            $rates[$devise] = round(1 / $taux, 2);
+        }
+    } else {
+        $rates = null; // Gestion d'erreur si l'API échoue
     }
+
+    // Passer les taux de conversion à la vue
+    return view('administration.pages.devis.create', compact('clients', 'designations', 'banques', 'devises', 'rates'));
+}
+
+    
+
 
     public function generateNumProforma()
     {
