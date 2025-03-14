@@ -176,6 +176,15 @@
             background-color: #c54f00;
             margin-bottom: 20px;
         }
+        .proforma{
+            font-size: 21px;
+            font-weight: bold;
+            color: #0064c9;
+        }
+        .elements{
+            background-color: #575656 !important;
+            color: #ddd;
+        }
     </style>
 </head>
 
@@ -202,18 +211,18 @@
             <td colspan="6"><strong>{{ $devis->client->nom }}</strong></td>
         </tr>
         <tr>
-            <td colspan="6">FACTURE PROFORMA</td>
+            <td colspan="6" class="proforma">FACTURE PROFORMA</td>
             <td colspan="6"><strong>Adresse:</strong> {{ $devis->client->adresse }}</td>
         </tr>
-        <tr class="info-client">
+        <tr>
             <td colspan="6">Date émission: {{ $devis->date_emission }}</td>
             <td colspan="6"><strong>Téléphone:</strong> {{ $devis->client->telephone }}</td>
         </tr>
-        <tr class="info-client">
+        <tr>
             <td colspan="6">Numéro: {{ $devis->num_proforma }}</td>
             <td colspan="6"><strong>Ville:</strong> {{ $devis->client->ville }}</td>
         </tr>
-        <tr class="info-client">
+        <tr>
             <td colspan="6"></td>
             <td colspan="6"><strong>N°CC:</strong> {{ $devis->client->numero_cc }}</td>
         </tr>
@@ -224,23 +233,23 @@
             </td>
         </tr>
 
-        <tr>
-            <th colspan="1">Référence</th>
+        <tr class="elements">
+            <th>Référence</th>
             <th colspan="3">Description</th>
-            <th colspan="1">Quantité</th>
-            <th colspan="2">Prix unitaire</th>
+            <th>Quantité</th>
+            <th colspan="3">Prix unitaire</th>
             <th colspan="2">Remise</th>
-            <th colspan="3">Total</th>
+            <th colspan="4">Total</th>
         </tr>
         
         @foreach ($devis->details as $devisDetail)
             <tr>
-                <td colspan="1">{{ $devisDetail->designation->reference }}</td>
+                <td>{{ $devisDetail->designation->reference }}</td>
                 <td colspan="3">{{ $devisDetail->designation->description }}</td>
-                <td colspan="1">{{ $devisDetail->quantite }}</td>
-                <td colspan="2">{{ floor($devisDetail->prix_unitaire) }}</td>
+                <td>{{ $devisDetail->quantite }}</td>
+                <td colspan="3">{{ floor($devisDetail->prix_unitaire) }}</td>
                 <td colspan="2">{{ floor($devisDetail->remise) }}</td>
-                <td colspan="3">{{ floor($devisDetail->total) }}</td>
+                <td colspan="4">{{ floor($devisDetail->total) }}</td>
             </tr>
         @endforeach
         

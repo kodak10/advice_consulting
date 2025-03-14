@@ -281,7 +281,7 @@
                                 </div>
                                 <div class="col-4">
                                     <label class="form-label">Acompte <span class="text-danger">*</span></label>
-                                    <input type="number" class="form-control acompte" id="acompte" name="acompte" value="{{ old('acompte', session('data.acompte', 0)) }}" readonly>
+                                    <input type="number" step="0.01" class="form-control acompte" id="acompte" name="acompte" value="{{ old('acompte', session('data.acompte', 0)) }}" readonly>
                                 </div>
                                 <div class="col-4">
                                     <label class="form-label">Solde <span class="text-danger">*</span></label>
@@ -479,316 +479,6 @@
     }
 </script>
 
-{{-- <script>
-    $(document).ready(function () {
-        // Fonction pour mettre à jour le total d'une ligne
-        function updateTotal(row) {
-            var price = parseFloat(row.find('.price').val()) || 0;
-            var quantity = parseInt(row.find('.quantity').val()) || 1;
-            var discount = parseFloat(row.find('.discount').val()) || 0;
-
-            var total = (price * quantity) - discount;
-            if (total < 0) total = 0; // Empêcher un total négatif
-
-            row.find('.total').val(total.toFixed(2)); // Afficher avec 2 décimales
-            updateTotalHT();
-        }
-
-        // Mise à jour du prix unitaire lorsqu'on sélectionne une désignation
-        $(document).on('change', '.designation', function () {
-            var selectedOption = $(this).find(':selected');
-            var price = parseFloat(selectedOption.data('price')) || 0;
-            var row = $(this).closest('.row');
-
-            row.find('.price').val(price); // Mettre à jour le prix unitaire
-            updateTotal(row);
-        });
-
-        // Mise à jour du total lorsqu'on modifie quantité ou remise
-        $(document).on('input', '.quantity, .discount', function () {
-            var row = $(this).closest('.row');
-            updateTotal(row);
-        });
-
-        // Fonction pour mettre à jour Total HT
-        function updateTotalHT() {
-            var totalHT = 0;
-            $('.email-repeater .row').each(function () {
-                var row = $(this);
-                var total = parseFloat(row.find('.total').val()) || 0;
-                totalHT += total;
-            });
-
-            $('.total-ht').val(totalHT.toFixed(2));
-            updateTVAandTTC();
-        }
-
-        // Fonction pour mettre à jour TVA et Total TTC
-        function updateTVAandTTC() {
-            var totalHT = parseFloat($('.total-ht').val()) || 0;
-            var tvaRate = parseFloat($('.tva').val()) || 0;
-            var tvaValue = (totalHT * tvaRate) / 100;
-            var totalTTC = totalHT + tvaValue;
-
-            $('.total-ttc').val(totalTTC.toFixed(2));
-            updateAcompte(); // Mettre à jour l'acompte après chaque modification de TTC
-        }
-
-        // Fonction pour mettre à jour l'acompte
-        function updateAcompte() {
-            var totalTTC = parseFloat($('.total-ttc').val()) || 0; // Récupérer le total TTC
-            var commande = parseFloat($('#commande').val()) || 0; // Pourcentage de commande
-            var acompte = (totalTTC * commande) / 100; // Calcul de l'acompte
-
-            $('.acompte').val(acompte.toFixed(2)); // Mettre à jour l'acompte
-            updateSolde(totalTTC); // Mettre à jour le solde
-        }
-
-        // Fonction pour mettre à jour le solde
-        function updateSolde(totalTTC) {
-            var acompte = parseFloat($('.acompte').val()) || 0;
-            var solde = totalTTC - acompte;
-
-            $('.solde').val(solde.toFixed(2));
-        }
-
-        // Quand l'acompte change, mettre à jour le solde
-        $(document).on('input', '.acompte', function () {
-            updateSolde(parseFloat($('.total-ttc').val()) || 0);
-        });
-
-        // Quand le pourcentage de commande change, mettre à jour l'acompte
-        $(document).on('input', '#commande', function () {
-            updateAcompte(); // Recalculer l'acompte quand la commande change
-        });
-
-        // Activation/désactivation de la TVA en fonction de la case à cocher
-        $(document).on('change', '.toggle-tva', function () {
-            var tvaInput = $('.tva');
-
-            if ($(this).is(':checked')) {
-                tvaInput.prop('readonly', false).val(0);
-            } else {
-                tvaInput.prop('readonly', true).val(18);
-            }
-
-            updateTVAandTTC();
-        });
-
-        // Recalculer la TVA et le total lorsque la TVA change
-        $(document).on('input', '.tva', function () {
-            updateTVAandTTC();
-        });
-
-        // Mettre à jour après ajout ou suppression d'une ligne
-        $(document).on('click', '[data-repeater-create], [data-repeater-delete]', function () {
-            updateTotalHT();
-        });
-
-        // Initialiser le calcul au chargement de la page
-        updateTotalHT();
-    });
-</script>
-
-
-<script>
-    $(document).ready(function () {
-        // Initialisation du répéteur
-        $('.email-repeater').repeater({
-            initEmpty: false,
-            defaultValues: {},
-            show: function () {
-                $(this).slideDown();
-                initializeSelect2($(this));
-                $(this).find('.discount').val(0);
-                $(this).find('.quantity').val(1);
-            },
-            hide: function (deleteElement) {
-                $(this).slideUp(deleteElement);
-            }
-        });
-    
-        // Fonction pour initialiser Select2
-        function initializeSelect2(container) {
-            container.find('.designation').select2({
-                width: '100%',
-                placeholder: "Sélectionner",
-                allowClear: true
-            });
-        }
-    
-        initializeSelect2($(document));
-    
-        // Mise à jour des champs lors de la sélection d'une désignation
-        $(document).on('change', '.designation', function () {
-            let selectedOption = $(this).find(':selected');
-            let id = selectedOption.data('id');
-            let price = selectedOption.data('price') || 0;
-    
-            let row = $(this).closest('[data-repeater-item]');
-            row.find('.designation-id').val(id);
-            row.find('.price').val(price).trigger('input');
-        });
-    
-        // Calcul automatique du total pour chaque ligne
-        $(document).on('input', '.quantity, .price, .discount', function () {
-            let row = $(this).closest('[data-repeater-item]');
-            let quantity = parseFloat(row.find('.quantity').val()) || 0;
-            let price = parseFloat(row.find('.price').val()) || 0;
-            let discount = parseFloat(row.find('.discount').val()) || 0;
-    
-            let total = (quantity * price) - discount;
-            row.find('.total').val(total.toFixed(2));
-    
-            // Mettre à jour le Total HT après chaque modification
-            updateTotalHT();
-        });
-    
-        // Fonction pour mettre à jour Total HT
-        function updateTotalHT() {
-            let totalHT = 0;
-            $('.email-repeater [data-repeater-item]').each(function () {
-                let total = parseFloat($(this).find('.total').val()) || 0;
-                totalHT += total;
-            });
-    
-            $('.total-ht').val(totalHT.toFixed(2));
-            updateTVAandTTC(); // Mettre à jour TVA et Total TTC
-        }
-    
-        // Fonction pour mettre à jour TVA et Total TTC
-        function updateTVAandTTC() {
-            let totalHT = parseFloat($('.total-ht').val()) || 0;
-            let tvaRate = parseFloat($('.tva').val()) || 0;
-            let tvaValue = (totalHT * tvaRate) / 100;
-            let totalTTC = totalHT + tvaValue;
-    
-            $('.total-ttc').val(totalTTC.toFixed(2));
-            updateAcompte(); // Mettre à jour l'acompte après chaque modification de TTC
-        }
-    
-        // Fonction pour mettre à jour l'acompte
-        function updateAcompte() {
-            let totalTTC = parseFloat($('.total-ttc').val()) || 0; // Récupérer le total TTC
-            let commande = parseFloat($('#commande').val()) || 0; // Pourcentage de commande
-            let acompte = (totalTTC * commande) / 100; // Calcul de l'acompte
-    
-            $('.acompte').val(acompte.toFixed(2)); // Mettre à jour l'acompte
-            updateSolde(totalTTC); // Mettre à jour le solde
-        }
-    
-        // Fonction pour mettre à jour le solde
-        function updateSolde(totalTTC) {
-            let acompte = parseFloat($('.acompte').val()) || 0;
-            let solde = totalTTC - acompte;
-    
-            $('.solde').val(solde.toFixed(2));
-        }
-    
-        // Quand l'acompte change, mettre à jour le solde
-        $(document).on('input', '.acompte', function () {
-            updateSolde(parseFloat($('.total-ttc').val()) || 0);
-        });
-    
-        // Quand le pourcentage de commande change, mettre à jour l'acompte
-        $(document).on('input', '#commande', function () {
-            updateAcompte(); // Recalculer l'acompte quand la commande change
-        });
-    
-        // Activation/désactivation de la TVA en fonction de la case à cocher
-        $(document).on('change', '.toggle-tva', function () {
-            let tvaInput = $('.tva');
-    
-            if ($(this).is(':checked')) {
-                tvaInput.prop('readonly', false).val(0);
-            } else {
-                tvaInput.prop('readonly', true).val(18);
-            }
-    
-            updateTVAandTTC();
-        });
-    
-        // Recalculer la TVA et le total lorsque la TVA change
-        $(document).on('input', '.tva', function () {
-            updateTVAandTTC();
-        });
-    
-        // Mettre à jour après ajout ou suppression d'une ligne
-        $(document).on('click', '[data-repeater-create], [data-repeater-delete]', function () {
-            updateTotalHT();
-        });
-    
-        // Initialiser le calcul au chargement de la page
-        updateTotalHT();
-    });
-</script>
-
-<script>
-    const rates = @json($rates);
-
-    // Fonction pour mettre à jour le prix converti
-    function updateConvertedPrice() {
-        const taux = parseFloat(document.getElementById('taux').value) || 1.0;
-        document.querySelectorAll('.product-row').forEach(row => {
-            const priceOriginal = parseFloat(row.querySelector('.price-original').value) || 0;
-            const priceConverted = priceOriginal * taux;
-            row.querySelector('.price-converted').value = priceConverted.toFixed(2);
-            updateTotal(row); // Recalculer le total
-        });
-    }
-
-    // Fonction pour mettre à jour le total d'une ligne
-    function updateTotal(row) {
-        const priceConverted = parseFloat(row.querySelector('.price-converted').value) || 0;
-        const quantity = parseFloat(row.querySelector('.quantity').value) || 1;
-        const total = priceConverted * quantity;
-        row.querySelector('.total').value = total.toFixed(2);
-    }
-
-    // Écouteur d'événement pour le changement de devise
-    document.getElementById('devise').addEventListener('change', function () {
-        const selectedDevise = this.value;
-        const tauxInput = document.getElementById('taux');
-
-        if (rates[selectedDevise] !== undefined) {
-            tauxInput.value = rates[selectedDevise].toFixed(2);
-        } else {
-            tauxInput.value = 1.0; // Taux par défaut
-        }
-
-        updateConvertedPrice(); // Mettre à jour les prix convertis
-    });
-
-    // Écouteur d'événement pour le changement du taux de conversion
-    document.getElementById('taux').addEventListener('input', function () {
-        updateConvertedPrice(); // Mettre à jour les prix convertis
-    });
-
-    // Écouteur d'événement pour activer/désactiver le champ taux
-    document.getElementById('toggle-taux').addEventListener('change', function () {
-        const tauxInput = document.getElementById('taux');
-        if (this.checked) {
-            tauxInput.removeAttribute('readonly');  // Activer la saisie
-        } else {
-            tauxInput.setAttribute('readonly', true);  // Désactiver la saisie
-        }
-        updateConvertedPrice(); // Mettre à jour les prix convertis
-    });
-
-    // Écouteur d'événement pour le changement de quantité
-    document.querySelectorAll('.quantity').forEach(input => {
-        input.addEventListener('input', function () {
-            const row = this.closest('.product-row');
-            updateTotal(row); // Mettre à jour le total de la ligne
-        });
-    });
-
-    // Initialisation au chargement de la page
-    $(document).ready(function () {
-        updateConvertedPrice(); // Mettre à jour les prix convertis au chargement
-    });
-</script> --}}
-
 
 <script>
     $(document).ready(function () {
@@ -964,6 +654,20 @@
             $(this).find('.price').val(priceConverted.toFixed(2)).trigger('input');
         });
     }
+
+
+    $(document).on('change', '#toggle-taux', function () {
+    var tauxInput = $('#taux');
+
+    if ($(this).is(':checked')) {
+        tauxInput.prop('readonly', false);
+    } else {
+        tauxInput.prop('readonly', true);
+    }
+
+    updateAllPricesWithTaux();
+});
+
 
     // Écouteur d'événement pour le changement de devise
     $('#devise').on('change', function () {

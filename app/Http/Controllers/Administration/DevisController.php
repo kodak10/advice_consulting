@@ -40,16 +40,16 @@ class DevisController extends Controller
         $this->middleware('role:Comptable|Commercial|DG')->except('download', 'exportCsv');
     }
 
-    public function getDeviseRate($deviseCode)
-    {
-        $devise = Devise::where('code', $deviseCode)->first();
+    // public function getDeviseRate($deviseCode)
+    // {
+    //     $devise = Devise::where('code', $deviseCode)->first();
 
-        if ($devise) {
-            return response()->json(['taux_conversion' => $devise->taux_conversion]);
-        }
+    //     if ($devise) {
+    //         return response()->json(['taux_conversion' => $devise->taux_conversion]);
+    //     }
 
-        return response()->json(['error' => 'Devise non trouvée'], 404);
-    }
+    //     return response()->json(['error' => 'Devise non trouvée'], 404);
+    // }
 
     
     public function index()
@@ -68,16 +68,6 @@ class DevisController extends Controller
         return view('administration.pages.devis.index', compact('devis', 'mes_devis', 'devisAlls'));
 
     } 
-
-    // public function create()
-    // {
-    //     $clients = Client::all();
-    //     $banques = Banque::all();
-    //     $designations = Designation::all();
-    //     $devises = Devise::all();
-    //     return view('administration.pages.devis.create', compact('clients','designations','banques', 'devises'));
-
-    // }
 
 
     public function create()
@@ -237,6 +227,7 @@ public function refuse($id, Request $request)
         // Valider les données du formulaire
         $validated = $request->validate([
             'devise' => 'required|string',
+            'taux' => 'required|numeric|min:1',
 
             'client_id' => 'required|exists:clients,id',  
             'date_emission' => 'required|date',  
@@ -302,6 +293,8 @@ public function refuse($id, Request $request)
                 'designations.*.total' => 'required|numeric|min:0',
 
                 'devise' => 'required|string',
+                'taux' => 'required|numeric|min:1',
+
                 'texte' => 'required',
 
 
@@ -331,6 +324,7 @@ public function refuse($id, Request $request)
             $devis->status = "En Attente de validation";
             $devis->pays_id = Auth::user()->pays_id;
             $devis->devise = $validated['devise'];
+            $devis->taux = $validated['taux'];
             $devis->texte = $validated['texte'];
 
             $devis->save();
@@ -392,9 +386,31 @@ public function refuse($id, Request $request)
         if ($devis->status !== 'En Attente de validation' && $devis->status !== 'Réfusé') {
             return redirect()->back()->with('error', 'Vous ne pouvez modifier cette Proforma que si son statut est "En Attente de validation" ou "Réfusé".');
         }
+
+        $devises = Devise::all();
+    
+        // Récupérer les taux de change pour toutes les devises
+        $apiKey = env('EXCHANGE_RATE_API_KEY');
+        $baseCurrency = 'XOF'; // Devise de base (ici, XOF)
+        
+        // Envoi de la requête à l'API d'ExchangeRate
+        $response = Http::get("https://v6.exchangerate-api.com/v6/{$apiKey}/latest/{$baseCurrency}");
+        
+        // Vérifier la réponse de l'API
+        if ($response->successful()) {
+            $rates = $response->json()['conversion_rates']; // Récupère toutes les devises et leurs taux
+            
+            // Calculer le taux pour chaque devise
+            foreach ($rates as $devise => $taux) {
+                // Inverser le taux pour que 1 XOF = taux de la devise
+                $rates[$devise] = round(1 / $taux, 2);
+            }
+        } else {
+            $rates = null; // Gestion d'erreur si l'API échoue
+        }
         
 
-        return view('administration.pages.devis.edit', compact('devis','clients','banques', 'designations'));
+        return view('administration.pages.devis.edit', compact('devis','clients','banques', 'designations', 'devises', 'rates'));
     }
 
     public function recapUpdate(Request $request, $id)
@@ -402,6 +418,8 @@ public function refuse($id, Request $request)
         // dd($request);
         $validated = $request->validate([
             'devise' => 'required|string',  
+            'taux' => 'required|numeric|min:1',  
+
             'texte' => 'required',  
 
             'client_id' => 'required|exists:clients,id', 
@@ -471,6 +489,8 @@ public function refuse($id, Request $request)
                 'designations.*.total' => 'required|numeric|min:0', 
 
                 'devise' => 'required|string',  
+                'taux' => 'required|numeric|min:1',  
+
                 'texte' => 'required',  
 
             ]);
@@ -494,6 +514,8 @@ public function refuse($id, Request $request)
                 'acompte' => $validated['acompte'],
                 'solde' => $validated['solde'],
                 'devise' => $validated['devise'],
+                'taux' => $validated['taux'],
+
                 'texte' => $validated['texte'],
                 'status' => "En Attente de validation",
 
@@ -636,6 +658,7 @@ public function refuse($id, Request $request)
             'Client',
             'Montant Total',
             'Devise',
+            'taux',
             'Établi Par',
             'Statut'
         ]);
@@ -646,13 +669,15 @@ public function refuse($id, Request $request)
             $userName = $devi->user ? $devi->user->name : 'Utilisateur inconnu';
             $cost = $devi->details->sum('total');
             $devise = $devi->devise ?? 'USD';
-    
+            $taux = $devi->taux ?? '1';
+
             fputcsv($csvFile, [
                 $devi->created_at->format('d/m/Y H:i:s'),
                 $devi->num_proforma ?? 'N/A',
                 $clientName,
                 number_format($cost, 2, ',', ' '),
                 $devise,
+                $taux,
                 $userName,
                 $devi->status ?? 'Non renseigné'
             ]);

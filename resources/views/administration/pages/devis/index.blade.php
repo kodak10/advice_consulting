@@ -252,10 +252,11 @@
                       </a>
                       <!-- Lien pour afficher le modal -->
                       
-
-                      <button type="button" class="btn bg-warning-subtle text-warning px-4 fs-4 " data-bs-toggle="modal" data-bs-target="#refuseModal">
+                      <a href="" class="text-danger" data-bs-toggle="modal" data-bs-target="#refuseModal">
                         <i class="ti ti-square-rounded-minus"></i>
-                      </button>
+                      </a>
+
+                     
 
                       <!-- Modal -->
                       <div class="modal fade" id="refuseModal" tabindex="-1" aria-labelledby="refuseModalLabel" aria-hidden="true">
@@ -266,7 +267,7 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <form method="GET" action="{{ route('dashboard.devis.refuse', $devi->id) }}">
+                                    <form method="POST" action="{{ route('dashboard.devis.refuse', $devi->id) }}">
                                         @csrf
                                         <div class="mb-3">
                                             <label for="refuse_message" class="form-label">Message de refus</label>
@@ -484,9 +485,14 @@
                       <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger">
                         <i class="ti ti-download fs-5"></i>
                       </a>
-                      <button type="button" class="btn bg-warning-subtle text-warning px-4 fs-4 " data-bs-toggle="modal" data-bs-target="#refuseModal">
+
+                      <a href="" class="text-danger" data-bs-toggle="modal" data-bs-target="#refuseModal">
                         <i class="ti ti-square-rounded-minus"></i>
-                      </button>
+                      </a>
+
+                      {{-- <button type="button" class="btn bg-warning-subtle text-warning px-4 fs-4 " data-bs-toggle="modal" data-bs-target="#">
+                        <i class="ti ti-square-rounded-minus"></i>
+                      </button> --}}
 
                       <!-- Modal -->
                       <div class="modal fade" id="refuseModal" tabindex="-1" aria-labelledby="refuseModalLabel" aria-hidden="true">

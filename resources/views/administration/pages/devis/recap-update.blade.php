@@ -143,6 +143,7 @@
                             </div>
 
                             <input type="hidden" name="devise" value="{{ $validated['devise'] }}">
+                            <input type="hidden" name="taux" value="{{ $validated['taux'] }}">
 
                             <input type="hidden" name="client_id" value="{{ $client->id }}">
                             <input type="hidden" name="banque_id" value="{{ $banque->id }}">
