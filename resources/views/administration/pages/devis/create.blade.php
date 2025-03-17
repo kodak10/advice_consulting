@@ -88,21 +88,22 @@
                         <div class="col-lg-6">
                             <select id="devise" name="devise" class="form-control">
                                 @php
-                                    $deviseUser = Auth::user()->pays->devise ?? 'XOF'; // Devise par défaut en CFA (XOF) si non définie
+                                    $deviseUser = Auth::user()->pays->devise; // Devise par défaut en CFA (XOF) si non définie
                                 @endphp
                                 
-                                <option value="XOF" {{ $deviseUser == 'XOF' ? 'selected' : '' }}>Franc CFA (XOF)</option>
-                                <option value="EUR" {{ $deviseUser == 'EUR' ? 'selected' : '' }}>Euro (EUR)</option>
-                                <option value="USD" {{ $deviseUser == 'USD' ? 'selected' : '' }}>Dollar (USD)</option>
-                                <option value="GBP" {{ $deviseUser == 'GBP' ? 'selected' : '' }}>Livre Sterling (GBP)</option>
-                                <option value="GNF" {{ $deviseUser == 'GNF' ? 'selected' : '' }}>Franc Guinéen (GNF)</option> <!-- Option ajoutée pour le Franc Guinéen -->
+                                <option value="XOF" {{ old('devise', $deviseUser) == 'XOF' ? 'selected' : '' }}>Franc CFA (XOF)</option>
+                                <option value="EUR" {{ old('devise', $deviseUser) == 'EUR' ? 'selected' : '' }}>Euro (EUR)</option>
+                                <option value="USD" {{ old('devise', $deviseUser) == 'USD' ? 'selected' : '' }}>Dollar (USD)</option>
+                                <option value="GBP" {{ old('devise', $deviseUser) == 'GBP' ? 'selected' : '' }}>Livre Sterling (GBP)</option>
+                                <option value="GNF" {{ old('devise', $deviseUser) == 'GNF' ? 'selected' : '' }}>Franc Guinéen (GNF)</option> <!-- Option ajoutée pour le Franc Guinéen -->
                             </select>
+                            
                             
                         </div>
                         
                         <div class="col-lg-6">
                             <div class="input-group devise">
-                                <!-- Le champ de saisie est désactivé par défaut (readonly) -->
+                                <!-- Le champ de saisie avec une valeur par défaut (1) et la gestion de old() -->
                                 <input type="number" id="taux" name="taux" value="{{ old('taux', 1) }}" readonly class="form-control">
                                 
                                 <!-- Le bouton checkbox pour activer/désactiver l'édition -->

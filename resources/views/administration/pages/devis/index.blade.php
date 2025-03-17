@@ -53,7 +53,7 @@
                   </div>
                 @endif
 
-                  @if (session('gmailUrl'))
+                  {{-- @if (session('gmailUrl'))
                   <div class="alert alert-success">
                       <p>✅ La Proforma a été approuvé avec succès.</p>
                       <button class="btn btn-primary" onclick="openGmail()">📧 Ouvrir Gmail</button>
@@ -69,7 +69,7 @@
                           window.open("{{ session('gmailUrl') }}", "_blank");
                       }, 1000);
                   </script>
-              @endif
+              @endif --}}
 
             </div>
           <div class="col-md-4 col-xl-9 text-end d-flex justify-content-md-end justify-content-center mt-3 mt-md-0">

@@ -178,7 +178,7 @@
         }
 
         .vide{
-            height: 150px;
+            height: 120px;
         }
     </style>
 </head>
@@ -198,7 +198,7 @@
             </td>
             <!-- Texte avec colspan également correctement défini -->
             <td colspan="6">
-                Agent
+                Agent <div class="box">{{ $devis->user->name }}</div>
             </td>
         </tr>
     </table>

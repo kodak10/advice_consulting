@@ -6,6 +6,7 @@ use App\Events\DevisCreated;
 use App\Events\TestEvent;
 use App\Http\Controllers\Controller;
 use App\Mail\DevisApprovalMail;
+use App\Mail\DevisMail;
 use App\Models\Banque;
 use App\Models\Client;
 use App\Models\Designation;
@@ -78,25 +79,27 @@ class DevisController extends Controller
     $designations = Designation::all();
     $devises = Devise::all();
     
-    // Récupérer les taux de change pour toutes les devises
-    $apiKey = env('EXCHANGE_RATE_API_KEY');
-    $baseCurrency = 'XOF'; // Devise de base (ici, XOF)
-    
-    // Envoi de la requête à l'API d'ExchangeRate
-    $response = Http::get("https://v6.exchangerate-api.com/v6/{$apiKey}/latest/{$baseCurrency}");
-    
-    // Vérifier la réponse de l'API
-    if ($response->successful()) {
-        $rates = $response->json()['conversion_rates']; // Récupère toutes les devises et leurs taux
-        
-        // Calculer le taux pour chaque devise
-        foreach ($rates as $devise => $taux) {
-            // Inverser le taux pour que 1 XOF = taux de la devise
-            $rates[$devise] = round(1 / $taux, 2);
-        }
-    } else {
-        $rates = null; // Gestion d'erreur si l'API échoue
-    }
+  // Récupérer les taux de change pour toutes les devises
+  $apiKey = env('EXCHANGE_RATE_API_KEY');
+  $baseCurrency = 'XOF'; // Devise de base (ici, XOF)
+  
+  // Envoi de la requête à l'API d'ExchangeRate
+  $response = Http::get("https://v6.exchangerate-api.com/v6/{$apiKey}/latest/{$baseCurrency}");
+  
+  // Vérifier la réponse de l'API
+  if ($response->successful()) {
+      $rates = $response->json()['conversion_rates']; // Récupère toutes les devises et leurs taux
+      
+      // Calculer le taux pour chaque devise
+      foreach ($rates as $devise => $taux) {
+          // Inverser le taux pour que 1 XOF = taux de la devise
+          $rates[$devise] = round(1 / $taux, 2);
+      }
+  } else {
+      $rates = null; // Gestion d'erreur si l'API échoue
+  }
+
+
 
     // Passer les taux de conversion à la vue
     return view('administration.pages.devis.create', compact('clients', 'designations', 'banques', 'devises', 'rates'));
@@ -130,64 +133,110 @@ class DevisController extends Controller
     }
 
    
-    public function approuve($id)
-{
-    // Récupérer le devis
-    $devis = Devis::findOrFail($id);
-    $creator = $devis->user_id;
-
-    // Vérifier le statut du devis
-    if ($devis->status !== 'En Attente de validation') {
-        return redirect()->back()->with('error', 'La Proforma ne peut être Facturée que si elle est en Attente de validation.');
-    }
-
-    // Vérifier si le PDF existe
-    $pdfPath = storage_path('app/public/' . $devis->pdf_path);
-    if (!file_exists($pdfPath)) {
-        return redirect()->back()->with('error', 'Le fichier PDF n\'existe pas.');
-    }
-
-    // Récupérer l'email du client
-    $clientEmail = $devis->client->email;
-    if (empty($clientEmail)) {
-        return redirect()->back()->with('error', 'L\'email du client est manquant.');
-    }
-
-    // Récupérer les emails des comptables
-    $comptables = User::role(['Comptable', 'DG'])
-        ->where('pays_id', Auth::user()->pays_id)
-        ->where('id', '!=', $creator)
-        ->get();
-
-    // Emails en copie (CC)
-    $ccEmails = 'comptable@example.com,directeur@example.com'; // Remplacez par les emails réels
-
-    // Sujet et corps de l'email
-    $subject = "Facture pour votre devis";
-    $body = "Bonjour,\n\nVeuillez trouver ci-joint la facture associée à votre devis.\n\nCordialement, \n" . Auth::user()->name;
-
-    // Générer l'URL publique du fichier PDF (exemple avec un stockage public)
-    $pdfUrl = asset('storage/' . $devis->pdf_path); // Assurez-vous que le fichier est accessible publiquement
-
-    // Générer l'URL Gmail
-    $gmailUrl = "https://mail.google.com/mail/?view=cm&fs=1&tf=1" .
-        "&to=" . urlencode($clientEmail) .
-        "&cc=" . urlencode($ccEmails) .
-        "&su=" . urlencode($subject) .
-        "&body=" . urlencode($body) .
-        "&attach=" . urlencode($pdfUrl); // Utilisez l'URL publique du fichier PDF
-
-    Notification::send($comptables, new DevisCreatedNotification($devis));
-
+    // public function approuve($id)
+    // {
+    //     // Récupérer le devis
+    //     $devis = Devis::findOrFail($id);
+    //     $creator = $devis->user_id;
     
-    // Mettre à jour le statut du devis
-    $devis->status = 'Facturé';
-    $devis->save();
-
-    // Rediriger vers la page index avec l'URL Gmail
-    return redirect()->route('dashboard.devis.index')->with('gmailUrl', $gmailUrl);
-}
-
+    //     // Vérifier le statut du devis
+    //     if ($devis->status !== 'En Attente de validation') {
+    //         return redirect()->back()->with('error', 'La Proforma ne peut être Facturée que si elle est en Attente de validation.');
+    //     }
+    
+    //     // Vérifier si le PDF existe
+    //     $pdfPath = storage_path('app/public/' . $devis->pdf_path);
+    //     if (!file_exists($pdfPath)) {
+    //         return redirect()->back()->with('error', 'Le fichier PDF n\'existe pas.');
+    //     }
+    
+    //     // Récupérer les emails du client
+    //     $client = $devis->client;
+    //     $clientEmails = [];
+    
+    //     // Ajouter les emails du client (email_01 et email_02)
+    //     if (!empty($client->email_01)) {
+    //         $clientEmails[] = $client->email_01;
+    //     }
+    //     if (!empty($client->email_02)) {
+    //         $clientEmails[] = $client->email_02;
+    //     }
+    
+    //     // Ajouter deux emails fixes (comptables et directeur)
+    //     $ccEmails = ['comptable@example.com', 'directeur@example.com']; 
+    
+    //     // Fusionner les emails du client et ceux fixes
+    //     $allEmails = array_merge($clientEmails, $ccEmails);
+    
+    //     // Sujet et corps de l'email
+    //     $subject = "Facture pour votre devis";
+    //     $body = "Bonjour,\n\nVeuillez trouver ci-joint la facture associée à votre devis.\n\nCordialement, \n" . Auth::user()->name;
+    
+    //     // Envoyer l'email avec les emails multiples et le PDF en pièce jointe
+    //     Mail::to($allEmails)
+    //         ->send(new DevisMail($devis, $pdfPath, $subject, $body));
+    
+    //     // Mettre à jour le statut du devis
+    //     $devis->status = 'Facturé';
+    //     $devis->save();
+    
+    //     // Rediriger vers la page index
+    //     return redirect()->route('dashboard.devis.index')->with('success', 'Facture envoyée par email.');
+    // }
+    
+    public function approuve($id)
+    {
+        // Récupérer le devis
+        $devis = Devis::findOrFail($id);
+        $creator = $devis->user_id;
+    
+       $banque=  Banque ::all();
+        // Vérifier le statut du devis
+        if ($devis->status !== 'En Attente de validation') {
+            return redirect()->back()->with('error', 'La Proforma ne peut être Facturée que si elle est en Attente de validation.');
+        }
+    
+        // Vérifier si le PDF du devis existe
+        $pdfPathDevis = storage_path('app/public/' . $devis->pdf_path);
+        if (!file_exists($pdfPathDevis)) {
+            return redirect()->back()->with('error', 'Le fichier PDF du devis n\'existe pas.');
+        }
+    
+        // Récupérer les emails du client
+        $client = $devis->client;
+        $clientEmails = [];
+    
+        // Ajouter les emails du client (email_01 et email_02)
+        if (!empty($client->email)) {
+            $clientEmails[] = $client->email;
+        }
+        
+    
+        // Ajouter deux emails fixes (comptables et directeur)
+        $ccEmails = ['comptable@example.com', 'directeur@example.com'];
+    
+        // Fusionner les emails du client et ceux fixes
+        $allEmails = array_merge($clientEmails, $ccEmails);
+    
+        // Sujet et corps de l'email
+        $subject = "Facture Proforma";
+        $body = "Bonjour,\n\nVeuillez trouver ci-joint la proforma.\n\nCordialement, \n" . Auth::user()->name;
+    
+        // Chemin du PDF de la facture (exemple, vous pouvez ajuster en fonction de votre logique)
+        $pdfPathFacture = storage_path('app/public/' . $devis->pdf_path); // Assurez-vous que le devis a une facture associée
+    
+        // Envoyer l'email avec les emails multiples et les PDF en pièce jointe
+        // Mail::to($allEmails)
+        //     ->send(new DevisMail($devis, $pdfPathDevis, $pdfPathFacture, $subject, $body, $banque));
+    
+        // Mettre à jour le statut du devis
+        $devis->status = 'Facturé';
+        $devis->save();
+    
+        // Rediriger vers la page index
+        return redirect()->route('dashboard.devis.index')->with('success', 'Facture envoyée par email.');
+    }
+    
     
 public function refuse($id, Request $request)
 {
