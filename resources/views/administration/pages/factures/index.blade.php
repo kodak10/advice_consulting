@@ -208,7 +208,7 @@
 
                         @if(Auth::user()->hasRole(['Daf', 'DG']))
                           @if ($devi->facture) 
-                            <a href="{{ route('dashboard.factures.download', $devi->id) }}" class="text-primary me-2" title="Télécharger la proforma">
+                            <a href="{{ route('dashboard.factures.download', $devi->facture->id) }}" class="text-primary me-2" title="Télécharger la facture">
                               <i class="ti ti-download fs-5"></i>
                             </a>
                           @else

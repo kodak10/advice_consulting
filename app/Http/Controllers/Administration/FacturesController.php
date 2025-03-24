@@ -158,7 +158,7 @@ class FacturesController extends Controller
 
     // Notification de refus envoyée à l'utilisateur créateur
     $creator = $factures->user;  // L'utilisateur qui a créé la facture
-    //Notification::send($creator, new FactureRefusedNotification($factures));
+    Notification::send($creator, new FactureRefusedNotification($factures));
 
     // Retourner à la page de liste avec un message de succès
     return redirect()->route('dashboard.factures.index')->with('success', 'Proforma Réfusée avec succès.');
@@ -437,9 +437,9 @@ class FacturesController extends Controller
     $userName = Auth::user()->name;
 
     // Envoyer la facture par email avec l'email de l'utilisateur connecté comme expéditeur
-    Mail::to($allEmails)
-        ->from($userEmail, $userName) // Utiliser l'email de l'utilisateur connecté
-        ->send(new FactureMail($facture->devis, $pdfPath, $userName));
+    // Mail::to($allEmails)
+    //     ->from($userEmail, $userName) // Utiliser l'email de l'utilisateur connecté
+    //     ->send(new FactureMail($facture->devis, $pdfPath, $userName));
 
     // Envoyer la notification via base de données
     $creator->notify(new FactureApprovedNotification($facture));

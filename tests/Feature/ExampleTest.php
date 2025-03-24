@@ -7,6 +7,8 @@ use Tests\TestCase;
 
 class ExampleTest extends TestCase
 {
+    protected $user;
+
     /**
      * A basic test example.
      */
@@ -16,4 +18,17 @@ class ExampleTest extends TestCase
 
         $response->assertStatus(200);
     }
+
+    public function testUserHasCommercialRole()
+{
+    // Vérifier que l'utilisateur a le rôle Commercial
+    $this->assertTrue($this->user->hasRole('Commercial'));
+
+    // Vérifier que l'utilisateur est bien authentifié
+    //$this->assertAuthenticatedAs($this->user);
+    // $this->user->update(['active' => true]); // Active l'utilisateur avant les tests
+    $this->user->update(['status' => 'Actif']);
+
+
+}
 }

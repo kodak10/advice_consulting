@@ -41,18 +41,7 @@ class DevisController extends Controller
         $this->middleware('role:Comptable|Commercial|DG')->except('download', 'exportCsv');
     }
 
-    // public function getDeviseRate($deviseCode)
-    // {
-    //     $devise = Devise::where('code', $deviseCode)->first();
-
-    //     if ($devise) {
-    //         return response()->json(['taux_conversion' => $devise->taux_conversion]);
-    //     }
-
-    //     return response()->json(['error' => 'Devise non trouvée'], 404);
-    // }
-
-    
+  
     public function index()
     {
         $devis = Devis::where('pays_id', Auth::user()->pays_id)
@@ -105,9 +94,6 @@ class DevisController extends Controller
     return view('administration.pages.devis.create', compact('clients', 'designations', 'banques', 'devises', 'rates'));
 }
 
-    
-
-
     public function generateNumProforma()
     {
         // Récupérer l'année et le mois actuels
@@ -133,64 +119,14 @@ class DevisController extends Controller
     }
 
    
-    // public function approuve($id)
-    // {
-    //     // Récupérer le devis
-    //     $devis = Devis::findOrFail($id);
-    //     $creator = $devis->user_id;
-    
-    //     // Vérifier le statut du devis
-    //     if ($devis->status !== 'En Attente de validation') {
-    //         return redirect()->back()->with('error', 'La Proforma ne peut être Facturée que si elle est en Attente de validation.');
-    //     }
-    
-    //     // Vérifier si le PDF existe
-    //     $pdfPath = storage_path('app/public/' . $devis->pdf_path);
-    //     if (!file_exists($pdfPath)) {
-    //         return redirect()->back()->with('error', 'Le fichier PDF n\'existe pas.');
-    //     }
-    
-    //     // Récupérer les emails du client
-    //     $client = $devis->client;
-    //     $clientEmails = [];
-    
-    //     // Ajouter les emails du client (email_01 et email_02)
-    //     if (!empty($client->email_01)) {
-    //         $clientEmails[] = $client->email_01;
-    //     }
-    //     if (!empty($client->email_02)) {
-    //         $clientEmails[] = $client->email_02;
-    //     }
-    
-    //     // Ajouter deux emails fixes (comptables et directeur)
-    //     $ccEmails = ['comptable@example.com', 'directeur@example.com']; 
-    
-    //     // Fusionner les emails du client et ceux fixes
-    //     $allEmails = array_merge($clientEmails, $ccEmails);
-    
-    //     // Sujet et corps de l'email
-    //     $subject = "Facture pour votre devis";
-    //     $body = "Bonjour,\n\nVeuillez trouver ci-joint la facture associée à votre devis.\n\nCordialement, \n" . Auth::user()->name;
-    
-    //     // Envoyer l'email avec les emails multiples et le PDF en pièce jointe
-    //     Mail::to($allEmails)
-    //         ->send(new DevisMail($devis, $pdfPath, $subject, $body));
-    
-    //     // Mettre à jour le statut du devis
-    //     $devis->status = 'Facturé';
-    //     $devis->save();
-    
-    //     // Rediriger vers la page index
-    //     return redirect()->route('dashboard.devis.index')->with('success', 'Facture envoyée par email.');
-    // }
-    
+   
     public function approuve($id)
     {
         // Récupérer le devis
         $devis = Devis::findOrFail($id);
         $creator = $devis->user_id;
     
-       $banque=  Banque ::all();
+        $banque=  Banque ::all();
         // Vérifier le statut du devis
         if ($devis->status !== 'En Attente de validation') {
             return redirect()->back()->with('error', 'La Proforma ne peut être Facturée que si elle est en Attente de validation.');
@@ -229,6 +165,29 @@ class DevisController extends Controller
         // Mail::to($allEmails)
         //     ->send(new DevisMail($devis, $pdfPathDevis, $pdfPathFacture, $subject, $body, $banque));
     
+
+
+        // Récupérer le pays de l'utilisateur authentifié
+        $userCountry = Auth::user()->pays_id; 
+
+        // Récupérer les utilisateurs ayant le rôle "Comptable" dans le même pays
+        $comptables = User::whereHas('roles', function ($query) {
+            $query->where('name', 'Comptable');
+        })->where('pays_id', $userCountry)->get();
+
+        // Récupérer les utilisateurs ayant le rôle "DAF" ou "Comptable"
+        $dafsAndComptables = User::whereHas('roles', function ($query) {
+            $query->whereIn('name', ['DAF', 'DG', 'Comptable']);
+        })->get();
+
+        // Fusionner les utilisateurs sans duplication
+        $usersToNotify = $comptables->merge($dafsAndComptables)->unique('id');
+
+        // Envoyer la notification aux utilisateurs concernés
+        Notification::send($usersToNotify, new DevisCreatedNotification($devis));
+
+
+
         // Mettre à jour le statut du devis
         $devis->status = 'Facturé';
         $devis->save();
@@ -276,7 +235,7 @@ public function refuse($id, Request $request)
         // Valider les données du formulaire
         $validated = $request->validate([
             'devise' => 'required|string',
-            'taux' => 'required|numeric|min:1',
+            'taux' => 'required|numeric',
 
             'client_id' => 'required|exists:clients,id',  
             'date_emission' => 'required|date',  
@@ -342,7 +301,7 @@ public function refuse($id, Request $request)
                 'designations.*.total' => 'required|numeric|min:0',
 
                 'devise' => 'required|string',
-                'taux' => 'required|numeric|min:1',
+                'taux' => 'required|numeric',
 
                 'texte' => 'required',
 
@@ -467,7 +426,7 @@ public function refuse($id, Request $request)
         // dd($request);
         $validated = $request->validate([
             'devise' => 'required|string',  
-            'taux' => 'required|numeric|min:1',  
+            'taux' => 'required|numeric',  
 
             'texte' => 'required',  
 
@@ -538,7 +497,7 @@ public function refuse($id, Request $request)
                 'designations.*.total' => 'required|numeric|min:0', 
 
                 'devise' => 'required|string',  
-                'taux' => 'required|numeric|min:1',  
+                'taux' => 'required|numeric',  
 
                 'texte' => 'required',  
 
@@ -591,19 +550,7 @@ public function refuse($id, Request $request)
                 );
             }
 
-            // foreach ($validated['designations'] as $designationData) {
-            //     DevisDetail::updateOrCreate(
-            //         ['devis_id' => $devis->id, 'designation_id' => $designationData['id']],
-            //         [
-            //             'quantite' => $designationData['quantity'],
-            //             'prix_unitaire' => $designationData['price'],
-            //             'remise' => $designationData['discount'],
-            //             'total' => $designationData['total'],
-            //         ]
-            //     );
-            // }
-
-
+          
             // Vérifier si un fichier PDF existe déjà et le supprimer
             if ($devis->pdf_path && Storage::disk('public')->exists($devis->pdf_path)) {
                 Storage::disk('public')->delete($devis->pdf_path);
