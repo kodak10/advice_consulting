@@ -193,7 +193,7 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                                <form method="POST" action="{{ route('dashboard.devis.refuse', $devis->id ) }}">
+                                <form method="POST" action="{{ route('dashboard.factures.refuse', $devis->id ) }}">
                                     @csrf
                                     <div class="mb-3">
                                         <label for="refuse_message" class="form-label">Message de refus</label>

@@ -72,6 +72,8 @@ class DevisController extends Controller
   $apiKey = env('EXCHANGE_RATE_API_KEY');
   $baseCurrency = 'XOF'; // Devise de base (ici, XOF)
   
+//   dd($apiKey);
+//si sa passe pas faire php artisab config:clear
   // Envoi de la requête à l'API d'ExchangeRate
   $response = Http::get("https://v6.exchangerate-api.com/v6/{$apiKey}/latest/{$baseCurrency}");
   
@@ -193,12 +195,13 @@ class DevisController extends Controller
         $devis->save();
     
         // Rediriger vers la page index
-        return redirect()->route('dashboard.devis.index')->with('success', 'Facture envoyée par email.');
+        return redirect()->route('dashboard.devis.index')->with('success', 'Proforma enregistrée et envoyée par email au client.');
     }
     
     
 public function refuse($id, Request $request)
 {
+    dd($request);
     // Trouver le devis par son ID
     $devis = Devis::findOrFail($id);
 
