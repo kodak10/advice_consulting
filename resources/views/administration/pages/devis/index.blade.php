@@ -186,134 +186,120 @@
       @endif
       
       @if (Auth::user()->hasRole('Comptable'))
+     
       <div class="card card-body">
         <h5>Liste des Proformas</h5>
-
+    
         <div class="table-responsive">
-
-          <table id="zero_config2" class="table table-striped table-bordered text-nowrap align-middle">
-            <thead>
-              <tr>
-                <th>Date</th>
-                  <th>N° Proforma</th>
-                  <th>Client</th>
-                  <th>Montant</th>
-                  <th>Etabli Par</th>
-                  <th>Statut</th>
-                  <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              @forelse ($devis as $devi)
-              <tr>
-                <td>
-                  <h6 class="mb-0">{{ $devi->created_at }}</h6>
-              </td>
-                  <td>
-                      <h6 class="mb-0">{{ $devi->num_proforma }}</h6>
-                  </td>
-                  <td>{{ $devi->client->nom }}</td>
-                  <td>{{ $devi->total_ttc }} {{ $devi->devise }}</td>
-                  <td>{{ $devi->user->name }}</td>
-
-
-                  <td>
-                    {{ $devi->status ?? 'Non renseigné' }}
-                
-                    <!-- Afficher l'icône si le statut est "Réfusé" -->
-                    @if($devi->status === 'Réfusé')
-                        <!-- Icône d'œil pour ouvrir le modal -->
-                        <i class="ti ti-eye" data-bs-toggle="modal" data-bs-target="#refusModal{{ $devi->id }}"></i>
-                    @endif
-                </td>
-                
-                <!-- Modal pour afficher le message de refus -->
-                <div class="modal fade" id="refusModal{{ $devi->id }}" tabindex="-1" aria-labelledby="refusModalLabel{{ $devi->id }}" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="refusModalLabel{{ $devi->id }}">Message de Refus</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                {{ $devi->message ?? 'Aucun message fourni.' }}
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                  <td>
-                    <div class="action-btn text-center">
-                      <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger">
-                        <i class="ti ti-download fs-5"></i>
-                      </a>
-                      <!-- Lien pour afficher le modal -->
-                      
-                      <a href="" class="text-danger" data-bs-toggle="modal" data-bs-target="#refuseModal">
-                        <i class="ti ti-square-rounded-minus"></i>
-                      </a>
-
-                     
-
-                      <!-- Modal -->
-                      <div class="modal fade" id="refuseModal" tabindex="-1" aria-labelledby="refuseModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="refuseModalLabel">Motif du refus</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <form method="POST" action="{{ route('dashboard.devis.refuse', $devi->id) }}">
-                                        @csrf
-                                        <div class="mb-3">
-                                            <label for="refuse_message" class="form-label">Message de refus</label>
-                                            <textarea class="form-control" id="refuse_message" name="message" rows="4" required></textarea>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                                            <button type="submit" class="btn btn-danger">Envoyer</button>
-                                        </div>
-                                    </form>
+            <table id="zero_config2" class="table table-striped table-bordered text-nowrap align-middle">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>N° Proforma</th>
+                        <th>Client</th>
+                        <th>Montant</th>
+                        <th>Etabli Par</th>
+                        <th>Statut</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse ($devis as $devi)
+                    <tr>
+                        <td><h6 class="mb-0">{{ $devi->created_at }}</h6></td>
+                        <td><h6 class="mb-0">{{ $devi->num_proforma }}</h6></td>
+                        <td>{{ $devi->client->nom }}</td>
+                        <td>{{ $devi->total_ttc }} {{ $devi->devise }}</td>
+                        <td>{{ $devi->user->name }}</td>
+    
+                        <td>
+                            {{ $devi->status ?? 'Non renseigné' }}
+    
+                            <!-- Afficher l'icône si le statut est "Réfusé" -->
+                            @if($devi->status === 'Réfusé')
+                                <!-- Icône d'œil pour ouvrir le modal -->
+                                <i class="ti ti-eye" data-bs-toggle="modal" data-bs-target="#refusModal{{ $devi->id }}"></i>
+                            @endif
+                        </td>
+    
+                        <!-- Modal pour afficher le message de refus -->
+                        <div class="modal fade" id="refusModal{{ $devi->id }}" tabindex="-1" aria-labelledby="refusModalLabel{{ $devi->id }}" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="refusModalLabel{{ $devi->id }}">Message de Refus</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        {{ $devi->message ?? 'Aucun message fourni.' }}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                      </div>
-
-                    
-                
-                      </form>
-                    </div>
-                </td>
-                
-              </tr>
-
-              @empty
-                  Aucune Proforma enregistrée.
-              @endforelse
-              
-          </tbody>
-          
-            <tfoot>
-              <tr>
-                <th>Date</th>
-
-                  <th>N° Proforma</th>
-                  <th>Client</th>
-                  <th>Montant</th>
-                  <th>Etabli Par</th>
-                  <th>Statut</th>
-                  <th>Action</th>
-              </tr>
-            </tfoot>
-          </table>
-
-
+    
+                        <td>
+                            <div class="action-btn text-center">
+                                <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger">
+                                    <i class="ti ti-download fs-5"></i>
+                                </a>
+    
+                                <!-- Lien pour afficher le modal de refus -->
+                                <a href="#" class="text-danger" data-bs-toggle="modal" data-bs-target="#refuseModal{{ $devi->id }}">
+                                    <i class="ti ti-square-rounded-minus"></i>
+                                </a>
+    
+                                <!-- Modal pour saisir un message de refus -->
+                                <div class="modal fade" id="refuseModal{{ $devi->id }}" tabindex="-1" aria-labelledby="refuseModalLabel{{ $devi->id }}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="refuseModalLabel{{ $devi->id }}">Motif du refus de la proforma</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <form method="POST" action="{{ route('dashboard.devis.refuse', $devi->id) }}">
+                                                    @csrf
+                                                    <div class="mb-3">
+                                                        <label for="refuse_message" class="form-label">Message de refus</label>
+                                                        <textarea class="form-control" id="refuse_message" name="message" rows="4" required></textarea>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                                        <button type="submit" class="btn btn-danger">Envoyer</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+    
+                            </div>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr>
+                        <td colspan="7" class="text-center">Aucune Proforma enregistrée.</td>
+                    </tr>
+                    @endforelse
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th>Date</th>
+                        <th>N° Proforma</th>
+                        <th>Client</th>
+                        <th>Montant</th>
+                        <th>Etabli Par</th>
+                        <th>Statut</th>
+                        <th>Action</th>
+                    </tr>
+                </tfoot>
+            </table>
         </div>
-      </div>
+    </div>
+    
 
       <div class="card card-body">
         <h5>Historiques</h5>
@@ -480,51 +466,46 @@
                         </div>
                     </div>
                 </div>
-                  <td>
-                    <div class="action-btn text-center">
+
+                <td>
+                  <div class="action-btn text-center">
                       <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger">
-                        <i class="ti ti-download fs-5"></i>
+                          <i class="ti ti-download fs-5"></i>
                       </a>
 
-                      <a href="" class="text-danger" data-bs-toggle="modal" data-bs-target="#refuseModal">
-                        <i class="ti ti-square-rounded-minus"></i>
+                      <!-- Lien pour afficher le modal de refus -->
+                      <a href="#" class="text-danger" data-bs-toggle="modal" data-bs-target="#refuseModal{{ $devi->id }}">
+                          <i class="ti ti-square-rounded-minus"></i>
                       </a>
 
-                      {{-- <button type="button" class="btn bg-warning-subtle text-warning px-4 fs-4 " data-bs-toggle="modal" data-bs-target="#">
-                        <i class="ti ti-square-rounded-minus"></i>
-                      </button> --}}
-
-                      <!-- Modal -->
-                      <div class="modal fade" id="refuseModal" tabindex="-1" aria-labelledby="refuseModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="refuseModalLabel">Motif du refus</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <form method="GET" action="{{ route('dashboard.devis.refuse', $devi->id) }}">
-                                        @csrf
-                                        {{-- @method('PUT') <!-- Si tu veux une méthode PUT ou POST pour l'action --> --}}
-                                        <div class="mb-3">
-                                            <label for="refuse_message" class="form-label">Message de refus</label>
-                                            <textarea class="form-control" id="refuse_message" name="message" rows="4" required></textarea>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                                            <button type="submit" class="btn btn-danger">Envoyer</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
+                      <!-- Modal pour saisir un message de refus -->
+                      <div class="modal fade" id="refuseModal{{ $devi->id }}" tabindex="-1" aria-labelledby="refuseModalLabel{{ $devi->id }}" aria-hidden="true">
+                          <div class="modal-dialog">
+                              <div class="modal-content">
+                                  <div class="modal-header">
+                                      <h5 class="modal-title" id="refuseModalLabel{{ $devi->id }}">Motif du refus de la proforma</h5>
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                  </div>
+                                  <div class="modal-body">
+                                      <form method="POST" action="{{ route('dashboard.devis.refuse', $devi->id) }}">
+                                          @csrf
+                                          <div class="mb-3">
+                                              <label for="refuse_message" class="form-label">Message de refus</label>
+                                              <textarea class="form-control" id="refuse_message" name="message" rows="4" required></textarea>
+                                          </div>
+                                          <div class="modal-footer">
+                                              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                              <button type="submit" class="btn btn-danger">Envoyer</button>
+                                          </div>
+                                      </form>
+                                  </div>
+                              </div>
+                          </div>
                       </div>
 
-                    
-                
-                      </form>
-                    </div>
-                </td>
+                  </div>
+              </td>
+                  
                 
               </tr>
 

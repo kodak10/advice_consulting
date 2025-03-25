@@ -81,6 +81,6 @@ Route::middleware(['auth', 'verified','check.user.status'])->prefix('dashboard')
 Auth::routes(['verify' => true]);
 
 
-Route::fallback(function () {
-    return view('administration.pages.maintenance');
-})->withoutMiddleware(['auth']);
+// Route::fallback(function () {
+//     return view('administration.pages.maintenance');
+// })->withoutMiddleware(['auth']);

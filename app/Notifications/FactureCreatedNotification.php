@@ -39,7 +39,7 @@ class FactureCreatedNotification extends Notification
         return [
             'title' => 'Facture Créée',  // Titre de la notification
             'icon' => 'ti-check',   
-            'message' => 'Le devis N°' . $this->facture->devis->num_proforma . ' a été créée.',
+            'message' => 'La Proforma N°' . $this->facture->devis->num_proforma . ' a été créée.',
             'facture_id' => $this->facture->id, 
         ];
     }
@@ -54,7 +54,7 @@ class FactureCreatedNotification extends Notification
     {
         return new BroadcastMessage([
             'title' => 'Facture Créée',
-            'message' => 'Le devis N°' . $this->facture->devis->num_proforma . ' a été créée.',
+            'message' => 'La Proforma N°' . $this->facture->devis->num_proforma . ' a été créée.',
             'facture_id' => $this->facture->id,  
         ]);
     }
@@ -69,7 +69,7 @@ class FactureCreatedNotification extends Notification
     {
         return [
             'title' => 'Facture Créée',
-            'message' => 'Le devis N°' . $this->facture->devis->num_proforma . ' a été créée.',
+            'message' => 'La Proforma N°' . $this->facture->devis->num_proforma . ' a été créée.',
             'facture_id' => $this->facture->id,  // ID de la facture pour les liens ou détails supplémentaires
         ];
     }

@@ -52,7 +52,8 @@ class DevisController extends Controller
         ->where('user_id', Auth::user()->id)
         ->get();
 
-        $devisAlls = Devis::get();
+        $devisAlls = Devis::where('status', 'Facturé')
+        ->get();
         
 
         return view('administration.pages.devis.index', compact('devis', 'mes_devis', 'devisAlls'));
@@ -201,7 +202,7 @@ class DevisController extends Controller
     
 public function refuse($id, Request $request)
 {
-    dd($request);
+    // dd($request);
     // Trouver le devis par son ID
     $devis = Devis::findOrFail($id);
 
@@ -353,7 +354,7 @@ public function refuse($id, Request $request)
             }
 
             // Générer le PDF
-            $pdf = PDF::loadView('frontend.pdf.devis2', compact('devis', 'client', 'banque'));
+            $pdf = PDF::loadView('frontend.pdf.devis2', compact('devis', 'client', 'banque'))->setPaper('a4', 'portrait');
             $pdfOutput = $pdf->output();
 
             $imageName = 'devis-' . $devis->id . '.pdf';
@@ -560,7 +561,9 @@ public function refuse($id, Request $request)
             }
 
             // Générer le nouveau PDF
-            $pdf = PDF::loadView('frontend.pdf.devis2', compact('devis', 'client', 'banque'));
+            // $pdf = PDF::loadView('frontend.pdf.devis2', compact('devis', 'client', 'banque'));
+            $pdf = PDF::loadView('frontend.pdf.devis2', compact('devis', 'client', 'banque'))->setPaper('a4', 'portrait');
+
             $pdfOutput = $pdf->output();
 
             $imageName = 'devis-' . $devis->id . '.pdf';

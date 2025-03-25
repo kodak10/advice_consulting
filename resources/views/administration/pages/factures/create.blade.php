@@ -143,7 +143,7 @@
                     </button>
                 @else
                     <button type="button" class="btn bg-danger-subtle text-warning px-4 fs-4 " data-bs-toggle="modal" data-bs-target="#refuseModal">
-                        Refuser daf
+                        Refuser
                     </button>
                 @endif
 
@@ -159,7 +159,7 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="refuseModalLabel">Motif du refus</h5>
+                            <h5 class="modal-title" id="refuseModalLabel">Motif du refus de la facture</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
@@ -189,11 +189,11 @@
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="refuseDevisModalLabel">Motif du refus</h5>
+                            <h5 class="modal-title" id="refuseDevisModalLabel">Motif du refus du devis</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                                <form method="POST" action="{{ route('dashboard.factures.refuse', $devis->id ) }}">
+                                <form method="POST" action="{{ route('dashboard.devis.refuse', $devis->id ) }}">
                                     @csrf
                                     <div class="mb-3">
                                         <label for="refuse_message" class="form-label">Message de refus</label>

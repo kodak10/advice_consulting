@@ -202,7 +202,14 @@
                     <td>{{ $devi->user->name }}</td>
                       <td>{{ $devi->client->nom }}</td>
                       <td>{{ $devi->total_ttc }} {{ $devi->devise }}</td>
-                      <td>{{ $devi->status ?? 'Non renseigné' }}</td>
+                      <td>
+                        {{ $devi->status ?? 'Non renseigné' }}
+                          <!-- Afficher l'icône si le statut est "Réfusé" -->
+                          @if($devi->facture->status === 'Réfusé')
+                              <!-- Icône d'œil pour ouvrir le modal -->
+                              <i class="ti ti-eye" data-bs-toggle="modal" data-bs-target="#refusModal{{ $devi->id }}"></i>
+                          @endif
+                      </td>
   
                       <td>
 
@@ -260,7 +267,16 @@
                       <td class=""><strong>{{ $devi->user->name }}</strong></td>
                       <td>{{ $devi->client->nom }}</td>
                       <td>{{ $devi->details->sum('total') }} {{ $devi->devise }}</td>
-                      <td>{{ $devi->status ?? 'Non renseigné' }}</td>
+
+                      
+                      <td>
+                        {{ $devi->status ?? 'Non renseigné' }}
+                          <!-- Afficher l'icône si le statut est "Réfusé" -->
+                          @if($devi->facture->status === 'Réfusé')
+                              <!-- Icône d'œil pour ouvrir le modal -->
+                              <i class="ti ti-eye" data-bs-toggle="modal" data-bs-target="#refusModal{{ $devi->id }}"></i>
+                          @endif
+                      </td>
                       <td>
                         <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger">
                           <i class="ti ti-download fs-5"></i>
