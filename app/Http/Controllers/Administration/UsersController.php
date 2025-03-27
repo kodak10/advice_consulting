@@ -63,7 +63,7 @@ class UsersController extends Controller
         // Assigner le rôle
         $user->assignRole($request->role);
 
-        // $user->notify(new VerifyEmailNotification());
+        $user->notify(new VerifyEmailNotification());
 
         return redirect()->route('dashboard.users.index')->with('success', 'Utilisateur ajouté avec succès. Un e-mail de vérification a été envoyé.');
     }

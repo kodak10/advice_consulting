@@ -52,8 +52,7 @@ class DevisController extends Controller
         ->where('user_id', Auth::user()->id)
         ->get();
 
-        $devisAlls = Devis::where('status', 'Facturé')
-        ->get();
+        $devisAlls = Devis::get();
         
 
         return view('administration.pages.devis.index', compact('devis', 'mes_devis', 'devisAlls'));
@@ -70,14 +69,10 @@ class DevisController extends Controller
     $devises = Devise::all();
     
   // Récupérer les taux de change pour toutes les devises
-  // $apiKey = env('EXCHANGE_RATE_API_KEY');
-  $apiKey = config('services.exchange_rate.api_key');
-
-  
+  $apiKey = env('EXCHANGE_RATE_API_KEY');
   $baseCurrency = 'XOF'; // Devise de base (ici, XOF)
   
-//   dd($apiKey);
-//si sa passe pas faire php artisab config:clear
+  dd($apiKey);
   // Envoi de la requête à l'API d'ExchangeRate
   $response = Http::get("https://v6.exchangerate-api.com/v6/{$apiKey}/latest/{$baseCurrency}");
   
@@ -143,15 +138,13 @@ class DevisController extends Controller
         if (!file_exists($pdfPathDevis)) {
             return redirect()->back()->with('error', 'Le fichier PDF du devis n\'existe pas.');
         }
-        Log::info('Chemin du PDF : ' . $pdfPathDevis);
 
+         // Récupérer l'email du client
+         $clientEmail = $devis->client->email;
 
-        // Récupérer l'email du client
-        $clientEmail = $devis->client->email;
-        $clientName = $devis->client->name;
-
-        // Envoyer l'e-mail au client avec le fichier PDF en pièce jointe
-        Mail::send(new DevisApprovalMail($devis, $pdfPathDevis, Auth::user()->name, $clientEmail, $clientName));
+         // Envoyer l'e-mail au client avec le fichier PDF en pièce jointe
+         Mail::send(new DevisApprovalMail($devis, $pdfPathDevis, Auth::user()->name, $clientEmail));
+    
 
         // Récupérer le pays de l'utilisateur authentifié
         $userCountry = Auth::user()->pays_id; 
@@ -173,19 +166,26 @@ class DevisController extends Controller
         Notification::send($usersToNotify, new DevisCreatedNotification($devis));
 
 
+        
+
+        
+       
+
+
+
+
 
         // Mettre à jour le statut du devis
         $devis->status = 'Facturé';
         $devis->save();
     
         // Rediriger vers la page index
-        return redirect()->route('dashboard.devis.index')->with('success', 'Proforma enregistrée et envoyée par email au client.');
+        return redirect()->route('dashboard.devis.index')->with('success', 'Facture envoyée par email.');
     }
     
     
 public function refuse($id, Request $request)
 {
-    // dd($request);
     // Trouver le devis par son ID
     $devis = Devis::findOrFail($id);
 
@@ -337,7 +337,7 @@ public function refuse($id, Request $request)
             }
 
             // Générer le PDF
-            $pdf = PDF::loadView('frontend.pdf.devis2', compact('devis', 'client', 'banque'))->setPaper('a4', 'portrait');
+            $pdf = PDF::loadView('frontend.pdf.devis2', compact('devis', 'client', 'banque'));
             $pdfOutput = $pdf->output();
 
             $imageName = 'devis-' . $devis->id . '.pdf';
@@ -544,9 +544,7 @@ public function refuse($id, Request $request)
             }
 
             // Générer le nouveau PDF
-            // $pdf = PDF::loadView('frontend.pdf.devis2', compact('devis', 'client', 'banque'));
-            $pdf = PDF::loadView('frontend.pdf.devis2', compact('devis', 'client', 'banque'))->setPaper('a4', 'portrait');
-
+            $pdf = PDF::loadView('frontend.pdf.devis2', compact('devis', 'client', 'banque'));
             $pdfOutput = $pdf->output();
 
             $imageName = 'devis-' . $devis->id . '.pdf';
