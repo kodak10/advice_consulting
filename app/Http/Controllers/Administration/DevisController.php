@@ -385,7 +385,7 @@ public function refuse($id, Request $request)
         $devises = Devise::all();
     
         // Récupérer les taux de change pour toutes les devises
-        $apiKey = env('EXCHANGE_RATE_API_KEY');
+        $apiKey = "d4a11ade825bdc9907f23c6a";
         $baseCurrency = 'XOF'; // Devise de base (ici, XOF)
         
         // Envoi de la requête à l'API d'ExchangeRate
