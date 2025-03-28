@@ -41,25 +41,14 @@ class VerifyEmailNotification extends Notification
             ->action('Vérifiez votre adresse e-mail', $this->verificationUrl($notifiable))  // Le lien de vérification
             ->line('Le mot de passe par défaut est : <strong>password</strong>. Nous vous invitons à le modifier une fois connecté.')
             ->line('Si vous n\'êtes pas à l\'origine de cette connexion, ignorez cet e-mail.');
-
-        // try {
-        //     return (new MailMessage)
-        //         ->subject('Vérification de votre adresse e-mail')
-        //         ->action('Vérifiez votre adresse e-mail', $this->verificationUrl($notifiable))
-        //         ->line('Le mot de passe par défaut est: "password". Nous vous invitons à le modifier une fois connecté.')
-        //         ->line('Si vous n\'êtes pas à l\'origine de cette inscription, ignorez cet e-mail.')
-        //         ->line('Advice Consulting');
-        // }  catch (\Exception $e) {
-        //     // \Log::error("Erreur d'envoi d'e-mail : " . $e->getMessage());  // Log des erreurs
-        //     return null; // On retourne null pour ne pas interrompre le processus en cas d'échec
-        // }
     }
+
     protected function verificationUrl($notifiable)
     {
         return URL::temporarySignedRoute(
-            'verification.verify', // Route de vérification
-            Carbon::now()->addMinutes(60), // Lien valable pendant 60 minutes
-            ['id' => $notifiable->getKey(), 'hash' => sha1($notifiable->getEmailForVerification())] // Paramètres nécessaires pour la vérification
+            'verification.verify',  // Nom de la route
+            Carbon::now()->addMinutes(60),  // Lien valide pour 60 minutes
+            ['id' => $notifiable->getKey(), 'hash' => sha1($notifiable->getEmailForVerification())]
         );
     }
 

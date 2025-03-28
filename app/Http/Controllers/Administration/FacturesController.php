@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Administration;
 
 use App\Http\Controllers\Controller;
+use App\Mail\FactureApprovalMail;
 use App\Mail\FactureMail;
 use App\Models\Banque;
 use App\Models\Client;
@@ -10,8 +11,8 @@ use App\Models\Designation;
 use App\Models\Devis;
 use App\Models\Facture;
 use App\Models\Pays;
-use App\Models\User;
 
+use App\Models\User;
 use App\Notifications\DevisRefusedNotification;  // Importation correcte de la notification
 use App\Notifications\FactureApprovalNotification;
 use App\Notifications\FactureApprovedNotification;
@@ -326,129 +327,132 @@ class FacturesController extends Controller
     }
 
 
-    
-    // public function approuve($id)
-    // {
-    //     // Log: Début du traitement
-    //     Log::info('Début de la validation de la facture', ['facture_id' => $id]);
-    
-    //     $facture = Facture::findOrFail($id);
-    
-    //     if ($facture->devis->status !== 'En Attente du Daf') {            
-    //         return redirect()->back()->with('error', 'La facture à déjà été validée');
-    //     }
+  
 
-    //     if ($facture->devis->status === 'Réfusé') {            
-    //         return redirect()->back()->with('error', 'La facture à été réfusé');
-    //     }
-    
-    //     // Vérifier si le PDF existe
-    //     $pdfPath = storage_path('app/public/' . $facture->pdf_path);
-    //     if (!file_exists($pdfPath)) {
-    //         // Log: Erreur, le fichier PDF n'existe pas
-    //         Log::error('Le fichier PDF n\'existe pas', ['pdf_path' => $pdfPath]);
-            
-    //         return redirect()->back()->with('error', 'Le fichier PDF n\'existe pas.');
-    //     }
-    
-    //     // Log: PDF trouvé
-    //     Log::info('Le fichier PDF existe', ['pdf_path' => $pdfPath]);
-    
-    //     // Récupérer l'utilisateur ayant créé la facture
-    //     $creator = $facture->user;
-    //     $userCreator =$facture->devis->user;
-    //     Log::info('Utilisateur ayant créé la facture', ['user_id' => $creator->id, 'user_name' => $creator->name]);
-    
-    //     // Modifier le statut de la facture
-    //     $facture->devis->status = 'Soldé';
-    //     $facture->devis->save();
-    //     $facture->status = 'Soldé';
-    //     $facture->save();
-    //     // Log: Statut mis à jour
-    //     Log::info('Statut du devis mis à jour', ['facture_id' => $id, 'new_status' => 'Soldé']);
-    
-    //     // Envoyer la notification via base de données
-    //     $creator->notify(new FactureApprovedNotification($facture));
-    //     $userCreator->notify(new FactureApprovedNotification($facture));
+//     public function approuve($id)
+// {
+   
+//     $facture = Facture::findOrFail($id);
 
-    //     // Log: Notification envoyée
-    //     Log::info('Notification envoyée à l\'utilisateur', ['user_id' => $creator->id]);
-    
-    //     return redirect()->back()->with('success', 'Facture Approuvée avec succès.');
-    // }
+//     if ($facture->devis->status !== 'En Attente du Daf') {
+//         return redirect()->back()->with('error', 'La facture a déjà été validée');
+//     }
 
-    public function approuve($id)
+//     if ($facture->devis->status === 'Réfusé') {
+//         return redirect()->back()->with('error', 'La facture a été refusée');
+//     }
+
+//     // Vérifier si le PDF existe
+//     $pdfPath = storage_path('app/public/' . $facture->pdf_path);
+//     if (!file_exists($pdfPath)) {
+//         // Log: Erreur, le fichier PDF n'existe pas
+//         Log::error('Le fichier PDF n\'existe pas', ['pdf_path' => $pdfPath]);
+
+//         return redirect()->back()->with('error', 'Le fichier PDF n\'existe pas.');
+//     }
+
+   
+//     // Récupérer l'utilisateur ayant créé la facture
+//     $creator = $facture->user;
+//     $userCreator = $facture->devis->user;
+
+
+//      // Récupérer l'email du client
+//      $clientEmail = $facture->client->email;
+//      $clientName = $facture->client->name;
+
+//     // Envoyer l'e-mail au client avec le fichier PDF en pièce jointe
+//     Mail::send(new FactureApprovalMail($facture, $pdfPath, Auth::user()->name, $clientEmail, $clientName));
+
+//     // Modifier le statut de la facture
+//     $facture->devis->status = 'Soldé';
+//     $facture->devis->save();
+//     $facture->status = 'Soldé';
+//     $facture->save();
+
+   
+//     // Envoyer la notification via base de données
+//     $creator->notify(new FactureApprovedNotification($facture));
+//     $userCreator->notify(new FactureApprovedNotification($facture));
+
+
+//     return redirect()->back()->with('success', 'Facture Approuvée avec succès et envoyée par email.');
+// }
+
+public function approuve($id)
 {
-    // Log: Début du traitement
-    Log::info('Début de la validation de la facture', ['facture_id' => $id]);
+    try {
+        // Charger la facture avec toutes les relations nécessaires
+        $facture = Facture::findOrFail($id);
+        
+        // Validation du statut
+        if ($facture->devis->status !== 'En Attente du Daf') {
+            return redirect()->back()->with('error', 'La facture a déjà été traitée. Veuillez consulter le message et faire les corrections si nécessaire.');
+        }
 
-    $facture = Facture::findOrFail($id);
+        if ($facture->devis->status === 'Réfusé') {
+            return redirect()->back()->with('error', 'La facture a été refusée');
+        }
 
-    if ($facture->devis->status !== 'En Attente du Daf') {
-        return redirect()->back()->with('error', 'La facture a déjà été validée');
+        // Vérification que le client existe et a un email
+        if (!$facture->devis->client || !$facture->devis->client->email) {
+            Log::error('Client ou email manquant pour la facture', [
+                'facture_id' => $facture->id,
+                'client_id' => $facture->client_id
+            ]);
+            return redirect()->back()->with('error', 'Le client associé à cette facture est invalide ou n\'a pas d\'email enregistré.');
+        }
+        
+
+        // Vérification du PDF
+        $pdfPath = storage_path('app/public/' . $facture->pdf_path);
+        if (!file_exists($pdfPath)) {
+            Log::error('Fichier PDF manquant pour la facture', [
+                'facture_id' => $facture->id,
+                'path' => $pdfPath
+            ]);
+            return redirect()->back()->with('error', 'Le fichier PDF est introuvable.');
+        }
+
+        // Envoi de l'email
+        Mail::to($facture->devis->client->email)
+            ->send(new FactureApprovalMail(
+                $facture, 
+                $pdfPath, 
+                $facture->user->name, 
+                $facture->devis->client->email, 
+                $facture->devis->client->nom
+            ));
+
+        // Mise à jour du statut (décommenter quand tout fonctionne)
+        $facture->devis->update(['status' => 'Soldé']);
+        $facture->update(['status' => 'Soldé']);
+
+        // Notifications (décommenter quand tout fonctionne)
+        $facture->user->notify(new FactureApprovedNotification($facture));
+        if ($facture->devis->user_id !== $facture->user_id) {
+            $facture->devis->user->notify(new FactureApprovedNotification($facture));
+        }
+
+        // Log de l'action (décommenter quand tout fonctionne)
+        // ActivityLog::create([
+        //     'user_id' => Auth::id(),
+        //     'action' => 'approval',
+        //     'model_type' => Facture::class,
+        //     'model_id' => $facture->id,
+        //     'description' => 'Facture approuvée et envoyée au client'
+        // ]);
+
+        return redirect()->back()->with('success', 'Facture approuvée avec succès et envoyée par email.');
+
+    } catch (\Exception $e) {
+        Log::error('Erreur lors de l\'approbation de la facture', [
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString(),
+            'facture_id' => $id
+        ]);
+        return redirect()->back()->with('error', 'Une erreur est survenue lors du traitement de la facture: '.$e->getMessage());
     }
-
-    if ($facture->devis->status === 'Réfusé') {
-        return redirect()->back()->with('error', 'La facture a été refusée');
-    }
-
-    // Vérifier si le PDF existe
-    $pdfPath = storage_path('app/public/' . $facture->pdf_path);
-    if (!file_exists($pdfPath)) {
-        // Log: Erreur, le fichier PDF n'existe pas
-        Log::error('Le fichier PDF n\'existe pas', ['pdf_path' => $pdfPath]);
-
-        return redirect()->back()->with('error', 'Le fichier PDF n\'existe pas.');
-    }
-
-    // Log: PDF trouvé
-    Log::info('Le fichier PDF existe', ['pdf_path' => $pdfPath]);
-
-    // Récupérer l'utilisateur ayant créé la facture
-    $creator = $facture->user;
-    $userCreator = $facture->devis->user;
-    Log::info('Utilisateur ayant créé la facture', ['user_id' => $creator->id, 'user_name' => $creator->name]);
-
-    // Modifier le statut de la facture
-    $facture->devis->status = 'Soldé';
-    $facture->devis->save();
-    $facture->status = 'Soldé';
-    $facture->save();
-    // Log: Statut mis à jour
-    Log::info('Statut du devis mis à jour', ['facture_id' => $id, 'new_status' => 'Soldé']);
-
-    // Récupérer les emails du client
-    $client = $facture->devis->client;
-    $clientEmails = [];
-
-    // Ajouter les emails du client (email_01 et email_02)
-    if (!empty($client->email)) {
-        $clientEmails[] = $client->email;
-    }
-    
-    // Ajouter les emails fixes (comptables et directeur)
-    $ccEmails = ['comptable@example.com', 'directeur@example.com']; // Remplacez par les emails réels
-
-    // Fusionner les emails du client et ceux fixes
-    $allEmails = array_merge($clientEmails, $ccEmails);
-
-    // Récupérer l'email de l'utilisateur connecté
-    $userEmail = Auth::user()->email;
-    $userName = Auth::user()->name;
-
-    // Envoyer la facture par email avec l'email de l'utilisateur connecté comme expéditeur
-    // Mail::to($allEmails)
-    //     ->from($userEmail, $userName) // Utiliser l'email de l'utilisateur connecté
-    //     ->send(new FactureMail($facture->devis, $pdfPath, $userName));
-
-    // Envoyer la notification via base de données
-    $creator->notify(new FactureApprovedNotification($facture));
-    $userCreator->notify(new FactureApprovedNotification($facture));
-
-    // Log: Notification envoyée
-    Log::info('Notification envoyée à l\'utilisateur', ['user_id' => $creator->id]);
-
-    return redirect()->back()->with('success', 'Facture Approuvée avec succès et envoyée par email.');
 }
 
     

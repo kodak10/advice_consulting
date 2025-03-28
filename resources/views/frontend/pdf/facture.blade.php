@@ -161,6 +161,13 @@
             border: none; /* Assurer qu'aucune bordure n'est appliquée sur les cellules */
         }
 
+        .chiffres .no-border td,
+        .chiffres .no-border {
+            background-color: #ffff;
+            border: none;
+        }
+
+
         .no-border td:last-child{
             color: #022344;
             font-weight: bold;
@@ -178,7 +185,7 @@
         }
 
         .vide{
-            height: 120px;
+            height: 150px;
         }
     </style>
 </head>
@@ -188,7 +195,7 @@
     <div class="vide">
 
     </div>
-    <table class="no-border">
+    {{-- <table class="no-border">
         <tr>
             <td colspan="3">
                 Type de règlement : <div class="box">A écheance</div>
@@ -201,37 +208,43 @@
                 Agent <div class="box">{{ $devis->user->name }}</div>
             </td>
         </tr>
-    </table>
+    </table> --}}
     <div class="ligne"></div>
 
     <table>
         <!-- Informations de la facture -->
         <tr>
-            <td colspan="6">Date: {{ $devis->date_emission }}</td>
-            <td colspan="6"><strong>Client</strong></td>
+            <td colspan="6"><strong>Date :</strong> {{ $devis->date_emission }}</td>
+            <td colspan="6"><strong>CLIENT</strong></td>
         </tr>
         <tr>
-            <td colspan="6">Echéance : {{ $devis->date_echeance }}</td>
+            <td colspan="6"><strong>Echéance :</strong> {{ $devis->date_echeance }}</td>
             <td colspan="6">{{ $devis->client->nom }}</td>
         </tr>
         <tr class="info-client">
-            <td colspan="6">N° Pro-Forma {{ $devis->facture->numero }}</td>
-            <td colspan="6"><strong>N° CC:</strong> {{ $devis->client->numero_cc }}</td>
+            <td colspan="6"><strong>N° Pro-Forma :</strong> {{ $devis->facture->numero }}</td>
+            <td colspan="6"><strong>N° CC :</strong> {{ $devis->client->numero_cc }}</td>
         </tr>
         <tr class="info-client">
-            <td colspan="6">N° BC: {{ $devis->facture->num_bc }}</td>
+            <td colspan="6"><strong>N° BC :</strong> {{ $devis->facture->num_bc }}</td>
             <td colspan="6"><strong>Adresse:</strong> {{ $devis->client->adresse }}</td>
         </tr>
         <tr class="info-client">
-            <td colspan="6">N° Rap Rap activ: {{ $devis->facture->num_rap }}</td>
-            <td colspan="6"><strong>Téléphone</strong> {{ $devis->client->telephone }}</td>
+            <td colspan="6"><strong>N° Rap Rap activ :</strong> {{ $devis->facture->num_rap }}</td>
+            <td colspan="6"><strong>Téléphone :</strong> {{ $devis->client->telephone }}</td>
         </tr>
 
         <tr>
-            <td colspan="6"><strong>N° BL</strong> {{ $devis->facture->num_bl }}</td>
+            <td colspan="6"><strong>N° BL :</strong> {{ $devis->facture->num_bl }}</td>
             <td colspan="6"><strong>Ville :</strong> {{ $devis->client->ville }}</td>
         </tr>
 
+        
+
+       
+    </table>
+
+    <table class="chiffres">
         <tr>
             <th colspan="1">Référence</th>
             <th colspan="4">Description</th>
@@ -253,16 +266,16 @@
 
         <!-- Conditions financières et Prix -->
         <tr>
-            <td colspan="6" class="conditions">
-                Veuillez libeller votre chèque au de Advice Consulting
+            <td colspan="6" class="no-border">
+                
             </td>
             <td colspan="6" class="prices">
                 <strong>Total HT :</strong> {{ floor($devis->total_ht) }}
             </td>
         </tr>
         <tr>
-            <td colspan="6" class="conditions">
-                <strong> Banque :</strong> {{ $banque->name }} N° Compte {{ $banque->num_compte }}
+            <td colspan="6" class="no-border">
+                
 
             </td>
             <td colspan="6" class="prices">
@@ -270,38 +283,72 @@
             </td>
         </tr>
         <tr>
-            <td colspan="6" class="conditions">
-                <strong>Arrêté la présence facture à la somme de 
+            <td colspan="6" class="no-border">
+                
             </td>
             <td colspan="6" class="prices">
                 <strong>TOTAL TTC :</strong> {{ floor($devis->total_ttc) }}
             </td>
         </tr>
         <tr>
-            <td colspan="6" class="conditions">
-                {{ ucwords((new NumberFormatter('fr', NumberFormatter::SPELLOUT))->format($devis->solde)) }} {{ $devis->devise }} <br>
+            <td colspan="6" class="no-border">
+                
             </td>
             <td colspan="6" class="prices">
                 <strong>Acompte :</strong> {{ floor($devis->acompte) }}
             </td>
         </tr>
         <tr>
-            <td colspan="6" class="conditions">
+            <td colspan="6" class="no-border">
                 
             </td>
             <td colspan="6" class="prices">
                 <strong>Solde :</strong> {{ floor($devis->solde) }}
             </td>
         </tr>
+    </table>
+
+    <table>
+
+        <tr>
+            <td colspan="12" class="conditions">
+                Veuillez libeller votre chèque à l'ordre de Advice Consulting {{ $devis->user->pays->name }} ou faire un virement sur notre compte
+            </td>
+            
+        </tr>
+        <tr>
+            <td colspan="12" class="conditions">
+                <strong> Banque :</strong> {{ $banque->name }} N° Compte {{ $banque->num_compte }}
+
+            </td>
+            
+        </tr>
+        <tr>
+            <td colspan="12" class="conditions">
+                <strong>Arrêté la présence facture à la somme de 
+            </td>
+           
+        </tr>
+        <tr>
+            <td colspan="12" class="conditions">
+                {{ ucwords((new NumberFormatter('fr', NumberFormatter::SPELLOUT))->format($devis->solde)) }} {{ $devis->devise }} <br>
+            </td>
+           
+        </tr>
+        
 
         <!-- Signature et accord -->
+        
+
+        
+    </table>
+
+    <table class="no-border">
         <tr>
-            <td colspan="6">
+            <td colspan="12">
                 Cachet et signature
             </td>
-            <td colspan="6" class="info-client">
-               
-            </td>
+            
         </tr>
     </table>
 

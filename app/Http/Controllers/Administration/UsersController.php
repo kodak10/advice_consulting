@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Administration;
 use App\Http\Controllers\Controller;
 use App\Models\Pays;
 use App\Models\User;
-use App\Notifications\VerifyEmailNotification;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -63,7 +63,9 @@ class UsersController extends Controller
         // Assigner le rôle
         $user->assignRole($request->role);
 
-        $user->notify(new VerifyEmailNotification());
+         // $user->notify(new VerifyEmail());
+       $user->sendEmailVerificationNotification();
+
 
         return redirect()->route('dashboard.users.index')->with('success', 'Utilisateur ajouté avec succès. Un e-mail de vérification a été envoyé.');
     }

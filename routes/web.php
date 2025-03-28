@@ -19,7 +19,13 @@ Route::get('/', function () {
     return view('frontend.pages.index');
 });
 
+Auth::routes(['verify' => true]);
 
+// Ajoutez cette route AVANT le middleware 'auth'
+Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])
+    ->middleware(['signed'])
+    ->name('verification.verify');
+    
 Route::middleware(['auth', 'verified','check.user.status'])->prefix('dashboard')->name('dashboard.')->group(function () {
 
     Route::match(['get', 'post'], '/', [AdminController::class, 'index']);
@@ -78,7 +84,8 @@ Route::middleware(['auth', 'verified','check.user.status'])->prefix('dashboard')
 
 });
 
-Auth::routes(['verify' => true]);
+
+
 
 
 // Route::fallback(function () {

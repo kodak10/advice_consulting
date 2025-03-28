@@ -10,6 +10,7 @@ use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Notifications\VerifyEmailNotification; // Assure-toi d'importer ta notification personnalisée
 
+
 class User extends Authenticatable implements MustVerifyEmail
 
 {

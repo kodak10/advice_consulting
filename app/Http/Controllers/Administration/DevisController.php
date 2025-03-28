@@ -71,7 +71,7 @@ class DevisController extends Controller
     
   // Récupérer les taux de change pour toutes les devises
   // $apiKey = env('EXCHANGE_RATE_API_KEY');
-  $apiKey = config('services.exchange_rate.api_key');
+  $apiKey = "d4a11ade825bdc9907f23c6a";
 
   
   $baseCurrency = 'XOF'; // Devise de base (ici, XOF)

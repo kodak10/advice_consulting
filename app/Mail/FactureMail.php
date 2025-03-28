@@ -36,7 +36,7 @@ class FactureMail extends Mailable
         // Envoi de l'email
         return $this->from($creatorEmail, $creatorName) // Expéditeur dynamique
                     ->to($this->clientEmail) // Destinataire obligatoire
-                    ->subject("Votre facture #" . $this->facture->id)
+                    ->subject("Votre facture N°" . $this->facture->id)
                     ->view('frontend.pdf.facture')
                     ->attach($this->pdfPath, [
                         'as' => 'facture.pdf',
