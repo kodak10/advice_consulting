@@ -86,6 +86,7 @@
         .footer{
                 font-size: 9px !important;
                 color: #0064c9 !important;
+                text-align: center
             }
 
         /* Informations de l'entreprise */

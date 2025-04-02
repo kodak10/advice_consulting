@@ -162,7 +162,7 @@ class FacturesController extends Controller
     Notification::send($creator, new FactureRefusedNotification($factures));
 
     // Retourner à la page de liste avec un message de succès
-    return redirect()->route('dashboard.factures.index')->with('success', 'Proforma Réfusée avec succès.');
+    return redirect()->route('dashboard.factures.index')->with('success', 'Facture Réfusée avec succès.');
 }
 
 

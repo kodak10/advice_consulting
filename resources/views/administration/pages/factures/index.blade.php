@@ -429,48 +429,46 @@
                 </thead>
 
                 @if(Auth::user()->hasRole(['Daf', 'Comptable', 'DG']))
-                <tbody>
-                  @forelse ($all_factures as $facture)
-                  <tr>
-                    <td>
-                      <h6 class="mb-0">{{ $facture->created_at }}</h6>
-                    </td>
+                  <tbody>
+                    @forelse ($all_factures as $facture)
+                    <tr>
                       <td>
-                          <h6 class="mb-0">{{ $facture->numero }}</h6>
+                        <h6 class="mb-0">{{ $facture->created_at }}</h6>
                       </td>
-                      @if(Auth::user()->hasRole(['Daf', 'DG']))
-                      <td>
-                        <h6 class="mb-0">{{ $facture->devis->pays->name }}</h6>
-                    </td>
-                      @endif
-                     
-                    <td>
-                      <h6 class="mb-0">{{ $facture->user->name }}</h6>
-                    </td>
-                     <td>
-                        {{ $facture->devis->client->nom }}
-                     </td>
-                      <td>{{ $facture->devis->total_ttc }} {{ $facture->devis->devise }}</td>
-                      <td>{{ $facture->devis->status ?? 'Non renseigné' }}</td>
-  
-                      <td>
-                        <a href="{{ route('dashboard.factures.download', $facture->id) }}" class="text-primary me-2" title="Télécharger">
-                          <i class="ti ti-download fs-5"></i>
-                        </a>
-                       
-                        
+                        <td>
+                            <h6 class="mb-0">{{ $facture->numero }}</h6>
+                        </td>
+                        @if(Auth::user()->hasRole(['Daf', 'DG']))
+                        <td>
+                          <h6 class="mb-0">{{ $facture->devis->pays->name }}</h6>
                       </td>
-                    
-                  </tr>
-  
-                  @empty
+                        @endif
                       
-                  @endforelse
-                  
-                </tbody>
+                      <td>
+                        <h6 class="mb-0">{{ $facture->user->name }}</h6>
+                      </td>
+                      <td>
+                          {{ $facture->devis->client->nom }}
+                      </td>
+                        <td>{{ $facture->devis->total_ttc }} {{ $facture->devis->devise }}</td>
+                        <td>{{ $facture->devis->status ?? 'Non renseigné' }}</td>
+    
+                        <td>
+                          <a href="{{ route('dashboard.factures.download', $facture->id) }}" class="text-primary me-2" title="Télécharger">
+                            <i class="ti ti-download fs-5"></i>
+                          </a>
+                        
+                          
+                        </td>
+                      
+                    </tr>
+    
+                    @empty
+                        
+                    @endforelse
+                    
+                  </tbody>
                 @endif
-                
-              
               
                 <tfoot>
                   <tr>
