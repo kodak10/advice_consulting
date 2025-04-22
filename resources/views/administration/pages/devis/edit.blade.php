@@ -532,7 +532,7 @@
         });
 
         // Mise à jour du total lorsqu'on modifie quantité ou remise
-        $(document).on('input', '.quantity, .discount', function () {
+        $(document).on('input', '.quantity, .discount, .price', function () {
             var row = $(this).closest('[data-repeater-item]');
             updateTotal(row);
         });
