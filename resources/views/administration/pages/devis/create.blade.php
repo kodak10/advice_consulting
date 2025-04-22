@@ -301,7 +301,7 @@
 
     </form>
 
-    <div class="modal fade" id="addContactModal" tabindex="-1" role="dialog" aria-labelledby="addContactModalTitle" aria-hidden="true">
+    {{-- <div class="modal fade" id="addContactModal" tabindex="-1" role="dialog" aria-labelledby="addContactModalTitle" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header d-flex align-items-center">
@@ -376,6 +376,88 @@
             </div>
         </div>
         </div>
+    </div> --}}
+
+    <div class="modal fade" id="addContactModal" tabindex="-1" role="dialog" aria-labelledby="addContactModalTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header d-flex align-items-center">
+                <h5 class="modal-title">Information du Client</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @if(session('error'))
+                    <div class="alert alert-danger text-danger" role="alert">
+                        {!! session('error') !!}
+                    </div>
+                @endif
+
+
+                <div class="add-contact-box">
+                    <div class="add-contact-content">
+                    <form id="addContactModalTitle">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="mb-3 contact-name">
+                                <input type="text" id="c-name" class="form-control" placeholder="Nom ou raison sociale">
+                                <span class="validation-text text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3 contact-occupation">
+                                <input type="text" id="c-occupation" class="form-control" placeholder="N°CC">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3 contact-phone">
+                                <input type="text" id="c-phone" class="form-control" placeholder="Téléphone">
+                                <span class="validation-text text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3 contact-occupation">
+                            <input type="text" id="c-adresse" class="form-control" placeholder="Adresse">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3 contact-email">
+                            <input type="email" id="c-email" class="form-control" placeholder="Email" required>
+                            </div>
+                        </div>
+                        </div>
+
+                        <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3 contact-phone">
+                            <input type="text" id="c-ville" class="form-control" placeholder="Ville">
+                            <span class="validation-text text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3 contact-phone">
+                            <input type="text" id="c-attn" class="form-control" placeholder="ATTM">
+                            <span class="validation-text text-danger"></span>
+                            </div>
+                        </div>
+                        </div>
+                    </form>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+            <div class="d-flex gap-6 m-0">
+                <button id="btn-add" class="btn btn-success">Ajouter</button>
+                <button class="btn bg-danger-subtle text-danger" data-bs-dismiss="modal"> Annuler</button>
+            </div>
+            </div>
+        </div>
+        </div>
     </div>
    </div>
 
@@ -388,6 +470,70 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.repeater/1.2.1/jquery.repeater.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
+<script>
+    document.getElementById('btn-add').addEventListener('click', function(event) {
+      event.preventDefault();
+  
+      let formData = {
+          nom: document.getElementById('c-name').value,
+          email: document.getElementById('c-email').value,
+          numero_cc: document.getElementById('c-occupation').value,
+          telephone: document.getElementById('c-phone').value,
+          adresse: document.getElementById('c-adresse').value,
+          ville: document.getElementById('c-ville').value,
+          attn: document.getElementById('c-attn').value,
+      };
+  
+      fetch("{{ route('dashboard.clients.store') }}", {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+              'X-CSRF-TOKEN': '{{ csrf_token() }}',
+          },
+          body: JSON.stringify(formData)
+      })
+      .then(response => response.json())
+      .then(data => {
+          if (data.success) {
+              toastr.success(data.message, 'Succès', {
+                  positionClass: 'toast-top-right',
+                  timeOut: 5000,
+                  closeButton: true,
+                  progressBar: true,
+              });
+  
+              $('#addContactModal').modal('hide');
+              setTimeout(() => {
+                  location.reload();  
+              }, 5000);
+          } else {
+              toastr.error(data.message, 'Erreur', {
+                  positionClass: 'toast-top-right',
+                  timeOut: 20000,
+                  closeButton: true,
+                  progressBar: true,
+              });
+              setTimeout(() => {
+                  location.reload();
+              }, 1000);
+          }
+      })
+      .catch(error => {
+          console.error('Erreur:', error);
+          toastr.error("Une erreur est survenue lors de l'ajout du client.", 'Erreur', {
+              positionClass: 'toast-top-right',
+              timeOut: 20000,
+              closeButton: true,
+              progressBar: true,
+          });
+          setTimeout(() => {
+              location.reload();
+          }, 1000);
+      });
+  });
+  
+  </script>
+  
 
 <script>
     let timeout;
