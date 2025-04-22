@@ -24,7 +24,7 @@ class DesignationsController extends Controller
     {
         try {
             $validatedData = $request->validate([
-                'reference'       => 'required|string|max:10',
+                'reference'       => 'required|string|unique:designations,reference|max:10',
                 'description' => 'required|string|max:150',
                 'prix_unitaire' => 'required|string|max:10',
             ]);
