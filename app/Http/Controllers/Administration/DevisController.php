@@ -151,7 +151,7 @@ class DevisController extends Controller
         $clientName = $devis->client->name;
 
         // Envoyer l'e-mail au client avec le fichier PDF en pièce jointe
-        Mail::send(new DevisApprovalMail($devis, $pdfPathDevis, Auth::user()->name, $clientEmail, $clientName));
+        // Mail::send(new DevisApprovalMail($devis, $pdfPathDevis, Auth::user()->name, $clientEmail, $clientName));
 
         // Récupérer le pays de l'utilisateur authentifié
         $userCountry = Auth::user()->pays_id; 

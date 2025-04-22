@@ -415,14 +415,14 @@ public function approuve($id)
         }
 
         // Envoi de l'email
-        Mail::to($facture->devis->client->email)
-            ->send(new FactureApprovalMail(
-                $facture, 
-                $pdfPath, 
-                $facture->user->name, 
-                $facture->devis->client->email, 
-                $facture->devis->client->nom
-            ));
+        // Mail::to($facture->devis->client->email)
+        //     ->send(new FactureApprovalMail(
+        //         $facture, 
+        //         $pdfPath, 
+        //         $facture->user->name, 
+        //         $facture->devis->client->email, 
+        //         $facture->devis->client->nom
+        //     ));
 
         // Mise à jour du statut (décommenter quand tout fonctionne)
         $facture->devis->update(['status' => 'Soldé']);

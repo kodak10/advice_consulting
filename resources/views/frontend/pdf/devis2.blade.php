@@ -295,7 +295,7 @@
         <tr>
             <td colspan="4">
                 Arrêté la présence facture à la somme de 
-                {{ ucwords((new NumberFormatter('fr', NumberFormatter::SPELLOUT))->format($devis->solde)) }} {{ $devis->devise }} <br>
+                {{-- {{ ucwords((new NumberFormatter('fr', NumberFormatter::SPELLOUT))->format($devis->solde)) }} {{ $devis->devise }} <br> kodak--}} 
                 <br>
                 Veuillez confirmer votre accord par la mention "<strong>Bon pour accord</strong>"  suivi de votre signature
             </td>
