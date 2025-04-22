@@ -106,7 +106,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3 contact-email">
-                            <input type="email" id="c-email" class="form-control" placeholder="Email" required>
+                            <input type="email" id="c-email" class="form-control" placeholder="Email">
                             </div>
                         </div>
                         </div>

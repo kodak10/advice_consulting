@@ -25,7 +25,7 @@
                 <div class="col-lg-8">
                     <div class="card">
                         <div class="card-body">
-                            <h4 class="card-title">Informations du Client</h4>
+                            <h4 class="card-title">Client</h4>
         
                             <div class="mb-3">
                                 <div class="row">
@@ -427,7 +427,7 @@
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3 contact-email">
-                            <input type="email" id="c-email" class="form-control" placeholder="Email" required>
+                            <input type="email" id="c-email" class="form-control" placeholder="Email">
                             </div>
                         </div>
                         </div>
@@ -533,7 +533,7 @@
   });
   
   </script>
-  
+
 
 <script>
     let timeout;

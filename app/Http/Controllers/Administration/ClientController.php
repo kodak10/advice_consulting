@@ -48,7 +48,7 @@ public function store(Request $request)
         // Valider les données du formulaire
         $validatedData = $request->validate([
             'nom'       => 'required|string|max:255',
-            'email'     => 'required|email|unique:clients',
+            'email'     => 'nullable|unique:clients',
             'numero_cc' => 'required|string|max:255',
             'telephone' => 'required|string|max:255',
             'adresse'   => 'required|string|max:255',
