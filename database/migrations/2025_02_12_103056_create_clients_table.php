@@ -19,7 +19,9 @@ return new class extends Migration
             $table->text('adresse')->nullable();
             $table->string('ville')->nullable();
             $table->string('attn')->nullable(); 
-            $table->foreignId('created_by')->constrained('users')->onDelete('cascade'); // ID de l'utilisateur qui a créé le client
+            $table->foreignId('created_by')->constrained('users')->onDelete('cascade'); 
+            $table->string('email')->unique()->nullable();
+
             $table->timestamps(); 
         });
     }

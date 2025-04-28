@@ -110,6 +110,22 @@
                           <h6 class="mb-1 fs-3 fw-semibold lh-base">Mon Profil</h6>
                           <span class="fs-2 d-block text-body-secondary">Paramètres du compte</span>
                         </div>
+                        
+                      </a>
+                      <a href="{{ route('dashboard.profil') }}" class="py-8 px-7 mt-8 d-flex align-items-center">
+                        <span class="d-flex align-items-center justify-content-center text-bg-light rounded-1 p-6">
+                          
+                          <i class="ti ti-power fs-6"></i>
+                        </span>
+                        <div class="w-100 ps-3">
+                          <form action="{{ route('logout') }}" method="POST">
+                            @csrf
+                            <button class="border-0 bg-transparent text-primary ms-auto" tabindex="0" type="submit" aria-label="logout" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Se déconnecter">
+                                Se Déconnecter
+                            </button>
+                          </form>
+                        </div>
+                        
                       </a>
                       {{-- <a href="{{ route('dashboard.messagerie.index') }}" class="py-8 px-7 d-flex align-items-center">
                         <span class="d-flex align-items-center justify-content-center text-bg-light rounded-1 p-6">

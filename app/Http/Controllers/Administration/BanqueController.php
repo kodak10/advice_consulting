@@ -39,7 +39,7 @@ class BanqueController extends Controller
             // Valider les données du formulaire
             $validatedData = $request->validate([
                 'name'       => 'required|string|max:100',
-                'num_compte' => 'required|string|unique:banques,num_compte|min:14|max:20',
+                'num_compte' => 'required|string|unique:banques,num_compte|min:14|max:35',
             ]);
 
             $banques = new Banque([
@@ -117,7 +117,7 @@ class BanqueController extends Controller
     // Validation
     $validatedData = $request->validate([
         'name' => 'required|string|max:100',
-        'num_compte' => 'required|string|unique:banques,num_compte,' . $banque->id,
+        'num_compte' => 'required|string|min:14|max:35|unique:banques,num_compte,' . $banque->id,
         
     ]);
 

@@ -41,7 +41,7 @@ class VerifyEmail extends Notification
             ->line('Merci de vous être connecté à votre compte.')
             ->line('Votre adresse e-mail doit être vérifiée pour accéder à toutes les fonctionnalités.')
             ->action('Vérifiez votre adresse e-mail', $this->verificationUrl($notifiable))  // Le lien de vérification
-            ->line('Le mot de passe par défaut est : <strong>password</strong>. Nous vous invitons à le modifier une fois connecté.')
+            ->line('Le mot de passe par défaut est : password. Nous vous invitons à le modifier une fois connecté.')
             ->line('Si vous n\'êtes pas à l\'origine de cette connexion, ignorez cet e-mail.');
     }
 

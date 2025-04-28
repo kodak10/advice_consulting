@@ -331,7 +331,7 @@
         </tr>
         <tr>
             <td colspan="12" class="conditions">
-                {{-- {{ ucwords((new NumberFormatter('fr', NumberFormatter::SPELLOUT))->format($devis->solde)) }} {{ $devis->devise }} <br> kodak --}}
+                {{ ucwords((new NumberFormatter('fr', NumberFormatter::SPELLOUT))->format($devis->solde)) }} {{ $devis->devise }} <br>
             </td>
            
         </tr>

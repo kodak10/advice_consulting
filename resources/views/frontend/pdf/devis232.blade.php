@@ -5,11 +5,7 @@
     <meta charset="utf-8" />
     <title>Facture Proforma</title>
     <style>
-        /* Définir les marges et le format A4 */
-        @page {
-            size: A4;
-            margin: 10mm 20mm; /* Ajustez les marges si nécessaire */
-        }
+        
 
         /* Mise en page de base */
         body {
@@ -32,7 +28,6 @@
             border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
-            word-wrap: break-word;
         }
 
         th {
@@ -79,16 +74,20 @@
             /* background-color: #f4f4f4; */
         }
 
+        
+
+       
+
         /* Divider en bas */
         .divider {
             border-top: 3px solid #000000;
             margin: 20px 0;
         }
-
         .footer{
-            font-size: 9px !important;
-            color: #0064c9 !important;
-        }
+                font-size: 9px !important;
+                color: #0064c9 !important;
+                text-align: center
+            }
 
         /* Informations de l'entreprise */
         .company-info {
@@ -101,6 +100,9 @@
             padding: 10px 0;
         }
 
+        
+        
+
         .company-info td {
             border: none;
             padding: 5px;
@@ -109,7 +111,7 @@
         /* Ajustement pour l'impression */
         @media print {
             body {
-                font-size: 11px;
+                font-size: 12px;
                 margin: 0;
                 padding: 0;
             }
@@ -118,7 +120,6 @@
                 margin-left: auto;
                 margin-right: auto;
                 width: 100%;
-                table-layout: fixed; /* Permet d'assurer une largeur uniforme des colonnes */
             }
 
             .header {
@@ -126,7 +127,7 @@
             }
 
             th, td {
-                padding: 6px;
+                padding: 5px;
                 font-size: 10px;
             }
 
@@ -145,42 +146,39 @@
             .info-client {
                 background-color: #f4f4f4;
             }
-        }
 
+        }
         .no-border {
             border: none;
-            border-collapse: collapse;
+            border-collapse: collapse; /* Facultatif : fusionner les bordures entre les cellules */
         }
 
         .no-border td,
         .no-border th {
-            border: none;
+            border: none; /* Assurer qu'aucune bordure n'est appliquée sur les cellules */
         }
 
-        .no-border td:last-child {
+        .no-border td:last-child{
             color: #022344;
             font-weight: bold;
             font-size: 14px;
-        }
 
-        .no-border img {
+        }
+        .no-border img{
             height: 80px;
         }
-
         .ligne {
             height: 2px;
             width: 100%;
             background-color: #c54f00;
             margin-bottom: 20px;
         }
-
-        .proforma {
+        .proforma{
             font-size: 21px;
             font-weight: bold;
             color: #0064c9;
         }
-
-        .elements {
+        .elements{
             background-color: #575656 !important;
             color: #ddd;
         }
@@ -188,6 +186,7 @@
 </head>
 
 <body>
+    
     <table class="no-border">
         <tr>
             <!-- Image avec colspan correctement défini -->
@@ -202,28 +201,28 @@
     </table>
     <div class="ligne"></div>
 
-    <table style="width: 100%">
+    <table>
         <!-- Informations de la facture -->
         <tr>
-            <td colspan="5" class="proforma">FACTURE PROFORMA</td>
-            <td colspan="7"><strong>{{ $devis->client->nom }}</strong></td>
+            <td colspan="4" class="proforma">FACTURE PROFORMA</td>
+            <td colspan="6"><strong>{{ $devis->client->nom }}</strong></td>
         </tr>
         <tr>
-            <td colspan="5"></td>
-            <td colspan="7"><strong>N°CC:</strong> {{ $devis->client->numero_cc }}</td>
+            <td colspan="4"></td>
+            <td colspan="6"><strong>N°CC:</strong> {{ $devis->client->numero_cc }}</td>
         </tr>
         <tr>
-            <td colspan="5">Date émission: {{ $devis->date_emission }}</td>
-            <td colspan="7"><strong>Téléphone:</strong> {{ $devis->client->telephone }}</td>
+            <td colspan="4">Date émission: {{ $devis->date_emission }}</td>
+            <td colspan="6"><strong>Téléphone:</strong> {{ $devis->client->telephone }}</td>
         </tr>
         <tr>
-            <td colspan="5">Numéro: {{ $devis->num_proforma }}</td>
-            <td colspan="7"><strong>Adresse:</strong> {{ $devis->client->adresse }}</td>
+            <td colspan="4">Numéro: {{ $devis->num_proforma }}</td>
+            <td colspan="6"><strong>Adresse:</strong> {{ $devis->client->adresse }}</td>
         </tr>
 
         <tr>
-            <td colspan="12">
-                {{ $devis->texte }}
+            <td colspan="10">
+                {{ $devis->texte }}            
             </td>
         </tr>
 
@@ -231,58 +230,59 @@
             <th>Référence</th>
             <th colspan="3">Description</th>
             <th>Quantité</th>
-            <th colspan="3">Prix unitaire</th>
-            <th colspan="2">Remise</th>
-            <th colspan="4">Total</th>
+            <th colspan="1">Prix unitaire</th>
+            <th colspan="1">Remise</th>
+            <th colspan="3">Total</th>
         </tr>
-
+        
         @foreach ($devis->details as $devisDetail)
             <tr>
                 <td>{{ $devisDetail->designation->reference }}</td>
                 <td colspan="3">{{ $devisDetail->designation->description }}</td>
                 <td>{{ $devisDetail->quantite }}</td>
-                <td colspan="3">{{ floor($devisDetail->prix_unitaire) }}</td>
-                <td colspan="2">{{ floor($devisDetail->remise) }}</td>
-                <td colspan="4">{{ floor($devisDetail->total) }}</td>
+                <td colspan="1">{{ floor($devisDetail->prix_unitaire) }}</td>
+                <td colspan="1">{{ floor($devisDetail->remise) }}</td>
+                <td colspan="3">{{ floor($devisDetail->total) }}</td>
             </tr>
         @endforeach
+        
 
         <!-- Conditions financières et Prix -->
         <tr>
-            <td colspan="5" class="conditions">
+            <td colspan="4" class="conditions">
                 <strong>Commande :</strong> {{ $devis->commande }}% <strong>Livraison {{ $devis->livraison }} %</strong>
             </td>
-            <td colspan="7" class="prices">
+            <td colspan="6" class="prices">
                 <strong>Total HT :</strong> {{ floor($devis->total_ht) }}
             </td>
         </tr>
         <tr>
-            <td colspan="5" class="conditions">
+            <td colspan="4" class="conditions">
                 <strong>Validité de l'offre :</strong> {{ $devis->validite }} jours
             </td>
-            <td colspan="7" class="prices">
+            <td colspan="6" class="prices">
                 <strong>TVA :</strong> {{ $devis->tva }} %
             </td>
         </tr>
         <tr>
-            <td colspan="5" class="conditions">
+            <td colspan="4" class="conditions">
                 <strong>Délai de livraison :</strong> {{ $devis->delai }}
             </td>
-            <td colspan="7" class="prices">
+            <td colspan="6" class="prices">
                 <strong>TOTAL TTC :</strong> {{ floor($devis->total_ttc) }}
             </td>
         </tr>
         <tr>
-            <td colspan="5" class="conditions">
+            <td colspan="4" class="conditions">
                 <strong>Veuillez libeller votre chèque au nom de :</strong>
                 <strong>ADVICE CONSULTING</strong> ou faire un virement en notre faveur sur le compte ci-dessous:
             </td>
-            <td colspan="7" class="prices">
+            <td colspan="6" class="prices">
                 <strong>Acompte :</strong> {{ floor($devis->acompte) }}
             </td>
         </tr>
         <tr>
-            <td colspan="5" class="conditions">
+            <td colspan="4" class="conditions">
                 <strong>Banque :</strong> {{ $banque->name }}
                 <strong>N° compte :</strong> {{ $banque->num_compte }}
             </td>
@@ -293,9 +293,9 @@
 
         <!-- Signature et accord -->
         <tr>
-            <td colspan="5">
-                Arrêté la présence facture à la somme de
-                {{ ucwords((new NumberFormatter('fr', NumberFormatter::SPELLOUT))->format($devis->solde)) }} {{ $devis->devise }} <br>
+            <td colspan="4">
+                Arrêté la présence facture à la somme de 
+                {{-- {{ ucwords((new NumberFormatter('fr', NumberFormatter::SPELLOUT))->format($devis->solde)) }} {{ $devis->devise }} <br> kodak--}} 
                 <br>
                 Veuillez confirmer votre accord par la mention "<strong>Bon pour accord</strong>"  suivi de votre signature
             </td>
@@ -305,6 +305,7 @@
             </td>
         </tr>
     </table>
+
 
     <!-- Informations de l'entreprise -->
     <table class="company-info" width="100%">

@@ -45,14 +45,14 @@ class DevisController extends Controller
     public function index()
     {
         $devis = Devis::where('pays_id', Auth::user()->pays_id)
-        ->where('status', 'Facturé')
+        ->where('status', 'En Attente de facture')
         ->get();
 
         $mes_devis = Devis::where('pays_id', Auth::user()->pays_id)
         ->where('user_id', Auth::user()->id)
         ->get();
 
-        $devisAlls = Devis::where('status', 'Facturé')
+        $devisAlls = Devis::where('status', 'En Attente de facture')
         ->get();
         
 
@@ -175,7 +175,7 @@ class DevisController extends Controller
 
 
         // Mettre à jour le statut du devis
-        $devis->status = 'Facturé';
+        $devis->status = 'En Attente de facture';
         $devis->save();
     
         // Rediriger vers la page index
@@ -195,9 +195,9 @@ public function refuse($id, Request $request)
     ]);
 
     // Vérification du statut du devis avant la mise à jour
-    if ($devis->status !== "Facturé") {
-        // Si le statut n'est pas "Facturé", ne pas permettre le refus
-        return redirect()->route('dashboard.devis.index')->with('error', 'Vous ne pouvez refuser cette Proforma que si son statut est "Facturé"');
+    if ($devis->status !== "En Attente de facture") {
+        // Si le statut n'est pas "En Attente de facture", ne pas permettre le refus
+        return redirect()->route('dashboard.devis.index')->with('error', 'Vous ne pouvez refuser cette Proforma que si son statut est "En Attente de facture"');
     }
 
     // Changer le statut du devis à "Réfusé"

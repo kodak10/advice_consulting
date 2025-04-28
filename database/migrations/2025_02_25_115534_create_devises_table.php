@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('devises', function (Blueprint $table) {
             $table->id();
-            $table->string('code')->unique(); // usd, fcfa, euro
-            $table->decimal('taux_conversion', 8, 2); // Taux de conversion
+            $table->string('code')->unique(); 
+            $table->decimal('taux_conversion', 8, 2); 
             $table->timestamps();
         });
     }

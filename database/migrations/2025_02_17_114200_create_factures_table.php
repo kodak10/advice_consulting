@@ -13,6 +13,17 @@ return new class extends Migration
     {
         Schema::create('factures', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('devis_id')->constrained('devis')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->string('num_bc')->nullable();
+            $table->string('num_rap')->nullable();
+            $table->string('num_bl')->nullable();
+            $table->string('numero')->nullable();
+            $table->decimal('remise_speciale', 10, 2);
+            $table->foreignId('pays_id')->nullable()->constrained('pays')->onDelete('set null');
+            $table->string('pdf_path')->nullable();
+            $table->string('status')->default('Non renseigné'); 
+            $table->text('message')->nullable(); 
             $table->timestamps();
         });
     }

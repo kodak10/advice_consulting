@@ -27,6 +27,14 @@ return new class extends Migration
             $table->decimal('total_ttc', 10, 2)->default(0);
             $table->decimal('acompte', 10, 2)->default(0);
             $table->decimal('solde', 10, 2)->default(0);
+            $table->string('pdf_path')->nullable();
+            $table->string('num_proforma');
+            $table->string('status'); 
+            $table->foreignId('pays_id')->nullable()->constrained('pays')->onDelete('set null');
+            $table->string('devise')->default('XOF');
+            $table->text('message')->nullable();  
+            $table->text('texte')->nullable();   
+            $table->decimal('taux', 10, 4)->default(1);
             $table->timestamps();
         });
     }

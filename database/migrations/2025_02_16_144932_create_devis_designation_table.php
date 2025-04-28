@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('devis_id')->constrained()->onDelete('cascade');
             $table->foreignId('designation_id')->constrained()->onDelete('cascade');
+            $table->decimal('taux', 10, 4)->default(1);
+
             $table->timestamps();
         });
     }

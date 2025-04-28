@@ -122,17 +122,17 @@
 
                 <div class="mb-4">
                     <label class="form-label">Numéro BC <span class="text-danger">*</span></label>
-                    <input type="text" name="num_bc" placeholder="Numéro BC" class="form-control">
+                    <input type="text" name="num_bc" placeholder="Numéro BC" value="0" class="form-control">
                 </div>
 
                 <div class="mb-4">
-                    <label class="form-label">Numéro Rap activ. <span class="text-danger">*</span></label>
-                    <input type="text" name="num_rap" placeholder="Numéro RAP" class="form-control">
+                    <label class="form-label">Numéro Rap activ.</label>
+                    <input type="text" name="num_rap" placeholder="Numéro RAP" value="0" class="form-control">
                 </div>
 
                 <div class="mb-4">
-                    <label class="form-label">Numéro BL <span class="text-danger">*</span></label>
-                    <input type="text" name="num_bl" placeholder="Numéro BL" class="form-control">
+                    <label class="form-label">Numéro BL</label>
+                    <input type="text" name="num_bl" placeholder="Numéro BL" value="0" class="form-control">
                 </div>
 
                 <button type="submit" class="btn btn-success">Enregistrer</button>

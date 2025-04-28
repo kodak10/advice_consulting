@@ -57,16 +57,16 @@ class FacturesController extends Controller
         $payss = Pays::get();
         $user = Auth::user();
 
-        $all_devis = Devis::whereIn('status', ['Facturé', 'En Attente du Daf'])->get();
+        $all_devis = Devis::whereIn('status', ['En Attente de facture', 'En Attente du Daf'])->get();
 
         $devis_pays = Devis::where('pays_id', Auth::user()->pays_id)
-        ->where('status',  'Facturé')
+        ->where('status',  'En Attente de facture')
         ->get();
 
         $facturesQuery = Facture::query();
 
         $facturesQuery->whereHas('devis', function ($query) {
-            $query->where('status', 'Soldé');
+            $query->where('status', 'Facturé');
         });
 
         // Filtre par pays (uniquement pour les Dafs)
@@ -116,8 +116,8 @@ class FacturesController extends Controller
     //         'message' => 'required|string|min:10', // Minimum 10 caractères pour le message
     //     ]);
 
-    //     if ($devis->status !== 'Facturé') {
-    //         return redirect()->back()->with('error', 'Vous ne pouvez supprimer cette Proforma que si son statut est "Facturé".');
+    //     if ($devis->status !== 'En Attente de facture') {
+    //         return redirect()->back()->with('error', 'Vous ne pouvez supprimer cette Proforma que si son statut est "En Attente de facture".');
     //     }
     
     //     $creator = $devis->user;  // L'utilisateur qui a créé le devis (ou tout autre destinataire)
@@ -145,13 +145,13 @@ class FacturesController extends Controller
     ]);
 
     // Vérification du statut de la facture avant la mise à jour
-    if ($factures->status === "Soldé") {
-        return redirect()->route('dashboard.factures.index')->with('error', 'Vous ne pouvez refuser cette Facture que si son statut est "Facturé ou en Attente du Daf"');
+    if ($factures->status === "Facturé") {
+        return redirect()->route('dashboard.factures.index')->with('error', 'Vous ne pouvez refuser cette Facture que si son statut est "En Attente de facture ou en Attente du Daf"');
     }
 
     // Changer le statut du devis à "Réfusé"
     $factures->status = 'Réfusé';
-    $factures->devis->status = 'Facturé';
+    $factures->devis->status = 'En Attente de facture';
 
     $factures->message = $validated['message'];
     $factures->save();
@@ -180,7 +180,7 @@ class FacturesController extends Controller
         // }
 
 
-        if ($factures && $factures->status === 'Soldé') {
+        if ($factures && $factures->status === 'Facturé') {
             return redirect()->back()->with('error', "Cette proforma a déjà l'objet de facture.<br> Vous pouvez la facturé ou la réfusée.");
         }
         
@@ -215,9 +215,9 @@ class FacturesController extends Controller
                 'devis_id' => 'required|exists:devis,id',
                 'banque_id' => 'required|exists:banques,id',
                 'client_id' => 'required|exists:clients,id',
-                'num_bc' => 'required|string',
-                'num_rap' => 'required|string',
-                'num_bl' => 'required|string',
+                'num_bc' => 'required',
+                'num_rap' => 'string',
+                'num_bl' => 'string',
                 'remise_speciale' => 'required|string',
             ]);
 
@@ -231,8 +231,8 @@ class FacturesController extends Controller
             $facture = Facture::where('devis_id', $devis->id)->first();
 
             if ($facture) {
-                if ($facture->status === 'En Attente du Daf' || $facture->status === 'Soldé') {
-                    return redirect()->back()->with('error', "Cette proforma a déjà une facture en cours ou soldée.");
+                if ($facture->status === 'En Attente du Daf' || $facture->status === 'Facturé') {
+                    return redirect()->back()->with('error', "Cette proforma a déjà une facture en cours ou Facturé.");
                 }
             }
             
@@ -365,9 +365,9 @@ class FacturesController extends Controller
 //     Mail::send(new FactureApprovalMail($facture, $pdfPath, Auth::user()->name, $clientEmail, $clientName));
 
 //     // Modifier le statut de la facture
-//     $facture->devis->status = 'Soldé';
+//     $facture->devis->status = 'Facturé';
 //     $facture->devis->save();
-//     $facture->status = 'Soldé';
+//     $facture->status = 'Facturé';
 //     $facture->save();
 
    
@@ -425,8 +425,8 @@ public function approuve($id)
         //     ));
 
         // Mise à jour du statut (décommenter quand tout fonctionne)
-        $facture->devis->update(['status' => 'Soldé']);
-        $facture->update(['status' => 'Soldé']);
+        $facture->devis->update(['status' => 'Facturé']);
+        $facture->update(['status' => 'Facturé']);
 
         // Notifications (décommenter quand tout fonctionne)
         $facture->user->notify(new FactureApprovedNotification($facture));

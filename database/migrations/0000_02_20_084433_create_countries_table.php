@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->string('indicatif', 3)->unique(); 
+            $table->string('devise')->nullable();
             $table->timestamps();
         });
     }
