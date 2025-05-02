@@ -209,7 +209,7 @@
             </td>
         </tr>
     </table> --}}
-    <div class="ligne"></div>
+    {{-- <div class="ligne"></div> --}}
 
     <table>
         <!-- Informations de la facture -->
