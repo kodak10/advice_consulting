@@ -3,9 +3,13 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Facture Proforma</title>
+    <title>Facture</title>
     <style>
-        
+        /* Définir les marges et le format A4 */
+        @page {
+            size: A4;
+            margin: 20mm; /* Marges autour du contenu */
+        }
 
         /* Mise en page de base */
         body {
@@ -86,7 +90,6 @@
         .footer{
                 font-size: 9px !important;
                 color: #0064c9 !important;
-                text-align: center
             }
 
         /* Informations de l'entreprise */
@@ -158,6 +161,13 @@
             border: none; /* Assurer qu'aucune bordure n'est appliquée sur les cellules */
         }
 
+        .chiffres .no-border td,
+        .chiffres .no-border {
+            background-color: #ffff;
+            border: none;
+        }
+
+
         .no-border td:last-child{
             color: #022344;
             font-weight: bold;
@@ -173,15 +183,20 @@
             background-color: #c54f00;
             margin-bottom: 20px;
         }
+
+        .vide{
+            height: 150px;
+        }
         .proforma{
             font-size: 21px;
             font-weight: bold;
             color: #0064c9;
         }
-        .elements{
-            background-color: #575656 !important;
-            color: #ddd;
-        }
+
+        
+
+
+        
     </style>
 </head>
 
@@ -199,113 +214,171 @@
             </td>
         </tr>
     </table>
+
+    {{-- <table class="no-border">
+        <tr>
+            <td colspan="3">
+                Type de règlement : <div class="box">A écheance</div>
+            </td>
+            <td colspan="3">
+                Délai : <div class="box">{{ $devis->delai }}</div>
+            </td>
+            <!-- Texte avec colspan également correctement défini -->
+            <td colspan="6">
+                Agent <div class="box">{{ $devis->user->name }}</div>
+            </td>
+        </tr>
+    </table> --}}
     <div class="ligne"></div>
 
     <table>
         <!-- Informations de la facture -->
         <tr>
-            <td colspan="4" class="proforma">FACTURE PROFORMA</td>
-            <td colspan="6"><strong>{{ $devis->client->nom }}</strong></td>
+            <!-- <td colspan="6"><strong>Date :</strong> {{ $devis->date_emission }}</td> -->
+            <td colspan="6" class="proforma">FACTURE PROFORMA</td>
+
+            <td colspan="6"><strong>CLIENT</strong></td>
         </tr>
         <tr>
-            <td colspan="4"></td>
-            <td colspan="6"><strong>N°CC:</strong> {{ $devis->client->numero_cc }}</td>
+            <td colspan="6"></td>
+            <td colspan="6">{{ $devis->client->nom }}</td>
         </tr>
-        <tr>
-            <td colspan="4">Date émission: {{ $devis->date_emission }}</td>
+        <tr class="info-client">
+            <td colspan="6"><strong>Date Emission :</strong> {{ $devis->date_echeance }}</td>
+
+            <td colspan="6"><strong>N° CC :</strong> {{ $devis->client->numero_cc }}</td>
+        </tr>
+        <tr class="info-client">
+            <td colspan="6"><strong>Numéro ADC :</strong> {{ $devis->date_echeance }}</td>
             <td colspan="6"><strong>Téléphone:</strong> {{ $devis->client->telephone }}</td>
         </tr>
-        <tr>
-            <td colspan="4">Numéro: {{ $devis->num_proforma }}</td>
-            <td colspan="6"><strong>Adresse:</strong> {{ $devis->client->adresse }}</td>
+        <tr class="info-client">
+            <td colspan="6"></td>
+            <td colspan="6"><strong>Adresse :</strong> {{ $devis->client->adresse }}</td>
         </tr>
-
+       
+    </table>
+    
+    <table>
         <tr>
             <td colspan="10">
                 {{ $devis->texte }}            
             </td>
         </tr>
+    </table>
 
-        <tr class="elements">
-            <th>Référence</th>
-            <th colspan="3">Description</th>
-            <th>Quantité</th>
-            <th colspan="1">Prix unitaire</th>
-            <th colspan="1">Remise</th>
-            <th colspan="3">Total</th>
+    <table class="chiffres">
+        <tr>
+            <th colspan="1">Référence</th>
+            <th colspan="4">Description</th>
+            <th colspan="1">Quantité</th>
+            <th colspan="2">Prix unitaire</th>
+            <th colspan="4">Remise</th>
+            <th colspan="4">Total</th>
         </tr>
         
         @foreach ($devis->details as $devisDetail)
             <tr>
-                <td>{{ $devisDetail->designation->reference }}</td>
-                <td colspan="3">{{ $devisDetail->designation->description }}</td>
-                <td>{{ $devisDetail->quantite }}</td>
-                <td colspan="1">{{ floor($devisDetail->prix_unitaire) }}</td>
-                <td colspan="1">{{ floor($devisDetail->remise) }}</td>
-                <td colspan="3">{{ floor($devisDetail->total) }}</td>
+                <td colspan="1">{{ $devisDetail->designation->reference }}</td>
+                <td colspan="4">{{ $devisDetail->designation->description }}</td>
+                <td colspan="1">{{ $devisDetail->quantite }}</td>
+                <td colspan="2">{{ floor($devisDetail->prix_unitaire) }}</td>
+                <td colspan="4">{{ floor($devisDetail->total) }}</td>
+                <td colspan="4">{{ floor($devisDetail->total) }}</td>
             </tr>
         @endforeach
         
 
         <!-- Conditions financières et Prix -->
         <tr>
-            <td colspan="4" class="conditions">
-                <strong>Commande :</strong> {{ $devis->commande }}% <strong>Livraison {{ $devis->livraison }} %</strong>
+            <td colspan="8" class="no-border">
+                
             </td>
-            <td colspan="6" class="prices">
+            <td colspan="6" class="">
                 <strong>Total HT :</strong> {{ floor($devis->total_ht) }}
             </td>
         </tr>
         <tr>
-            <td colspan="4" class="conditions">
-                <strong>Validité de l'offre :</strong> {{ $devis->validite }} jours
+            <td colspan="8" class="no-border">
+                
             </td>
-            <td colspan="6" class="prices">
-                <strong>TVA :</strong> {{ $devis->tva }} %
+            <td colspan="6" class="">
+                <strong>TVA :</strong> {{ $devis->tva }} % => 
+                {{ number_format(floor($devis->total_ht) * $devis->tva / 100, 2, ',', ' ') }} {{ $devis->devise }}
+
+                <!-- <strong>TVA :</strong> {{ $devis->tva }} % => {{ floor($devis->total_ht) }} * {{ $devis->tva }} / 100 -->
             </td>
         </tr>
         <tr>
-            <td colspan="4" class="conditions">
-                <strong>Délai de livraison :</strong> {{ $devis->delai }}
+            <td colspan="8" class="no-border">
+                <strong>Commande :</strong> {{ $devis->commande }}% <strong>Livraison {{ $devis->livraison }} %</strong>
+
             </td>
-            <td colspan="6" class="prices">
+            <td colspan="6" class="">
                 <strong>TOTAL TTC :</strong> {{ floor($devis->total_ttc) }}
             </td>
         </tr>
         <tr>
-            <td colspan="4" class="conditions">
-                <strong>Veuillez libeller votre chèque au nom de :</strong>
-                <strong>ADVICE CONSULTING</strong> ou faire un virement en notre faveur sur le compte ci-dessous:
+            <td colspan="8" class="no-border">
+                <strong>Validité de l'offre :</strong> {{ $devis->validite }} jours
             </td>
-            <td colspan="6" class="prices">
+            <td colspan="6" class="">
                 <strong>Acompte :</strong> {{ floor($devis->acompte) }}
             </td>
         </tr>
         <tr>
-            <td colspan="4" class="conditions">
-                <strong>Banque :</strong> {{ $banque->name }}
-                <strong>N° compte :</strong> {{ $banque->num_compte }}
+            <td colspan="8" class="no-border">
+                <strong>Délai de livraison :</strong> {{ $devis->delai }} jours
             </td>
-            <td colspan="6" class="prices">
+            <td colspan="6" class="">
                 <strong>Solde :</strong> {{ floor($devis->solde) }}
-            </td>
-        </tr>
-
-        <!-- Signature et accord -->
-        <tr>
-            <td colspan="4">
-                Arrêté la présence facture à la somme de 
-                {{-- {{ ucwords((new NumberFormatter('fr', NumberFormatter::SPELLOUT))->format($devis->solde)) }} {{ $devis->devise }} <br> kodak--}} 
-                <br>
-                Veuillez confirmer votre accord par la mention "<strong>Bon pour accord</strong>"  suivi de votre signature
-            </td>
-            <td colspan="6" class="info-client">
-                <strong>Le Service Commercial</strong><br>
-                {{ $devis->user->name }}
             </td>
         </tr>
     </table>
 
+    <table>
+
+        <tr>
+            <td colspan="12" class="conditions">
+                Veuillez libeller votre chèque à l'ordre de Advice Consulting {{ $devis->user->pays->name }} ou faire un virement sur notre compte
+            </td>
+            
+        </tr>
+        <tr>
+            <td colspan="12" class="conditions">
+                <strong> Banque :</strong> {{ $banque->name }} N° Compte {{ $banque->num_compte }}
+
+            </td>
+            
+        </tr>
+       
+          
+    </table>
+
+    <table>
+        <tr>
+            
+
+            <td  class="conditions">
+                <strong>Arrêté la présence facture à la somme de :
+            </td>
+            <td class="conditions">
+                <strong>Service Commercial 
+            </td>
+           
+        </tr>
+        <tr>
+            
+
+            <td  class="conditions">
+                {{ ucwords((new NumberFormatter('fr', NumberFormatter::SPELLOUT))->format($devis->solde)) }} {{ $devis->devise }} <br>
+            </td>
+            <td class="conditions">
+                {{ $devis->user->name }}
+            </td>
+           
+        </tr>
+    </table>
 
     <!-- Informations de l'entreprise -->
     <table class="company-info" width="100%">
@@ -313,6 +386,8 @@
             <td class="footer">SARL au capital de 2000000 FCFA - Cocody - Angré - Villa - Adresse: 08 BP 3667 Abidjan - Tel: +225 22 54 50 53 - Fax: +225 22 54 50 53 - N°CC:0906802 G</td>
         </tr>
     </table>
+
+
 </body>
 
 </html>

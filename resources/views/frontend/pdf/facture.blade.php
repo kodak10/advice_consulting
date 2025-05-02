@@ -247,63 +247,79 @@
     <table class="chiffres">
         <tr>
             <th colspan="1">Référence</th>
-            <th colspan="4">Description</th>
-            <th colspan="1">Quantité</th>
-            <th colspan="2">Prix unitaire</th>
-            <th colspan="4">Total</th>
+            <th colspan="3">Description</th>
+            <th colspan="1">Qté</th>
+            <th colspan="1">Prix unitaire</th>
+            <th colspan="2">Total</th>
         </tr>
         
         @foreach ($devis->details as $devisDetail)
             <tr>
                 <td colspan="1">{{ $devisDetail->designation->reference }}</td>
-                <td colspan="4">{{ $devisDetail->designation->description }}</td>
+                <td colspan="3">{{ $devisDetail->designation->description }}</td>
                 <td colspan="1">{{ $devisDetail->quantite }}</td>
-                <td colspan="2">{{ floor($devisDetail->prix_unitaire) }}</td>
-                <td colspan="4">{{ floor($devisDetail->total) }}</td>
+                <td colspan="1">{{ $devisDetail->prix_unitaire }}</td>
+                <td colspan="2">{{ $devisDetail->total }}</td>
             </tr>
         @endforeach
         
 
         <!-- Conditions financières et Prix -->
         <tr>
-            <td colspan="6" class="no-border">
+            <td colspan="4" class="no-border">
                 
             </td>
-            <td colspan="6" class="prices">
-                <strong>Total HT :</strong> {{ floor($devis->total_ht) }}
+            <td colspan="2" class="prices">
+                <strong>Total HT :</strong>
+            </td>
+
+            <td colspan="3" class="prices">
+                {{ $devis->total_ht }}
             </td>
         </tr>
         <tr>
-            <td colspan="6" class="no-border">
+            <td colspan="4" class="no-border">
                 
-
             </td>
-            <td colspan="6" class="prices">
+            <td colspan="2" class="prices">
                 <strong>TVA :</strong> {{ $devis->tva }} %
             </td>
-        </tr>
-        <tr>
-            <td colspan="6" class="no-border">
-                
-            </td>
-            <td colspan="6" class="prices">
-                <strong>TOTAL TTC :</strong> {{ floor($devis->total_ttc) }}
+            <td colspan="3" class="prices">
+                {{ number_format($devis->total_ht * $devis->tva / 100, 2, ',', ' ') }}
+
             </td>
         </tr>
         <tr>
-            <td colspan="6" class="no-border">
+            <td colspan="4" class="no-border">
                 
             </td>
-            <td colspan="6" class="prices">
-                <strong>Acompte :</strong> {{ floor($devis->acompte) }}
+            <td colspan="2" class="prices">
+                <strong>TOTAL TTC :</strong>
+            </td>
+            <td colspan="3" class="prices">
+                {{ $devis->total_ttc }}
             </td>
         </tr>
         <tr>
-            <td colspan="6" class="no-border">
+            <td colspan="4" class="no-border">
                 
             </td>
-            <td colspan="6" class="prices">
-                <strong>Solde :</strong> {{ floor($devis->solde) }}
+            <td colspan="2" class="prices">
+                <strong>Acompte :</strong> 
+            </td>
+            <td colspan="3" class="prices">
+                {{ $devis->acompte }}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4" class="no-border">
+                
+            </td>
+            <td colspan="2" class="prices">
+                <strong>Solde :</strong> 
+            </td>
+            <td colspan="3" class="prices">
+                {{ $devis->solde }}
             </td>
         </tr>
     </table>
@@ -325,16 +341,29 @@
         </tr>
         <tr>
             <td colspan="12" class="conditions">
-                <strong>Arrêté la présence facture à la somme de 
+                <strong>Arrêté la présence facture à la somme de :
             </td>
            
         </tr>
+        @php
+            $formatter = new NumberFormatter('fr', NumberFormatter::SPELLOUT);
+            $solde = number_format($devis->solde, 2, '.', '');
+            [$entier, $decimales] = explode('.', $solde);
+        
+            $texteEntier = $formatter->format($entier);
+            $texteDecimales = intval($decimales) > 0 ? $formatter->format($decimales) : null;
+        @endphp
+        
         <tr>
             <td colspan="12" class="conditions">
-                {{ ucwords((new NumberFormatter('fr', NumberFormatter::SPELLOUT))->format($devis->solde)) }} {{ $devis->devise }} <br>
+                {{ ucwords($texteEntier) }}
+                @if($texteDecimales)
+                    virgule {{ $texteDecimales }}
+                @endif
+                {{ $devis->devise }}<br>
             </td>
-           
         </tr>
+    
         
 
         <!-- Signature et accord -->

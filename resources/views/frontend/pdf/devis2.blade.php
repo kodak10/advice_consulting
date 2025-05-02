@@ -304,9 +304,8 @@
             </td>
             <td colspan="6" class="">
                 <strong>TVA :</strong> {{ $devis->tva }} % => 
-                {{ number_format(floor($devis->total_ht) * $devis->tva / 100, 2, ',', ' ') }} {{ $devis->devise }}
+                {{ number_format($devis->total_ht * $devis->tva / 100, 2, ',', ' ') }}
 
-                <!-- <strong>TVA :</strong> {{ $devis->tva }} % => {{ floor($devis->total_ht) }} * {{ $devis->tva }} / 100 -->
             </td>
         </tr>
         <tr>
