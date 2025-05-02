@@ -12,7 +12,6 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('factures', function (Blueprint $table) {
-            $table->decimal('montant_solde', 10, 2)->default(0)->after('remise_speciale');
         });
     }
 

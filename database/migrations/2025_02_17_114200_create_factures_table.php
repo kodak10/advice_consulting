@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('num_bl')->nullable();
             $table->string('numero')->nullable();
             $table->decimal('remise_speciale', 10, 2);
+            $table->decimal('montant_solde', 10, 2)->default(0);
             $table->foreignId('pays_id')->nullable()->constrained('pays')->onDelete('set null');
             $table->string('pdf_path')->nullable();
             $table->string('status')->default('Non renseigné'); 
