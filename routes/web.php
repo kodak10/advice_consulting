@@ -76,6 +76,8 @@ Route::middleware(['auth', 'verified','check.user.status'])->prefix('dashboard')
     Route::get('/factures/export/csv', [FacturesController::class, 'exportCsv'])->name('factures.exportCsv');
     Route::get('/factures/{id}/validate', [FacturesController::class, 'approuve'])->name('factures.validate');
 
+    Route::put('/factures/{facture}/update-solde', [FacturesController::class, 'updateSolde'])->name('factures.updateSolde');
+
 
     Route::resource('banques', BanqueController::class);
 

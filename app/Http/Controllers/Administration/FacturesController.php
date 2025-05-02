@@ -526,6 +526,19 @@ public function exportCsv()
 }
 
 
+
+public function updateSolde(Request $request, Facture $facture)
+{
+    $request->validate([
+        'montant_solde' => 'required|numeric|min:0',
+    ]);
+
+    $facture->montant_solde = $request->montant_solde;
+    $facture->save();
+
+    return redirect()->back()->with('success', 'Montant soldé mis à jour avec succès.');
+}
+
     
 
 

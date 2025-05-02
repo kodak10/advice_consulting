@@ -435,9 +435,32 @@
                       <td>
                         <h6 class="mb-0">{{ $facture->created_at }}</h6>
                       </td>
-                        <td>
+                        {{-- <td>
                             <h6 class="mb-0">{{ $facture->numero }}</h6>
-                        </td>
+                        </td> --}}
+                        <td>
+                          @php
+                          $montant_total = $facture->devis->total_ttc;
+                          $montant_solde = $facture->montant_solde;
+
+                          if ($montant_solde == 0) {
+                              $status_solde = 'Non renseigné';
+                              $color = 'text-muted';
+                          } elseif ($montant_solde >= $montant_total) {
+                              $status_solde = 'Soldé';
+                              $color = 'text-success';
+                          } else {
+                              $status_solde = 'Partiel';
+                              $color = 'text-warning';
+                          }
+
+                          $status_facture = $facture->devis->status ?? 'Non renseigné';
+                      @endphp
+
+                          <h6 class="mb-0 {{ $color }}">{{ $facture->numero }}</h6>
+                      </td>
+                      
+                      
                         @if(Auth::user()->hasRole(['Daf', 'DG']))
                         <td>
                           <h6 class="mb-0">{{ $facture->devis->pays->name }}</h6>
@@ -451,13 +474,68 @@
                           {{ $facture->devis->client->nom }}
                       </td>
                         <td>{{ $facture->devis->total_ttc }} {{ $facture->devis->devise }}</td>
-                        <td>{{ $facture->devis->status ?? 'Non renseigné' }}</td>
+                        @php
+                          $montant_total = $facture->devis->total_ttc;
+                          $montant_solde = $facture->montant_solde;
+
+                          if ($montant_solde == 0) {
+                              $status_solde = 'Non renseigné';
+                              $color = 'text-muted';
+                          } elseif ($montant_solde >= $montant_total) {
+                              $status_solde = 'Soldé';
+                              $color = 'text-success';
+                          } else {
+                              $status_solde = 'Partiel';
+                              $color = 'text-warning';
+                          }
+
+                          $status_facture = $facture->devis->status ?? 'Non renseigné';
+                      @endphp
+
+                      <td>
+                          <span class="text-primary">{{ $status_facture }}</span> |
+                          <span class="{{ $color }}">{{ $status_solde }}</span>
+                      </td>
+
+
     
                         <td>
                           <a href="{{ route('dashboard.factures.download', $facture->id) }}" class="text-primary me-2" title="Télécharger">
                             <i class="ti ti-download fs-5"></i>
                           </a>
+                          
+
+                          <a href="#" class="text-info me-2" data-bs-toggle="modal" data-bs-target="#updateSoldeModal-{{ $facture->id }}" title="Mettre à jour le montant soldé">
+                            <i class="ti ti-currency-dollar fs-5"></i>
+                          </a>
                         
+
+                          <!-- Modal -->
+                          <div class="modal fade" id="updateSoldeModal-{{ $facture->id }}" tabindex="-1" aria-labelledby="updateSoldeLabel-{{ $facture->id }}" aria-hidden="true">
+                            <div class="modal-dialog">
+                              <form action="{{ route('dashboard.factures.updateSolde', $facture->id) }}" method="POST">
+                                @csrf
+                                @method('PUT')
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title">Mettre à jour le montant soldé</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fermer"></button>
+                                  </div>
+                                  <div class="modal-body">
+                                    <div class="mb-3">
+                                      <label for="montant_solde_{{ $facture->id }}" class="form-label">Montant soldé</label>
+                                      <input type="number" step="0.01" min="0" class="form-control" name="montant_solde" id="montant_solde_{{ $facture->id }}" value="{{ $facture->montant_solde }}" required>
+                                    </div>
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary">Enregistrer</button>
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                                  </div>
+                                </div>
+                              </form>
+                            </div>
+                          </div>
+                          
                           
                         </td>
                       
