@@ -187,6 +187,21 @@
         .vide{
             height: 150px;
         }
+
+
+        .no-fond {
+            background-color: transparent !important; /* Supprime le fond */
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .no-fond td{
+            background-color: #ffffff !important;
+        }
+
+        #no-fond{
+            background-color: #ffffff !important;
+        }
     </style>
 </head>
 
@@ -211,7 +226,7 @@
     </table> --}}
     {{-- <div class="ligne"></div> --}}
 
-    <table>
+    <table class="no-fond">
         <!-- Informations de la facture -->
         <tr>
             <td colspan="6"><strong>Date :</strong> {{ $devis->date_emission }}</td>
@@ -266,59 +281,59 @@
 
         <!-- Conditions financières et Prix -->
         <tr>
-            <td colspan="4" class="no-border">
+            <td colspan="4" class="no-border" id="no-fond">
                 
             </td>
-            <td colspan="2" class="prices">
+            <td colspan="2" class="prices" id="no-fond">
                 <strong>Total HT :</strong>
             </td>
 
-            <td colspan="3" class="prices">
+            <td colspan="3" class="prices" id="no-fond">
                 {{ $devis->total_ht }}
             </td>
         </tr>
         <tr>
-            <td colspan="4" class="no-border">
+            <td colspan="4" class="no-border" id="no-fond">
                 
             </td>
-            <td colspan="2" class="prices">
+            <td colspan="2" class="prices" id="no-fond">
                 <strong>TVA :</strong> {{ $devis->tva }} %
             </td>
-            <td colspan="3" class="prices">
+            <td colspan="3" class="prices" id="no-fond">
                 {{ number_format($devis->total_ht * $devis->tva / 100, 2, ',', ' ') }}
 
             </td>
         </tr>
         <tr>
-            <td colspan="4" class="no-border">
+            <td colspan="4" class="no-border" id="no-fond">
                 
             </td>
-            <td colspan="2" class="prices">
+            <td colspan="2" class="prices" id="no-fond">
                 <strong>TOTAL TTC :</strong>
             </td>
-            <td colspan="3" class="prices">
+            <td colspan="3" class="prices" id="no-fond">
                 {{ $devis->total_ttc }}
             </td>
         </tr>
         <tr>
-            <td colspan="4" class="no-border">
+            <td colspan="4" class="no-border" id="no-fond">
                 
             </td>
-            <td colspan="2" class="prices">
+            <td colspan="2" class="prices" id="no-fond">
                 <strong>Acompte :</strong> 
             </td>
-            <td colspan="3" class="prices">
+            <td colspan="3" class="prices" id="no-fond">
                 {{ $devis->acompte }}
             </td>
         </tr>
         <tr>
-            <td colspan="4" class="no-border">
+            <td colspan="4" class="no-border" id="no-fond">
                 
             </td>
-            <td colspan="2" class="prices">
+            <td colspan="2" class="prices" id="no-fond">
                 <strong>Solde :</strong> 
             </td>
-            <td colspan="3" class="prices">
+            <td colspan="3" class="prices" id="no-fond">
                 {{ $devis->solde }}
             </td>
         </tr>
@@ -327,20 +342,20 @@
     <table>
 
         <tr>
-            <td colspan="12" class="conditions">
+            <td colspan="12" class="conditions" id="no-fond">
                 Veuillez libeller votre chèque à l'ordre de Advice Consulting {{ $devis->user->pays->name }} ou faire un virement sur notre compte
             </td>
             
         </tr>
         <tr>
-            <td colspan="12" class="conditions">
+            <td colspan="12" class="conditions" id="no-fond">
                 <strong> Banque :</strong> {{ $banque->name }} N° Compte {{ $banque->num_compte }}
 
             </td>
             
         </tr>
         <tr>
-            <td colspan="12" class="conditions">
+            <td colspan="12" class="conditions" id="no-fond">
                 <strong>Arrêté la présence facture à la somme de :
             </td>
            
@@ -355,7 +370,7 @@
         @endphp
         
         <tr>
-            <td colspan="12" class="conditions">
+            <td colspan="12" class="conditions" id="no-fond">
                 {{ ucwords($texteEntier) }}
                 @if($texteDecimales)
                     virgule {{ $texteDecimales }}
@@ -374,7 +389,7 @@
 
     <table class="no-border">
         <tr>
-            <td colspan="12">
+            <td colspan="12" id="no-fond">
                 Cachet et signature
             </td>
             

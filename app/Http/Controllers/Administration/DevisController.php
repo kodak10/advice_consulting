@@ -179,7 +179,7 @@ class DevisController extends Controller
         $devis->save();
     
         // Rediriger vers la page index
-        return redirect()->route('dashboard.devis.index')->with('success', 'Proforma enregistrée et envoyée par email au client.');
+        return redirect()->route('dashboard.devis.index')->with('success', 'Proforma enregistrée avec succès.');
     }
     
     
