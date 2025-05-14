@@ -39,7 +39,7 @@ class UserSeeder extends Seeder
         // Tableau d'utilisateurs à créer
         $users = [
             [
-                'name' => 'Admin Côte d\'Ivoire',
+                'name' => 'Admin',
                 'email' => 'admin@example.com',
                 'role' => 'Administrateur',
                 'pays_id' => 1,
@@ -48,11 +48,20 @@ class UserSeeder extends Seeder
                 'verified_at' => Carbon::now(),
             ],
             [
-                'name' => 'DG Côte d\'Ivoire',
-                'email' => 'dg_ci@example.com',
+                'name' => 'DG',
+                'email' => 'dg@example.com',
                 'role' => 'DG',
                 'pays_id' => 1,
                 'phone' => '+22502020202',
+                'adresse' => 'Yamoussoukro, Côte d\'Ivoire',
+                'verified_at' => Carbon::now(),
+            ],
+            [
+                'name' => 'DAF',
+                'email' => 'daf@example.com',
+                'role' => 'DAF',
+                'pays_id' => 1,
+                'phone' => '+22502020203',
                 'adresse' => 'Yamoussoukro, Côte d\'Ivoire',
                 'verified_at' => Carbon::now(),
             ],
@@ -75,15 +84,6 @@ class UserSeeder extends Seeder
                 'verified_at' => Carbon::now(),
             ],
             [
-                'name' => 'DG Guinée',
-                'email' => 'dg_guinee@example.com',
-                'role' => 'DG',
-                'pays_id' => 2,
-                'phone' => '+22402020202',
-                'adresse' => 'Kindia, Guinée',
-                'verified_at' => Carbon::now(),
-            ],
-            [
                 'name' => 'Comptable Guinée',
                 'email' => 'comptable_guinee@example.com',
                 'role' => 'Comptable',
@@ -99,15 +99,6 @@ class UserSeeder extends Seeder
                 'pays_id' => 2,
                 'phone' => '+22404040404',
                 'adresse' => 'Nzérékoré, Guinée',
-                'verified_at' => Carbon::now(),
-            ],
-            [
-                'name' => 'DG Tchad',
-                'email' => 'dg_tchad@example.com',
-                'role' => 'DG',
-                'pays_id' => 3,
-                'phone' => '+23502020202',
-                'adresse' => 'Moundou, Tchad',
                 'verified_at' => Carbon::now(),
             ],
             [
