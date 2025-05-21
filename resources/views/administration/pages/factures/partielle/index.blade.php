@@ -121,7 +121,7 @@
                     
                       <td>
                           
-                          <a href="{{ route('dashboard.factures.download', $factureCommercial->id) }}" class="text-primary me-2" title="Télécharger">
+                          <a href="{{ route('dashboard.factures.partielles.download', $factureCommercial->id) }}" class="text-primary me-2" title="Télécharger">
                             <i class="ti ti-download fs-5"></i>
                           </a>
                         
@@ -236,7 +236,7 @@
 
                         @if(Auth::user()->hasRole(['Daf', 'DG']))
                           @if ($devi->facture) 
-                            <a href="{{ route('dashboard.factures.download', $devi->facture->id) }}" class="text-primary me-2" title="Télécharger la facture">
+                            <a href="{{ route('dashboard.factures.partielles.download', $devi->facture->id) }}" class="text-primary me-2" title="Télécharger la facture">
                               <i class="ti ti-download fs-5"></i>
                             </a>
                           @else
@@ -249,11 +249,11 @@
                         @endif
                        
                           
-                          <a href="{{ route('dashboard.factures.create', $devi->id) }}" class="text-success me-2" title="Etablir la facture">
+                          <a href="{{ route('dashboard.factures.partielles.create', $devi->id) }}" class="text-success me-2" title="Etablir la facture">
                             <i class="ti ti-clipboard-list"></i>
                         </a>
                         @if ($devi->facture) 
-                            <a href="{{ route('dashboard.factures.validate', $devi->facture->id) }}" class="text-success me-2" title="Approuver la facture">
+                            <a href="{{ route('dashboard.factures.partielles.validate', $devi->facture->id) }}" class="text-success me-2" title="Approuver la facture">
                                 <i class="ti ti-copy-check"></i>
                             </a>
                         @else
@@ -372,7 +372,7 @@
               <h5>
                 Historiques des factures
               </h5>
-              <form method="POST" action="{{ route('dashboard.factures.index') }}">
+              <form method="POST" action="{{ route('dashboard.factures.partielles.index') }}">
                 @csrf
                 <div class="d-flex">
                  @if(Auth::user()->hasRole(['Daf','DG']))
@@ -501,7 +501,7 @@
 
     
                         <td>
-                          <a href="{{ route('dashboard.factures.download', $facture->id) }}" class="text-primary me-2" title="Télécharger">
+                          <a href="{{ route('dashboard.factures.partielles.download', $facture->id) }}" class="text-primary me-2" title="Télécharger">
                             <i class="ti ti-download fs-5"></i>
                           </a>
                           
@@ -514,7 +514,7 @@
                           <!-- Modal -->
                           <div class="modal fade" id="updateSoldeModal-{{ $facture->id }}" tabindex="-1" aria-labelledby="updateSoldeLabel-{{ $facture->id }}" aria-hidden="true">
                             <div class="modal-dialog">
-                              <form action="{{ route('dashboard.factures.updateSolde', $facture->id) }}" method="POST">
+                              <form action="{{ route('dashboard.factures.partielles.updateSolde', $facture->id) }}" method="POST">
                                 @csrf
                                 @method('PUT')
                                 <div class="modal-content">
@@ -611,7 +611,7 @@
                       <td>{{ $facture->devis->status ?? 'Non renseigné' }}</td>
   
                       <td>
-                        <a href="{{ route('dashboard.factures.download', $facture->id) }}" class="text-primary me-2" title="Télécharger">
+                        <a href="{{ route('dashboard.factures.partielles.download', $facture->id) }}" class="text-primary me-2" title="Télécharger">
                           <i class="ti ti-download fs-5"></i>
                         </a>
                         

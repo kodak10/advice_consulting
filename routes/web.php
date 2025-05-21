@@ -66,17 +66,31 @@ Route::middleware(['auth', 'verified','check.user.status'])->prefix('dashboard')
     Route::post('/devis/{id}/refuse', [DevisController::class, 'refuse'])->name('devis.refuse');
 
     
-   // Route::get('/factures', [FacturesController::class, 'index'])
-    Route::match(['get', 'post'], '/factures', [FacturesController::class, 'index'])->name('factures.index');
+    // Routes pour les factures **totales**
+    Route::prefix('factures/totales')->group(function () {
+        Route::match(['get', 'post'], '/', [FacturesController::class, 'indexTotale'])->name('factures.totales.index');
+        Route::post('/{id}/refuse', [FacturesController::class, 'refuse'])->name('factures.totales.refuse');
+        Route::post('/{id}/refuse', [FacturesController::class, 'refuse'])->name('factures.totales.refuse');
 
-    Route::post('/factures/{id}/refuse', [FacturesController::class, 'refuse'])->name('factures.refuse');
-    Route::get('/factures/create/{id}', [FacturesController::class, 'create'])->name('factures.create');
-    Route::post('/factures/store', [FacturesController::class, 'store'])->name('factures.store');
-    Route::get('/factures/download/{id}', [FacturesController::class, 'download'])->name('factures.download');
-    Route::get('/factures/export/csv', [FacturesController::class, 'exportCsv'])->name('factures.exportCsv');
-    Route::get('/factures/{id}/validate', [FacturesController::class, 'approuve'])->name('factures.validate');
+        Route::get('/create/{id}', [FacturesController::class, 'createTotale'])->name('factures.totales.create');
+        Route::post('/store', [FacturesController::class, 'store'])->name('factures.totales.store');
+        Route::get('/download/{id}', [FacturesController::class, 'download'])->name('factures.totales.download');
+        Route::get('/export/csv', [FacturesController::class, 'exportCsv'])->name('factures.totales.exportCsv');
+        Route::get('/{id}/validate', [FacturesController::class, 'approuve'])->name('factures.totales.validate');
+        Route::put('/{facture}/update-solde', [FacturesController::class, 'updateSolde'])->name('factures.totales.updateSolde');
+    });
 
-    Route::put('/factures/{facture}/update-solde', [FacturesController::class, 'updateSolde'])->name('factures.updateSolde');
+    // Routes pour les factures **partielles**
+    Route::prefix('factures/partielles')->group(function () {
+        Route::match(['get', 'post'], '/', [FacturesController::class, 'indexPartielle'])->name('factures.partielles.index');
+        Route::post('/{id}/refuse', [FacturesController::class, 'refuse'])->name('factures.partielles.refuse');
+        Route::get('/create/{id}', [FacturesController::class, 'createPartielle'])->name('factures.partielles.create');
+        Route::post('/store', [FacturesController::class, 'store'])->name('factures.partielles.store');
+        Route::get('/download/{id}', [FacturesController::class, 'download'])->name('factures.partielles.download');
+        Route::get('/export/csv', [FacturesController::class, 'exportCsv'])->name('factures.partielles.exportCsv');
+        Route::get('/{id}/validate', [FacturesController::class, 'approuve'])->name('factures.partielles.validate');
+        Route::put('/{facture}/update-solde', [FacturesController::class, 'updateSolde'])->name('factures.partielles.updateSolde');
+    });
 
 
     Route::resource('banques', BanqueController::class);

@@ -62,20 +62,20 @@
       </li>
       
       <li class="sidebar-item">
-        <a class="sidebar-link {{ Request::is('dashboard/factures') ? 'active' : '' }}" href="{{ route('dashboard.factures.index') }}"  aria-expanded="false">
+        <a class="sidebar-link {{ Request::is('dashboard/factures') ? 'active' : '' }}" href="{{ route('dashboard.factures.totales.index') }}"  aria-expanded="false">
           <span>
             <i class="ti ti-list"></i>
           </span>
-          <span class="hide-menu">Mes Factures</span>
+          <span class="hide-menu">Totale</span>
         </a>
       </li>
 
       <li class="sidebar-item">
-        <a class="sidebar-link " href="{{ route('dashboard.factures.index') }}"  aria-expanded="false">
+        <a class="sidebar-link " href="{{ route('dashboard.factures.partielles.index') }}"  aria-expanded="false">
           <span>
             <i class="ti ti-file-invoice"></i> 
           </span>
-          <span class="hide-menu">Faire une Facture</span>
+          <span class="hide-menu">Partielle</span>
         </a>
       </li>
 
@@ -164,20 +164,20 @@
           </li>
           
           <li class="sidebar-item">
-            <a class="sidebar-link {{ Request::is('dashboard/factures') ? 'active' : '' }}" href="{{ route('dashboard.factures.index') }}"  aria-expanded="false">
+            <a class="sidebar-link {{ Request::is('dashboard/factures') ? 'active' : '' }}" href="{{ route('dashboard.factures.totales.index') }}"  aria-expanded="false">
               <span>
                 <i class="ti ti-list"></i>
               </span>
-              <span class="hide-menu">Mes Factures</span>
+              <span class="hide-menu">Totale</span>
             </a>
           </li>
 
           <li class="sidebar-item">
-            <a class="sidebar-link " href="{{ route('dashboard.factures.index') }}"  aria-expanded="false">
+            <a class="sidebar-link " href="{{ route('dashboard.factures.partielles.index') }}"  aria-expanded="false">
               <span>
                 <i class="ti ti-file-invoice"></i> 
               </span>
-              <span class="hide-menu">Faire une Facture</span>
+              <span class="hide-menu">Partielle</span>
             </a>
           </li>
 

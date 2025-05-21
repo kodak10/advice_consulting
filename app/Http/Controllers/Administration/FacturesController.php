@@ -51,8 +51,8 @@ class FacturesController extends Controller
         });
     }
 
-    
-    public function index(Request $request)
+
+    public function indexTotale(Request $request)
     {
         $payss = Pays::get();
         $user = Auth::user();
@@ -122,7 +122,81 @@ class FacturesController extends Controller
         })
         ->get(); 
 
-        return view('administration.pages.factures.index', compact('all_devis', 'devis_pays', 'all_factures', 'factureCommercials', 'payss'));
+        return view('administration.pages.factures.totale.index', compact('all_devis', 'devis_pays', 'all_factures', 'factureCommercials', 'payss'));
+
+    } 
+    
+    public function indexPartielle(Request $request)
+    {
+        $payss = Pays::get();
+        $user = Auth::user();
+
+        // $all_devis = Devis::whereIn('status', ['En Attente de facture', 'En Attente du Daf'])->get();
+
+        $all_devis = Devis::where('status', 'En Attente de facture')
+        ->orWhereHas('facture', function ($query) {
+            $query->where('type_facture', 'Partielle');
+        })
+        ->get();
+
+
+        // $devis_pays = Devis::where('pays_id', Auth::user()->pays_id)
+        // ->where('status',  'En Attente de facture')
+        // ->get();
+
+        $devis_pays = Devis::where('pays_id', Auth::user()->pays_id)
+        ->where(function ($query) {
+            $query->where('status', 'En Attente de facture')
+                ->orWhere(function ($q) {
+                    $q->where('status', 'Partielle')
+                        ->whereHas('facture'); // ou 'factures' si c'est hasMany
+                });
+        })
+        ->get();
+
+
+        $facturesQuery = Facture::query();
+
+        $facturesQuery->whereHas('devis', function ($query) {
+            $query->where('status', 'Facturé');
+        });
+
+        // Filtre par pays (uniquement pour les Dafs)
+        if ($user->hasRole(['Daf', 'DG']) && $request->has('pays') && $request->pays != "") {
+            $facturesQuery->where('pays_id', $request->pays);
+        } else {
+            $facturesQuery->where('pays_id', $user->pays_id);
+        }
+    
+        // Filtre "Mes factures"
+        if ($request->has('my') && $request->my != "") {
+            $facturesQuery->where('user_id', $user->id);
+        }
+    
+        // Filtre par période
+        if ($request->has('start') && $request->start != "") {
+            $facturesQuery->where('created_at', '>=', $request->start);
+        }
+    
+        if ($request->has('end') && $request->end != "") {
+            $endDate = $request->end . ' 23:59:59'; // Pour inclure toute la journée
+            $facturesQuery->where('created_at', '<=', $endDate);
+        }
+    
+        // Gestion de l'affichage initial et de la pagination
+        if ($request->has('pays') || $request->has('my') || $request->has('start') || $request->has('end')) {
+            $all_factures = $facturesQuery->paginate(10); // Paginer les résultats filtrés
+        } else {
+            $all_factures = $facturesQuery->limit(10)->get(); // Afficher seulement 10 factures au départ
+        }
+
+        $factureCommercials = Facture::with(['devis.client'])
+        ->whereHas('devis', function ($query) {
+            $query->where('user_id', Auth::user()->id);
+        })
+        ->get(); 
+
+        return view('administration.pages.factures.partielle.index', compact('all_devis', 'devis_pays', 'all_factures', 'factureCommercials', 'payss'));
 
     } 
 
@@ -156,7 +230,7 @@ class FacturesController extends Controller
     }
 
 
-    public function create($id)
+    public function createTotale($id)
     {
         $devis = Devis::with('client', 'banque', 'details.designation')->findOrFail($id);
 
@@ -185,7 +259,39 @@ class FacturesController extends Controller
         $banque = $devis->banque;
         $designations = $devis->details; // Dépend de ta relation avec DevisDetail
         
-        return view('administration.pages.factures.create', compact('client', 'banque', 'designations', 'devis', 'factures'));
+        return view('administration.pages.factures.totale.create', compact('client', 'banque', 'designations', 'devis', 'factures'));
+    }
+
+    public function createPartielle($id)
+    {
+        $devis = Devis::with('client', 'banque', 'details.designation')->findOrFail($id);
+
+        $factures = Facture::where('devis_id', $devis->id)->first();
+
+      
+        
+        
+        // if ($devis->status === 'Réfusé') {
+        //     return redirect()->back()->with('error', "Cette proforma a déjà été refusée.");
+        // }
+
+
+        // if ($factures && $factures->status === 'Facturé') {
+        //     return redirect()->back()->with('error', "Cette proforma a déjà l'objet de facture.<br> Vous pouvez la facturé ou la réfusée.");
+        // }
+
+        // Vérifier si la facture existe ET a un statut "Facturé" ET un type "Totale"
+        if ($factures && $factures->status === 'Facturé' && $factures->type === 'Totale') {
+            return redirect()->back()->with('error', "Cette proforma a déjà fait l'objet de facture.<br> Vous pouvez la facturer ou la refuser.");
+        }
+
+
+        
+        $client = $devis->client;
+        $banque = $devis->banque;
+        $designations = $devis->details; // Dépend de ta relation avec DevisDetail
+        
+        return view('administration.pages.factures.partielle.create', compact('client', 'banque', 'designations', 'devis', 'factures'));
     }
 
     public function generateCustomNumber()

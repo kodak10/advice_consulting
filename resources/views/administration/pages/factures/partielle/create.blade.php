@@ -108,7 +108,7 @@
             </div>
         </div>
         <div class="col-lg-3">
-            <form method="POST" action="{{ route('dashboard.factures.store') }}">
+            <form method="POST" action="{{ route('dashboard.factures.partielles.store') }}">
                 @csrf
                 
                 <input type="hidden" name="devis_id" value="{{ $devis->id }}">
@@ -166,7 +166,7 @@
 
                  
 
-                <a href="{{ route('dashboard.factures.index') }}" class="btn btn-secondary">
+                <a href="{{ route('dashboard.factures.partielles.index') }}" class="btn btn-secondary">
                     Retour
                 </a>
             </form>
@@ -181,7 +181,7 @@
                         </div>
                         <div class="modal-body">
                             @if ($devis->facture)
-                                <form method="POST" action="{{ route('dashboard.factures.refuse', $devis->facture->id ) }}">
+                                <form method="POST" action="{{ route('dashboard.factures.partielles.refuse', $devis->facture->id ) }}">
                                     @csrf
                                     <div class="mb-3">
                                         <label for="refuse_message" class="form-label">Message de refus</label>
