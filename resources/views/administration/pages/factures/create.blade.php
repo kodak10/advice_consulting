@@ -116,6 +116,23 @@
                 <input type="hidden" name="client_id" value="{{ $devis->client->id }}">
 
                 <div class="mb-4">
+                    <label class="form-label">Type de facture <span class="text-danger">*</span></label>
+                    <select class="select2 form-control" name="type_facture" id="type_facture" required>
+
+                        <option value="" disabled selected>-- Sélectionner le type de facture --</option>
+                        <option value="Totale">Totale</option>
+                        <option value="Partielle">Partielle</option>
+                    </select>
+
+                </div>
+
+                <div class="mb-4" id="montant_container" style="display: none;">
+                    <label class="form-label">Montant <span class="text-danger">*</span></label>
+                    <input type="number" name="montant" id="montant" value="{{ $devis->total_ttc }}" class="form-control">
+                </div>
+
+
+                <div class="mb-4">
                     <label class="form-label">Remise Spéciale <span class="text-danger">*</span></label>
                     <input type="number" name="remise_speciale" value="0" class="form-control">
                 </div>
@@ -210,7 +227,7 @@
                 </div>
               </div>
 
-                <div>
+                <div class="mt-4">
                     @if(session('success'))
                         <div class="alert alert-success text-success" role="alert">
                             {{ session('success') }}
@@ -222,8 +239,44 @@
                             {!! session('error') !!}
                         </div>
                     @endif
+
+                    <!-- Affichage des erreurs de validation -->
+                    @if($errors->any())
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                 </div>
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const typeFacture = document.getElementById('type_facture');
+        const montantContainer = document.getElementById('montant_container');
+        const montantInput = document.getElementById('montant');
+
+        function toggleMontantField() {
+            if (typeFacture.value === 'Partielle') {
+                montantContainer.style.display = 'block';
+                montantInput.value = "{{ $devis->total_ttc }}";
+            } else {
+                montantContainer.style.display = 'none';
+                montantInput.value = "";
+            }
+        }
+
+        // Événement lors du changement du type
+        typeFacture.addEventListener('change', toggleMontantField);
+
+        // Appel initial pour gérer l'affichage selon la valeur préremplie
+        toggleMontantField();
+    });
+</script>
+
 @endsection

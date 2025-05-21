@@ -20,6 +20,8 @@ class Facture extends Model
         'pdf_path',
         'status',
         'message',
+        'type_facture',
+        'montant',
     ];
 
     public function devis()

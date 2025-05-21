@@ -95,6 +95,7 @@
                           <!-- Icône d'œil pour ouvrir le modal -->
                           <i class="ti ti-eye" data-bs-toggle="modal" data-bs-target="#refusModal{{ $factureCommercial->id }}"></i>
                       @endif
+                      
                   </td>
                   
                   <!-- Modal pour afficher le message de refus -->
@@ -479,7 +480,7 @@
                           $montant_solde = $facture->montant_solde;
 
                           if ($montant_solde == 0) {
-                              $status_solde = 'Non renseigné';
+                              $status_solde = 'Non Payé';
                               $color = 'text-muted';
                           } elseif ($montant_solde >= $montant_total) {
                               $status_solde = 'Soldé';
