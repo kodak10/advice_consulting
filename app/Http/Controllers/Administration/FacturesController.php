@@ -57,27 +57,12 @@ class FacturesController extends Controller
         $payss = Pays::get();
         $user = Auth::user();
 
-        // $all_devis = Devis::whereIn('status', ['En Attente de facture', 'En Attente du Daf'])->get();
+        $all_devis = Devis::whereIn('status', ['En Attente de facture', 'En Attente du Daf'])->get();
 
-        $all_devis = Devis::where('status', 'En Attente de facture')
-        ->orWhereHas('facture', function ($query) {
-            $query->where('type_facture', 'Partielle');
-        })
-        ->get();
-
-
-        // $devis_pays = Devis::where('pays_id', Auth::user()->pays_id)
-        // ->where('status',  'En Attente de facture')
-        // ->get();
+       
 
         $devis_pays = Devis::where('pays_id', Auth::user()->pays_id)
-        ->where(function ($query) {
-            $query->where('status', 'En Attente de facture')
-                ->orWhere(function ($q) {
-                    $q->where('status', 'Partielle')
-                        ->whereHas('facture'); // ou 'factures' si c'est hasMany
-                });
-        })
+        ->where('status',  'En Attente de facture')
         ->get();
 
 

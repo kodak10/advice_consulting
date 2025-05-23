@@ -202,7 +202,7 @@
                     <button type="submit" class="btn btn-primary ml-3">Filtrer</button>
             
                     <!-- Bouton pour exporter en CSV -->
-                    <a href="{{ route('dashboard.factures.exportCsv') }}" class="btn btn-success ml-3">
+                    <a href="{{ route('dashboard.factures.totales.exportCsv') }}" class="btn btn-success ml-3">
                         Exporter
                     </a>
                 </div>
@@ -262,7 +262,7 @@
 
                         
                         <td>
-                          <a href="{{ route('dashboard.factures.download', $facture->id) }}" class="text-primary me-2" title="Télécharger">
+                          <a href="{{ route('dashboard.factures.totales.download', $facture->id) }}" class="text-primary me-2" title="Télécharger">
                             <i class="ti ti-download fs-5"></i>
                           </a>
                         </td>

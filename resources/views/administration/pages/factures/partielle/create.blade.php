@@ -35,7 +35,7 @@
                         </div>
                     </div>
 
-                    <div class="mb-5">
+                    {{-- <div class="mb-5">
                         <h5>Désignations</h5>
                         <table class="table table-bordered">
                             <thead>
@@ -59,7 +59,41 @@
                                 @endforeach
                             </tbody>
                         </table>
-                    </div>
+                    </div> --}}
+
+                    <div class="mb-5">
+                    <h5>Désignations</h5>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>✔️</th> <!-- Checkbox pour sélectionner la ligne -->
+                                <th>Description</th>
+                                <th>Quantité</th>
+                                <th>Prix Unitaire</th>
+                                <th>Remise</th>
+                                <th>Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($devis->details as $detail)
+                                <tr>
+                                    <td>
+                                        <input type="checkbox" class="check-item" data-id="{{ $detail->id }}">
+                                    </td>
+                                    <td>{{ $detail->designation->description }}</td>
+                                    <td>
+                                        <input type="number" value="{{ $detail->quantite }}" min="1" class="quantite-field">
+                                    </td>
+                                    <td class="prix-unitaire">{{ $detail->prix_unitaire }}</td>
+                                    <td>
+                                        <input type="number" value="{{ $detail->remise }}" min="0" class="remise-field">
+                                    </td>
+                                    <td class="total">{{ $detail->total }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
 
                     <div class="mb-5">
                         <h5>Conditions Financières</h5>
@@ -254,6 +288,23 @@
         </div>
     </div>
 </div>
+
+<script>
+document.querySelectorAll('.quantite-field, .remise-field').forEach(input => {
+    input.addEventListener('input', function() {
+        let row = this.closest('tr'); // Trouver la ligne correspondante
+        let quantite = row.querySelector('.quantite-field').value;
+        let prixUnitaire = parseFloat(row.querySelector('.prix-unitaire').textContent);
+        let remise = parseFloat(row.querySelector('.remise-field').value) || 0;
+
+        // Calcul du total avec remise appliquée
+        let total = (quantite * prixUnitaire) - remise;
+        
+        // Mise à jour du total dans la table
+        row.querySelector('.total').textContent = total.toFixed(2);
+    });
+});
+</script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
