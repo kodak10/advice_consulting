@@ -5,7 +5,203 @@
     <meta charset="utf-8" />
     <title>Facture</title>
     <style>
-        /* Votre CSS existant... */
+        /* Définir les marges et le format A4 */
+        @page {
+            size: A4;
+            margin: 20mm; /* Marges autour du contenu */
+        }
+
+        /* Mise en page de base */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+            color: #000000;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .header {
+            background-color: #f4f4f4;
+            color: white;
+            font-size: 1.2em;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .highlight {
+            background-color: #ffeb3b;
+        }
+
+        .center {
+            text-align: center;
+        }
+
+        .right {
+            text-align: right;
+        }
+
+        .total {
+            background-color: #f4f4f4;
+            color: white;
+            font-weight: bold;
+        }
+
+        .info-client {
+            /* background-color: #f4f4f4; */
+        }
+
+        
+
+       
+
+        /* Divider en bas */
+        .divider {
+            border-top: 3px solid #000000;
+            margin: 20px 0;
+        }
+        .footer{
+                font-size: 9px !important;
+                color: #0064c9 !important;
+            }
+
+        /* Informations de l'entreprise */
+        .company-info {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            font-size: 12px;
+            border-top: 3px solid #000000;
+            padding: 10px 0;
+        }
+
+        
+        
+
+        .company-info td {
+            border: none;
+            padding: 5px;
+        }
+
+        /* Ajustement pour l'impression */
+        @media print {
+            body {
+                font-size: 12px;
+                margin: 0;
+                padding: 0;
+            }
+
+            table {
+                margin-left: auto;
+                margin-right: auto;
+                width: 100%;
+            }
+
+            .header {
+                font-size: 1.5em;
+            }
+
+            th, td {
+                padding: 5px;
+                font-size: 10px;
+            }
+
+            .center {
+                text-align: center;
+            }
+
+            .right {
+                text-align: right;
+            }
+
+            .total {
+                font-weight: bold;
+            }
+
+            .info-client {
+                background-color: #f4f4f4;
+            }
+
+        }
+        .no-border {
+            border: none;
+            border-collapse: collapse; /* Facultatif : fusionner les bordures entre les cellules */
+        }
+
+        .no-border td,
+        .no-border th {
+            border: none; /* Assurer qu'aucune bordure n'est appliquée sur les cellules */
+        }
+
+        .chiffres .no-border td,
+        .chiffres .no-border {
+            background-color: #ffff;
+            border: none;
+        }
+
+
+        .no-border td:last-child{
+            color: #022344;
+            font-weight: bold;
+            font-size: 14px;
+
+        }
+        .no-border img{
+            height: 80px;
+        }
+        .ligne {
+            height: 2px;
+            width: 100%;
+            background-color: #c54f00;
+            margin-bottom: 20px;
+        }
+
+        .vide{
+            height: 150px;
+        }
+
+
+        .no-fond {
+            background-color: transparent !important; /* Supprime le fond */
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        .no-fond td{
+            background-color: #ffffff !important;
+        }
+
+        #no-fond{
+            background-color: #ffffff !important;
+        }
     </style>
 </head>
 
@@ -24,27 +220,21 @@
             <td colspan="6">{{ $devis->client->nom }}</td>
         </tr>
         <tr class="info-client">
-            <td colspan="6"><strong>N° Facture :</strong> {{ $facture->numero }}</td>
+            <td colspan="6"><strong>N° Pro-Forma :</strong> {{ $devis->facture->numero }}</td>
             <td colspan="6"><strong>N° CC :</strong> {{ $devis->client->numero_cc }}</td>
         </tr>
         <tr class="info-client">
-            <td colspan="6"><strong>N° BC :</strong> {{ $facture->num_bc }}</td>
+            <td colspan="6"><strong>N° BC :</strong> {{ $devis->facture->num_bc }}</td>
             <td colspan="6"><strong>Adresse:</strong> {{ $devis->client->adresse }}</td>
         </tr>
         <tr class="info-client">
-            <td colspan="6"><strong>N° Rap activ :</strong> {{ $facture->num_rap }}</td>
+            <td colspan="6"><strong>N° Rap Rap activ :</strong> {{ $devis->facture->num_rap }}</td>
             <td colspan="6"><strong>Téléphone :</strong> {{ $devis->client->telephone }}</td>
         </tr>
         <tr>
-            <td colspan="6"><strong>N° BL :</strong> {{ $facture->num_bl }}</td>
+            <td colspan="6"><strong>N° BL :</strong> {{ $devis->facture->num_bl }}</td>
             <td colspan="6"><strong>Ville :</strong> {{ $devis->client->ville }}</td>
         </tr>
-        @if($facture->type_facture === 'Partielle')
-        <tr>
-            <td colspan="6"><strong>Type Facture :</strong> Partielle</td>
-            <td colspan="6"><strong>Montant Facture :</strong> {{ number_format($facture->montant, 2, ',', ' ') }} FCFA</td>
-        </tr>
-        @endif
     </table>
 
     <table class="chiffres">
@@ -56,16 +246,31 @@
             <th colspan="2">Total</th>
         </tr>
         
-        @foreach ($devis->details as $devisDetail)
-            <tr>
-                <td colspan="1">{{ $devisDetail->designation->reference }}</td>
-                <td colspan="3">{{ $devisDetail->designation->description }}</td>
-                <td colspan="1">{{ $devisDetail->quantite }}</td>
-                <td colspan="1">{{ $devisDetail->prix_unitaire }}</td>
-                <td colspan="2">{{ $devisDetail->total }}</td>
-            </tr>
-        @endforeach
-        
+        @if($facture->type_facture === 'Totale')
+            <!-- Afficher tous les éléments pour une facture totale -->
+            @foreach ($devis->details as $devisDetail)
+                <tr>
+                    <td colspan="1">{{ $devisDetail->designation->reference }}</td>
+                    <td colspan="3">{{ $devisDetail->designation->description }}</td>
+                    <td colspan="1">{{ $devisDetail->quantite }}</td>
+                    <td colspan="1">{{ $devisDetail->prix_unitaire }}</td>
+                    <td colspan="2">{{ $devisDetail->total }}</td>
+                </tr>
+            @endforeach
+        @else
+            <!-- Afficher seulement les éléments cochés pour une facture partielle -->
+            @foreach ($devis->details as $devisDetail)
+                @if(in_array($devisDetail->id, $selectedItems))
+                    <tr>
+                        <td colspan="1">{{ $devisDetail->designation->reference }}</td>
+                        <td colspan="3">{{ $devisDetail->designation->description }}</td>
+                        <td colspan="1">{{ $devisDetail->quantite }}</td>
+                        <td colspan="1">{{ $devisDetail->prix_unitaire }}</td>
+                        <td colspan="2">{{ $devisDetail->total }}</td>
+                    </tr>
+                @endif
+            @endforeach
+        @endif
 
         <!-- Conditions financières et Prix -->
         <tr>
@@ -74,7 +279,7 @@
                 <strong>Total HT :</strong>
             </td>
             <td colspan="3" class="prices" id="no-fond">
-                {{ $devis->total_ht }}
+                {{ $facture->type_facture === 'Totale' ? $devis->total_ht : $facture->montant_ht }}
             </td>
         </tr>
         <tr>
@@ -83,7 +288,7 @@
                 <strong>TVA :</strong> {{ $devis->tva }} %
             </td>
             <td colspan="3" class="prices" id="no-fond">
-                {{ number_format($devis->total_ht * $devis->tva / 100, 2, ',', ' ') }}
+                {{ $facture->type_facture === 'Totale' ? number_format($devis->total_ht * $devis->tva / 100, 2, ',', ' ') : number_format($facture->montant_ht * $devis->tva / 100, 2, ',', ' ') }}
             </td>
         </tr>
         <tr>
@@ -92,41 +297,28 @@
                 <strong>TOTAL TTC :</strong>
             </td>
             <td colspan="3" class="prices" id="no-fond">
-                {{ $devis->total_ttc }}
+                {{ $facture->type_facture === 'Totale' ? $devis->total_ttc : $facture->montant }}
             </td>
         </tr>
-        
         @if($facture->type_facture === 'Totale')
-        <!-- Afficher acompte et solde seulement pour les factures totales -->
-        <tr>
-            <td colspan="4" class="no-border" id="no-fond"></td>
-            <td colspan="2" class="prices" id="no-fond">
-                <strong>Acompte :</strong> 
-            </td>
-            <td colspan="3" class="prices" id="no-fond">
-                {{ $devis->acompte }}
-            </td>
-        </tr>
-        <tr>
-            <td colspan="4" class="no-border" id="no-fond"></td>
-            <td colspan="2" class="prices" id="no-fond">
-                <strong>Solde :</strong> 
-            </td>
-            <td colspan="3" class="prices" id="no-fond">
-                {{ $devis->solde }}
-            </td>
-        </tr>
-        @else
-        <!-- Pour les factures partielles, afficher le montant de la facture partielle -->
-        <tr>
-            <td colspan="4" class="no-border" id="no-fond"></td>
-            <td colspan="2" class="prices" id="no-fond">
-                <strong>Montant Facture Partielle :</strong> 
-            </td>
-            <td colspan="3" class="prices" id="no-fond">
-                {{ number_format($facture->montant, 2, ',', ' ') }} FCFA
-            </td>
-        </tr>
+            <tr>
+                <td colspan="4" class="no-border" id="no-fond"></td>
+                <td colspan="2" class="prices" id="no-fond">
+                    <strong>Acompte :</strong> 
+                </td>
+                <td colspan="3" class="prices" id="no-fond">
+                    {{ $devis->acompte }}
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4" class="no-border" id="no-fond"></td>
+                <td colspan="2" class="prices" id="no-fond">
+                    <strong>Solde :</strong> 
+                </td>
+                <td colspan="3" class="prices" id="no-fond">
+                    {{ $devis->solde }}
+                </td>
+            </tr>
         @endif
     </table>
 
@@ -143,30 +335,28 @@
         </tr>
         <tr>
             <td colspan="12" class="conditions" id="no-fond">
-                <strong>Arrêté la présente facture à la somme de :</strong>
+                <strong>Arrêté la présence facture à la somme de :
             </td>
         </tr>
-        
         {{-- @php
             $formatter = new NumberFormatter('fr', NumberFormatter::SPELLOUT);
-            // Utiliser le montant de la facture partielle si c'est une facture partielle
-            $montant = $facture->type_facture === 'Partielle' ? $facture->montant : $devis->solde;
-            $montantFormat = number_format($montant, 2, '.', '');
-            [$entier, $decimales] = explode('.', $montantFormat);
+            $amount = $facture->type_facture === 'Totale' ? $devis->solde : $facture->montant;
+            $amount = number_format($amount, 2, '.', '');
+            [$entier, $decimales] = explode('.', $amount);
         
             $texteEntier = $formatter->format($entier);
             $texteDecimales = intval($decimales) > 0 ? $formatter->format($decimales) : null;
         @endphp --}}
         
-        {{-- <tr>
+        <tr>
             <td colspan="12" class="conditions" id="no-fond">
-                {{ ucwords($texteEntier) }}
+                {{-- {{ ucwords($texteEntier) }}
                 @if($texteDecimales)
                     virgule {{ $texteDecimales }}
-                @endif
+                @endif --}}
                 {{ $devis->devise }}<br>
             </td>
-        </tr> --}}
+        </tr>
     </table>
 
     <table class="no-border">
@@ -176,6 +366,5 @@
             </td>
         </tr>
     </table>
-
 </body>
 </html>

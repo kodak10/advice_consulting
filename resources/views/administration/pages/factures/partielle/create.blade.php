@@ -35,65 +35,42 @@
                         </div>
                     </div>
 
-                    {{-- <div class="mb-5">
+                    <div class="mb-5">
                         <h5>Désignations</h5>
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
+                                    <th width="5%">✔️</th>
                                     <th>Description</th>
-                                    <th>Quantité</th>
-                                    <th>Prix Unitaire</th>
-                                    <th>Remise</th>
-                                    <th>Total</th>
+                                    <th width="10%">Quantité</th>
+                                    <th width="15%">Prix Unitaire</th>
+                                    <th width="15%">Total</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($devis->details as $detail)
-                                    <tr>
-                                        <td>{{ $detail->designation->description }}</td>
-                                        <td>{{ $detail->quantite }}</td>
-                                        <td>{{ $detail->prix_unitaire }}</td>
-                                        <td>{{ $detail->remise }}</td>
-                                        <td>{{ $detail->total }}</td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div> --}}
-
-                    <div class="mb-5">
-                    <h5>Désignations</h5>
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>✔️</th> <!-- Checkbox pour sélectionner la ligne -->
-                                <th>Description</th>
-                                <th>Quantité</th>
-                                <th>Prix Unitaire</th>
-                                <th>Remise</th>
-                                <th>Total</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($devis->details as $detail)
+                                @foreach($devis->details as $detail)
                                 <tr>
                                     <td>
-                                        <input type="checkbox" class="check-item" data-id="{{ $detail->id }}">
+                                        <input type="checkbox" 
+                                               class="form-check-input item-checkbox" 
+                                               name="selected_items[]" 
+                                               value="{{ $detail->id }}" 
+                                               id="item_{{ $detail->id }}"
+                                               data-price="{{ $detail->total }}">
                                     </td>
                                     <td>{{ $detail->designation->description }}</td>
-                                    <td>
-                                        <input type="number" value="{{ $detail->quantite }}" min="1" class="quantite-field">
-                                    </td>
-                                    <td class="prix-unitaire">{{ $detail->prix_unitaire }}</td>
-                                    <td>
-                                        <input type="number" value="{{ $detail->remise }}" min="0" class="remise-field">
-                                    </td>
-                                    <td class="total">{{ $detail->total }}</td>
+                                    <td>{{ $detail->quantite }}</td>
+                                    <td>{{ number_format($detail->prix_unitaire, 0, ',', ' ') }} {{ $devis->devise }}</td>
+                                    <td class="item-total">{{ number_format($detail->total, 0, ',', ' ') }} {{ $devis->devise }}</td>
                                 </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
+                                @endforeach
+                                <tr class="table-secondary">
+                                    <td colspan="4" class="text-end"><strong>Total sélectionné :</strong></td>
+                                    <td id="selected-total">0 {{ $devis->devise }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
 
                     <div class="mb-5">
                         <h5>Conditions Financières</h5>
@@ -117,88 +94,86 @@
                         <h5>Banque</h5>
                         <p><strong>Nom de la banque :</strong> {{ $banque->name }}</p>
                         <p><strong>Numéro du compte:</strong> {{ $banque->num_compte }}</p>
-
                     </div>
 
                     <div class="mb-5">
                         <h5>Conditions Générales</h5>
                         <div class="row">
                             <div class="col-md-4">
-                                <p><strong>Total HT :</strong> {{ $devis->total_ht }} {{ $devis->devise }}</p>
+                                <p><strong>Total HT :</strong> {{ number_format($devis->total_ht, 0, ',', ' ') }} {{ $devis->devise }}</p>
                             </div>
                             <div class="col-md-4">
                                 <p><strong>TVA :</strong> {{ $devis->tva }} %</p>
                             </div>
                             <div class="col-md-4">
-                                <p><strong>Total TTC :</strong> {{ $devis->total_ttc }} {{ $devis->devise }}</p>
+                                <p><strong>Total TTC :</strong> {{ number_format($devis->total_ttc, 0, ',', ' ') }} {{ $devis->devise }}</p>
                             </div>
                             <div class="col-md-4">
-                                <p><strong>Solde :</strong> {{ $devis->solde }} {{ $devis->devise }}</p>
+                                <p><strong>Solde :</strong> {{ number_format($devis->solde, 0, ',', ' ') }} {{ $devis->devise }}</p>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
         <div class="col-lg-3">
-            <form method="POST" action="{{ route('dashboard.factures.partielles.store') }}">
+            <form method="POST" action="{{ route('dashboard.factures.partielles.store') }}" id="factureForm">
                 @csrf
                 
                 <input type="hidden" name="devis_id" value="{{ $devis->id }}">
-                <input type="hidden" name="banque_id" value="{{ $devis->banque->id }}">
-                <input type="hidden" name="client_id" value="{{ $devis->client->id }}">
+                <input type="hidden" name="banque_id" value="{{ $banque->id }}">
+                <input type="hidden" name="client_id" value="{{ $client->id }}">
                 <input type="hidden" name="type_facture" value="Partielle">
-
-                
-
-                <div class="mb-4" id="montant_container" style="display: none;">
-                    <label class="form-label">Montant <span class="text-danger">*</span></label>
-                    <input type="number" name="montant" id="montant" value="{{ $devis->total_ttc }}" class="form-control">
-                </div>
+                <input type="hidden" name="montant" id="hiddenMontant" value="0">
+                <input type="hidden" name="selected_items" id="selected_items_input" value="[]">
 
 
                 <div class="mb-4">
+                    <label class="form-label">Montant TTC <span class="text-danger">*</span></label>
+                    <input type="text" id="montantDisplay" class="form-control" readonly>
+                </div>
+
+                <div class="mb-4">
                     <label class="form-label">Remise Spéciale <span class="text-danger">*</span></label>
-                    <input type="number" name="remise_speciale" value="0" class="form-control">
+                    <input type="number" name="remise_speciale" value="0" min="0" class="form-control">
                 </div>
 
                 <div class="mb-4">
                     <label class="form-label">Numéro BC <span class="text-danger">*</span></label>
-                    <input type="text" name="num_bc" placeholder="Numéro BC" value="0" class="form-control">
+                    <input type="text" name="num_bc" placeholder="Numéro BC" class="form-control" required>
                 </div>
 
                 <div class="mb-4">
                     <label class="form-label">Numéro Rap activ.</label>
-                    <input type="text" name="num_rap" placeholder="Numéro RAP" value="0" class="form-control">
+                    <input type="text" name="num_rap" placeholder="Numéro RAP" class="form-control">
                 </div>
 
                 <div class="mb-4">
                     <label class="form-label">Numéro BL</label>
-                    <input type="text" name="num_bl" placeholder="Numéro BL" value="0" class="form-control">
+                    <input type="text" name="num_bl" placeholder="Numéro BL" class="form-control">
                 </div>
 
-                <button type="submit" class="btn btn-success">Enregistrer</button>
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-success" id="submitBtn" disabled>Enregistrer</button>
+                    
+                    @if(Auth::user()->hasRole('Comptable'))
+                        <button type="button" class="btn bg-danger-subtle text-warning" data-bs-toggle="modal" data-bs-target="#refuseDevisModal">
+                            Refuser
+                        </button>
+                    @else
+                        <button type="button" class="btn bg-danger-subtle text-warning" data-bs-toggle="modal" data-bs-target="#refuseModal">
+                            Refuser
+                        </button>
+                    @endif
 
-                @if(Auth::user()->hasRole('Comptable'))
-                    <button type="button" class="btn bg-danger-subtle text-warning px-4 fs-4 " data-bs-toggle="modal" data-bs-target="#refuseDevisModal">
-                        Refuser
-                    </button>
-                @else
-                    <button type="button" class="btn bg-danger-subtle text-warning px-4 fs-4 " data-bs-toggle="modal" data-bs-target="#refuseModal">
-                        Refuser
-                    </button>
-                @endif
-
-                 
-
-                <a href="{{ route('dashboard.factures.partielles.index') }}" class="btn btn-secondary">
-                    Retour
-                </a>
+                    <a href="{{ route('dashboard.factures.partielles.index') }}" class="btn btn-secondary">
+                        Retour
+                    </a>
+                </div>
             </form>
 
-             <!-- Modal Facture-->
-             <div class="modal fade" id="refuseModal" tabindex="-1" aria-labelledby="refuseModalLabel" aria-hidden="true">
+            <!-- Modal Facture-->
+            <div class="modal fade" id="refuseModal" tabindex="-1" aria-labelledby="refuseModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -224,11 +199,10 @@
                         </div>
                     </div>
                 </div>
-              </div>
+            </div>
 
-
-              <!-- Modal Proforma-->
-             <div class="modal fade" id="refuseDevisModal" tabindex="-1" aria-labelledby="refuseDevisModalLabel" aria-hidden="true">
+            <!-- Modal Proforma-->
+            <div class="modal fade" id="refuseDevisModal" tabindex="-1" aria-labelledby="refuseDevisModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -236,90 +210,100 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                                <form method="POST" action="{{ route('dashboard.devis.refuse', $devis->id ) }}">
-                                    @csrf
-                                    <div class="mb-3">
-                                        <label for="refuse_message" class="form-label">Message de refus</label>
-                                        <textarea class="form-control" id="refuse_message" name="message" rows="4" required></textarea>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                                        <button type="submit" class="btn btn-danger">Envoyer</button>
-                                    </div>
-                                </form>
-                            
+                            <form method="POST" action="{{ route('dashboard.devis.refuse', $devis->id ) }}">
+                                @csrf
+                                <div class="mb-3">
+                                    <label for="refuse_message" class="form-label">Message de refus</label>
+                                    <textarea class="form-control" id="refuse_message" name="message" rows="4" required></textarea>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                                    <button type="submit" class="btn btn-danger">Envoyer</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
-              </div>
+            </div>
 
-                <div class="mt-4">
-                    @if(session('success'))
-                        <div class="alert alert-success text-success" role="alert">
-                            {{ session('success') }}
-                        </div>
-                    @endif
+            <div class="mt-4">
+                @if(session('success'))
+                    <div class="alert alert-success text-success" role="alert">
+                        {{ session('success') }}
+                    </div>
+                @endif
 
-                    @if(session('error'))
-                        <div class="alert alert-danger text-danger" role="alert">
-                            {!! session('error') !!}
-                        </div>
-                    @endif
+                @if(session('error'))
+                    <div class="alert alert-danger text-danger" role="alert">
+                        {!! session('error') !!}
+                    </div>
+                @endif
 
-                    <!-- Affichage des erreurs de validation -->
-                    @if($errors->any())
-                        <div class="alert alert-danger">
-                            <ul>
-                                @foreach($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-                </div>
+                @if($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+            </div>
         </div>
     </div>
 </div>
 
 <script>
-document.querySelectorAll('.quantite-field, .remise-field').forEach(input => {
-    input.addEventListener('input', function() {
-        let row = this.closest('tr'); // Trouver la ligne correspondante
-        let quantite = row.querySelector('.quantite-field').value;
-        let prixUnitaire = parseFloat(row.querySelector('.prix-unitaire').textContent);
-        let remise = parseFloat(row.querySelector('.remise-field').value) || 0;
+document.addEventListener('DOMContentLoaded', function() {
+    const checkboxes = document.querySelectorAll('.item-checkbox');
+    const selectedTotalElement = document.getElementById('selected-total');
+    const montantDisplay = document.getElementById('montantDisplay');
+    const hiddenMontant = document.getElementById('hiddenMontant');
+    const submitBtn = document.getElementById('submitBtn');
+    const form = document.getElementById('factureForm');
+    const selectedItemsInput = document.getElementById('selected_items_input');
 
-        // Calcul du total avec remise appliquée
-        let total = (quantite * prixUnitaire) - remise;
+    function calculateSelectedTotal() {
+        let total = 0;
+        let selectedItems = [];
         
-        // Mise à jour du total dans la table
-        row.querySelector('.total').textContent = total.toFixed(2);
+        checkboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                const price = parseFloat(checkbox.dataset.price.replace(/\s/g, '').replace(',', '.'));
+                total += price;
+                selectedItems.push(checkbox.value);
+            }
+        });
+
+        // Mise à jour de l'affichage
+        selectedTotalElement.textContent = total.toLocaleString('fr-FR') + ' {{ $devis->devise }}';
+        montantDisplay.value = total.toLocaleString('fr-FR') + ' {{ $devis->devise }}';
+        hiddenMontant.value = total;
+        selectedItemsInput.value = JSON.stringify(selectedItems);
+
+        // Activer/désactiver le bouton de soumission
+        submitBtn.disabled = selectedItems.length === 0;
+
+        // Afficher un message si aucun élément n'est sélectionné
+        if (selectedItems.length === 0) {
+            selectedTotalElement.innerHTML = '<span class="text-danger">Sélectionnez au moins un élément</span>';
+        }
+    }
+
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', calculateSelectedTotal);
     });
+
+    form.addEventListener('submit', function(e) {
+        const selectedCount = document.querySelectorAll('.item-checkbox:checked').length;
+        if (selectedCount === 0) {
+            e.preventDefault();
+            alert('Veuillez sélectionner au moins un élément à facturer.');
+            return false;
+        }
+    });
+
+    calculateSelectedTotal();
 });
 </script>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const typeFacture = document.getElementById('type_facture');
-        const montantContainer = document.getElementById('montant_container');
-        const montantInput = document.getElementById('montant');
-
-        function toggleMontantField() {
-            if (typeFacture.value === 'Partielle') {
-                montantContainer.style.display = 'block';
-                montantInput.value = "{{ $devis->total_ttc }}";
-            } else {
-                montantContainer.style.display = 'none';
-                montantInput.value = "";
-            }
-        }
-
-        // Événement lors du changement du type
-        typeFacture.addEventListener('change', toggleMontantField);
-
-        // Appel initial pour gérer l'affichage selon la valeur préremplie
-        toggleMontantField();
-    });
-</script>
-
 @endsection

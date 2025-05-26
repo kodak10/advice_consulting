@@ -115,12 +115,9 @@
                 <input type="hidden" name="banque_id" value="{{ $devis->banque->id }}">
                 <input type="hidden" name="client_id" value="{{ $devis->client->id }}">
                 <input type="hidden" name="type_facture" value="Totale">
-
+                <input type="hidden" name="montant" id="montant" value="{{ old('montant', $devis->total_ttc) }}" class="form-control">
                 
-                <div class="mb-4" id="montant_container" style="display: none;">
-                    <label class="form-label">Montant <span class="text-danger">*</span></label>
-                    <input type="number" name="montant" id="montant" value="{{ $devis->total_ttc }}" class="form-control">
-                </div>
+                
 
 
                 <div class="mb-4">

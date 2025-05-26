@@ -46,4 +46,18 @@ class Facture extends Model
     {
         return $this->devis->creator(); // Relation indirecte via Devis
     }
+
+    protected $casts = [
+    'selected_items' => 'array',
+    ];
+
+    public function getSelectedItemsAttribute($value)
+    {
+        return json_decode($value, true) ?? [];
+    }
+
+    public function setSelectedItemsAttribute($value)
+    {
+        $this->attributes['selected_items'] = json_encode($value);
+    }
 }
