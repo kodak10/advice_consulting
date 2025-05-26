@@ -37,7 +37,7 @@
 
                     <div class="mb-5">
                         <h5>Désignations</h5>
-                        <table class="table table-bordered">
+                        {{-- <table class="table table-bordered">
                             <thead>
                                 <tr>
                                     <th width="5%">✔️</th>
@@ -68,6 +68,36 @@
                                     <td colspan="4" class="text-end"><strong>Total sélectionné :</strong></td>
                                     <td id="selected-total">0 {{ $devis->devise }}</td>
                                 </tr>
+                            </tbody>
+                        </table> --}}
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th width="5%">✔️</th>
+                                    <th>Description</th>
+                                    <th width="10%">Quantité</th>
+                                    <th width="15%">Prix Unitaire</th>
+                                    <th width="15%">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($devis->details as $detail)
+                                <tr>
+                                    <td>
+                                       <input type="checkbox" 
+                                            class="form-check-input item-checkbox" 
+                                            name="selected_items[]" 
+                                            value="{{ $detail->id }}" 
+                                            id="item_{{ $detail->id }}"
+                                            data-price="{{ $detail->total }}">
+
+                                    </td>
+                                    <td>{{ $detail->designation->description }}</td>
+                                    <td>{{ $detail->quantite }}</td>
+                                    <td>{{ number_format($detail->prix_unitaire, 0, ',', ' ') }} {{ $devis->devise }}</td>
+                                    <td class="item-total">{{ number_format($detail->total, 0, ',', ' ') }} {{ $devis->devise }}</td>
+                                </tr>
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -125,7 +155,7 @@
                 <input type="hidden" name="client_id" value="{{ $client->id }}">
                 <input type="hidden" name="type_facture" value="Partielle">
                 <input type="hidden" name="montant" id="hiddenMontant" value="0">
-                <input type="hidden" name="selected_items" id="selected_items_input" value="[]">
+                <div id="selectedItemsContainer"></div>
 
 
                 <div class="mb-4">
@@ -154,7 +184,7 @@
                 </div>
 
                 <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-success" id="submitBtn" disabled>Enregistrer</button>
+                    <button type="submit" class="btn btn-success" >Enregistrer</button>
                     
                     @if(Auth::user()->hasRole('Comptable'))
                         <button type="button" class="btn bg-danger-subtle text-warning" data-bs-toggle="modal" data-bs-target="#refuseDevisModal">
@@ -252,58 +282,44 @@
         </div>
     </div>
 </div>
-
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const checkboxes = document.querySelectorAll('.item-checkbox');
-    const selectedTotalElement = document.getElementById('selected-total');
-    const montantDisplay = document.getElementById('montantDisplay');
-    const hiddenMontant = document.getElementById('hiddenMontant');
-    const submitBtn = document.getElementById('submitBtn');
-    const form = document.getElementById('factureForm');
-    const selectedItemsInput = document.getElementById('selected_items_input');
+    document.addEventListener('DOMContentLoaded', function () {
+        const checkboxes = document.querySelectorAll('.item-checkbox');
+        const selectedItemsContainer = document.getElementById('selectedItemsContainer');
+        const montantDisplay = document.getElementById('montantDisplay');
+        const hiddenMontant = document.getElementById('hiddenMontant');
 
-    function calculateSelectedTotal() {
-        let total = 0;
-        let selectedItems = [];
-        
-        checkboxes.forEach(checkbox => {
-            if (checkbox.checked) {
-                const price = parseFloat(checkbox.dataset.price.replace(/\s/g, '').replace(',', '.'));
-                total += price;
-                selectedItems.push(checkbox.value);
-            }
+        function updateSelectedItems() {
+            selectedItemsContainer.innerHTML = '';
+            let total = 0;
+
+            checkboxes.forEach(function (checkbox) {
+                if (checkbox.checked) {
+                    const id = checkbox.value;
+                    const price = parseFloat(checkbox.dataset.price);
+
+                    // Ajoute un input hidden pour chaque élément sélectionné
+                    const hiddenInput = document.createElement('input');
+                    hiddenInput.type = 'hidden';
+                    hiddenInput.name = 'selected_items[]';
+                    hiddenInput.value = id;
+                    selectedItemsContainer.appendChild(hiddenInput);
+
+                    total += price;
+                }
+            });
+
+            montantDisplay.value = total.toLocaleString('fr-FR') + ' {{ $devis->devise }}';
+            hiddenMontant.value = total;
+        }
+
+        checkboxes.forEach(function (checkbox) {
+            checkbox.addEventListener('change', updateSelectedItems);
         });
 
-        // Mise à jour de l'affichage
-        selectedTotalElement.textContent = total.toLocaleString('fr-FR') + ' {{ $devis->devise }}';
-        montantDisplay.value = total.toLocaleString('fr-FR') + ' {{ $devis->devise }}';
-        hiddenMontant.value = total;
-        selectedItemsInput.value = JSON.stringify(selectedItems);
-
-        // Activer/désactiver le bouton de soumission
-        submitBtn.disabled = selectedItems.length === 0;
-
-        // Afficher un message si aucun élément n'est sélectionné
-        if (selectedItems.length === 0) {
-            selectedTotalElement.innerHTML = '<span class="text-danger">Sélectionnez au moins un élément</span>';
-        }
-    }
-
-    checkboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', calculateSelectedTotal);
+        // Init au chargement
+        updateSelectedItems();
     });
-
-    form.addEventListener('submit', function(e) {
-        const selectedCount = document.querySelectorAll('.item-checkbox:checked').length;
-        if (selectedCount === 0) {
-            e.preventDefault();
-            alert('Veuillez sélectionner au moins un élément à facturer.');
-            return false;
-        }
-    });
-
-    calculateSelectedTotal();
-});
 </script>
+
 @endsection

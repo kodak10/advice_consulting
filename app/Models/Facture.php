@@ -48,8 +48,9 @@ class Facture extends Model
     }
 
     protected $casts = [
-    'selected_items' => 'array',
+        'selected_items' => 'array',
     ];
+
 
     public function getSelectedItemsAttribute($value)
     {
