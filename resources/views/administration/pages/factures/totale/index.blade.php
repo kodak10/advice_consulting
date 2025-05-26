@@ -415,7 +415,7 @@
                   <tr>
                     <th>Date</th>
 
-                      <th>N° Proforma</th>
+                      <th>N° Facture</th>
 
                       @if(Auth::user()->hasRole(['Daf','DG']))
                         <th>Pays</th>
@@ -553,7 +553,7 @@
                   <tr>
                     <th>Date</th>
 
-                      <th>N° Proforma</th>
+                      <th>N° Facture</th>
                       @if(Auth::user()->hasRole(['Daf', 'DG']))
                         <th>Pays</th>
                       @endif

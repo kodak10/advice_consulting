@@ -69,8 +69,8 @@ Route::middleware(['auth', 'verified','check.user.status'])->prefix('dashboard')
     // Routes pour les factures **totales**
     Route::prefix('factures/totales')->group(function () {
         Route::match(['get', 'post'], '/', [FacturesController::class, 'indexTotale'])->name('factures.totales.index');
-        Route::post('/{id}/refuse', [FacturesController::class, 'refuse'])->name('factures.totales.refuse');
-        Route::post('/{id}/refuse', [FacturesController::class, 'refuse'])->name('factures.totales.refuse');
+        Route::match(['get', 'post'], '/{id}/refuse', [FacturesController::class, 'refuse'])->name('factures.totales.refuse');
+        
 
         Route::get('/create/{id}', [FacturesController::class, 'createTotale'])->name('factures.totales.create');
         Route::post('/store', [FacturesController::class, 'store'])->name('factures.totales.store');
@@ -83,7 +83,7 @@ Route::middleware(['auth', 'verified','check.user.status'])->prefix('dashboard')
     // Routes pour les factures **partielles**
     Route::prefix('factures/partielles')->group(function () {
         Route::match(['get', 'post'], '/', [FacturesController::class, 'indexPartielle'])->name('factures.partielles.index');
-        Route::post('/{id}/refuse', [FacturesController::class, 'refuse'])->name('factures.partielles.refuse');
+        //Route::post('/{id}/refuse', [FacturesController::class, 'refuse'])->name('factures.partielles.refuse');
         Route::get('/create/{id}', [FacturesController::class, 'createPartielle'])->name('factures.partielles.create');
         Route::post('/store', [FacturesController::class, 'store'])->name('factures.partielles.store');
         Route::get('/download/{id}', [FacturesController::class, 'download'])->name('factures.partielles.download');

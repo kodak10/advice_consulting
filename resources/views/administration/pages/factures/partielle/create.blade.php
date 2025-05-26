@@ -148,17 +148,9 @@
                 <input type="hidden" name="devis_id" value="{{ $devis->id }}">
                 <input type="hidden" name="banque_id" value="{{ $devis->banque->id }}">
                 <input type="hidden" name="client_id" value="{{ $devis->client->id }}">
+                <input type="hidden" name="type_facture" value="Partielle">
 
-                <div class="mb-4">
-                    <label class="form-label">Type de facture <span class="text-danger">*</span></label>
-                    <select class="select2 form-control" name="type_facture" id="type_facture" required>
-
-                        <option value="" disabled selected>-- Sélectionner le type de facture --</option>
-                        <option value="Totale">Totale</option>
-                        <option value="Partielle">Partielle</option>
-                    </select>
-
-                </div>
+                
 
                 <div class="mb-4" id="montant_container" style="display: none;">
                     <label class="form-label">Montant <span class="text-danger">*</span></label>
@@ -215,7 +207,7 @@
                         </div>
                         <div class="modal-body">
                             @if ($devis->facture)
-                                <form method="POST" action="{{ route('dashboard.factures.partielles.refuse', $devis->facture->id ) }}">
+                                <form method="POST" action="{{ route('dashboard.factures.totales.refuse', $devis->facture->id ) }}">
                                     @csrf
                                     <div class="mb-3">
                                         <label for="refuse_message" class="form-label">Message de refus</label>

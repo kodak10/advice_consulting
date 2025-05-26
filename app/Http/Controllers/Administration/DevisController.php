@@ -494,6 +494,11 @@ public function refuse($id, Request $request)
             $client = Client::find($validated['client_id']);
             $banque = Banque::find($validated['banque_id']);
 
+            // **Suppression des factures si le devis en possède déjà**
+            if ($devis->facture()->exists()) {
+                $devis->facture()->delete();
+            }
+
             $devis->update([
                 'client_id' => $validated['client_id'],
                 'banque_id' => $validated['banque_id'],  
@@ -583,6 +588,105 @@ public function refuse($id, Request $request)
                 ->with('error', 'Une erreur est survenue lors de la mise à jour du devis: ' . $e->getMessage());
         }
     }
+
+//     public function storeRecap(Request $request, $id)
+// {
+//     try {
+//         $validated = $request->validate([
+//                 'client_id' => 'required|exists:clients,id',  
+//                 'banque_id' => 'required|exists:banques,id',  
+
+//                 'date_emission' => 'required|date',  
+//                 'date_echeance' => 'required|date|after_or_equal:date_emission',  
+
+//                 'commande' => 'required|string',  
+//                 'livraison' => 'required|string',  
+//                 'validite' => 'required|string',  
+//                 'delai' => 'required',
+
+//                 'total-ht' => 'required|numeric|min:0',  
+//                 'tva' => 'required',  
+//                 'total-ttc' => 'required|numeric|min:0',  
+//                 'acompte' => 'required|numeric|min:0',  
+//                 'solde' => 'required|numeric|min:0', 
+
+//                 'designations' => 'required|array', 
+//                 'designations.*.id' => 'required|exists:designations,id',
+//                 'designations.*.description' => 'required|exists:designations,description', 
+//                 'designations.*.quantity' => 'required|numeric|min:1',
+//                 'designations.*.price' => 'required|numeric|min:0', 
+//                 'designations.*.discount' => 'nullable|numeric|min:0', 
+//                 'designations.*.total' => 'required|numeric|min:0', 
+
+//                 'devise' => 'required|string',  
+//                 'taux' => 'required|numeric',  
+
+//                 'texte' => 'required',  
+
+//             ]);
+
+//         $client = Client::find($validated['client_id']);
+//         $banque = Banque::find($validated['banque_id']);
+
+//         $devis = Devis::findOrFail($id);
+
+//         // **Suppression des factures si le devis en possède déjà**
+//         if ($devis->facture()->exists()) {
+//             $devis->facture()->delete();
+//         }
+
+//         // Mise à jour du devis
+//         $devis->update([
+//             // Mise à jour des champs comme dans ta version originale...
+//         ]);
+
+//         // Suppression et réenregistrement des désignations
+//         $designationIds = collect($validated['designations'])->pluck('id')->toArray();
+//         DevisDetail::where('devis_id', $devis->id)
+//             ->whereNotIn('designation_id', $designationIds)
+//             ->delete();
+
+//         foreach ($validated['designations'] as $designationData) {
+//             DevisDetail::updateOrCreate(
+//                 ['devis_id' => $devis->id, 'designation_id' => $designationData['id']],
+//                 [
+//                     'quantite' => $designationData['quantity'],
+//                     'prix_unitaire' => $designationData['price'],
+//                     'remise' => $designationData['discount'],
+//                     'total' => $designationData['total'],
+//                 ]
+//             );
+//         }
+
+//         // Gestion du fichier PDF
+//         if ($devis->pdf_path && Storage::disk('public')->exists($devis->pdf_path)) {
+//             Storage::disk('public')->delete($devis->pdf_path);
+//         }
+
+//         $pdf = PDF::loadView('frontend.pdf.devis2', compact('devis'))->setPaper('a4', 'portrait');
+//         $pdfOutput = $pdf->output();
+//         $imageName = 'devis-' . $devis->id . '.pdf';
+//         $directory = 'pdf/devis';
+
+//         if (!Storage::disk('public')->exists($directory)) {
+//             Storage::disk('public')->makeDirectory($directory);
+//         }
+
+//         $imagePath = $directory . '/' . $imageName;
+//         Storage::disk('public')->put($imagePath, $pdfOutput);
+//         $devis->update(['pdf_path' => $imagePath]);
+
+//         return redirect()->route('dashboard.devis.index')
+//             ->with('success', 'Proforma enregistré avec succès.');
+//     } catch (\Illuminate\Validation\ValidationException $e) {
+//         return redirect()->route('dashboard.devis.index')
+//             ->withErrors($e->errors())
+//             ->withInput();
+//     } catch (\Exception $e) {
+//         return redirect()->route('dashboard.devis.index')
+//             ->with('error', 'Une erreur est survenue lors de la mise à jour du devis: ' . $e->getMessage());
+//     }
+// }
 
     public function destroy($id)
     {

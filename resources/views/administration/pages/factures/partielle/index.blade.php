@@ -325,7 +325,7 @@
                         </a>
                         
                           
-                          <a href="{{ route('dashboard.factures.create', $devi->id) }}" class="text-success me-2" title="Etablir la facture">
+                          <a href="{{ route('dashboard.factures.partielles.create', $devi->id) }}" class="text-success me-2" title="Etablir la facture">
                             <i class="ti ti-clipboard-list"></i>
                         </a>
                         
@@ -415,7 +415,7 @@
                   <tr>
                     <th>Date</th>
 
-                      <th>N° Proforma</th>
+                      <th>N° Facture</th>
 
                       @if(Auth::user()->hasRole(['Daf','DG']))
                         <th>Pays</th>
@@ -553,7 +553,7 @@
                   <tr>
                     <th>Date</th>
 
-                      <th>N° Proforma</th>
+                      <th>N° Facture</th>
                       @if(Auth::user()->hasRole(['Daf', 'DG']))
                         <th>Pays</th>
                       @endif

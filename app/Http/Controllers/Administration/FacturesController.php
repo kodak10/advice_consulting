@@ -57,19 +57,31 @@ class FacturesController extends Controller
         $payss = Pays::get();
         $user = Auth::user();
 
-        $all_devis = Devis::whereIn('status', ['En Attente de facture', 'En Attente du Daf'])->get();
 
+        $all_devis = Devis::where('status', ['En Attente de facture', 'En Attente du Daf'])
+        ->orWhereHas('facture', function ($query) {
+            $query->where('type_facture', 'Totale');
+        })->get();
        
 
         $devis_pays = Devis::where('pays_id', Auth::user()->pays_id)
-        ->where('status',  'En Attente de facture')
+        ->where(function ($query) {
+            $query->whereIn('status', ['En Attente de facture', 'En Attente du Daf'])
+                ->orWhereDoesntHave('facture') // Inclure les devis sans facture
+                ->orWhereHas('facture', function ($q) {
+                    $q->where('type_facture', 'Totale');
+                });
+        })
+        ->whereDoesntHave('facture', function ($q) {
+            $q->where('type_facture', 'Partielle'); // Exclure les devis ayant une facture "Partielle"
+        })
         ->get();
 
 
         $facturesQuery = Facture::query();
 
         $facturesQuery->whereHas('devis', function ($query) {
-            $query->where('status', 'Facturé');
+            $query->where('status', ['Facturé', 'En Attente du Daf']);
         });
 
         // Filtre par pays (uniquement pour les Dafs)
@@ -106,6 +118,8 @@ class FacturesController extends Controller
             $query->where('user_id', Auth::user()->id);
         })
         ->get(); 
+
+        
 
         return view('administration.pages.factures.totale.index', compact('all_devis', 'devis_pays', 'all_factures', 'factureCommercials', 'payss'));
 
@@ -116,34 +130,28 @@ class FacturesController extends Controller
         $payss = Pays::get();
         $user = Auth::user();
 
-        // $all_devis = Devis::whereIn('status', ['En Attente de facture', 'En Attente du Daf'])->get();
-
-        $all_devis = Devis::where('status', 'En Attente de facture')
+        $all_devis = Devis::where('status', ['En Attente de facture', 'En Attente du Daf'])
         ->orWhereHas('facture', function ($query) {
             $query->where('type_facture', 'Partielle');
-        })
-        ->get();
+        })->get();
 
-
-        // $devis_pays = Devis::where('pays_id', Auth::user()->pays_id)
-        // ->where('status',  'En Attente de facture')
-        // ->get();
-
-        $devis_pays = Devis::where('pays_id', Auth::user()->pays_id)
+       $devis_pays = Devis::where('pays_id', Auth::user()->pays_id)
         ->where(function ($query) {
-            $query->where('status', 'En Attente de facture')
-                ->orWhere(function ($q) {
-                    $q->where('status', 'Partielle')
-                        ->whereHas('facture'); // ou 'factures' si c'est hasMany
+            $query->whereIn('status', ['En Attente de facture', 'En Attente du Daf'])
+                ->orWhereDoesntHave('facture') // Inclure les devis sans facture
+                ->orWhereHas('facture', function ($q) {
+                    $q->where('type_facture', 'Partielle');
                 });
         })
+        ->whereDoesntHave('facture', function ($q) {
+            $q->where('type_facture', 'Totale'); // Exclure les devis ayant une facture "Totale"
+        })
         ->get();
-
 
         $facturesQuery = Facture::query();
 
         $facturesQuery->whereHas('devis', function ($query) {
-            $query->where('status', 'Facturé');
+            $query->where('status', ['Facturé', 'En Attente du Daf']);
         });
 
         // Filtre par pays (uniquement pour les Dafs)
@@ -178,8 +186,9 @@ class FacturesController extends Controller
         $factureCommercials = Facture::with(['devis.client'])
         ->whereHas('devis', function ($query) {
             $query->where('user_id', Auth::user()->id);
-        })
-        ->get(); 
+        })->get(); 
+
+        //dd($all_devis);
 
         return view('administration.pages.factures.partielle.index', compact('all_devis', 'devis_pays', 'all_factures', 'factureCommercials', 'payss'));
 
@@ -190,12 +199,12 @@ class FacturesController extends Controller
         $factures = Facture::findOrFail($id);
 
         $validated = $request->validate([
-            'message' => 'required|string|min:10', 
+            'message' => 'required|string|min:5', 
         ]);
 
         // Vérification du statut de la facture avant la mise à jour
         if ($factures->status === "Facturé") {
-            return redirect()->route('dashboard.factures.index')->with('error', 'Vous ne pouvez refuser cette Facture que si son statut est "En Attente de facture ou en Attente du Daf"');
+            return redirect()->route('dashboard.factures.totales.index')->with('error', 'Vous ne pouvez refuser cette Facture que si son statut est "En Attente de facture ou en Attente du Daf"');
         }
 
         // Changer le statut du devis à "Réfusé"
@@ -211,7 +220,7 @@ class FacturesController extends Controller
         Notification::send($creator, new FactureRefusedNotification($factures));
 
         // Retourner à la page de liste avec un message de succès
-        return redirect()->route('dashboard.factures.index')->with('success', 'Facture Réfusée avec succès.');
+        return redirect()->route('dashboard.factures.totales.index')->with('success', 'Facture Réfusée avec succès.');
     }
 
 
@@ -296,251 +305,135 @@ class FacturesController extends Controller
     }
 
   
-    // public function store(Request $request)
-    // {
-    //     try {
-    //         $validated = $request->validate([
-    //             'devis_id' => 'required|exists:devis,id',
-    //             'banque_id' => 'required|exists:banques,id',
-    //             'client_id' => 'required|exists:clients,id',
-    //             'num_bc' => 'required',
-    //             'num_rap' => 'string',
-    //             'num_bl' => 'string',
-    //             'remise_speciale' => 'required|string',
-    //         ]);
-
-
-
-    //         $devis = Devis::findOrFail($validated['devis_id']);
-    //         $client = Client::findOrFail($validated['client_id']);
-    //         $banque = Banque::findOrFail($validated['banque_id']);
-
-
-    //         $facture = Facture::where('devis_id', $devis->id)->first();
-
-    //         if ($facture) {
-    //             if ($facture->status === 'En Attente du Daf' || $facture->status === 'Facturé') {
-    //                 return redirect()->back()->with('error', "Cette proforma a déjà une facture en cours ou Facturé.");
-    //             }
-    //         }
-            
-
-
-    //         $devis->status = 'En Attente du Daf';
-    //         $devis->save();
-
-    //         $customNumber = $this->generateCustomNumber();
-
-    //         $facture = new Facture();
-    //         $facture->devis_id = $validated['devis_id'];
-    //         $facture->num_bc = $validated['num_bc'];
-    //         $facture->num_rap = $validated['num_rap'];
-    //         $facture->num_bl = $validated['num_bl'];
-    //         $facture->user_id = Auth::id();
-    //         $facture->remise_speciale = $validated['remise_speciale'];
-    //         $facture->numero = $customNumber;
-    //         $facture->pays_id = Auth::user()->pays_id;
-    //         $facture->status = 'En Attente du Daf';
-
-    //         $facture->save();
-
-    //         $creator = $facture->devis->user;
-    //         Notification::send($creator, new FactureCreatedNotification($facture));
-
-    //         // Génération du PDF
-    //         $pdf = PDF::loadView('frontend.pdf.facture', compact('devis', 'client', 'banque', 'facture'));
-    //         $pdfOutput = $pdf->output();
-
-    //         $imageName = 'facture-' . $facture->id . '.pdf';
-    //         $directory = 'pdf/factures';
-
-    //         // Vérifier et créer le dossier si nécessaire
-    //         if (!Storage::disk('public')->exists($directory)) {
-    //             Storage::disk('public')->makeDirectory($directory);
-    //         }
-
-    //         $imagePath = $directory . '/' . $imageName;
-    //         Storage::disk('public')->put($imagePath, $pdfOutput);
-
-    //         $facture->pdf_path = $imagePath;
-    //         $facture->save();
-
-
-    //         $daf = User::role(['DG', 'Daf'])->get(); // Récupère tous les utilisateurs ayant le rôle "Daf" et DG
-
-    //         // Vérifie si des utilisateurs Daf existent
-    //         if ($daf->count() > 0) {
-    //             Log::info('Envoi de la notification de facture pour approbation.', [
-    //                 'facture_id' => $facture->id,
-    //                 'comptables_count' => $daf->count(),
-    //                 'facture_num' => $facture->numero,
-    //             ]);
-
-    //             // Envoie la notification
-    //             // Notification::send($daf, new FactureApprovalNotification($facture));
-
-    //             // Log après envoi
-    //             Log::info('Notification envoyée avec succès aux utilisateurs Daf.', [
-    //                 'facture_id' => $facture->id,
-    //                 'daf' => $daf->pluck('name')->toArray(), // Les noms des utilisateurs Daf
-    //             ]);
-    //         } else {
-    //             Log::warning('Aucun utilisateur Daf ou DG trouvé pour la notification.', [
-    //                 'facture_id' => $facture->id,
-    //             ]);
-    //         }
-
-    //         if(Auth::user()->hasRole(['DG', 'Daf'])){
-    //             $this->approuve($facture->id);
-
-    //         }
-
     
 
-    //         // Télécharger le fichier PDF
-    //         return redirect()->route('dashboard.factures.index')
-    //         ->with('pdf_path', $imagePath)
-    //         ->with('success', 'Facture enregsitré avec succès.');
-
-
-
-    //         // return redirect()->route('dashboard.factures.index')->with('success', 'Facture enregistrée avec succès.');
-    //     } catch (\Illuminate\Validation\ValidationException $e) {
-    //         Log::error('Validation échouée', ['errors' => $e->errors()]);
-    //         return redirect()->back()->withErrors($e->errors())->withInput();
-    //     } catch (\Exception $e) {
-    //         Log::error('Erreur lors de l\'enregistrement de la facture', ['message' => $e->getMessage()]);
-    //         return redirect()->back()->with('error', 'Une erreur est survenue lors de l\'enregistrement de la facture.')->withInput();
-    //     }
-    // }
-
     public function store(Request $request)
-{
-    try {
-        $validated = $request->validate([
-            'devis_id' => 'required|exists:devis,id',
-            'banque_id' => 'required|exists:banques,id',
-            'client_id' => 'required|exists:clients,id',
-            'num_bc' => 'required',
-            'num_rap' => 'nullable|string',
-            'num_bl' => 'nullable|string',
-            'remise_speciale' => 'required|string',
-            'type_facture' => 'required|in:Totale,Partielle',
-            'montant' => $request->type_facture === 'Partielle' ? 'required|numeric|min:0' : 'nullable',
+    {
+        try {
+            $validated = $request->validate([
+                'devis_id' => 'required|exists:devis,id',
+                'banque_id' => 'required|exists:banques,id',
+                'client_id' => 'required|exists:clients,id',
+                'num_bc' => 'required',
+                'num_rap' => 'nullable|string',
+                'num_bl' => 'nullable|string',
+                'remise_speciale' => 'required|string',
+                'type_facture' => 'required|in:Totale,Partielle',
+                'montant' => $request->type_facture === 'Partielle' ? 'required|numeric|min:0' : 'nullable',
 
-        ]);
+            ]);
 
-        $devis = Devis::findOrFail($validated['devis_id']);
-        $client = Client::findOrFail($validated['client_id']);
-        $banque = Banque::findOrFail($validated['banque_id']);
+            $devis = Devis::findOrFail($validated['devis_id']);
+            $client = Client::findOrFail($validated['client_id']);
+            $banque = Banque::findOrFail($validated['banque_id']);
 
-        // Vérification si une facture existe déjà pour ce devis
-        $facture = Facture::where('devis_id', $devis->id)->first();
+            // Vérification si une facture existe déjà pour ce devis
+            $facture = Facture::where('devis_id', $devis->id)->first();
 
-        // Vérification si une facture existe déjà pour ce devis
-        if ($facture) {
-            // Si la facture existe déjà et que le type est "Totale" ou si la facture est déjà "En Attente du Daf" ou "Facturée"
-            if (($facture->status === 'En Attente du Daf' || $facture->status === 'Facturé') && $validated['type_facture'] === 'Totale') {
-                return redirect()->back()->with('error', "Cette proforma a déjà une facture en cours ou facturée.");
-            }
+            // Vérification si une facture existe déjà pour ce devis
+            if ($facture) {
+                // Si la facture existe déjà et que le type est "Totale" ou si la facture est déjà "En Attente du Daf" ou "Facturée"
+                if (($facture->status === 'En Attente du Daf' || $facture->status === 'Facturé') && $validated['type_facture'] === 'Totale') {
+                    return redirect()->back()->with('error', "Cette proforma a déjà une facture en cours ou facturée.");
+                }
 
-            // Si la facture est partielle, vérifier le cumul des factures
-            if ($validated['type_facture'] === 'Partielle') {
-                // Calcul du cumul des factures partielles déjà émises
-                $cumulFactures = Facture::where('devis_id', $devis->id)
-                    ->where('type_facture', 'Partielle')
-                    ->sum('montant');
+                // Si la facture est partielle, vérifier le cumul des factures
+                if ($validated['type_facture'] === 'Partielle') {
+                    // Calcul du cumul des factures partielles déjà émises
+                    $cumulFactures = Facture::where('devis_id', $devis->id)
+                        ->where('type_facture', 'Partielle')
+                        ->sum('montant');
 
-                // Ajouter le montant actuel à ce cumul
-                $cumulTotal = $cumulFactures + $validated['montant'];
+                    // Ajouter le montant actuel à ce cumul
+                    $cumulTotal = $cumulFactures + $validated['montant'];
 
-                if ($cumulTotal > $devis->total_ttc) {
-                    // Si le cumul dépasse le montant total du devis, afficher une erreur
-                    return redirect()->back()->with('error', "Le cumul des montants partiels dépasse le montant total du devis (".number_format($devis->total_ttc, 0, ',', ' ')." FCFA). Actuellement cumulé : ".number_format($cumulFactures, 0, ',', ' ')." FCFA.")->withInput();
+                    if ($cumulTotal > $devis->total_ttc) {
+                        // Si le cumul dépasse le montant total du devis, afficher une erreur
+                        return redirect()->back()->with('error', "Le cumul des montants partiels dépasse le montant total du devis (".number_format($devis->total_ttc, 0, ',', ' ')." $devis->devise). Actuellement cumulé : ".number_format($cumulFactures, 0, ',', ' ')." $devis->devise.")->withInput();
+                    }
                 }
             }
+
+
+            // Calculer le montant en fonction du type de facture
+            $montant = $validated['type_facture'] === 'Totale' ? $devis->total_ttc : $validated['montant'];
+
+            // Mettre à jour le statut du devis
+            $devis->status = 'En Attente du Daf';
+            $devis->save();
+
+            // Génération du numéro de facture personnalisé
+            $customNumber = $this->generateCustomNumber();
+
+            // Création de la facture
+            $facture = new Facture();
+            $facture->devis_id = $validated['devis_id'];
+            $facture->num_bc = $validated['num_bc'];
+            $facture->num_rap = $validated['num_rap'];
+            $facture->num_bl = $validated['num_bl'];
+            $facture->user_id = Auth::id();
+            $facture->remise_speciale = $validated['remise_speciale'];
+            $facture->numero = $customNumber;
+            $facture->pays_id = Auth::user()->pays_id;
+            $facture->status = 'En Attente du Daf';
+            $facture->type_facture = $validated['type_facture'];
+            $facture->montant = $montant;
+
+            $facture->save();
+
+            // Envoi de la notification
+            $creator = $facture->devis->user;
+            Notification::send($creator, new FactureCreatedNotification($facture));
+
+            // Génération du PDF
+            $pdf = PDF::loadView('frontend.pdf.facture', compact('devis', 'client', 'banque', 'facture'));
+            $pdfOutput = $pdf->output();
+
+            $imageName = 'facture-' . $facture->id . '.pdf';
+            $directory = 'pdf/factures';
+
+            // Vérifier et créer le dossier si nécessaire
+            if (!Storage::disk('public')->exists($directory)) {
+                Storage::disk('public')->makeDirectory($directory);
+            }
+
+            $imagePath = $directory . '/' . $imageName;
+            Storage::disk('public')->put($imagePath, $pdfOutput);
+
+            $facture->pdf_path = $imagePath;
+            $facture->save();
+
+            // Notification aux utilisateurs Daf/DG
+            $daf = User::role(['DG', 'Daf'])->get();
+            if ($daf->count() > 0) {
+                Log::info('Envoi de la notification de facture pour approbation.', [
+                    'facture_id' => $facture->id,
+                    'comptables_count' => $daf->count(),
+                    'facture_num' => $facture->numero,
+                ]);
+            } else {
+                Log::warning('Aucun utilisateur Daf ou DG trouvé pour la notification.', [
+                    'facture_id' => $facture->id,
+                ]);
+            }
+
+            if (Auth::user()->hasRole(['DG', 'Daf'])) {
+                $this->approuve($facture->id);
+            }
+
+            // Rediriger avec le PDF généré
+            return redirect()->route('dashboard.factures.totales.index')
+                ->with('pdf_path', $imagePath)
+                ->with('success', 'Facture enregistrée avec succès.');
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::error('Validation échouée', ['errors' => $e->errors()]);
+            return redirect()->back()->withErrors($e->errors())->withInput();
+        } catch (\Exception $e) {
+            Log::error('Erreur lors de l\'enregistrement de la facture', ['message' => $e->getMessage()]);
+            return redirect()->back()->with('error', 'Une erreur est survenue lors de l\'enregistrement de la facture.')->withInput();
         }
-
-
-        // Calculer le montant en fonction du type de facture
-        $montant = $validated['type_facture'] === 'Totale' ? $devis->total_ttc : $validated['montant'];
-
-        // Mettre à jour le statut du devis
-        $devis->status = 'En Attente du Daf';
-        $devis->save();
-
-        // Génération du numéro de facture personnalisé
-        $customNumber = $this->generateCustomNumber();
-
-        // Création de la facture
-        $facture = new Facture();
-        $facture->devis_id = $validated['devis_id'];
-        $facture->num_bc = $validated['num_bc'];
-        $facture->num_rap = $validated['num_rap'];
-        $facture->num_bl = $validated['num_bl'];
-        $facture->user_id = Auth::id();
-        $facture->remise_speciale = $validated['remise_speciale'];
-        $facture->numero = $customNumber;
-        $facture->pays_id = Auth::user()->pays_id;
-        $facture->status = 'En Attente du Daf';
-        $facture->type_facture = $validated['type_facture'];
-        $facture->montant = $montant;
-
-        $facture->save();
-
-        // Envoi de la notification
-        $creator = $facture->devis->user;
-        Notification::send($creator, new FactureCreatedNotification($facture));
-
-        // Génération du PDF
-        $pdf = PDF::loadView('frontend.pdf.facture', compact('devis', 'client', 'banque', 'facture'));
-        $pdfOutput = $pdf->output();
-
-        $imageName = 'facture-' . $facture->id . '.pdf';
-        $directory = 'pdf/factures';
-
-        // Vérifier et créer le dossier si nécessaire
-        if (!Storage::disk('public')->exists($directory)) {
-            Storage::disk('public')->makeDirectory($directory);
-        }
-
-        $imagePath = $directory . '/' . $imageName;
-        Storage::disk('public')->put($imagePath, $pdfOutput);
-
-        $facture->pdf_path = $imagePath;
-        $facture->save();
-
-        // Notification aux utilisateurs Daf/DG
-        $daf = User::role(['DG', 'Daf'])->get();
-        if ($daf->count() > 0) {
-            Log::info('Envoi de la notification de facture pour approbation.', [
-                'facture_id' => $facture->id,
-                'comptables_count' => $daf->count(),
-                'facture_num' => $facture->numero,
-            ]);
-        } else {
-            Log::warning('Aucun utilisateur Daf ou DG trouvé pour la notification.', [
-                'facture_id' => $facture->id,
-            ]);
-        }
-
-        if (Auth::user()->hasRole(['DG', 'Daf'])) {
-            $this->approuve($facture->id);
-        }
-
-        // Rediriger avec le PDF généré
-        return redirect()->route('dashboard.factures.index')
-            ->with('pdf_path', $imagePath)
-            ->with('success', 'Facture enregistrée avec succès.');
-
-    } catch (\Illuminate\Validation\ValidationException $e) {
-        Log::error('Validation échouée', ['errors' => $e->errors()]);
-        return redirect()->back()->withErrors($e->errors())->withInput();
-    } catch (\Exception $e) {
-        Log::error('Erreur lors de l\'enregistrement de la facture', ['message' => $e->getMessage()]);
-        return redirect()->back()->with('error', 'Une erreur est survenue lors de l\'enregistrement de la facture.')->withInput();
     }
-}
 
 
 
