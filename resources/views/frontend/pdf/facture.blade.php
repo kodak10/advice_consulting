@@ -279,7 +279,7 @@
                 <strong>Total HT :</strong>
             </td>
             <td colspan="3" class="prices" id="no-fond">
-                {{ $facture->type_facture === 'Totale' ? $devis->total_ht : $facture->montant_ht }}
+                {{ $facture->type_facture === 'Totale' ? $devis->total_ht : $facture->montant }}
             </td>
         </tr>
         <tr>
@@ -288,7 +288,7 @@
                 <strong>TVA :</strong> {{ $devis->tva }} %
             </td>
             <td colspan="3" class="prices" id="no-fond">
-                {{ $facture->type_facture === 'Totale' ? number_format($devis->total_ht * $devis->tva / 100, 2, ',', ' ') : number_format($facture->montant_ht * $devis->tva / 100, 2, ',', ' ') }}
+                {{ $facture->type_facture === 'Totale' ? number_format($devis->total_ht * $devis->tva / 100, 2, ',', ' ') : number_format($facture->montant * $devis->tva / 100, 2, ',', ' ') }}
             </td>
         </tr>
         <tr>
@@ -338,7 +338,7 @@
                 <strong>Arrêté la présence facture à la somme de :
             </td>
         </tr>
-        {{-- @php
+        @php
             $formatter = new NumberFormatter('fr', NumberFormatter::SPELLOUT);
             $amount = $facture->type_facture === 'Totale' ? $devis->solde : $facture->montant;
             $amount = number_format($amount, 2, '.', '');
@@ -346,14 +346,14 @@
         
             $texteEntier = $formatter->format($entier);
             $texteDecimales = intval($decimales) > 0 ? $formatter->format($decimales) : null;
-        @endphp --}}
+        @endphp
         
         <tr>
             <td colspan="12" class="conditions" id="no-fond">
-                {{-- {{ ucwords($texteEntier) }}
+                {{ ucwords($texteEntier) }}
                 @if($texteDecimales)
                     virgule {{ $texteDecimales }}
-                @endif --}}
+                @endif
                 {{ $devis->devise }}<br>
             </td>
         </tr>
