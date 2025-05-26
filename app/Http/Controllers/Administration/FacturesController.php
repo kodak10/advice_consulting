@@ -531,6 +531,8 @@ public function store(Request $request)
             $facture->selected_items = json_encode($selectedItems);
         }
 
+        
+
         $facture->save();
 
         // Envoi de la notification

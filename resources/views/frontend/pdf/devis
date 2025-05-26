@@ -214,7 +214,7 @@
 
 <body>
     
-    <table class="no-border mt-0">
+    <table class="no-border">
         <tr>
             <!-- Image avec colspan correctement défini -->
             <td colspan="5">

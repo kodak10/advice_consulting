@@ -116,7 +116,7 @@
                             <div class="mb-5">
                                 <h5>Phrase</h5>
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    <div class="col-md-12">
                                         <input class="form-control" type="text" name="texte" value="Merci de nous consulter, veuillez trouver notre meilleure offre ">
                                     </div>
                                     

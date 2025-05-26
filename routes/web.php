@@ -66,6 +66,8 @@ Route::middleware(['auth', 'verified','check.user.status'])->prefix('dashboard')
     Route::post('/devis/{id}/refuse', [DevisController::class, 'refuse'])->name('devis.refuse');
 
     
+    
+
     // Routes pour les factures **totales**
     Route::prefix('factures/totales')->group(function () {
         Route::match(['get', 'post'], '/', [FacturesController::class, 'indexTotale'])->name('factures.totales.index');

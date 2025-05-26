@@ -272,8 +272,28 @@
             @endforeach
         @endif
 
+        @php
+            if ($facture->type_facture === 'Totale') {
+                $montantHT = $devis->total_ht;
+            } else {
+                $montantHT = 0;
+                foreach ($devis->details as $devisDetail) {
+                    if (in_array($devisDetail->id, $selectedItems)) {
+                        $montantHT += $devisDetail->total;
+                    }
+                }
+            }
+
+            $montantTVA = $montantHT * $devis->tva / 100;
+            $montantTTC = $montantHT + $montantTVA;
+
+            $acompte = $facture->type_facture === 'Totale' ? $devis->acompte : 0;
+            $solde = $facture->type_facture === 'Totale' ? $devis->solde : $montantTTC;
+        @endphp
+
+
         <!-- Conditions financières et Prix -->
-        <tr>
+        {{-- <tr>
             <td colspan="4" class="no-border" id="no-fond"></td>
             <td colspan="2" class="prices" id="no-fond">
                 <strong>Total HT :</strong>
@@ -319,7 +339,55 @@
                     {{ $devis->solde }}
                 </td>
             </tr>
+        @endif --}}
+        <tr>
+            <td colspan="4" class="no-border" id="no-fond"></td>
+            <td colspan="2" class="prices" id="no-fond">
+                <strong>Total HT :</strong>
+            </td>
+            <td colspan="3" class="prices" id="no-fond">
+                {{ number_format($montantHT, 2, ',', ' ') }}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4" class="no-border" id="no-fond"></td>
+            <td colspan="2" class="prices" id="no-fond">
+                <strong>TVA :</strong> {{ $devis->tva }} %
+            </td>
+            <td colspan="3" class="prices" id="no-fond">
+                {{ number_format($montantTVA, 2, ',', ' ') }}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4" class="no-border" id="no-fond"></td>
+            <td colspan="2" class="prices" id="no-fond">
+                <strong>TOTAL TTC :</strong>
+            </td>
+            <td colspan="3" class="prices" id="no-fond">
+                {{ number_format($montantTTC, 2, ',', ' ') }}
+            </td>
+        </tr>
+        @if($facture->type_facture === 'Totale')
+        <tr>
+            <td colspan="4" class="no-border" id="no-fond"></td>
+            <td colspan="2" class="prices" id="no-fond">
+                <strong>Acompte :</strong>
+            </td>
+            <td colspan="3" class="prices" id="no-fond">
+                {{ number_format($acompte, 2, ',', ' ') }}
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4" class="no-border" id="no-fond"></td>
+            <td colspan="2" class="prices" id="no-fond">
+                <strong>Solde :</strong>
+            </td>
+            <td colspan="3" class="prices" id="no-fond">
+                {{ number_format($solde, 2, ',', ' ') }}
+            </td>
+        </tr>
         @endif
+
     </table>
 
     <table>

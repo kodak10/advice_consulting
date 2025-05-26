@@ -135,7 +135,7 @@
                             <div class="mb-5">
                                 <h5>Phrase</h5>
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    <div class="col-md-12">
                                         <input type="text" name="texte" class="form-control" value="{{ $validated['texte'] }}">
                                     </div>
                                     
