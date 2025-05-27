@@ -168,12 +168,12 @@
         }
 
 
-        .no-border td:last-child{
+        /* .no-border td:last-child{
             color: #022344;
             font-weight: bold;
             font-size: 14px;
 
-        }
+        } */
         .no-border img{
             height: 80px;
         }
@@ -390,10 +390,10 @@
 
     </table>
 
-    <table>
+    <table class="no-border">
         <tr>
             <td colspan="12" class="conditions" id="no-fond">
-                Veuillez libeller votre chèque à l'ordre de Advice Consulting {{ $devis->user->pays->name }} ou faire un virement sur notre compte
+                Veuillez libeller votre chèque à l'ordre de Advice Consulting ou faire un virement sur notre compte
             </td>
         </tr>
         <tr>

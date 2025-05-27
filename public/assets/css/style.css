@@ -104,8 +104,8 @@ h4.process-title {
 }
 
 p.process-desc {
-    opacity: .6;
     font-weight: 300;
+    color: #000;
 }
 
 span.check-arrow i {

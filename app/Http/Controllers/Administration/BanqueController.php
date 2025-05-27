@@ -49,7 +49,7 @@ class BanqueController extends Controller
 
             $banques->save();
 
-            session()->flash('success', 'Banque ajouté avec succès !');
+            session()->flash('success', 'Banque ajoutée avec succès !');
 
             return response()->json([
                 'success' => true,

@@ -44,10 +44,10 @@
             </div>
           <div class="col-md-4 col-xl-9 text-end d-flex justify-content-md-end justify-content-center mt-3 mt-md-0">
     
-            <a href="" class="btn btn-primary">
+            {{-- <a href="" class="btn btn-primary">
                 <i class="ti ti-users text-white me-1 fs-5"></i> 
                 Faire une facture
-            </a>
+            </a> --}}
               
           </div>
         </div>

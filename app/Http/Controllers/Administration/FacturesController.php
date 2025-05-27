@@ -66,18 +66,13 @@ class FacturesController extends Controller
         })->get();
        
 
-        $devis_pays = Devis::where('pays_id', Auth::user()->pays_id)
-        ->where(function ($query) {
-            $query->whereIn('status', ['En Attente de facture', 'En Attente du Daf'])
-                ->orWhereDoesntHave('facture') // Inclure les devis sans facture
-                ->orWhereHas('facture', function ($q) {
-                    $q->where('type_facture', 'Totale');
-                });
-        })
+       $devis_pays = Devis::where('pays_id', Auth::user()->pays_id)
+        ->whereIn('status', ['En Attente de facture', 'En Attente du Daf']) // Filtrer uniquement ces statuts
         ->whereDoesntHave('facture', function ($q) {
-            $q->where('type_facture', 'Partielle'); // Exclure les devis ayant une facture "Partielle"
-        })
-        ->get();
+            $q->where('type_facture', 'Partielle'); // Exclure les devis avec facture "Partielle"
+        })->get();
+
+
 
 
         $facturesQuery = Facture::query();
@@ -138,17 +133,10 @@ class FacturesController extends Controller
         })->get();
 
        $devis_pays = Devis::where('pays_id', Auth::user()->pays_id)
-        ->where(function ($query) {
-            $query->whereIn('status', ['En Attente de facture', 'En Attente du Daf'])
-                ->orWhereDoesntHave('facture') // Inclure les devis sans facture
-                ->orWhereHas('facture', function ($q) {
-                    $q->where('type_facture', 'Partielle');
-                });
-        })
+        ->whereIn('status', ['En Attente de facture', 'En Attente du Daf', 'Facturé']) // Filtrer uniquement ces statuts
         ->whereDoesntHave('facture', function ($q) {
-            $q->where('type_facture', 'Totale'); // Exclure les devis ayant une facture "Totale"
-        })
-        ->get();
+            $q->where('type_facture', 'Totale'); // Exclure les devis avec facture "Totale"
+        })->get();
 
         $facturesQuery = Facture::query();
 
@@ -704,7 +692,7 @@ public function approuve($id)
         //     'description' => 'Facture approuvée et envoyée au client'
         // ]);
 
-        return redirect()->back()->with('success', 'Facture approuvée avec succès et envoyée par email.');
+        return redirect()->back()->with('success', 'Facture approuvée avec succès.');
 
     } catch (\Exception $e) {
         Log::error('Erreur lors de l\'approbation de la facture', [

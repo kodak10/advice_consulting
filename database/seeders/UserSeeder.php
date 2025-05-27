@@ -40,7 +40,7 @@ class UserSeeder extends Seeder
         $users = [
             [
                 'name' => 'Admin',
-                'email' => 'admin@example.com',
+                'email' => 'admin@groupadvice.net',
                 'role' => 'Administrateur',
                 'pays_id' => 1,
                 'phone' => '+22501010101',
@@ -49,7 +49,7 @@ class UserSeeder extends Seeder
             ],
             [
                 'name' => 'DG',
-                'email' => 'dg@example.com',
+                'email' => 'dg@groupadvice.net',
                 'role' => 'DG',
                 'pays_id' => 1,
                 'phone' => '+22502020202',
@@ -58,7 +58,7 @@ class UserSeeder extends Seeder
             ],
             [
                 'name' => 'DAF',
-                'email' => 'daf@example.com',
+                'email' => 'daf@groupadvice.net',
                 'role' => 'DAF',
                 'pays_id' => 1,
                 'phone' => '+22502020203',
@@ -67,7 +67,7 @@ class UserSeeder extends Seeder
             ],
             [
                 'name' => 'Comptable Côte d\'Ivoire',
-                'email' => 'comptable_ci@example.com',
+                'email' => 'comptable_ci@groupadvice.net',
                 'role' => 'Comptable',
                 'pays_id' => 1,
                 'phone' => '+22503030303',
@@ -76,7 +76,7 @@ class UserSeeder extends Seeder
             ],
             [
                 'name' => 'Commercial Côte d\'Ivoire',
-                'email' => 'commercial_ci@example.com',
+                'email' => 'commercial_ci@groupadvice.net',
                 'role' => 'Commercial',
                 'pays_id' => 1,
                 'phone' => '+22504040404',
@@ -85,7 +85,7 @@ class UserSeeder extends Seeder
             ],
             [
                 'name' => 'Comptable Guinée',
-                'email' => 'comptable_guinee@example.com',
+                'email' => 'comptable_guinee@groupadvice.net',
                 'role' => 'Comptable',
                 'pays_id' => 2,
                 'phone' => '+22403030303',
@@ -94,7 +94,7 @@ class UserSeeder extends Seeder
             ],
             [
                 'name' => 'Commercial Guinée',
-                'email' => 'commercial_guinee@example.com',
+                'email' => 'commercial_guinee@groupadvice.net',
                 'role' => 'Commercial',
                 'pays_id' => 2,
                 'phone' => '+22404040404',
@@ -103,7 +103,7 @@ class UserSeeder extends Seeder
             ],
             [
                 'name' => 'Comptable Tchad',
-                'email' => 'comptable_tchad@example.com',
+                'email' => 'comptable_tchad@groupadvice.net',
                 'role' => 'Comptable',
                 'pays_id' => 3,
                 'phone' => '+23503030303',
@@ -112,7 +112,7 @@ class UserSeeder extends Seeder
             ],
             [
                 'name' => 'Commercial Tchad',
-                'email' => 'commercial_tchad@example.com',
+                'email' => 'commercial_tchad@groupadvice.net',
                 'role' => 'Commercial',
                 'pays_id' => 3,
                 'phone' => '+23504040404',
