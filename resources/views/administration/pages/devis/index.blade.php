@@ -315,7 +315,7 @@
             <div class="card card-body">
                 <h5>Historiques</h5>
                 <div class="table-responsive">
-                    <table id="zero_config5" class="mt-5 table table-striped table-bordered text-nowrap align-middle">
+                    <table id="zero_config2" class="mt-5 table table-striped table-bordered text-nowrap align-middle">
                         <thead>
                             <tr>
                                 <th>Date</th>
@@ -361,9 +361,9 @@
                                 </td>
                             </tr>
                             @empty
-                            <tr>
+                            {{-- <tr>
                                 <td colspan="6" class="text-center">Aucune Proforma enregistrée.</td>
-                            </tr>
+                            </tr> --}}
                             @endforelse
                         </tbody>
                         <tfoot>

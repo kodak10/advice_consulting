@@ -172,7 +172,6 @@
             color: #022344;
             font-weight: bold;
             font-size: 14px;
-
         } */
         .no-border img{
             height: 80px;
@@ -398,7 +397,7 @@
         </tr>
         <tr>
             <td colspan="12" class="conditions" id="no-fond">
-                <strong> Banque :</strong> {{ $banque->name }} N° Compte {{ $banque->num_compte }}
+                <strong> Banque :</strong> {{ $banque->name }} <strong> N° Compte:</strong> {{ $banque->num_compte }}
             </td>
         </tr>
         <tr>
