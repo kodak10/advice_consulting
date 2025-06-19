@@ -256,12 +256,12 @@
             <td colspan="6">{{ $devis->client->nom }}</td>
         </tr>
         <tr class="info-client">
-            <td colspan="6"><strong>Date Emission :</strong> {{ $devis->date_echeance }}</td>
+            <td colspan="6"><strong>Date Emission :</strong> {{ $devis->date_emission }}</td>
 
             <td colspan="6"><strong>N° CC :</strong> {{ $devis->client->numero_cc }}</td>
         </tr>
         <tr class="info-client">
-            <td colspan="6"><strong>Numéro ADC :</strong> {{ $devis->date_echeance }}</td>
+            <td colspan="6"><strong>Numéro ADC :</strong> {{ $devis->num_proforma }}</td>
             <td colspan="6"><strong>Téléphone:</strong> {{ $devis->client->telephone }}</td>
         </tr>
         <tr class="info-client">
@@ -414,8 +414,13 @@
             </td>
 
             <td class="conditions" id="no-fond">
-                {{ $devis->user->name }}
+                {{
+                    collect(explode(' ', $devis->user->name))
+                        ->only([0, -1]) // prend le 1er et le dernier mot
+                        ->implode(' ')
+                }}
             </td>
+
            
         </tr>
     </table>
