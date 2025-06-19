@@ -398,7 +398,7 @@
 
             @php
                 $formatter = new NumberFormatter('fr', NumberFormatter::SPELLOUT);
-                $solde = number_format($devis->solde, 2, '.', '');
+                $solde = number_format($devis->total_ttc, 2, '.', '');
                 [$entier, $decimales] = explode('.', $solde);
             
                 $texteEntier = $formatter->format($entier);
