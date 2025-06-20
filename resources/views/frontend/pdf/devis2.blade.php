@@ -256,11 +256,11 @@
 
         <!-- Conditions financières et Prix -->
         <tr>
-            <td colspan="5" class="no-border" id="no-fond"></td>
-            <td colspan="4" class="" id="no-fond">
+            <td colspan="6" class="no-border" id="no-fond"></td>
+            <td colspan="6" class="" id="no-fond">
                 <strong>Total HT :</strong> 
             </td>
-            <td colspan="7" class="" id="no-fond">
+            <td colspan="6" class="" id="no-fond">
                 @if($devis->devise === 'XOF')
                     {{ number_format($devis->total_ht, 0, '', ' ') }}
                 @else
@@ -269,11 +269,11 @@
             </td>
         </tr>
         <tr>
-            <td colspan="5" class="no-border" id="no-fond"></td>
-            <td colspan="4" class="" id="no-fond">
+            <td colspan="6" class="no-border" id="no-fond"></td>
+            <td colspan="6" class="" id="no-fond">
                 <strong>TVA :</strong> {{ $devis->tva }} %
             </td>
-            <td colspan="7" class="" id="no-fond">
+            <td colspan="6" class="" id="no-fond">
                 @if($devis->devise === 'XOF')
                     {{ number_format($devis->total_ht * $devis->tva / 100, 0, '', ' ') }}
                 @else
@@ -282,13 +282,13 @@
             </td>
         </tr>
         <tr>
-            <td colspan="5" class="no-border" id="no-fond">
+            <td colspan="6" class="no-border" id="no-fond">
                 <strong>Commande :</strong> {{ $devis->commande }}% <strong>Livraison: </strong> {{ $devis->livraison }} %
             </td>
-            <td colspan="4" id="no-fond">
+            <td colspan="6" id="no-fond">
                 <strong>TOTAL TTC :</strong>
             </td>
-            <td colspan="7" id="no-fond">
+            <td colspan="6" id="no-fond">
                 @if($devis->devise === 'XOF')
                     {{ number_format($devis->total_ttc, 0, '', ' ') }}
                 @else
@@ -297,13 +297,13 @@
             </td>
         </tr>
         <tr>
-            <td colspan="5" class="no-border" id="no-fond">
+            <td colspan="6" class="no-border" id="no-fond">
                 <strong>Validité de l'offre :</strong> {{ $devis->validite }} jours
             </td>
-            <td colspan="4" id="no-fond">
+            <td colspan="6" id="no-fond">
                 <strong>Acompte :</strong> 
             </td>
-            <td colspan="7" id="no-fond">
+            <td colspan="6" id="no-fond">
                 @if($devis->devise === 'XOF')
                     {{ number_format($devis->acompte, 0, '', ' ') }}
                 @else
@@ -312,13 +312,13 @@
             </td>
         </tr>
         <tr>
-            <td colspan="5" class="no-border" id="no-fond">
+            <td colspan="6" class="no-border" id="no-fond">
                 <strong>Délai de livraison :</strong> {{ $devis->delai }} jours
             </td>
-            <td colspan="4" id="no-fond">
+            <td colspan="6" id="no-fond">
                 <strong>Solde :</strong>
             </td>
-            <td colspan="7" id="no-fond">
+            <td colspan="6" id="no-fond">
                 @if($devis->devise === 'XOF')
                     {{ number_format($devis->solde, 0, '', ' ') }}
                 @else
