@@ -214,7 +214,7 @@
 
 <body>
     
-    <table class="no-border">
+    <table class="no-border mt-0">
         <tr>
             <!-- Image avec colspan correctement défini -->
             <td colspan="5">
@@ -367,13 +367,13 @@
 
         <tr>
             <td colspan="12" class="conditions" id="no-fond">
-                Veuillez libeller votre chèque à l'ordre de Advice Consulting {{ $devis->user->pays->name }} ou faire un virement sur notre compte
+                Veuillez libeller votre chèque à l'ordre de Advice Consulting ou faire un virement sur notre compte
             </td>
             
         </tr>
         <tr>
             <td colspan="12" class="conditions" id="no-fond">
-                <strong> Banque :</strong> {{ $banque->name }} N° Compte {{ $banque->num_compte }}
+                <strong> Banque :</strong> {{ $banque->name }} <strong> N° Compte: </strong> {{ $banque->num_compte }}
 
             </td>
             
