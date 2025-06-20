@@ -5,13 +5,11 @@
     <meta charset="utf-8" />
     <title>Devis</title>
     <style>
-        /* Définir les marges et le format A4 */
+        /* [VOTRE STYLE EXISTANT - JE NE TOUCHE À RIEN] */
         @page {
             size: A4;
-            margin: 20mm; /* Marges autour du contenu */
+            margin: 20mm;
         }
-
-        /* Mise en page de base */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -21,33 +19,27 @@
             font-size: 12px;
             line-height: 1.5;
         }
-
         table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
         }
-
         th, td {
             border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
         }
-
         th {
             background-color: #f4f4f4;
             color: #000000;
             font-weight: bold;
         }
-
         tr:nth-child(even) {
             background-color: #f9f9f9;
         }
-
         tr:hover {
             background-color: #f1f1f1;
         }
-
         .header {
             background-color: #f4f4f4;
             color: white;
@@ -55,44 +47,31 @@
             text-align: center;
             font-weight: bold;
         }
-
         .highlight {
             background-color: #ffeb3b;
         }
-
         .center {
             text-align: center;
         }
-
         .right {
             text-align: right;
         }
-
         .total {
             background-color: #f4f4f4;
             color: white;
             font-weight: bold;
         }
-
         .info-client {
             /* background-color: #f4f4f4; */
         }
-
-        
-
-       
-
-        /* Divider en bas */
         .divider {
             border-top: 3px solid #000000;
             margin: 20px 0;
         }
         .footer{
-                font-size: 9px !important;
-                color: #0064c9 !important;
-            }
-
-        /* Informations de l'entreprise */
+            font-size: 9px !important;
+            color: #0064c9 !important;
+        }
         .company-info {
             position: absolute;
             bottom: 0;
@@ -102,77 +81,58 @@
             border-top: 3px solid #000000;
             padding: 10px 0;
         }
-
-        
-        
-
         .company-info td {
             border: none;
             padding: 5px;
         }
-
-        /* Ajustement pour l'impression */
         @media print {
             body {
                 font-size: 12px;
                 margin: 0;
                 padding: 0;
             }
-
             table {
                 margin-left: auto;
                 margin-right: auto;
                 width: 100%;
             }
-
             .header {
                 font-size: 1.5em;
             }
-
             th, td {
                 padding: 5px;
                 font-size: 10px;
             }
-
             .center {
                 text-align: center;
             }
-
             .right {
                 text-align: right;
             }
-
             .total {
                 font-weight: bold;
             }
-
             .info-client {
                 background-color: #f4f4f4;
             }
-
         }
         .no-border {
             border: none;
-            border-collapse: collapse; /* Facultatif : fusionner les bordures entre les cellules */
+            border-collapse: collapse;
         }
-
         .no-border td,
         .no-border th {
-            border: none; /* Assurer qu'aucune bordure n'est appliquée sur les cellules */
+            border: none;
         }
-
         .chiffres .no-border td,
         .chiffres .no-border {
             background-color: #ffff;
             border: none;
         }
-
-
         .no-border td:last-child{
             color: #022344;
             font-weight: bold;
             font-size: 14px;
-
         }
         .no-border img{
             height: 80px;
@@ -183,7 +143,6 @@
             background-color: #c54f00;
             margin-bottom: 20px;
         }
-
         .vide{
             height: 150px;
         }
@@ -192,23 +151,17 @@
             font-weight: bold;
             color: #0064c9;
         }
-
-        
         .no-fond {
-            background-color: transparent !important; /* Supprime le fond */
+            background-color: transparent !important;
             border-collapse: collapse;
             width: 100%;
         }
-
         .no-fond td{
             background-color: #ffffff !important;
         }
-
         #no-fond{
             background-color: #ffffff !important;
         }
-
-        
     </style>
 </head>
 
@@ -216,39 +169,20 @@
     
     <table class="no-border mt-0">
         <tr>
-            <!-- Image avec colspan correctement défini -->
             <td colspan="5">
                 <img src="{{ public_path('assets/images/logo.png') }}" alt="Logo" style="width: 100%; max-width: 200px;">
             </td>
-            <!-- Texte avec colspan également correctement défini -->
             <td colspan="7">
                 MONETIQUE - TECHNOLOGIE - VENTE - INGENIERIE - ETUDE
             </td>
         </tr>
     </table>
 
-    {{-- <table class="no-border">
-        <tr>
-            <td colspan="3">
-                Type de règlement : <div class="box">A écheance</div>
-            </td>
-            <td colspan="3">
-                Délai : <div class="box">{{ $devis->delai }}</div>
-            </td>
-            <!-- Texte avec colspan également correctement défini -->
-            <td colspan="6">
-                Agent <div class="box">{{ $devis->user->name }}</div>
-            </td>
-        </tr>
-    </table> --}}
     <div class="ligne"></div>
 
     <table class="no-fond">
-        <!-- Informations de la facture -->
         <tr>
-            <!-- <td colspan="6"><strong>Date :</strong> {{ $devis->date_emission }}</td> -->
             <td colspan="6" class="proforma">FACTURE PROFORMA</td>
-
             <td colspan="6"><strong>CLIENT</strong></td>
         </tr>
         <tr>
@@ -256,19 +190,17 @@
             <td colspan="6">{{ $devis->client->nom }}</td>
         </tr>
         <tr class="info-client">
-            <td colspan="6"><strong>Date Emission :</strong> {{ $devis->date_echeance }}</td>
-
+            <td colspan="6"><strong>Date Emission :</strong> {{ $devis->date_emission }}</td>
             <td colspan="6"><strong>N° CC :</strong> {{ $devis->client->numero_cc }}</td>
         </tr>
         <tr class="info-client">
-            <td colspan="6"><strong>Numéro ADC :</strong> {{ $devis->date_echeance }}</td>
+            <td colspan="6"><strong>Numéro ADC :</strong> {{ $devis->num_proforma }}</td>
             <td colspan="6"><strong>Téléphone:</strong> {{ $devis->client->telephone }}</td>
         </tr>
         <tr class="info-client">
             <td colspan="6"></td>
             <td colspan="6"><strong>Adresse :</strong> {{ $devis->client->adresse }}</td>
         </tr>
-       
     </table>
     
     <table>
@@ -294,49 +226,73 @@
                 <td colspan="1">{{ $devisDetail->designation->reference }}</td>
                 <td colspan="4">{{ $devisDetail->designation->description }}</td>
                 <td colspan="1">{{ $devisDetail->quantite }}</td>
-                <td colspan="2">{{ $devisDetail->prix_unitaire }}</td>
-                <td colspan="4">{{ $devisDetail->remise }}</td>
-                <td colspan="4">{{ $devisDetail->total }}</td>
+                <td colspan="2">
+                    @if($devis->devise === 'XOF')
+                        {{ number_format($devisDetail->prix_unitaire, 0, '', ' ') }}
+                    @else
+                        {{ number_format($devisDetail->prix_unitaire, 2, ',', ' ') }}
+                    @endif
+                </td>
+                <td colspan="4">
+                    @if($devisDetail->remise > 0)
+                        @if($devis->devise === 'XOF')
+                            {{ number_format($devisDetail->remise, 0, '', ' ') }}
+                        @else
+                            {{ number_format($devisDetail->remise, 2, ',', ' ') }}
+                        @endif
+                    @endif
+                </td>
+                <td colspan="4">
+                    @if($devis->devise === 'XOF')
+                        {{ number_format($devisDetail->total, 0, '', ' ') }}
+                    @else
+                        {{ number_format($devisDetail->total, 2, ',', ' ') }}
+                    @endif
+                </td>
             </tr>
         @endforeach
         
 
         <!-- Conditions financières et Prix -->
         <tr>
-            <td colspan="5" class="no-border" id="no-fond">
-                
-            </td>
+            <td colspan="5" class="no-border" id="no-fond"></td>
             <td colspan="4" class="" id="no-fond">
                 <strong>Total HT :</strong> 
             </td>
             <td colspan="7" class="" id="no-fond">
-                {{ $devis->total_ht }}
+                @if($devis->devise === 'XOF')
+                    {{ number_format($devis->total_ht, 0, '', ' ') }}
+                @else
+                    {{ number_format($devis->total_ht, 2, ',', ' ') }}
+                @endif
             </td>
         </tr>
         <tr>
-            <td colspan="5" class="no-border" id="no-fond">
-                
-            </td>
+            <td colspan="5" class="no-border" id="no-fond"></td>
             <td colspan="4" class="" id="no-fond">
                 <strong>TVA :</strong> {{ $devis->tva }} %
-
             </td>
             <td colspan="7" class="" id="no-fond">
-                {{ number_format($devis->total_ht * $devis->tva / 100, 2, ',', ' ') }}
-
+                @if($devis->devise === 'XOF')
+                    {{ number_format($devis->total_ht * $devis->tva / 100, 0, '', ' ') }}
+                @else
+                    {{ number_format($devis->total_ht * $devis->tva / 100, 2, ',', ' ') }}
+                @endif
             </td>
         </tr>
         <tr>
             <td colspan="5" class="no-border" id="no-fond">
                 <strong>Commande :</strong> {{ $devis->commande }}% <strong>Livraison: </strong> {{ $devis->livraison }} %
-
             </td>
             <td colspan="4" id="no-fond">
                 <strong>TOTAL TTC :</strong>
             </td>
-
             <td colspan="7" id="no-fond">
-                {{ $devis->total_ttc }}
+                @if($devis->devise === 'XOF')
+                    {{ number_format($devis->total_ttc, 0, '', ' ') }}
+                @else
+                    {{ number_format($devis->total_ttc, 2, ',', ' ') }}
+                @endif
             </td>
         </tr>
         <tr>
@@ -347,7 +303,11 @@
                 <strong>Acompte :</strong> 
             </td>
             <td colspan="7" id="no-fond">
-                {{ $devis->acompte }}
+                @if($devis->devise === 'XOF')
+                    {{ number_format($devis->acompte, 0, '', ' ') }}
+                @else
+                    {{ number_format($devis->acompte, 2, ',', ' ') }}
+                @endif
             </td>
         </tr>
         <tr>
@@ -358,51 +318,47 @@
                 <strong>Solde :</strong>
             </td>
             <td colspan="7" id="no-fond">
-                {{ $devis->solde }}
+                @if($devis->devise === 'XOF')
+                    {{ number_format($devis->solde, 0, '', ' ') }}
+                @else
+                    {{ number_format($devis->solde, 2, ',', ' ') }}
+                @endif
             </td>
         </tr>
     </table>
 
     <table>
-
         <tr>
             <td colspan="12" class="conditions" id="no-fond">
                 Veuillez libeller votre chèque à l'ordre de Advice Consulting ou faire un virement sur notre compte
             </td>
-            
         </tr>
         <tr>
             <td colspan="12" class="conditions" id="no-fond">
                 <strong> Banque :</strong> {{ $banque->name }} <strong> N° Compte: </strong> {{ $banque->num_compte }}
-
             </td>
-            
         </tr>
-       
-          
     </table>
 
     <table>
         <tr>
-        
             <td colspan="12" class="conditions" id="no-fond">
                 <strong>Arrêté la présence facture à la somme de : </strong>
             </td>
-
             <td class="conditions" id="no-fond">
                 <strong>Service Commercial</strong>
             </td>
-           
         </tr>
-        <tr>
-
+        {{-- <tr>
             @php
                 $formatter = new NumberFormatter('fr', NumberFormatter::SPELLOUT);
-                $solde = number_format($devis->solde, 2, '.', '');
+                $solde = $devis->devise === 'XOF' 
+                    ? number_format($devis->solde, 0, '.', '')
+                    : number_format($devis->solde, 2, '.', '');
+                
                 [$entier, $decimales] = explode('.', $solde);
-            
                 $texteEntier = $formatter->format($entier);
-                $texteDecimales = intval($decimales) > 0 ? $formatter->format($decimales) : null;
+                $texteDecimales = isset($decimales) && intval($decimales) > 0 ? $formatter->format($decimales) : null;
             @endphp
         
             <td colspan="12" class="conditions" id="no-fond">
@@ -412,11 +368,37 @@
                 @endif
                 {{ $devis->devise }}<br>
             </td>
-
             <td class="conditions" id="no-fond">
                 {{ $devis->user->name }}
             </td>
-           
+        </tr> --}}
+        <tr>
+            @php
+                $formatter = new NumberFormatter('fr', NumberFormatter::SPELLOUT);
+                // Format différent selon la devise
+                $solde = $devis->devise === 'XOF' 
+                    ? number_format($devis->total_ttc, 0, '.', '')
+                    : number_format($devis->total_ttc, 2, '.', '');
+                
+                // Gestion des cas sans décimales
+                $parts = explode('.', $solde);
+                $entier = $parts[0];
+                $decimales = $parts[1] ?? null; // Solution à l'erreur
+                
+                $texteEntier = $formatter->format($entier);
+                $texteDecimales = ($decimales && intval($decimales) > 0) ? $formatter->format($decimales) : null;
+            @endphp
+        
+            <td colspan="12" class="conditions" id="no-fond">
+                {{ ucwords($texteEntier) }}
+                @if($texteDecimales)
+                    virgule {{ $texteDecimales }}
+                @endif
+                {{ $devis->devise }}<br>
+            </td>
+            <td class="conditions" id="no-fond">
+                {{ $devis->user->name }}
+            </td>
         </tr>
     </table>
 
@@ -426,8 +408,5 @@
             <td class="footer">SARL au capital de 2000000 FCFA - Cocody - Angré - Villa - Adresse: 08 BP 3667 Abidjan - Tel: +225 22 54 50 53 - Fax: +225 22 54 50 53 - N°CC:0906802 G</td>
         </tr>
     </table>
-
-
 </body>
-
 </html>

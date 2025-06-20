@@ -16,9 +16,9 @@ class DatabaseSeeder extends Seeder
         $this->call([
             PaysSeeder::class,
             UserSeeder::class,
-            ClientSeeder::class,
-            BanqueSeeder::class,
-            DesignationSeeder::class,
+            // ClientSeeder::class,
+            // BanqueSeeder::class,
+            // DesignationSeeder::class,
             DeviseSeeder::class,
         ]);
 

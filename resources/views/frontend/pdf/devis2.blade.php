@@ -190,7 +190,8 @@
             <td colspan="6">{{ $devis->client->nom }}</td>
         </tr>
         <tr class="info-client">
-            <td colspan="6"><strong>Date Emission :</strong> {{ $devis->date_emission }}</td>
+            <td colspan="6"><strong>Date Emission :</strong> {{ $devis->date_echeance }}</td>
+
             <td colspan="6"><strong>N° CC :</strong> {{ $devis->client->numero_cc }}</td>
         </tr>
         <tr class="info-client">
@@ -352,10 +353,7 @@
         {{-- <tr>
             @php
                 $formatter = new NumberFormatter('fr', NumberFormatter::SPELLOUT);
-                $solde = $devis->devise === 'XOF' 
-                    ? number_format($devis->solde, 0, '.', '')
-                    : number_format($devis->solde, 2, '.', '');
-                
+                $solde = number_format($devis->solde, 2, '.', '');
                 [$entier, $decimales] = explode('.', $solde);
                 $texteEntier = $formatter->format($entier);
                 $texteDecimales = isset($decimales) && intval($decimales) > 0 ? $formatter->format($decimales) : null;
@@ -397,8 +395,13 @@
                 {{ $devis->devise }}<br>
             </td>
             <td class="conditions" id="no-fond">
-                {{ $devis->user->name }}
+                {{
+                    collect(explode(' ', $devis->user->name))
+                        ->only([0, -1]) // prend le 1er et le dernier mot
+                        ->implode(' ')
+                }}
             </td>
+           
         </tr>
     </table>
 

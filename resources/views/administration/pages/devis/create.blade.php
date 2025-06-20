@@ -204,7 +204,7 @@
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="">
-                                        <label class="form-label">Validité de l'offre</label>
+                                        <label class="form-label">Validité de l'offre (jours)</label>
                                         <input type="number" name="validite" class="form-control mydatepicker 
                                             @error('validite') is-invalid @enderror" 
                                             value="{{ old('validite', session('data.validite')) }}">
@@ -215,7 +215,7 @@
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="">
-                                        <label class="form-label">Délai de livraison</label>
+                                        <label class="form-label">Délai de livraison (jours)</label>
                                         <input type="number" name="delai" class="form-control mydatepicker 
                                             @error('delai') is-invalid @enderror" 
                                             value="{{ old('delai', session('data.delai')) }}">
