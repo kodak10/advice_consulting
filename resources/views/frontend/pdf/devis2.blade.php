@@ -17,7 +17,7 @@
             width: 100%;
             height: 100%;
             font-size: 12px;
-            line-height: 1.5;
+            line-height: 1.2;
         }
         table {
             width: 100%;
@@ -28,6 +28,7 @@
             border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
+            line-height: 0.8;
         }
         th {
             background-color: #f4f4f4;
