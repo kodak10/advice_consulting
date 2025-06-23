@@ -450,6 +450,7 @@ public function refuse($id, Request $request)
             'designations.*.quantity' => 'required|numeric|min:1',
             'designations.*.price' => 'required|numeric|min:0', 
             'designations.*.discount' => 'nullable|numeric|min:0', 
+            'designations.*.net_price' => 'required|numeric|min:0', 
             'designations.*.total' => 'required|numeric|min:0', 
         ]);
 
@@ -489,6 +490,7 @@ public function refuse($id, Request $request)
             'designations.*.quantity' => 'required|numeric|min:1',
             'designations.*.price' => 'required|numeric|min:0', 
             'designations.*.discount' => 'nullable|numeric|min:0', 
+            'designations.*.net_price' => 'required|numeric|min:0', 
             'designations.*.total' => 'required|numeric|min:0', 
             'devise' => 'required|string',  
             'taux' => 'required|numeric',  
@@ -557,6 +559,7 @@ public function refuse($id, Request $request)
                     'quantite' => $designationData['quantity'],
                     'prix_unitaire' => $designationData['price'],
                     'remise' => $designationData['discount'] ?? 0,
+                    'net_price' => $designationData['net_price'] ?? 0,
                     'total' => $designationData['total'],
                 ]
             );

@@ -65,6 +65,7 @@
                                     <th>Quantité</th>
                                     <th>Prix Unitaire</th>
                                     <th>Remise</th>
+                                    <th>Prix unitaire net</th>
                                     <th>Total</th>
                                 </tr>
                             </thead>
@@ -75,6 +76,7 @@
                                         <td>{{ $designation['quantity'] }}</td>
                                         <td>{{ $designation['price'] }}</td>
                                         <td>{{ $designation['discount'] }}</td>
+                                        <td>{{ $designation['net_price'] }}</td>
                                         <td>{{ $designation['total'] }}</td>
                                     </tr>
                                 @endforeach
@@ -169,6 +171,7 @@
                                 <input type="hidden" name="designations[{{ $index }}][quantity]" value="{{ $designation['quantity'] }}">
                                 <input type="hidden" name="designations[{{ $index }}][price]" value="{{ $designation['price'] }}">
                                 <input type="hidden" name="designations[{{ $index }}][discount]" value="{{ $designation['discount'] }}">
+                                <input type="hidden" name="designations[{{ $index }}][net_price]" value="{{ $designation['net_price'] }}">
                                 <input type="hidden" name="designations[{{ $index }}][total]" value="{{ $designation['total'] }}">
                             @endforeach
 
