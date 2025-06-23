@@ -218,9 +218,10 @@
             <th colspan="1">Référence</th>
             <th colspan="4">Description</th>
             <th colspan="1">Qté</th>
-            <th colspan="2">Prix unitaire</th>
-            <th colspan="4">Remise</th>
-            <th colspan="4">Total</th>
+            <th colspan="3">Prix U</th>
+            <th colspan="1">Rem</th>
+            <th colspan="2">PU net</th>
+            <th colspan="2">Montant</th>
         </tr>
         
         @foreach ($devis->details as $devisDetail)
@@ -228,23 +229,31 @@
                 <td colspan="1">{{ $devisDetail->designation->reference }}</td>
                 <td colspan="4">{{ $devisDetail->designation->description }}</td>
                 <td colspan="1">{{ $devisDetail->quantite }}</td>
-                <td colspan="2">
+                <td colspan="3">
                     @if($devis->devise === 'XOF')
                         {{ number_format($devisDetail->prix_unitaire, 0, '', ' ') }}
                     @else
                         {{ number_format($devisDetail->prix_unitaire, 2, ',', ' ') }}
                     @endif
                 </td>
-                <td colspan="4">
+                <td colspan="1">
                     @if($devisDetail->remise > 0)
                         @if($devis->devise === 'XOF')
-                            {{ number_format($devisDetail->remise, 0, '', ' ') }}
+                            {{ number_format($devisDetail->remise, 0, '', ' ') }} %
                         @else
-                            {{ number_format($devisDetail->remise, 2, ',', ' ') }}
+                            {{ number_format($devisDetail->remise, 2, ',', ' ') }} %
                         @endif
                     @endif
                 </td>
-                <td colspan="4">
+               
+                <td colspan="2">
+                    @if($devis->devise === 'XOF')
+                        {{ number_format($devisDetail->net_price, 0, '', ' ') }}
+                    @else
+                        {{ number_format($devisDetail->net_price, 2, ',', ' ') }}
+                    @endif
+                </td>
+                <td colspan="2">
                     @if($devis->devise === 'XOF')
                         {{ number_format($devisDetail->total, 0, '', ' ') }}
                     @else

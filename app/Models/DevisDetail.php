@@ -9,7 +9,7 @@ class DevisDetail extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['devis_id', 'designation_id', 'quantite', 'prix_unitaire', 'remise', 'total'];
+    protected $fillable = ['devis_id', 'designation_id', 'quantite', 'prix_unitaire', 'remise','net_price', 'total'];
 
     public function devis()
     {
