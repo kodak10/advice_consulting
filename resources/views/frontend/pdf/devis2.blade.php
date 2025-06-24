@@ -198,7 +198,7 @@
             <td colspan="6">{{ $devis->client->nom }}</td>
         </tr>
         <tr class="info-client">
-            <td colspan="6" class="no-border"><strong>Date Emission :</strong> {{ $devis->date_emission }}</td>
+            <td colspan="6" class="no-border"><strong>Date Emission :</strong> {{ $devis->date_emission_fr }}</td>
 
             <td colspan="6"><strong>N° CC :</strong> {{ $devis->client->numero_cc }}</td>
         </tr>

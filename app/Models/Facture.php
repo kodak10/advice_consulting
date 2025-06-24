@@ -24,6 +24,22 @@ class Facture extends Model
         'montant',
     ];
 
+    protected $casts = [
+        'date_emission' => 'date',
+        'date_echeance' => 'date',
+        'selected_items' => 'array',
+    ];
+    public function getDateEmissionAttribute($value)
+    {
+        return Carbon::parse($value)->format('d-m-Y');
+    }
+
+    public function getDateEcheanceAttribute($value)
+    {
+        return Carbon::parse($value)->format('d-m-Y');
+    }
+
+
     public function devis()
     {
         return $this->belongsTo(Devis::class);
@@ -47,9 +63,7 @@ class Facture extends Model
         return $this->devis->creator(); // Relation indirecte via Devis
     }
 
-    protected $casts = [
-        'selected_items' => 'array',
-    ];
+    
 
 
     public function getSelectedItemsAttribute($value)

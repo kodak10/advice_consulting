@@ -50,11 +50,11 @@
                             <div class="row">
                                 <div class="col-lg-6">
                                     <label class="form-label">Date d'Émission</label>
-                                    <input type="date" name="date_emission" value="{{ $devis->date_emission }}" class="form-control">
+                                    <input type="date" name="date_emission" value="{{ $devis->date_emission?->format('Y-m-d') }}" class="form-control">
                                 </div>
                                 <div class="col-lg-6">
                                     <label class="form-label">Date d'Échéance</label>
-                                    <input type="date" name="date_echeance" value="{{ $devis->date_echeance }}" class="form-control">
+                                    <input type="date" name="date_echeance" value="{{ $devis->date_echeance?->format('Y-m-d') }}" class="form-control">
                                 </div>
                             </div>
                         </div>

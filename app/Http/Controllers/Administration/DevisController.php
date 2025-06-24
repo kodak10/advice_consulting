@@ -240,6 +240,16 @@ public function refuse($id, Request $request)
             'delai' => 'required',
            
             'designations' => 'required|array', 
+            'designations' => [
+                'required',
+                'array',
+                function ($attribute, $value, $fail) {
+                    $ids = array_column($value, 'id');
+                    if (count($ids) !== count(array_unique($ids))) {
+                        $fail('Des désignations sont en double.');
+                    }
+                }
+            ],
             'designations.*.id' => 'required',
             'designations.*.description' => 'required',
             'designations.*.quantity' => 'required|numeric|min:1',
@@ -276,6 +286,7 @@ public function refuse($id, Request $request)
             'solde' => 'required|numeric|min:0',
             'tva' => 'required',  
             'designations' => 'required|array',
+            
             'designations.*.id' => 'required|exists:designations,id',
             'designations.*.description' => 'required',
             'designations.*.quantity' => 'required|numeric|min:1',
@@ -445,6 +456,16 @@ public function refuse($id, Request $request)
             'solde' => 'required|numeric|min:0',  
            
             'designations' => 'required|array', 
+            'designations' => [
+                'required',
+                'array',
+                function ($attribute, $value, $fail) {
+                    $ids = array_column($value, 'id');
+                    if (count($ids) !== count(array_unique($ids))) {
+                        $fail('Des désignations sont en double.');
+                    }
+                }
+            ],
             'designations.*.id' => 'required',
             'designations.*.description' => 'required|',
             'designations.*.quantity' => 'required|numeric|min:1',
