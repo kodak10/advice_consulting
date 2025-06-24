@@ -244,11 +244,7 @@
                     @endif
                 </td>
                 <td colspan="1" class="right">
-                    @if($devis->devise === 'XOF')
-                        {{ number_format($devisDetail->remise ?? 0, 0, '', ' ') }} %
-                    @else
-                        {{ number_format($devisDetail->remise ?? 0, 2, ',', ' ') }} %
-                    @endif
+                    {{ number_format($devisDetail->remise ) }} %
 
                 </td>
                

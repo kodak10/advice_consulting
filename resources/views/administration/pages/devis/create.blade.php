@@ -157,7 +157,7 @@
                                             placeholder="PU" value="{{ $designation['price'] ?? '' }}">
                                     </div>
                                     <div class="col-md-1 mt-3 mt-md-0">
-                                        <input type="number" class="form-control discount" name="designations[{{ $index }}][discount]" 
+                                        <input type="number" step="0.01" class="form-control discount" name="designations[{{ $index }}][discount]" 
                                             placeholder="Remise %" value="{{ $designation['discount'] ?? 0 }}" min="0" max="100">
                                     </div>
                                     <div class="col-md-2 mt-3 mt-md-0">
@@ -719,7 +719,7 @@
 
 
 
-            var total = (price * quantity) - discount;
+            var total = netPrice * quantity;
             if (total < 0) total = 0; // Empêcher un total négatif
 
             row.find('.total').val(total.toFixed(2)); // Afficher avec 2 décimales

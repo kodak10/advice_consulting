@@ -529,7 +529,7 @@
 
 
 
-            var total = (price * quantity) - discount;
+            var total = netPrice * quantity;
             if (total < 0) total = 0; // Empêcher un total négatif
 
             row.find('.total').val(total.toFixed(2)); // Afficher avec 2 décimales
