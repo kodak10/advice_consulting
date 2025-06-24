@@ -244,7 +244,7 @@
                     @endif
                 </td>
                 <td colspan="1" class="right">
-                    {{ number_format($devisDetail->remise ) }} %
+                    {{ $devisDetail->remise }} %
 
                 </td>
                

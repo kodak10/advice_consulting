@@ -135,15 +135,15 @@
                                             </div>
                             
                                             <div class="col-md-1 mt-3 mt-md-0">
-                                                <input type="number" class="form-control discount" name="designations[][discount]" placeholder="Remise" value="{{ $detail->remise }}" min="0">
+                                                <input type="number" step="0.01" class="form-control discount" name="designations[][discount]" placeholder="Remise" value="{{ $detail->remise }}" min="0">
                                             </div>
 
                                             <div class="col-md-2 mt-3 mt-md-0">
-                                                <input type="number" class="form-control net-price" name="designations[][net_price]" placeholder="Remise" value="{{ $detail->net_price }}" min="0">
+                                                <input type="number" step="0.01" class="form-control net-price" name="designations[][net_price]" placeholder="Remise" value="{{ $detail->net_price }}" min="0">
                                             </div>
                             
                                             <div class="col-md-2 mt-2 mt-md-0">
-                                                <input type="number" class="form-control total" name="designations[][total]" placeholder="Total" value="{{ $detail->total }}" readonly>
+                                                <input type="number" step="0.01" class="form-control total" name="designations[][total]" placeholder="Total" value="{{ $detail->total }}" readonly>
                                             </div>
                             
                                             <div class="col-md-1 mt-3 mt-md-0">

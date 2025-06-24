@@ -269,7 +269,7 @@
                         <td colspan="4">{{ $devisDetail->designation->description }}</td>
                         <td colspan="1">{{ $devisDetail->quantite }}</td>
                         <td colspan="3">{{ $devisDetail->prix_unitaire }}</td>
-                        <td colspan="1">
+                        {{-- <td colspan="1">
                             @if($devisDetail->remise > 0)
                                 @if($devis->devise === 'XOF')
                                     {{ number_format($devisDetail->remise, 0, '', ' ') }} %
@@ -277,6 +277,10 @@
                                     {{ number_format($devisDetail->remise, 2, ',', ' ') }} %
                                 @endif
                             @endif
+                        </td> --}}
+                        <td colspan="1" class="right">
+                            {{ $devisDetail->remise }} %
+
                         </td>
                 
                         <td colspan="2">
