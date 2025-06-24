@@ -728,9 +728,9 @@
     });
 
     // Initialisation au chargement de la page
-    $(document).ready(function () {
-        updateAllPricesWithTaux(); // Mettre à jour les prix au chargement
-    });
+    // $(document).ready(function () {
+    //     updateAllPricesWithTaux(); // Mettre à jour les prix au chargement
+    // });
 </script>
     
 @endpush

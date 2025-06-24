@@ -8,7 +8,7 @@
         /* [VOTRE STYLE EXISTANT - JE NE TOUCHE À RIEN] */
         @page {
             size: A4;
-            margin: 20mm;
+            margin: 10mm 20mm 20mm 20mm; /* top right bottom left */
         }
         body {
             font-family: Arial, sans-serif;
@@ -163,6 +163,9 @@
         #no-fond{
             background-color: #ffffff !important;
         }
+        .right {
+            text-align: right !important;
+        }
     </style>
 </head>
 
@@ -233,31 +236,30 @@
                 <td colspan="1">{{ $devisDetail->designation->reference }}</td>
                 <td colspan="4">{{ $devisDetail->designation->description }}</td>
                 <td colspan="1">{{ $devisDetail->quantite }}</td>
-                <td colspan="3">
+                <td colspan="3" class="right">
                     @if($devis->devise === 'XOF')
                         {{ number_format($devisDetail->prix_unitaire, 0, '', ' ') }}
                     @else
                         {{ number_format($devisDetail->prix_unitaire, 2, ',', ' ') }}
                     @endif
                 </td>
-                <td colspan="1">
-                    @if($devisDetail->remise > 0)
-                        @if($devis->devise === 'XOF')
-                            {{ number_format($devisDetail->remise, 0, '', ' ') }} %
-                        @else
-                            {{ number_format($devisDetail->remise, 2, ',', ' ') }} %
-                        @endif
+                <td colspan="1" class="right">
+                    @if($devis->devise === 'XOF')
+                        {{ number_format($devisDetail->remise ?? 0, 0, '', ' ') }} %
+                    @else
+                        {{ number_format($devisDetail->remise ?? 0, 2, ',', ' ') }} %
                     @endif
+
                 </td>
                
-                <td colspan="2">
+                <td colspan="2" class="right">
                     @if($devis->devise === 'XOF')
                         {{ number_format($devisDetail->net_price, 0, '', ' ') }}
                     @else
                         {{ number_format($devisDetail->net_price, 2, ',', ' ') }}
                     @endif
                 </td>
-                <td colspan="2">
+                <td colspan="2" class="right">
                     @if($devis->devise === 'XOF')
                         {{ number_format($devisDetail->total, 0, '', ' ') }}
                     @else
@@ -274,7 +276,7 @@
             <td colspan="6" class="" id="no-fond">
                 <strong>Total HT :</strong> 
             </td>
-            <td colspan="6" class="" id="no-fond">
+            <td colspan="6" class="right" id="no-fond">
                 @if($devis->devise === 'XOF')
                     {{ number_format($devis->total_ht, 0, '', ' ') }}
                 @else
@@ -287,7 +289,7 @@
             <td colspan="6" class="" id="no-fond">
                 <strong>TVA :</strong> {{ $devis->tva }} %
             </td>
-            <td colspan="6" class="" id="no-fond">
+            <td colspan="6" class="right" id="no-fond">
                 @if($devis->devise === 'XOF')
                     {{ number_format($devis->total_ht * $devis->tva / 100, 0, '', ' ') }}
                 @else
@@ -302,7 +304,8 @@
             <td colspan="6" id="no-fond">
                 <strong>TOTAL TTC :</strong>
             </td>
-            <td colspan="6" id="no-fond">
+            <td colspan="6" id="no-fond" class="right">
+                {{-- Affichage du total TTC selon la devise --}}
                 @if($devis->devise === 'XOF')
                     {{ number_format($devis->total_ttc, 0, '', ' ') }}
                 @else
@@ -317,7 +320,8 @@
             <td colspan="6" id="no-fond">
                 <strong>Acompte :</strong> 
             </td>
-            <td colspan="6" id="no-fond">
+            <td colspan="6" id="no-fond" class="right">
+                {{-- Affichage de l'acompte selon la devise --}}
                 @if($devis->devise === 'XOF')
                     {{ number_format($devis->acompte, 0, '', ' ') }}
                 @else
@@ -332,7 +336,8 @@
             <td colspan="6" id="no-fond">
                 <strong>Solde :</strong>
             </td>
-            <td colspan="6" id="no-fond">
+            <td colspan="6" id="no-fond" class="right">
+                {{-- Affichage du solde selon la devise --}}
                 @if($devis->devise === 'XOF')
                     {{ number_format($devis->solde, 0, '', ' ') }}
                 @else
