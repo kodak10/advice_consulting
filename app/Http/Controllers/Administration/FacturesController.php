@@ -644,13 +644,13 @@ public function approuve($id)
         }
 
         // Vérification que le client existe et a un email
-        if (!$facture->devis->client || !$facture->devis->client->email) {
-            Log::error('Client ou email manquant pour la facture', [
-                'facture_id' => $facture->id,
-                'client_id' => $facture->client_id
-            ]);
-            return redirect()->back()->with('error', 'Le client associé à cette facture est invalide ou n\'a pas d\'email enregistré.');
-        }
+        // if (!$facture->devis->client || !$facture->devis->client->email) {
+        //     Log::error('Client ou email manquant pour la facture', [
+        //         'facture_id' => $facture->id,
+        //         'client_id' => $facture->client_id
+        //     ]);
+        //     return redirect()->back()->with('error', 'Le client associé à cette facture est invalide ou n\'a pas d\'email enregistré.');
+        // }
         
 
         // Vérification du PDF

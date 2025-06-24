@@ -130,11 +130,11 @@
             background-color: #ffff;
             border: none;
         }
-        .no-border td:last-child{
+        /* .no-border td:last-child{
             color: #022344;
             font-weight: bold;
             font-size: 14px;
-        }
+        } */
         .no-border img{
             height: 80px;
         }
@@ -183,24 +183,28 @@
 
     <table class="no-fond">
         <tr>
-            <td colspan="6" class="proforma">FACTURE PROFORMA</td>
+            <td colspan="12" class="proforma no-border" style="text-align: center; margin-bottom:30px">FACTURE PROFORMA</td>
+            
+        </tr>
+        <tr>
+            <td colspan="6" class="no-border"></td>
             <td colspan="6"><strong>CLIENT</strong></td>
         </tr>
         <tr>
-            <td colspan="6"></td>
+            <td colspan="6" class="no-border"></td>
             <td colspan="6">{{ $devis->client->nom }}</td>
         </tr>
         <tr class="info-client">
-            <td colspan="6"><strong>Date Emission :</strong> {{ $devis->date_echeance }}</td>
+            <td colspan="6" class="no-border"><strong>Date Emission :</strong> {{ $devis->date_emission }}</td>
 
             <td colspan="6"><strong>N° CC :</strong> {{ $devis->client->numero_cc }}</td>
         </tr>
         <tr class="info-client">
-            <td colspan="6"><strong>Numéro ADC :</strong> {{ $devis->num_proforma }}</td>
+            <td colspan="6" class="no-border"><strong>Numéro ADC :</strong> {{ $devis->num_proforma }}</td>
             <td colspan="6"><strong>Téléphone:</strong> {{ $devis->client->telephone }}</td>
         </tr>
         <tr class="info-client">
-            <td colspan="6"></td>
+            <td colspan="6" class="no-border"></td>
             <td colspan="6"><strong>Adresse :</strong> {{ $devis->client->adresse }}</td>
         </tr>
     </table>
@@ -215,7 +219,7 @@
 
     <table class="chiffres">
         <tr>
-            <th colspan="1">Référence</th>
+            <th colspan="1">Ref</th>
             <th colspan="4">Description</th>
             <th colspan="1">Qté</th>
             <th colspan="3">Prix U</th>
@@ -338,7 +342,7 @@
         </tr>
     </table>
 
-    <table>
+    <table class="no-border">
         <tr>
             <td colspan="12" class="conditions" id="no-fond">
                 Veuillez libeller votre chèque à l'ordre de Advice Consulting ou faire un virement sur notre compte
@@ -351,7 +355,7 @@
         </tr>
     </table>
 
-    <table>
+    <table class="no-border">
         <tr>
             <td colspan="12" class="conditions" id="no-fond">
                 <strong>Arrêté la présence facture à la somme de : </strong>

@@ -17,7 +17,7 @@
       </ul>
   </div>
 @endif
-   <div class="container">
+   <div class="container-fluid">
     <form action="{{ route('dashboard.devis.recap') }}" method="POST">
         @csrf
        

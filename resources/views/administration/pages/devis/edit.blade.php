@@ -18,287 +18,289 @@
         </div>
     @endif
 
-    <form action="{{ route('dashboard.devis.recapUpdate', $devis->id) }}" method="POST">
-        @csrf
+    <div class="container-fluid">
+        <form action="{{ route('dashboard.devis.recapUpdate', $devis->id) }}" method="POST">
+            @csrf
 
-        <div class="row">
-            <div class="col-lg-8">
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">Informations du Client</h4>
-                        <div class="mb-3 row">
-                            <div class="col-lg-9">
-                                <select class="select2 form-control" name="client_id">
-                                    <option value="none">Sélectionner un client</option>
-                                    @foreach ($clients as $client)
-                                        <option value="{{ $client->id }}" {{ $devis->client_id == $client->id ? 'selected' : '' }}>
-                                            {{ $client->nom }}
-                                        </option>
+            <div class="row">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Informations du Client</h4>
+                            <div class="mb-3 row">
+                                <div class="col-lg-9">
+                                    <select class="select2 form-control" name="client_id">
+                                        <option value="none">Sélectionner un client</option>
+                                        @foreach ($clients as $client)
+                                            <option value="{{ $client->id }}" {{ $devis->client_id == $client->id ? 'selected' : '' }}>
+                                                {{ $client->nom }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Dates</h4>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <label class="form-label">Date d'Émission</label>
+                                    <input type="date" name="date_emission" value="{{ $devis->date_emission }}" class="form-control">
+                                </div>
+                                <div class="col-lg-6">
+                                    <label class="form-label">Date d'Échéance</label>
+                                    <input type="date" name="date_echeance" value="{{ $devis->date_echeance }}" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h4 class="card-title">Devise</h4>
+                    
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <select id="devise" name="devise" class="form-control">
+                                @php
+                                    // Récupérer la devise stockée dans le devis lors de l'édition
+                                    $deviseDevis = $devis->devise ?? (Auth::user()->pays->devise ?? 'XOF'); // Devise du devis si présente, sinon devise de l'utilisateur
+                                @endphp
+                                
+                                <option value="XOF" {{ $deviseDevis == 'XOF' ? 'selected' : '' }}>Franc CFA (XOF)</option>
+                                <option value="EUR" {{ $deviseDevis == 'EUR' ? 'selected' : '' }}>Euro (EUR)</option>
+                                <option value="USD" {{ $deviseDevis == 'USD' ? 'selected' : '' }}>Dollar (USD)</option>
+                                <option value="GBP" {{ $deviseDevis == 'GBP' ? 'selected' : '' }}>Livre Sterling (GBP)</option>
+                                <option value="GNF" {{ $deviseDevis == 'GNF' ? 'selected' : '' }}>Franc Guinéen (GNF)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="col-lg-6">
+                            <div class="input-group devise">
+                                <!-- Le champ de saisie est désactivé par défaut (readonly) -->
+                                <input type="number" id="taux" name="taux" value= "{{ old('taux', $devis->taux ?? 1) }}" readonly class="form-control">
+                                
+                                <!-- Le bouton checkbox pour activer/désactiver l'édition -->
+                                <div class="input-group-text">
+                                    <input type="checkbox" id="toggle-taux" class="toggle-taux">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                        
+                        
+                    </div>
+                </div>
+            </div>
+            
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Désignations</h4>
+                            <div class="email-repeater mb-3">
+                                <div data-repeater-list="designations">
+                                    @foreach($devis->details as $detail)
+                                        <div data-repeater-item class="row mb-3">
+                                            <div class="col-md-3 mt-3 mt-md-0">
+                                                <select class="select2 form-control designation" name="designations[][description]">
+                                                    <option value="">Sélectionner</option>
+                                                    @foreach ($designations as $designation)
+                                                        <option value="{{ $designation->description }}" 
+                                                                data-id="{{ $designation->id }}" 
+                                                                data-price="{{ $designation->prix_unitaire }}"
+                                                                {{ $designation->id == $detail->designation_id ? 'selected' : '' }}>
+                                                            {{ $designation->description }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                <input type="hidden" name="designations[][id]" class="designation-id" value="{{ $detail->designation_id }}">
+                                            </div>
+                            
+                                            <div class="col-md-1 mt-3 mt-md-0">
+                                                <input type="number" class="form-control quantity" name="designations[][quantity]" placeholder="Qte" value="{{ $detail->quantite }}" min="1">
+                                            </div>
+                            
+                                            <div class="col-md-2 mt-3 mt-md-0">
+                                                <input type="number" step="0.01" class="form-control price" name="designations[][price]" placeholder="PU" value="{{ $detail->prix_unitaire }}">
+                                            </div>
+                            
+                                            <div class="col-md-1 mt-3 mt-md-0">
+                                                <input type="number" class="form-control discount" name="designations[][discount]" placeholder="Remise" value="{{ $detail->remise }}" min="0">
+                                            </div>
+
+                                            <div class="col-md-2 mt-3 mt-md-0">
+                                                <input type="number" class="form-control net-price" name="designations[][net_price]" placeholder="Remise" value="{{ $detail->net_price }}" min="0">
+                                            </div>
+                            
+                                            <div class="col-md-2 mt-2 mt-md-0">
+                                                <input type="number" class="form-control total" name="designations[][total]" placeholder="Total" value="{{ $detail->total }}" readonly>
+                                            </div>
+                            
+                                            <div class="col-md-1 mt-3 mt-md-0">
+                                                <button data-repeater-delete class="btn bg-danger-subtle text-danger" type="button">
+                                                    <i class="ti ti-x fs-5 d-flex"></i>
+                                                </button>
+                                            </div>
+                                        </div>
                                     @endforeach
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-lg-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">Dates</h4>
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <label class="form-label">Date d'Émission</label>
-                                <input type="date" name="date_emission" value="{{ $devis->date_emission }}" class="form-control">
-                            </div>
-                            <div class="col-lg-6">
-                                <label class="form-label">Date d'Échéance</label>
-                                <input type="date" name="date_echeance" value="{{ $devis->date_echeance }}" class="form-control">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card">
-            <div class="card-body">
-                <h4 class="card-title">Devise</h4>
-                
-                <div class="row">
-                    <div class="col-lg-6">
-                        <select id="devise" name="devise" class="form-control">
-                            @php
-                                // Récupérer la devise stockée dans le devis lors de l'édition
-                                $deviseDevis = $devis->devise ?? (Auth::user()->pays->devise ?? 'XOF'); // Devise du devis si présente, sinon devise de l'utilisateur
-                            @endphp
+                                </div>
                             
-                            <option value="XOF" {{ $deviseDevis == 'XOF' ? 'selected' : '' }}>Franc CFA (XOF)</option>
-                            <option value="EUR" {{ $deviseDevis == 'EUR' ? 'selected' : '' }}>Euro (EUR)</option>
-                            <option value="USD" {{ $deviseDevis == 'USD' ? 'selected' : '' }}>Dollar (USD)</option>
-                            <option value="GBP" {{ $deviseDevis == 'GBP' ? 'selected' : '' }}>Livre Sterling (GBP)</option>
-                            <option value="GNF" {{ $deviseDevis == 'GNF' ? 'selected' : '' }}>Franc Guinéen (GNF)</option>
-                        </select>
-                    </div>
-                    
-                    <div class="col-lg-6">
-                        <div class="input-group devise">
-                            <!-- Le champ de saisie est désactivé par défaut (readonly) -->
-                            <input type="number" id="taux" name="taux" value= "{{ old('taux', $devis->taux ?? 1) }}" readonly class="form-control">
-                            
-                            <!-- Le bouton checkbox pour activer/désactiver l'édition -->
-                            <div class="input-group-text">
-                                <input type="checkbox" id="toggle-taux" class="toggle-taux">
+                                <button type="button" data-repeater-create class="btn bg-primary-subtle text-primary">
+                                    <span class="fs-4 me-1">+</span> Ajouter une autre
+                                </button>
                             </div>
+                            
+                            
+                            
                         </div>
                     </div>
-                    
-                    
-                    
-                    
                 </div>
             </div>
-        </div>
-        
 
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">Désignations</h4>
-                        <div class="email-repeater mb-3">
-                            <div data-repeater-list="designations">
-                                @foreach($devis->details as $detail)
-                                    <div data-repeater-item class="row mb-3">
-                                        <div class="col-md-3 mt-3 mt-md-0">
-                                            <select class="select2 form-control designation" name="designations[][description]">
-                                                <option value="">Sélectionner</option>
-                                                @foreach ($designations as $designation)
-                                                    <option value="{{ $designation->description }}" 
-                                                            data-id="{{ $designation->id }}" 
-                                                            data-price="{{ $designation->prix_unitaire }}"
-                                                            {{ $designation->id == $detail->designation_id ? 'selected' : '' }}>
-                                                        {{ $designation->description }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                            <input type="hidden" name="designations[][id]" class="designation-id" value="{{ $detail->designation_id }}">
-                                        </div>
-                        
-                                        <div class="col-md-1 mt-3 mt-md-0">
-                                            <input type="number" class="form-control quantity" name="designations[][quantity]" placeholder="Qte" value="{{ $detail->quantite }}" min="1">
-                                        </div>
-                        
-                                        <div class="col-md-2 mt-3 mt-md-0">
-                                            <input type="number" step="0.01" class="form-control price" name="designations[][price]" placeholder="PU" value="{{ $detail->prix_unitaire }}">
-                                        </div>
-                        
-                                        <div class="col-md-1 mt-3 mt-md-0">
-                                            <input type="number" class="form-control discount" name="designations[][discount]" placeholder="Remise" value="{{ $detail->remise }}" min="0">
-                                        </div>
-
-                                        <div class="col-md-2 mt-3 mt-md-0">
-                                            <input type="number" class="form-control net-price" name="designations[][net_price]" placeholder="Remise" value="{{ $detail->net_price }}" min="0">
-                                        </div>
-                        
-                                        <div class="col-md-2 mt-2 mt-md-0">
-                                            <input type="number" class="form-control total" name="designations[][total]" placeholder="Total" value="{{ $detail->total }}" readonly>
-                                        </div>
-                        
-                                        <div class="col-md-1 mt-3 mt-md-0">
-                                            <button data-repeater-delete class="btn bg-danger-subtle text-danger" type="button">
-                                                <i class="ti ti-x fs-5 d-flex"></i>
-                                            </button>
-                                        </div>
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Conditions financières</h4>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div>
+                                        <label class="form-label">Commande</label>
+                                        <input type="number" name="commande" id="commande" max="100" class="form-control mydatepicker @error('commande') is-invalid @enderror" 
+                                            value="{{ $devis->commande }}">
+                                        @error('commande')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div>
+                                        <label class="form-label">Livraison</label>
+                                        <input type="text" name="livraison" id="livraison" max="100" class="form-control mydatepicker @error('livraison') is-invalid @enderror" 
+                                            value="{{ $devis->livraison }}">
+                                        @error('livraison')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div>
+                                        <label class="form-label">Validité de l'offre (jours)</label>
+                                        <input type="number" name="validite" class="form-control mydatepicker @error('validite') is-invalid @enderror" 
+                                            value="{{ $devis->validite }}">
+                                        @error('validite')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div>
+                                        <label class="form-label">Délai de livraison(jours)</label>
+                                        <input type="number" name="delai" class="form-control mydatepicker @error('delai') is-invalid @enderror" 
+                                            value="{{ $devis->delai }}">
+                                        @error('delai')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="col-lg-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Banque</h4>
+                            
+                            <select class="select2 form-control @error('banque_id') is-invalid @enderror" name="banque_id">
+                                <option value="none">Sélectionner une banque</option>
+                                @foreach ($banques as $banque)
+                                    <option value="{{ $banque->id }}" {{ old('banque_id', $devis->banque_id ?? '') == $banque->id ? 'selected' : '' }}>
+                                        {{ $banque->name }}
+                                    </option>
                                 @endforeach
-                            </div>
-                        
-                            <button type="button" data-repeater-create class="btn bg-primary-subtle text-primary">
-                                <span class="fs-4 me-1">+</span> Ajouter une autre
-                            </button>
-                        </div>
-                        
-                        
-                        
-                    </div>
-                </div>
-            </div>
-        </div>
+                            </select>
+                            
 
-        <div class="row">
-            <div class="col-lg-4">
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">Conditions financières</h4>
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div>
-                                    <label class="form-label">Commande</label>
-                                    <input type="number" name="commande" id="commande" max="100" class="form-control mydatepicker @error('commande') is-invalid @enderror" 
-                                        value="{{ $devis->commande }}">
-                                    @error('commande')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div>
-                                    <label class="form-label">Livraison</label>
-                                    <input type="text" name="livraison" id="livraison" max="100" class="form-control mydatepicker @error('livraison') is-invalid @enderror" 
-                                        value="{{ $devis->livraison }}">
-                                    @error('livraison')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div>
-                                    <label class="form-label">Validité de l'offre (jours)</label>
-                                    <input type="number" name="validite" class="form-control mydatepicker @error('validite') is-invalid @enderror" 
-                                        value="{{ $devis->validite }}">
-                                    @error('validite')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div>
-                                    <label class="form-label">Délai de livraison(jours)</label>
-                                    <input type="number" name="delai" class="form-control mydatepicker @error('delai') is-invalid @enderror" 
-                                        value="{{ $devis->delai }}">
-                                    @error('delai')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
+                            @error('banque_id')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
                     </div>
                 </div>
-            </div>
-        
-            <div class="col-lg-3">
-                <div class="card">
-                    <div class="card-body">
-                        <h4 class="card-title">Banque</h4>
-                        
-                        <select class="select2 form-control @error('banque_id') is-invalid @enderror" name="banque_id">
-                            <option value="none">Sélectionner une banque</option>
-                            @foreach ($banques as $banque)
-                                <option value="{{ $banque->id }}" {{ old('banque_id', $devis->banque_id ?? '') == $banque->id ? 'selected' : '' }}>
-                                    {{ $banque->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                        
-
-                        @error('banque_id')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                </div>
-            </div>
-        
-            <div class="col-lg-5">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-center mb-7">
-                            <h4 class="card-title">Les conditions</h4>
-                        </div>
-                        <div class="row">
-                            <div class="col-4">
-                                <label class="form-label">Total HT <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control total-ht" name="total-ht" value="{{ old('total-ht', session('data.total-ht', $devis->total_ht ?? 0)) }}" readonly>
-
-                                
+            
+                <div class="col-lg-5">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-center mb-7">
+                                <h4 class="card-title">Les conditions</h4>
                             </div>
-                            {{-- <div class="col-4">
-                                <label class="form-label">TVA (%) : <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control tva" name="tva"  value="{{ old('tva', session('data.tva', 18)) }}" readonly>
-                                
-                            </div> --}}
+                            <div class="row">
+                                <div class="col-4">
+                                    <label class="form-label">Total HT <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control total-ht" name="total-ht" value="{{ old('total-ht', session('data.total-ht', $devis->total_ht ?? 0)) }}" readonly>
 
-                            <div class="col-4">
-                                <label class="form-label">TVA (%) : <span class="text-danger">*</span></label>
-                                <div class="input-group">
-                                    <input type="number" class="form-control tva" name="tva" value="{{ old('tva', session('data.tva', $devis->tva ?? 0)) }}"
-                                    readonly>
-                                    <div class="input-group-text">
-                                        <input type="checkbox" class="toggle-tva">
+                                    
+                                </div>
+                                {{-- <div class="col-4">
+                                    <label class="form-label">TVA (%) : <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control tva" name="tva"  value="{{ old('tva', session('data.tva', 18)) }}" readonly>
+                                    
+                                </div> --}}
+
+                                <div class="col-4">
+                                    <label class="form-label">TVA (%) : <span class="text-danger">*</span></label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control tva" name="tva" value="{{ old('tva', session('data.tva', $devis->tva ?? 0)) }}"
+                                        readonly>
+                                        <div class="input-group-text">
+                                            <input type="checkbox" class="toggle-tva">
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="col-4">
-                                <div class="mb-4">
-                                    <label class="form-label">Total TTC <span class="text-danger">*</span></label>
-                                    <input type="number" class="form-control total-ttc"  name="total-ttc"  value="{{ old('total-ttc', session('data.total-ttc', $devis->total_ttc ?? 0)) }}" readonly>
+                                <div class="col-4">
+                                    <div class="mb-4">
+                                        <label class="form-label">Total TTC <span class="text-danger">*</span></label>
+                                        <input type="number" class="form-control total-ttc"  name="total-ttc"  value="{{ old('total-ttc', session('data.total-ttc', $devis->total_ttc ?? 0)) }}" readonly>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-4">
-                                <label class="form-label">Acompte <span class="text-danger">*</span></label>
-                                <input type="number" step="0.01" class="form-control acompte"  name="acompte"  value="{{ old('acompte', session('data.acompte', $devis->acompte ?? 0)) }}">
+                                <div class="col-4">
+                                    <label class="form-label">Acompte <span class="text-danger">*</span></label>
+                                    <input type="number" step="0.01" class="form-control acompte"  name="acompte"  value="{{ old('acompte', session('data.acompte', $devis->acompte ?? 0)) }}">
 
 
-                               
-                               
-                            </div>
-                            <div class="col-4">
-                                <label class="form-label">Solde <span class="text-danger">*</span></label>
-                                <input type="number" class="form-control solde"  name="solde"  value="{{ old('solde', session('data.solde', $devis->solde ?? 0)) }}" readonly>
+                                
+                                
+                                </div>
+                                <div class="col-4">
+                                    <label class="form-label">Solde <span class="text-danger">*</span></label>
+                                    <input type="number" class="form-control solde"  name="solde"  value="{{ old('solde', session('data.solde', $devis->solde ?? 0)) }}" readonly>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-        
+            
 
-        <div class="form-actions mb-5">
-            <input type="hidden" name="texte" value="{{ old('texte', $devis->texte ?? 0) }}">
-            <button type="submit" class="btn btn-success">Suivant</button>
-        </div>
-    </form>
+            <div class="form-actions mb-5">
+                <input type="hidden" name="texte" value="{{ old('texte', $devis->texte ?? 0) }}">
+                <button type="submit" class="btn btn-success">Suivant</button>
+            </div>
+        </form>
+    </div>
 </section>
 @endsection
 
