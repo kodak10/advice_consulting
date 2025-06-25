@@ -301,9 +301,8 @@ public function refuse($id, Request $request)
             foreach ($validated['designations'] as &$designation) {
                 $designation['price'] = ceil($designation['price']);
                 $designation['total'] = ceil($designation['total']);
-                if (!empty($designation['discount'])) {
-                    $designation['discount'] = ceil($designation['discount']);
-                }
+                $designation['discount'] = round($designation['discount'], 2); // ✅ Garde 2 décimales sans forcer à l'entier
+
             }
         }
 
@@ -511,9 +510,8 @@ public function refuse($id, Request $request)
             foreach ($validated['designations'] as &$designation) {
                 $designation['price'] = ceil($designation['price']);
                 $designation['total'] = ceil($designation['total']);
-                if (!empty($designation['discount'])) {
-                    $designation['discount'] = ceil($designation['discount']);
-                }
+                $designation['discount'] = round($designation['discount'], 2); // ✅ Garde 2 décimales sans forcer à l'entier
+
             }
         }
 
