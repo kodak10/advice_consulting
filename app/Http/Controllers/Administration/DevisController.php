@@ -240,16 +240,7 @@ public function refuse($id, Request $request)
             'delai' => 'required',
            
             'designations' => 'required|array', 
-            'designations' => [
-                'required',
-                'array',
-                function ($attribute, $value, $fail) {
-                    $ids = array_column($value, 'id');
-                    if (count($ids) !== count(array_unique($ids))) {
-                        $fail('Des désignations sont en double.');
-                    }
-                }
-            ],
+            
             'designations.*.id' => 'required',
             'designations.*.description' => 'required',
             'designations.*.quantity' => 'required|numeric|min:1',
@@ -456,16 +447,7 @@ public function refuse($id, Request $request)
             'solde' => 'required|numeric|min:0',  
            
             'designations' => 'required|array', 
-            'designations' => [
-                'required',
-                'array',
-                function ($attribute, $value, $fail) {
-                    $ids = array_column($value, 'id');
-                    if (count($ids) !== count(array_unique($ids))) {
-                        $fail('Des désignations sont en double.');
-                    }
-                }
-            ],
+            
             'designations.*.id' => 'required',
             'designations.*.description' => 'required|',
             'designations.*.quantity' => 'required|numeric|min:1',
@@ -573,23 +555,42 @@ public function refuse($id, Request $request)
             ->delete();
 
         // Parcourir les nouvelles désignations et faire l'update ou le create
+        // foreach ($validated['designations'] as $designationData) {
+        //     DevisDetail::updateOrCreate(
+        //         ['devis_id' => $devis->id, 'designation_id' => $designationData['id']],
+        //         [
+        //             'quantite' => $designationData['quantity'],
+        //             'prix_unitaire' => $designationData['price'],
+        //             'remise' => $designationData['discount'] ?? 0,
+        //             'net_price' => $designationData['net_price'] ?? 0,
+        //             'total' => $designationData['total'],
+        //         ]
+        //     );
+        // }
+
+        // On supprime d'abord toutes les lignes du devis
+        DevisDetail::where('devis_id', $devis->id)->delete(); // ✅ FORCE REINSERTION
+
+        // Puis on insère toutes les lignes du formulaire une par une
         foreach ($validated['designations'] as $designationData) {
-            DevisDetail::updateOrCreate(
-                ['devis_id' => $devis->id, 'designation_id' => $designationData['id']],
-                [
-                    'quantite' => $designationData['quantity'],
-                    'prix_unitaire' => $designationData['price'],
-                    'remise' => $designationData['discount'] ?? 0,
-                    'net_price' => $designationData['net_price'] ?? 0,
-                    'total' => $designationData['total'],
-                ]
-            );
+            DevisDetail::create([
+                'devis_id' => $devis->id,
+                'designation_id' => $designationData['id'],
+                'quantite' => $designationData['quantity'],
+                'prix_unitaire' => $designationData['price'],
+                'remise' => $designationData['discount'] ?? 0,
+                'net_price' => $designationData['net_price'] ?? 0,
+                'total' => $designationData['total'],
+            ]);
         }
+
 
         // Vérifier si un fichier PDF existe déjà et le supprimer
         if ($devis->pdf_path && Storage::disk('public')->exists($devis->pdf_path)) {
             Storage::disk('public')->delete($devis->pdf_path);
         }
+
+        $devis->load('details.designation');
 
         // Générer le nouveau PDF
         $pdf = PDF::loadView('frontend.pdf.devis2', compact('devis', 'client', 'banque'))->setPaper('a4', 'portrait');
