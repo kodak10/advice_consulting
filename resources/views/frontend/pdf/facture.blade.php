@@ -226,7 +226,7 @@
                     <td>{{ $devisDetail->designation->reference }}</td>
                     <td colspan="5">{{ $devisDetail->designation->description }}</td>
                     <td colspan="1">{{ $devisDetail->quantite }}</td>
-                    <td colspan="3">
+                    <td colspan="3" class="right">
                         @if($devis->devise === 'XOF')
                             {{ number_format($devisDetail->prix_unitaire, 0, '', ' ') }}
                         @else
@@ -234,7 +234,7 @@
                         @endif
                     </td>
 
-                    <td colspan="1">
+                    <td colspan="1" >
                         @if($devisDetail->remise > 0)
                             @if($devis->devise === 'XOF')
                                 {{ number_format($devisDetail->remise, 0, '', ' ') }} %
@@ -244,14 +244,14 @@
                         @endif
                     </td>
                
-                    <td colspan="2">
+                    <td colspan="2" class="right">
                         @if($devis->devise === 'XOF')
                             {{ number_format($devisDetail->net_price, 0, '', ' ') }}
                         @else
                             {{ number_format($devisDetail->net_price, 2, ',', ' ') }}
                         @endif
                     </td>
-                    <td colspan="2">
+                    <td colspan="2" class="right">
                         @if($devis->devise === 'XOF')
                             {{ number_format($devisDetail->total, 0, '', ' ') }}
                         @else
@@ -268,7 +268,7 @@
                         <td colspan="1">{{ $devisDetail->designation->reference }}</td>
                         <td colspan="4">{{ $devisDetail->designation->description }}</td>
                         <td colspan="1">{{ $devisDetail->quantite }}</td>
-                        <td colspan="3">{{ $devisDetail->prix_unitaire }}</td>
+                        <td colspan="3" class="right"> {{ $devisDetail->prix_unitaire }}</td>
                         {{-- <td colspan="1">
                             @if($devisDetail->remise > 0)
                                 @if($devis->devise === 'XOF')
@@ -278,19 +278,19 @@
                                 @endif
                             @endif
                         </td> --}}
-                        <td colspan="1" class="right">
+                        <td colspan="1">
                             {{ $devisDetail->remise }} %
 
                         </td>
                 
-                        <td colspan="2">
+                        <td colspan="2" class="right">
                             @if($devis->devise === 'XOF')
                                 {{ number_format($devisDetail->net_price, 0, '', ' ') }}
                             @else
                                 {{ number_format($devisDetail->net_price, 2, ',', ' ') }}
                             @endif
                         </td>
-                        <td colspan="2">
+                        <td colspan="2" class="right">
                             @if($devis->devise === 'XOF')
                                 {{ number_format($devisDetail->total, 0, '', ' ') }}
                             @else
@@ -328,7 +328,7 @@
             <td colspan="2" class="prices" id="no-fond">
                 <strong>Total HT :</strong>
             </td>
-            <td colspan="3" class="prices" id="no-fond">
+            <td colspan="3" class="prices right"  id="no-fond">
                 @if($devis->devise === 'XOF')
                     {{ number_format($montantHT, 0, '', ' ') }}
                 @else
@@ -348,7 +348,7 @@
                 @endif
                  %
             </td>
-            <td colspan="3" class="prices" id="no-fond">
+            <td colspan="3" class="prices right" id="no-fond">
                 @if($devis->devise === 'XOF')
                     {{ number_format($montantTVA, 0, '', ' ') }}
                 @else
@@ -361,7 +361,7 @@
             <td colspan="2" class="prices" id="no-fond">
                 <strong>TOTAL TTC :</strong>
             </td>
-            <td colspan="3" class="prices" id="no-fond">
+            <td colspan="3" class="prices right" id="no-fond">
                 @if($devis->devise === 'XOF')
                     {{ number_format($montantTTC, 0, '', ' ') }}
                 @else
@@ -376,7 +376,7 @@
                 <td colspan="2" class="prices" id="no-fond">
                     <strong>Acompte :</strong>
                 </td>
-                <td colspan="3" class="prices" id="no-fond">
+                <td colspan="3" class="prices right" id="no-fond">
                     @if($devis->devise === 'XOF')
                         {{ number_format($acompte, 0, '', ' ') }}
                     @else
@@ -389,7 +389,7 @@
                 <td colspan="2" class="prices" id="no-fond">
                     <strong>Solde :</strong>
                 </td>
-                <td colspan="3" class="prices" id="no-fond">
+                <td colspan="3" class="prices right" id="no-fond">
                     @if($devis->devise === 'XOF')
                         {{ number_format($solde, 0, '', ' ') }}
                     @else

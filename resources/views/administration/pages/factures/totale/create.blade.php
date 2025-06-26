@@ -121,7 +121,7 @@
 
 
                 <div class="mb-4">
-                    <label class="form-label">Remise Spéciale <span class="text-danger">*</span></label>
+                    <label class="form-label">Remise Spéciale</label>
                     <input type="number" name="remise_speciale" value="0" class="form-control">
                 </div>
 
