@@ -97,7 +97,14 @@
                                 <p><strong>Validité de l'offre :</strong> {{ $validated['validite'] }} jours</p>
                             </div>
                             <div class="col-md-6">
-                                <p><strong>Délai :</strong> {{ $validated['delai'] }} jours</p>
+                                {{-- <p><strong>Délai :</strong> {{ $validated['delai'] }} </p> --}}
+                                <p><strong>Délai de livraison :</strong> 
+                                    @if(isset($validated['delai']))
+                                        {{ $validated['delai'] }}
+                                    @else
+                                        Non spécifié
+                                    @endif
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -156,7 +163,12 @@
                             <input type="hidden" name="commande" value="{{ $validated['commande'] }}">
                             <input type="hidden" name="livraison" value="{{ $validated['livraison'] }}">
                             <input type="hidden" name="validite" value="{{ $validated['validite'] }}">
-                            <input type="hidden" name="delai" value="{{ $validated['delai'] }}">
+                            @if(isset($validated['delai']))
+                                <input type="hidden" name="delai" value="{{ $validated['delai'] }}">
+                            @else
+                                <input type="hidden" name="delai" value="{{ $devis->delai }}">
+                            @endif
+                            {{-- <input type="hidden" name="delai" value="{{ $validated['delai'] }}"> --}}
 
                             <input type="hidden" name="total-ht" value="{{ $validated['total-ht'] }}">
                             <input type="hidden" name="tva" value="{{ $validated['tva'] }}">

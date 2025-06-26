@@ -203,7 +203,7 @@
                                         @enderror
                                     </div>
                                 </div>
-                                <div class="col-lg-6">
+                                {{-- <div class="col-lg-6">
                                     <div>
                                         <label class="form-label">Délai de livraison(jours)</label>
                                         <input type="number" name="delai" class="form-control mydatepicker @error('delai') is-invalid @enderror" 
@@ -212,7 +212,64 @@
                                             <div class="invalid-feedback">{{ $message }}</div>
                                         @enderror
                                     </div>
+                                </div> --}}
+                                <div class="col-lg-6">
+                                    <div>
+                                        <label class="form-label">Délai de livraison</label>
+                                        <select name="delai_type" class="form-control mb-2" id="delai-type">
+                                            <option value="jours" {{ str_contains($devis->delai, 'jours') ? 'selected' : '' }}>Nombre de jours</option>
+                                            <option value="deja_livre" {{ $devis->delai === 'Déjà livré' ? 'selected' : '' }}>Déjà livré</option>
+                                            <option value="planning" {{ $devis->delai === 'Selon planning du client' ? 'selected' : '' }}>Selon planning du client</option>
+                                            <option value="periode" {{ str_contains($devis->delai, 'De') ? 'selected' : '' }}>Période (de X à Y jours)</option>
+                                        </select>
+                                        
+                                        <div id="delai-jours" class="delai-field" style="{{ !str_contains($devis->delai, 'jours') && $devis->delai !== 'Déjà livré' && $devis->delai !== 'Selon planning du client' && !str_contains($devis->delai, 'De') ? 'display:none;' : '' }}">
+                                            @php
+                                                $jours = '';
+                                                if (str_contains($devis->delai, 'jours')) {
+                                                    $jours = preg_replace('/[^0-9]/', '', $devis->delai);
+                                                }
+                                            @endphp
+                                            <input type="number" name="delai_jours" class="form-control" placeholder="Nombre de jours" 
+                                                value="{{ $jours }}" min="1">
+                                        </div>
+                                        
+                                        <div id="delai-deja-livre" class="delai-field" style="{{ $devis->delai !== 'Déjà livré' ? 'display:none;' : '' }}">
+                                            <input type="hidden" name="delai_deja_livre" value="Déjà livré">
+                                        </div>
+                                        
+                                        <div id="delai-planning" class="delai-field" style="{{ $devis->delai !== 'Selon planning du client' ? 'display:none;' : '' }}">
+                                            <input type="hidden" name="delai_planning" value="Selon planning du client">
+                                        </div>
+                                        
+                                        <div id="delai-periode" class="delai-field" style="{{ !str_contains($devis->delai, 'De') ? 'display:none;' : '' }}">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    @php
+                                                        $min = '';
+                                                        $max = '';
+                                                        if (str_contains($devis->delai, 'De')) {
+                                                            preg_match('/De (\d+) à (\d+) jours/', $devis->delai, $matches);
+                                                            $min = $matches[1] ?? '';
+                                                            $max = $matches[2] ?? '';
+                                                        }
+                                                    @endphp
+                                                    <input type="number" name="delai_periode_min" class="form-control" 
+                                                        placeholder="De (jours)" value="{{ $min }}" min="1">
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <input type="number" name="delai_periode_max" class="form-control" 
+                                                        placeholder="À (jours)" value="{{ $max }}" min="1">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
+
+                          
+                           
+
+                            
                             </div>
                         </div>
                     </div>
@@ -305,107 +362,6 @@
 @endsection
 
 @push('scripts')
-{{-- <script>
-    $(document).ready(function () {
-    function updateTotal(row) {
-        var price = parseFloat(row.find('.price').val()) || 0;
-        var quantity = parseInt(row.find('.quantity').val()) || 1;
-        var discount = parseFloat(row.find('.discount').val()) || 0;
-
-        var total = (price * quantity) - discount;
-        if (total < 0) total = 0; // Empêcher un total négatif
-
-        row.find('.total').val(total.toFixed(2)); // Afficher avec 2 décimales
-        updateTotalHT();
-    }
-
-    // Mise à jour du prix unitaire lorsqu'on sélectionne une désignation
-    $(document).on('change', '.designation', function () {
-        var selectedOption = $(this).find(':selected');
-        var price = parseFloat(selectedOption.data('price')) || 0;
-        var row = $(this).closest('.row');
-
-        row.find('.price').val(price); // Mettre à jour le prix unitaire
-        updateTotal(row);
-    });
-
-    // Mise à jour du total lorsqu'on modifie quantité ou remise
-    $(document).on('input', '.quantity, .discount', function () {
-        var row = $(this).closest('.row');
-        updateTotal(row);
-    });
-
-    // Fonction pour mettre à jour Total HT
-    function updateTotalHT() {
-        var totalHT = 0;
-        $('.email-repeater .row').each(function () {
-            var row = $(this);
-            var total = parseFloat(row.find('.total').val()) || 0;
-            totalHT += total;
-        });
-
-        // Mise à jour de Total HT
-        $('.total-ht').val(totalHT.toFixed(2));
-
-        updateTVAandTTC(totalHT);
-    }
-
-    // Fonction pour mettre à jour TVA et Total TTC
-    function updateTVAandTTC(totalHT) {
-        var tvaRate = 18; // TVA 18%
-        var tvaValue = (totalHT * tvaRate) / 100; // Valeur de la TVA
-        var totalTTC = totalHT + tvaValue; // Calcul correct du Total TTC
-
-        // Mise à jour de la TVA (valeur fixe à 18)
-        $('.tva').val(tvaRate.toFixed(2)); // TVA en pourcentage
-
-        // Mise à jour de Total TTC
-        $('.total-ttc').val(totalTTC.toFixed(2));
-
-        updateSolde(totalTTC);
-    }
-
-    // Fonction pour mettre à jour le solde
-    function updateSolde(totalTTC) {
-        var acompte = parseFloat($('.acompte').val()) || 0;
-        var solde = totalTTC - acompte;
-
-        // Mise à jour du solde
-        $('.solde').val(solde.toFixed(2));
-    }
-
-    // Quand l'acompte change, mettre à jour le solde
-    $(document).on('input', '.acompte', function () {
-        var totalTTC = parseFloat($('.total-ttc').val()) || 0;
-        updateSolde(totalTTC);
-    });
-
-     // Activation/désactivation de la TVA en fonction de la case à cocher
-     $(document).on('change', '.toggle-tva', function () {
-            var tvaInput = $('.tva');
-
-            if ($(this).is(':checked')) {
-                tvaInput.prop('readonly', false).val(0);
-            } else {
-                tvaInput.prop('readonly', true).val(18);
-            }
-
-            updateTVAandTTC();
-        });
-
-    // Chaque fois qu'une ligne est ajoutée
-    $(document).on('click', '[data-repeater-create]', function () {
-        updateTotalHT();
-    });
-
-    // Chaque fois qu'une ligne est supprimée
-    $(document).on('click', '[data-repeater-delete]', function () {
-        updateTotalHT();
-    });
-
-});
-
-</script> --}}
 
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
@@ -733,4 +689,31 @@
     // });
 </script>
     
+<script>
+    $(document).ready(function() {
+        // Gestion du délai de livraison
+        $('#delai-type').change(function() {
+            $('.delai-field').hide();
+            const selectedType = $(this).val();
+            
+            switch(selectedType) {
+                case 'jours':
+                    $('#delai-jours').show();
+                    break;
+                case 'deja_livre':
+                    $('#delai-deja-livre').show();
+                    break;
+                case 'planning':
+                    $('#delai-planning').show();
+                    break;
+                case 'periode':
+                    $('#delai-periode').show();
+                    break;
+            }
+        });
+        
+        // Afficher le bon champ au chargement
+        $('#delai-type').trigger('change');
+    });
+</script>
 @endpush

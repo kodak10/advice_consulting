@@ -228,13 +228,36 @@
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="">
-                                        <label class="form-label">Délai de livraison (jours)</label>
-                                        <input type="number" name="delai" class="form-control mydatepicker 
-                                            @error('delai') is-invalid @enderror" 
-                                            value="{{ old('delai', session('data.delai')) }}">
-                                        @error('delai')
-                                            <div class="invalid-feedback">{{ $message }}</div>
-                                        @enderror
+                                        <label class="form-label">Délai de livraison</label>
+                                        <select name="delai_type" class="form-control mb-2" id="delai-type">
+                                            <option value="jours">Nombre de jours</option>
+                                            <option value="deja_livre">Déjà livré</option>
+                                            <option value="planning">Selon planning du client</option>
+                                            <option value="periode">Période (de X à Y jours)</option>
+                                        </select>
+                                        
+                                        <div id="delai-jours" class="delai-field">
+                                            <input type="number" name="delai_jours" class="form-control" placeholder="Nombre de jours" min="1" disabled>
+                                        </div>
+
+                                        <div id="delai-deja-livre" class="delai-field" style="display:none;">
+                                            <input type="hidden" name="delai_deja_livre" value="Déjà livré" disabled>
+                                        </div>
+
+                                        <div id="delai-planning" class="delai-field" style="display:none;">
+                                            <input type="hidden" name="delai_planning" value="Selon planning du client" disabled>
+                                        </div>
+
+                                        <div id="delai-periode" class="delai-field" style="display:none;">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <input type="number" name="delai_periode_min" class="form-control" placeholder="De (jours)" min="1" disabled>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <input type="number" name="delai_periode_max" class="form-control" placeholder="À (jours)" min="1" disabled>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -402,206 +425,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.repeater/1.2.1/jquery.repeater.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-
-{{-- <script>
-    // Initialisation du répéteur avec les valeurs old()
-    $(document).ready(function () {
-        // Fonction pour formater un nombre selon la devise
-        function formatNumber(value, devise) {
-            if (devise === 'XOF') {
-                return Math.round(value); // Arrondir à l'entier pour XOF
-            }
-            return value.toFixed(2); // 2 décimales pour les autres devises
-        }
-
-        // Initialisation du répéteur
-        $('.email-repeater').repeater({
-            initEmpty: false,
-            defaultValues: {},
-            show: function () {
-                $(this).slideDown();
-                initializeSelect2($(this));
-                // Initialiser les valeurs par défaut pour les nouvelles lignes
-                $(this).find('.discount').val(0);
-                $(this).find('.quantity').val(1);
-                // Mettre à jour les totaux
-                updateTotal($(this));
-            },
-            hide: function (deleteElement) {
-                $(this).slideUp(deleteElement, function() {
-                    updateTotalHT();
-                });
-            },
-            isFirstItemUndeletable: true
-        });
-
-        // Fonction pour initialiser Select2
-        function initializeSelect2(container) {
-            container.find('.designation').select2({
-                width: '100%',
-                placeholder: "Sélectionner",
-                allowClear: true
-            });
-        }
-
-        // Initialiser Select2 pour les éléments existants
-        initializeSelect2($(document));
-
-        // Mise à jour des champs lors de la sélection d'une désignation
-        $(document).on('change', '.designation', function () {
-            let selectedOption = $(this).find(':selected');
-            let id = selectedOption.data('id');
-            let priceOriginal = selectedOption.data('price') || 0;
-            let taux = parseFloat($('#taux').val()) || 1.0;
-
-            let priceConverted = priceOriginal / taux;
-            let row = $(this).closest('[data-repeater-item]');
-            row.find('.designation-id').val(id);
-            row.find('.price').val(priceConverted.toFixed(2)).trigger('input');
-        });
-
-        // Fonction pour mettre à jour le total d'une ligne
-        function updateTotal(row) {
-            var devise = $('#devise').val();
-            var price = parseFloat(row.find('.price').val()) || 0;
-            var quantity = parseInt(row.find('.quantity').val()) || 1;
-            var discountPercent = parseFloat(row.find('.discount').val()) || 0;
-            
-            // Calcul du prix unitaire net après remise
-            var netPrice = price * (1 - discountPercent / 100);
-            row.find('.net-price').val(formatNumber(netPrice, devise));
-            
-            // Calcul du total HT
-            var total = netPrice * quantity;
-            if (total < 0) total = 0;
-            
-            row.find('.total').val(formatNumber(total, devise));
-            updateTotalHT();
-        }
-
-        // Mise à jour du total lorsqu'on modifie quantité ou remise
-        $(document).on('input', '.quantity, .discount, .price', function () {
-            var row = $(this).closest('[data-repeater-item]');
-            updateTotal(row);
-        });
-
-        // Fonction pour mettre à jour Total HT
-        function updateTotalHT() {
-            var devise = $('#devise').val();
-            var totalHT = 0;
-            
-            $('[data-repeater-list="designations"] [data-repeater-item]').each(function () {
-                var total = parseFloat($(this).find('.total').val()) || 0;
-                totalHT += total;
-            });
-
-            $('.total-ht').val(formatNumber(totalHT, devise));
-            updateTVAandTTC();
-        }
-
-        // Fonction pour mettre à jour TVA et Total TTC
-        function updateTVAandTTC() {
-            var devise = $('#devise').val();
-            var totalHT = parseFloat($('.total-ht').val()) || 0;
-            var tvaRate = parseFloat($('.tva').val()) || 0;
-            var tvaValue = (totalHT * tvaRate) / 100;
-            var totalTTC = totalHT + tvaValue;
-
-            $('.total-ttc').val(formatNumber(totalTTC, devise));
-            updateAcompte();
-        }
-
-        // Fonction pour mettre à jour l'acompte
-        function updateAcompte() {
-            var devise = $('#devise').val();
-            var totalTTC = parseFloat($('.total-ttc').val()) || 0;
-            var commande = parseFloat($('#commande').val()) || 0;
-            var acompte = (totalTTC * commande) / 100;
-
-            $('.acompte').val(formatNumber(acompte, devise));
-            updateSolde(totalTTC);
-        }
-
-        // Fonction pour mettre à jour le solde
-        function updateSolde(totalTTC) {
-            var devise = $('#devise').val();
-            var acompte = parseFloat($('.acompte').val()) || 0;
-            var solde = totalTTC - acompte;
-
-            $('.solde').val(formatNumber(solde, devise));
-        }
-
-
-        
-
-        // Initialiser les totaux pour les lignes existantes au chargement
-        $('[data-repeater-item]').each(function() {
-            updateTotal($(this));
-        });
-    });
-
-    // Écouteur d'événement pour le changement du taux de conversion
-    $('#taux').on('input', function () {
-        updateAllPricesWithTaux();
-    });
-
-    // Initialisation au chargement de la page
-    $(document).ready(function () {
-        updateAllPricesWithTaux();
-    });
-</script>
-
-
-<script>
-    const rates = @json($rates);
-
-    // Fonction pour mettre à jour tous les prix en fonction du taux
-    function updateAllPricesWithTaux() {
-        const taux = parseFloat($('#taux').val()) || 1.0;
-        $('[data-repeater-item]').each(function () {
-            var selectedOption = $(this).find('.designation').find(':selected');
-            var priceOriginal = parseFloat(selectedOption.data('price')) || 0;
-            var priceConverted = priceOriginal / taux; // Diviser par le taux
-            $(this).find('.price').val(priceConverted.toFixed(2)).trigger('input');
-        });
-    }
-
-    $(document).on('change', '#toggle-taux', function () {
-    var tauxInput = $('#taux');
-
-    if ($(this).is(':checked')) {
-        tauxInput.prop('readonly', false);
-    } else {
-        tauxInput.prop('readonly', true);
-    }
-
-    updateAllPricesWithTaux();
-});
-
-    // Écouteur d'événement pour le changement de devise
-    $('#devise').on('change', function () {
-        const selectedDevise = this.value;
-        const tauxInput = $('#taux');
-
-        if (rates[selectedDevise] !== undefined) {
-            tauxInput.val(rates[selectedDevise].toFixed(2));
-        } else {
-            tauxInput.val(1.0); // Taux par défaut
-        }
-
-        updateAllPricesWithTaux(); // Mettre à jour tous les prix
-    });
-
-    // Écouteur d'événement pour le changement du taux de conversion
-    $('#taux').on('input', function () {
-        updateAllPricesWithTaux(); // Mettre à jour tous les prix
-    });
-
-    // Initialisation au chargement de la page
-    $(document).ready(function () {
-        updateAllPricesWithTaux(); // Mettre à jour les prix au chargement
-    });
-</script> --}}
 
 <script>
     let timeout;
@@ -921,5 +744,30 @@
     $(document).ready(function () {
         updateAllPricesWithTaux(); // Mettre à jour les prix au chargement
     });
+</script>
+
+<script>
+   $(document).ready(function() {
+    // Gestion du délai de livraison
+    $('#delai-type').change(function() {
+        $('.delai-field').hide().find('input').prop('disabled', true).val('');
+        const selectedType = $(this).val();
+        
+        switch(selectedType) {
+            case 'jours':
+                $('#delai-jours').show().find('input').prop('disabled', false);
+                break;
+            case 'deja_livre':
+                $('#delai-deja-livre').show().find('input').prop('disabled', false).val('Déjà livré');
+                break;
+            case 'planning':
+                $('#delai-planning').show().find('input').prop('disabled', false).val('Selon planning du client');
+                break;
+            case 'periode':
+                $('#delai-periode').show().find('input').prop('disabled', false);
+                break;
+        }
+    }).trigger('change');
+});
 </script>
 @endpush

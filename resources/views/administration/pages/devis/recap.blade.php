@@ -76,7 +76,13 @@
                                 <p><strong>Validité de l'offre :</strong> {{ $validated['validite'] }} jours</p>
                             </div>
                             <div class="col-md-6">
-                                <p><strong>Délai de livraison :</strong> {{ $validated['delai'] }} jours</p>
+                                <p><strong>Délai de livraison :</strong> 
+                                    @if(isset($validated['delai']))
+                                        {{ $validated['delai'] }}
+                                    @else
+                                        Non spécifié
+                                    @endif
+                                </p>
                             </div>
                         </div>
                     </div>

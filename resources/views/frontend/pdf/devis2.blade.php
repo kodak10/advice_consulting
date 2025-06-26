@@ -327,7 +327,7 @@
         </tr>
         <tr>
             <td colspan="6" class="no-border" id="no-fond">
-                <strong>Délai de livraison :</strong> {{ $devis->delai }} jours
+                <strong>Délai de livraison :</strong> {{ $devis->delai }}
             </td>
             <td colspan="6" id="no-fond">
                 <strong>Solde :</strong>

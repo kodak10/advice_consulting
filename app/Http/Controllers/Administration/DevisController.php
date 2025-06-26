@@ -214,49 +214,133 @@ public function refuse($id, Request $request)
 
 
 
-    public function recap(Request $request)
-    {
+    // public function recap(Request $request)
+    // {
+    //     // dd($request);
         
-        // Valider les données du formulaire
-        $validated = $request->validate([
-            'devise' => 'required|string',
-            'taux' => 'required|numeric',
+    //     // Valider les données du formulaire
+    //     $validated = $request->validate([
+    //         'devise' => 'required|string',
+    //         'taux' => 'required|numeric',
 
-            'client_id' => 'required|exists:clients,id',  
-            'date_emission' => 'required|date',  
-            'date_echeance' => 'required|date|after_or_equal:date_emission',  
+    //         'client_id' => 'required|exists:clients,id',  
+    //         'date_emission' => 'required|date',  
+    //         'date_echeance' => 'required|date|after_or_equal:date_emission',  
             
-            'commande' => 'required|string',  
-            'livraison' => 'required|string',  
-            'validite' => 'required|string',  
-            'banque_id' => 'required|exists:banques,id',  
+    //         'commande' => 'required|string',  
+    //         'livraison' => 'required|string',  
+    //         'validite' => 'required|string',  
+    //         'banque_id' => 'required|exists:banques,id',  
 
-            'total-ht' => 'required|numeric|min:0',  
-            'tva' => 'required',  
-            'total-ttc' => 'required|numeric|min:0',  
-            'acompte' => 'required|numeric|min:0',  
-            'solde' => 'required|numeric|min:0',  
+    //         'total-ht' => 'required|numeric|min:0',  
+    //         'tva' => 'required',  
+    //         'total-ttc' => 'required|numeric|min:0',  
+    //         'acompte' => 'required|numeric|min:0',  
+    //         'solde' => 'required|numeric|min:0',  
 
-            'delai' => 'required',
+    //         // 'delai' => 'required',
+
+    //         'delai_type' => 'required|in:jours,deja_livre,planning,periode',
+    //         'delai_jours' => 'required_if:delai_type,jours|numeric|min:1',
+    //         'delai_periode_min' => 'required_if:delai_type,periode|numeric|min:1',
+    //         'delai_periode_max' => 'required_if:delai_type,periode|numeric|min:1|gte:delai_periode_min',
+
            
-            'designations' => 'required|array', 
+    //         'designations' => 'required|array', 
             
-            'designations.*.id' => 'required',
-            'designations.*.description' => 'required',
-            'designations.*.quantity' => 'required|numeric|min:1',
-            'designations.*.price' => 'required|numeric|min:0', 
-            'designations.*.discount' => 'nullable|numeric|min:0', 
-            'designations.*.net_price' => 'required|numeric|min:0', 
-            'designations.*.total' => 'required|numeric|min:0', 
-        ]);
+    //         'designations.*.id' => 'required',
+    //         'designations.*.description' => 'required',
+    //         'designations.*.quantity' => 'required|numeric|min:1',
+    //         'designations.*.price' => 'required|numeric|min:0', 
+    //         'designations.*.discount' => 'nullable|numeric|min:0', 
+    //         'designations.*.net_price' => 'required|numeric|min:0', 
+    //         'designations.*.total' => 'required|numeric|min:0', 
+    //     ]);
 
-        $designations = Designation::all();  
+    //     $designations = Designation::all();  
 
-        $client = Client::find($validated['client_id']);
-        $banque = Banque::find($validated['banque_id']);
+    //     $client = Client::find($validated['client_id']);
+    //     $banque = Banque::find($validated['banque_id']);
 
-        return view('administration.pages.devis.recap', compact('client', 'validated', 'banque', 'designations'));
+    //     return view('administration.pages.devis.recap', compact('client', 'validated', 'banque', 'designations'));
+    // }
+
+    public function recap(Request $request)
+{
+
+    // dd($request);
+    // Valider les données du formulaire
+    $validated = $request->validate([
+        'devise' => 'required|string',
+        'taux' => 'required|numeric',
+        'client_id' => 'required|exists:clients,id',  
+        'date_emission' => 'required|date',  
+        'date_echeance' => 'required|date|after_or_equal:date_emission',  
+        'commande' => 'required|string',  
+        'livraison' => 'required|string',  
+        'validite' => 'required|string',  
+        'banque_id' => 'required|exists:banques,id',  
+        'total-ht' => 'required|numeric|min:0',  
+        'tva' => 'required',  
+        'total-ttc' => 'required|numeric|min:0',  
+        'acompte' => 'required|numeric|min:0',  
+        'solde' => 'required|numeric|min:0',  
+        'delai_type' => 'required|in:jours,deja_livre,planning,periode',
+        'delai_jours' => 'required_if:delai_type,jours|integer|min:1',
+        'delai_deja_livre' => 'required_if:delai_type,deja_livre|string',
+        'delai_planning' => 'required_if:delai_type,planning|string',
+        'delai_periode_min' => [
+            'nullable',
+            'required_if:delai_type,periode',
+            'integer',
+            'min:1'
+        ],
+        'delai_periode_max' => [
+            'nullable',
+            'required_if:delai_type,periode',
+            'integer',
+            'min:1',
+            'gte:delai_periode_min'
+        ],
+        'designations' => 'required|array', 
+        'designations.*.id' => 'required',
+        'designations.*.description' => 'required',
+        'designations.*.quantity' => 'required|numeric|min:1',
+        'designations.*.price' => 'required|numeric|min:0', 
+        'designations.*.discount' => 'nullable|numeric|min:0', 
+        'designations.*.net_price' => 'required|numeric|min:0', 
+        'designations.*.total' => 'required|numeric|min:0', 
+    ], [
+        'delai_periode_min.required_if' => 'Le champ délai minimum est requis lorsque le type est "Période"',
+        'delai_periode_max.required_if' => 'Le champ délai maximum est requis lorsque le type est "Période"',
+        'delai_periode_max.gte' => 'Le délai maximum doit être supérieur ou égal au délai minimum'
+    ]);
+
+    // Formater le délai pour l'affichage
+    $validated['delai'] = $this->formatDelai($validated);
+
+    $designations = Designation::all();  
+    $client = Client::find($validated['client_id']);
+    $banque = Banque::find($validated['banque_id']);
+
+    return view('administration.pages.devis.recap', compact('client', 'validated', 'banque', 'designations'));
+}
+
+private function formatDelai(array $data): string
+{
+    switch ($data['delai_type']) {
+        case 'jours':
+            return $data['delai_jours'] . ' jours';
+        case 'deja_livre':
+            return 'Déjà livré';
+        case 'planning':
+            return 'Selon planning du client';
+        case 'periode':
+            return 'De ' . $data['delai_periode_min'] . ' à ' . $data['delai_periode_max'] . ' jours';
+        default:
+            return '';
     }
+}
 
 
     public function store(Request $request)
@@ -437,7 +521,13 @@ public function refuse($id, Request $request)
             'commande' => 'required|string',  
             'livraison' => 'required|string',  
             'validite' => 'required|string', 
-            'delai' => 'required',
+
+            // 'delai' => 'required',
+            'delai_type' => 'required|in:jours,deja_livre,planning,periode',
+            'delai_jours' => 'required_if:delai_type,jours|integer|min:1',
+            'delai_periode_min' => 'nullable|required_if:delai_type,periode|integer|min:1',
+            'delai_periode_max' => 'nullable|required_if:delai_type,periode|integer|min:1|gte:delai_periode_min',
+
 
             'total-ht' => 'required|numeric|min:0',  
             'tva' => 'required',  
@@ -456,6 +546,11 @@ public function refuse($id, Request $request)
             'designations.*.total' => 'required|numeric|min:0', 
         ]);
 
+        // Formater le délai correctement
+        $validated['delai'] = $this->formatDelai($validated);
+
+
+
         $devis = Devis::findOrFail($id);
 
         $designations = Designation::all();
@@ -471,6 +566,7 @@ public function refuse($id, Request $request)
 
     public function storeRecap(Request $request, $id)
 {
+    // dd($request);
     try {
         $validated = $request->validate([
             'client_id' => 'required|exists:clients,id',  
@@ -498,6 +594,23 @@ public function refuse($id, Request $request)
             'taux' => 'required|numeric',  
             'texte' => 'required',  
         ]);
+
+        // // Formater le délai
+        // $delai = '';
+        // switch ($validated['delai_type']) {
+        //     case 'jours':
+        //         $delai = $validated['delai_jours'] . ' jours';
+        //         break;
+        //     case 'deja_livre':
+        //         $delai = 'Déjà livré';
+        //         break;
+        //     case 'planning':
+        //         $delai = 'Selon planning du client';
+        //         break;
+        //     case 'periode':
+        //         $delai = 'De ' . $validated['delai_periode_min'] . ' à ' . $validated['delai_periode_max'] . ' jours';
+        //         break;
+        // }
 
         // Formatage des montants si la devise est XOF
         if ($request->devise === 'XOF') {
