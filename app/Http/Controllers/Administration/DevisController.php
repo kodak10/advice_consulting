@@ -595,22 +595,7 @@ private function formatDelai(array $data): string
             'texte' => 'required',  
         ]);
 
-        // // Formater le délai
-        // $delai = '';
-        // switch ($validated['delai_type']) {
-        //     case 'jours':
-        //         $delai = $validated['delai_jours'] . ' jours';
-        //         break;
-        //     case 'deja_livre':
-        //         $delai = 'Déjà livré';
-        //         break;
-        //     case 'planning':
-        //         $delai = 'Selon planning du client';
-        //         break;
-        //     case 'periode':
-        //         $delai = 'De ' . $validated['delai_periode_min'] . ' à ' . $validated['delai_periode_max'] . ' jours';
-        //         break;
-        // }
+        
 
         // Formatage des montants si la devise est XOF
         if ($request->devise === 'XOF') {
