@@ -163,24 +163,24 @@
                     <input type="text" id="montantDisplay" class="form-control" readonly>
                 </div>
 
-                <div class="mb-4">
+               <div class="mb-4">
                     <label class="form-label">Remise Spéciale</label>
-                    <input type="number" name="remise_speciale" value="0" min="0" class="form-control">
+                    <input type="number" name="remise_speciale" value="{{ $facture->remise_speciale ?? 0 }}" class="form-control">
                 </div>
 
                 <div class="mb-4">
                     <label class="form-label">Numéro BC <span class="text-danger">*</span></label>
-                    <input type="text" name="num_bc" placeholder="Numéro BC" class="form-control" required>
+                    <input type="text" name="num_bc" placeholder="Numéro BC" value="{{ $facture->num_bc ?? '0' }}" class="form-control">
                 </div>
 
                 <div class="mb-4">
                     <label class="form-label">Numéro Rap activ.</label>
-                    <input type="text" name="num_rap" placeholder="Numéro RAP" class="form-control">
+                    <input type="text" name="num_rap" placeholder="Numéro RAP" value="{{ $facture->num_rap ?? '0' }}" class="form-control">
                 </div>
 
                 <div class="mb-4">
                     <label class="form-label">Numéro BL</label>
-                    <input type="text" name="num_bl" placeholder="Numéro BL" class="form-control">
+                    <input type="text" name="num_bl" placeholder="Numéro BL" value="{{ $facture->num_bl ?? '0' }}" class="form-control">
                 </div>
 
                 <div class="d-grid gap-2">

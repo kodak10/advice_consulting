@@ -214,43 +214,59 @@ class FacturesController extends Controller
     }
 
 
-    public function createTotale($id)
-    {
-        $devis = Devis::with('client', 'banque', 'details.designation')->findOrFail($id);
+    // public function createTotale($id)
+    // {
+    //     $devis = Devis::with('client', 'banque', 'details.designation')->findOrFail($id);
 
-        $factures = Facture::where('devis_id', $devis->id)->first();
+    //     $factures = Facture::where('devis_id', $devis->id)->first();
 
       
         
         
-        // if ($devis->status === 'Réfusé') {
-        //     return redirect()->back()->with('error', "Cette proforma a déjà été refusée.");
-        // }
+    //     // if ($devis->status === 'Réfusé') {
+    //     //     return redirect()->back()->with('error', "Cette proforma a déjà été refusée.");
+    //     // }
 
 
-        // if ($factures && $factures->status === 'Facturé') {
-        //     return redirect()->back()->with('error', "Cette proforma a déjà l'objet de facture.<br> Vous pouvez la facturé ou la réfusée.");
-        // }
+    //     // if ($factures && $factures->status === 'Facturé') {
+    //     //     return redirect()->back()->with('error', "Cette proforma a déjà l'objet de facture.<br> Vous pouvez la facturé ou la réfusée.");
+    //     // }
 
-        // Vérifier si la facture existe ET a un statut "Facturé" ET un type "Totale"
-        if ($factures && $factures->status === 'Facturé' && $factures->type === 'Totale') {
-            return redirect()->back()->with('error', "Cette proforma a déjà fait l'objet de facture.<br> Vous pouvez la facturer ou la refuser.");
-        }
+    //     // Vérifier si la facture existe ET a un statut "Facturé" ET un type "Totale"
+    //     if ($factures && $factures->status === 'Facturé' && $factures->type === 'Totale') {
+    //         return redirect()->back()->with('error', "Cette proforma a déjà fait l'objet de facture.<br> Vous pouvez la facturer ou la refuser.");
+    //     }
 
 
         
-        $client = $devis->client;
-        $banque = $devis->banque;
-        $designations = $devis->details; // Dépend de ta relation avec DevisDetail
+    //     $client = $devis->client;
+    //     $banque = $devis->banque;
+    //     $designations = $devis->details; // Dépend de ta relation avec DevisDetail
         
-        return view('administration.pages.factures.totale.create', compact('client', 'banque', 'designations', 'devis', 'factures'));
+    //     return view('administration.pages.factures.totale.create', compact('client', 'banque', 'designations', 'devis', 'factures'));
+    // }
+
+    public function createTotale($id)
+{
+    $devis = Devis::with('client', 'banque', 'details.designation')->findOrFail($id);
+    $facture = Facture::where('devis_id', $devis->id)->first(); // Changé $factures en $facture
+
+    if ($facture && $facture->status === 'Facturé' && $facture->type === 'Totale') {
+        return redirect()->back()->with('error', "Cette proforma a déjà fait l'objet de facture.<br> Vous pouvez la facturer ou la refuser.");
     }
+
+    $client = $devis->client;
+    $banque = $devis->banque;
+    $designations = $devis->details;
+    
+    return view('administration.pages.factures.totale.create', compact('client', 'banque', 'designations', 'devis', 'facture'));
+}
 
     public function createPartielle($id)
     {
         $devis = Devis::with('client', 'banque', 'details.designation')->findOrFail($id);
 
-        $factures = Facture::where('devis_id', $devis->id)->first();
+        $facture = Facture::where('devis_id', $devis->id)->first();
 
       
         
@@ -265,7 +281,7 @@ class FacturesController extends Controller
         // }
 
         // Vérifier si la facture existe ET a un statut "Facturé" ET un type "Totale"
-        if ($factures && $factures->status === 'Facturé' && $factures->type === 'Totale') {
+        if ($facture && $facture->status === 'Facturé' && $facture->type === 'Totale') {
             return redirect()->back()->with('error', "Cette proforma a déjà fait l'objet de facture.<br> Vous pouvez la facturer ou la refuser.");
         }
 
@@ -275,7 +291,7 @@ class FacturesController extends Controller
         $banque = $devis->banque;
         $designations = $devis->details; // Dépend de ta relation avec DevisDetail
         
-        return view('administration.pages.factures.partielle.create', compact('client', 'banque', 'designations', 'devis', 'factures'));
+        return view('administration.pages.factures.partielle.create', compact('client', 'banque', 'designations', 'devis', 'facture'));
     }
 
     public function generateCustomNumber()
@@ -293,6 +309,7 @@ class FacturesController extends Controller
 
         return "{$month}{$year}-{$counter}{$initials} du {$day}";
     }
+
 
 
 // public function store(Request $request)
@@ -383,6 +400,8 @@ class FacturesController extends Controller
 //             $facture->selected_items = json_encode($selectedItems);
 //         }
 
+        
+
 //         $facture->save();
 
 //         // Envoi de la notification
@@ -431,6 +450,7 @@ class FacturesController extends Controller
 //     }
 // }
 
+
 public function store(Request $request)
 {
     try {
@@ -465,21 +485,27 @@ public function store(Request $request)
         $montantHT = DevisDetail::whereIn('id', $selectedItems)->sum('total');
         $montantTTC = $montantHT * (1 + ($devis->tva / 100));
 
-        // if (abs($montantTTC - Arr::get($validated, 'montant', 0)) > 0.01) {
-        //     return back()->withErrors(['montant' => 'Le montant ne correspond pas aux éléments sélectionnés']);
-        // }
-        // if (abs($montantTTC - Arr::get($validated, 'montant', 0)) > 0.01) {
-        //     return back()->withErrors(['montant' => 'Le montant ne correspond pas aux éléments sélectionnés']);
-        // }
-        
-
-        // Vérifier si une facture existe déjà
+        // Vérifier si une facture existe déjà pour ce devis
         $existingFacture = Facture::where('devis_id', $devis->id)->first();
+
+        if ($existingFacture) {
+            // Supprimer l'ancien fichier PDF s'il existe
+            if ($existingFacture->pdf_path && Storage::disk('public')->exists($existingFacture->pdf_path)) {
+                Storage::disk('public')->delete($existingFacture->pdf_path);
+            }
+
+            // Mettre à jour la facture existante
+            $facture = $existingFacture;
+        } else {
+            // Créer une nouvelle facture
+            $facture = new Facture();
+        }
 
         if ($validated['type_facture'] === 'Partielle') {
             // Vérification du cumul des factures partielles
             $cumulFactures = Facture::where('devis_id', $devis->id)
                 ->where('type_facture', 'Partielle')
+                ->where('id', '!=', $facture->id ?? null) // Exclure la facture actuelle si elle existe
                 ->sum('montant');
 
             $cumulTotal = $cumulFactures + $montantTTC;
@@ -497,34 +523,34 @@ public function store(Request $request)
         $devis->status = 'En Attente du Daf';
         $devis->save();
 
-        // Génération du numéro personnalisé
-        $customNumber = $this->generateCustomNumber();
+        // Génération du numéro personnalisé (seulement pour les nouvelles factures)
+        if (!$existingFacture) {
+            $customNumber = $this->generateCustomNumber();
+            $facture->numero = $customNumber;
+        }
 
-        // Création de la facture
-        $facture = new Facture();
+        // Mise à jour des attributs de la facture
         $facture->devis_id = $validated['devis_id'];
         $facture->num_bc = $validated['num_bc'];
         $facture->num_rap = $validated['num_rap'];
         $facture->num_bl = $validated['num_bl'];
         $facture->user_id = Auth::id();
         $facture->remise_speciale = $validated['remise_speciale'];
-        $facture->numero = $customNumber;
         $facture->pays_id = Auth::user()->pays_id;
         $facture->status = 'En Attente du Daf';
         $facture->type_facture = $validated['type_facture'];
         $facture->montant = $montantTTC;
-        
 
         if ($validated['type_facture'] === 'Partielle') {
             $facture->selected_items = json_encode($selectedItems);
         }
 
-        
-
         $facture->save();
 
-        // Envoi de la notification
-        Notification::send($facture->devis->user, new FactureCreatedNotification($facture));
+        // Envoi de la notification seulement pour les nouvelles factures
+        if (!$existingFacture) {
+            Notification::send($facture->devis->user, new FactureCreatedNotification($facture));
+        }
 
         // Génération du PDF
         $pdfData = [
@@ -554,7 +580,7 @@ public function store(Request $request)
 
         return redirect()->route($route)
             ->with('pdf_path', $imagePath)
-            ->with('success', 'Facture enregistrée avec succès.');
+            ->with('success', $existingFacture ? 'Facture mise à jour avec succès.' : 'Facture enregistrée avec succès.');
 
     } catch (\Illuminate\Validation\ValidationException $e) {
         return redirect()->back()->withErrors($e->errors())->withInput();
@@ -576,57 +602,6 @@ public function store(Request $request)
 
 
 
-  
-
-//     public function approuve($id)
-// {
-   
-//     $facture = Facture::findOrFail($id);
-
-//     if ($facture->devis->status !== 'En Attente du Daf') {
-//         return redirect()->back()->with('error', 'La facture a déjà été validée');
-//     }
-
-//     if ($facture->devis->status === 'Réfusé') {
-//         return redirect()->back()->with('error', 'La facture a été refusée');
-//     }
-
-//     // Vérifier si le PDF existe
-//     $pdfPath = storage_path('app/public/' . $facture->pdf_path);
-//     if (!file_exists($pdfPath)) {
-//         // Log: Erreur, le fichier PDF n'existe pas
-//         Log::error('Le fichier PDF n\'existe pas', ['pdf_path' => $pdfPath]);
-
-//         return redirect()->back()->with('error', 'Le fichier PDF n\'existe pas.');
-//     }
-
-   
-//     // Récupérer l'utilisateur ayant créé la facture
-//     $creator = $facture->user;
-//     $userCreator = $facture->devis->user;
-
-
-//      // Récupérer l'email du client
-//      $clientEmail = $facture->client->email;
-//      $clientName = $facture->client->name;
-
-//     // Envoyer l'e-mail au client avec le fichier PDF en pièce jointe
-//     Mail::send(new FactureApprovalMail($facture, $pdfPath, Auth::user()->name, $clientEmail, $clientName));
-
-//     // Modifier le statut de la facture
-//     $facture->devis->status = 'Facturé';
-//     $facture->devis->save();
-//     $facture->status = 'Facturé';
-//     $facture->save();
-
-   
-//     // Envoyer la notification via base de données
-//     $creator->notify(new FactureApprovedNotification($facture));
-//     $userCreator->notify(new FactureApprovedNotification($facture));
-
-
-//     return redirect()->back()->with('success', 'Facture Approuvée avec succès et envoyée par email.');
-// }
 
 public function approuve($id)
 {

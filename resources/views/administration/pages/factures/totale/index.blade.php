@@ -252,6 +252,7 @@
                           <a href="{{ route('dashboard.factures.totales.create', $devi->id) }}" class="text-success me-2" title="Etablir la facture">
                             <i class="ti ti-clipboard-list"></i>
                         </a>
+                        
                         @if ($devi->facture) 
                             <a href="{{ route('dashboard.factures.totales.validate', $devi->facture->id) }}" class="text-success me-2" title="Approuver la facture">
                                 <i class="ti ti-copy-check"></i>
