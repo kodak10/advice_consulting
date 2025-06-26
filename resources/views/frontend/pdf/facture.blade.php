@@ -265,8 +265,8 @@
             @foreach ($devis->details as $devisDetail)
                 @if(in_array($devisDetail->id, $selectedItems))
                     <tr>
-                        <td colspan="1">{{ $devisDetail->designation->reference }}</td>
-                        <td colspan="4">{{ $devisDetail->designation->description }}</td>
+                        <td>{{ $devisDetail->designation->reference }}</td>
+                        <td colspan="5">{{ $devisDetail->designation->description }}</td>
                         <td colspan="1">{{ $devisDetail->quantite }}</td>
                         <td colspan="3" class="right"> {{ $devisDetail->prix_unitaire }}</td>
                         {{-- <td colspan="1">
@@ -279,7 +279,13 @@
                             @endif
                         </td> --}}
                         <td colspan="1">
-                            {{ $devisDetail->remise }} %
+                             @if($devisDetail->remise > 0)
+                                @if($devis->devise === 'XOF')
+                                    {{ number_format($devisDetail->remise, 0, '', ' ') }} %
+                                @else
+                                    {{ number_format($devisDetail->remise, 2, ',', ' ') }} %
+                                @endif
+                            @endif
 
                         </td>
                 

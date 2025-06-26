@@ -558,7 +558,8 @@ public function store(Request $request)
             'client' => $client,
             'banque' => $banque,
             'facture' => $facture,
-            'selectedItems' => $selectedItems
+            'selectedItems' => $selectedItems,
+            'tva' => $devis->tva
         ];
 
         $pdf = PDF::loadView('frontend.pdf.facture', $pdfData);
