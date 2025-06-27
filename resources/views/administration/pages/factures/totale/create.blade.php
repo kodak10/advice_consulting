@@ -137,7 +137,12 @@
 
                 <div class="mb-4">
                     <label class="form-label">Numéro BL</label>
-                    <input type="text" name="num_bl" placeholder="Numéro BL" value="{{ $facture->num_bl ?? '0' }}" class="form-control">
+                    <input type="number" name="num_bl" placeholder="Numéro BL" value="{{ $facture->num_bl ?? '0' }}" class="form-control">
+                </div>
+
+                 <div class="mb-4">
+                    <label class="form-label">Net A payer (vide pour acompte)</label>
+                    <input type="number" name="net_a_payer" placeholder="Net A Payer" value="{{ $facture->net_a_payer ?? '0' }}" class="form-control">
                 </div>
 
                 <button type="submit" class="btn btn-success">Enregistrer</button>

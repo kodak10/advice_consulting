@@ -229,6 +229,16 @@
 
     @stack('scripts') 
 
+    @if(session('pdf_path'))
+    <script>
+        window.onload = function() {
+            let link = document.createElement('a');
+            link.href = "{{ asset('storage/' . session('pdf_path')) }}";
+            link.download = "{{ basename(session('pdf_path')) }}";
+            link.click();
+        }
+    </script>
+@endif
 
 </body>
 

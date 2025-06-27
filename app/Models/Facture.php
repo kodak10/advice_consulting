@@ -22,6 +22,7 @@ class Facture extends Model
         'message',
         'type_facture',
         'montant',
+        'net_a_payer'
     ];
 
     protected $casts = [

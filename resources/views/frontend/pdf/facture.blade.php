@@ -377,6 +377,51 @@
         </tr>
 
         @if($facture->type_facture === 'Totale')
+            @if($facture->net_a_payer > 1)
+                <tr>
+                    <td colspan="10" class="no-border" id="no-fond"></td>
+                    <td colspan="2" class="prices" id="no-fond">
+                        <strong>Net à payer :</strong>
+                    </td>
+                    <td colspan="3" class="prices right" id="no-fond">
+                        @if($devis->devise === 'XOF')
+                            {{ number_format($facture->net_a_payer, 0, '', ' ') }}
+                        @else
+                            {{ number_format($facture->net_a_payer, 2, ',', ' ') }}
+                        @endif
+                    </td>
+                </tr>
+            @else
+                <tr>
+                    <td colspan="10" class="no-border" id="no-fond"></td>
+                    <td colspan="2" class="prices" id="no-fond">
+                        <strong>Acompte :</strong>
+                    </td>
+                    <td colspan="3" class="prices right" id="no-fond">
+                        @if($devis->devise === 'XOF')
+                            {{ number_format($acompte, 0, '', ' ') }}
+                        @else
+                            {{ number_format($acompte, 2, ',', ' ') }}
+                        @endif
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="10" class="no-border" id="no-fond"></td>
+                    <td colspan="2" class="prices" id="no-fond">
+                        <strong>Solde :</strong>
+                    </td>
+                    <td colspan="3" class="prices right" id="no-fond">
+                        @if($devis->devise === 'XOF')
+                            {{ number_format($solde, 0, '', ' ') }}
+                        @else
+                            {{ number_format($solde, 2, ',', ' ') }}
+                        @endif
+                    </td>
+                </tr>
+            @endif
+        @endif
+
+        {{-- @if($facture->type_facture === 'Totale')
             <tr>
                 <td colspan="10" class="no-border" id="no-fond"></td>
                 <td colspan="2" class="prices" id="no-fond">
@@ -403,7 +448,7 @@
                     @endif
                 </td>
             </tr>
-        @endif
+        @endif --}}
 
     </table>
 

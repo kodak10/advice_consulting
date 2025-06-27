@@ -148,7 +148,7 @@
 
                         <td>
                           <div class="action-btn text-center">
-                            <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger">
+                            <a href="{{ route('dashboard.devis.download', $devi->id) }}" target="_blank" class="text-primary me-2" title="Télécharger">
                               <i class="ti ti-download fs-5"></i>
                             </a>
                           </div>
@@ -262,7 +262,7 @@
 
                         
                         <td>
-                          <a href="{{ route('dashboard.factures.totales.download', $facture->id) }}" class="text-primary me-2" title="Télécharger">
+                          <a href="{{ route('dashboard.factures.totales.download', $facture->id) }}" target="_blank" class="text-primary me-2" title="Télécharger">
                             <i class="ti ti-download fs-5"></i>
                           </a>
                         </td>
