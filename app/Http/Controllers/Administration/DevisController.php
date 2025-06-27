@@ -706,6 +706,8 @@ private function formatDelai(array $data): string
         // Mettre à jour le chemin du PDF dans la base de données
         $devis->update(['pdf_path' => $imagePath]);
 
+
+
         return redirect()->route('dashboard.devis.index')
             ->with('pdf_path', $imagePath)
             ->with('success', 'Proforma enregistré avec succès.');
@@ -733,16 +735,32 @@ private function formatDelai(array $data): string
         return redirect()->route('dashboard.devis.index')->with('success', 'Proforma supprimée avec succès.');
     }
 
+    // public function download($id)
+    // {
+    //     $devis = Devis::findOrFail($id);
+
+    //     if (!$devis->pdf_path || !Storage::disk('public')->exists($devis->pdf_path)) {
+    //         return back()->with('error', 'Le fichier demandé n\'existe pas.');
+    //     }
+
+    //     return response()->download(storage_path('app/public/' . $devis->pdf_path));
+    // }
     public function download($id)
-    {
-        $devis = Devis::findOrFail($id);
+{
+    $devis = Devis::findOrFail($id);
 
-        if (!$devis->pdf_path || !Storage::disk('public')->exists($devis->pdf_path)) {
-            return back()->with('error', 'Le fichier demandé n\'existe pas.');
-        }
-
-        return response()->download(storage_path('app/public/' . $devis->pdf_path));
+    if (!$devis->pdf_path || !Storage::disk('public')->exists($devis->pdf_path)) {
+        return abort(404, 'Fichier PDF non trouvé.');
     }
+
+    $filePath = Storage::disk('public')->path($devis->pdf_path);
+
+    return response()->file($filePath, [
+        'Content-Type' => 'application/pdf',
+        'Content-Disposition' => 'inline; filename="' . basename($filePath) . '"'
+    ]);
+}
+
 
     public function exportCsv(Request $request)
     {

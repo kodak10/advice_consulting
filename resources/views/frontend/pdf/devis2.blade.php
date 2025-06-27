@@ -194,16 +194,18 @@
             <td colspan="6"><strong>CLIENT</strong></td>
         </tr>
         <tr>
-            <td colspan="6" class="no-border"></td>
+            <td colspan="6" class="no-border"><strong>Date Emission :</strong> {{ $devis->date_emission_fr }}</td>
+
             <td colspan="6">{{ $devis->client->nom }}</td>
         </tr>
         <tr class="info-client">
-            <td colspan="6" class="no-border"><strong>Date Emission :</strong> {{ $devis->date_emission_fr }}</td>
+            <td colspan="6" class="no-border"><strong>Date Echéance :</strong> {{ $devis->date_echeance_fr }}</td>
 
             <td colspan="6"><strong>N° CC :</strong> {{ $devis->client->numero_cc }}</td>
         </tr>
         <tr class="info-client">
             <td colspan="6" class="no-border"><strong>Numéro ADC :</strong> {{ $devis->num_proforma }}</td>
+
             <td colspan="6"><strong>Téléphone:</strong> {{ $devis->client->telephone }}</td>
         </tr>
         <tr class="info-client">

@@ -140,9 +140,13 @@
 
                     <td>
                       <div class="action-btn text-center">
-                        <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger">
+                        {{-- <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger">
                           <i class="ti ti-download fs-5"></i>
+                        </a> --}}
+                        <a href="{{ route('dashboard.devis.download', $devi->id) }}" target="_blank" class="text-primary me-2" title="Afficher le PDF">
+                            <i class="ti ti-download fs-5"></i>
                         </a>
+
 
                       <a href="{{ route('dashboard.devis.validate', $devi->id) }}" class="text-success me-2" title="Valider">
                         <i class="ti ti-navigation-check"></i>
@@ -281,9 +285,13 @@
                                 </td>
                                 <td>
                                     <div class="action-btn text-center">
-                                        <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger">
+                                        {{-- <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger">
+                                            <i class="ti ti-download fs-5"></i>
+                                        </a> --}}
+                                        <a href="{{ route('dashboard.devis.download', $devi->id) }}" target="_blank" class="text-primary me-2" title="Afficher le PDF">
                                             <i class="ti ti-download fs-5"></i>
                                         </a>
+
                                         <a href="#" class="text-danger" data-bs-toggle="modal" data-bs-target="#refuseModal{{ $devi->id }}">
                                             <i class="ti ti-square-rounded-minus"></i>
                                         </a>
@@ -341,7 +349,10 @@
                                 </td>
                                 <td>
                                     <div class="action-btn text-center">
-                                        <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger">
+                                        {{-- <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger">
+                                            <i class="ti ti-download fs-5"></i>
+                                        </a> --}}
+                                         <a href="{{ route('dashboard.devis.download', $devi->id) }}" target="_blank" class="text-primary me-2" title="Afficher le PDF">
                                             <i class="ti ti-download fs-5"></i>
                                         </a>
                                         <a href="{{ route('dashboard.devis.validate', $devi->id) }}" class="text-success me-2" title="Valider">
@@ -445,7 +456,10 @@
 
                   <td>
                     <div class="action-btn text-center">
-                        <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger">
+                        {{-- <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger">
+                            <i class="ti ti-download fs-5"></i>
+                        </a> --}}
+                         <a href="{{ route('dashboard.devis.download', $devi->id) }}" target="_blank" class="text-primary me-2" title="Afficher le PDF">
                             <i class="ti ti-download fs-5"></i>
                         </a>
 
@@ -562,8 +576,11 @@
                   </div>
                     <td>
                       <div class="action-btn text-center">
-                        <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger">
+                        {{-- <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger">
                           <i class="ti ti-download fs-5"></i>
+                        </a> --}}
+                        <a href="{{ route('dashboard.devis.download', $devi->id) }}" target="_blank" class="text-primary me-2" title="Afficher le PDF">
+                            <i class="ti ti-download fs-5"></i>
                         </a>
                       
 
@@ -631,14 +648,16 @@
 
 @if(session('pdf_path'))
     <script>
-        window.onload = function() {
-            let link = document.createElement('a');
-            link.href = "{{ asset('storage/' . session('pdf_path')) }}";
-            link.download = "{{ basename(session('pdf_path')) }}";
-            link.click();
-        }
+        window.onload = function () {
+            // Construire l'URL publique à partir du chemin de stockage
+            let pdfUrl = "{{ asset('storage/' . session('pdf_path')) }}";
+
+            // Ouvrir le PDF dans un nouvel onglet
+            window.open(pdfUrl, '_blank');
+        };
     </script>
 @endif
+
 
 <script>
   function confirmDelete(devisId) {

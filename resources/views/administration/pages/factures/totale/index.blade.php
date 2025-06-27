@@ -121,7 +121,7 @@
                     
                       <td>
                           
-                          <a href="{{ route('dashboard.factures.totales.download', $factureCommercial->id) }}" class="text-primary me-2" title="Télécharger">
+                          <a href="{{ route('dashboard.factures.totales.download', $factureCommercial->id) }}" target="_blank" class="text-primary me-2" title="Télécharger">
                             <i class="ti ti-download fs-5"></i>
                           </a>
                         
@@ -236,14 +236,14 @@
 
                         @if(Auth::user()->hasRole(['Daf', 'DG']))
                           @if ($devi->facture) 
-                            <a href="{{ route('dashboard.factures.totales.download', $devi->facture->id) }}" class="text-primary me-2" title="Télécharger la facture">
+                            <a href="{{ route('dashboard.factures.totales.download', $devi->facture->id) }}" target="_blank" class="text-primary me-2" title="Télécharger la facture">
                               <i class="ti ti-download fs-5"></i>
                             </a>
                           @else
                               
                           @endif
                         @else
-                          <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger la proforma">
+                          <a href="{{ route('dashboard.devis.download', $devi->id) }}" target="_blank" class="text-primary me-2" title="Télécharger la proforma">
                             <i class="ti ti-download fs-5"></i>
                           </a>
                         @endif
@@ -321,7 +321,7 @@
                     
                     
                       <td>
-                        <a href="{{ route('dashboard.devis.download', $devi->id) }}" class="text-primary me-2" title="Télécharger">
+                        <a href="{{ route('dashboard.devis.download', $devi->id) }}" target="_blank" class="text-primary me-2" title="Télécharger">
                           <i class="ti ti-download fs-5"></i>
                         </a>
                         
@@ -502,7 +502,7 @@
 
     
                         <td>
-                          <a href="{{ route('dashboard.factures.totales.download', $facture->id) }}" class="text-primary me-2" title="Télécharger">
+                          <a href="{{ route('dashboard.factures.totales.download', $facture->id) }}" target="_blank" class="text-primary me-2" title="Télécharger">
                             <i class="ti ti-download fs-5"></i>
                           </a>
                           
@@ -652,12 +652,13 @@
 
 @if(session('pdf_path'))
     <script>
-        window.onload = function() {
-            let link = document.createElement('a');
-            link.href = "{{ asset('storage/' . session('pdf_path')) }}";
-            link.download = "{{ basename(session('pdf_path')) }}";
-            link.click();
-        }
+        window.onload = function () {
+            // Construire l'URL publique à partir du chemin de stockage
+            let pdfUrl = "{{ asset('storage/' . session('pdf_path')) }}";
+
+            // Ouvrir le PDF dans un nouvel onglet
+            window.open(pdfUrl, '_blank');
+        };
     </script>
 @endif
 

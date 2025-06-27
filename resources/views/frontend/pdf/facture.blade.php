@@ -182,7 +182,7 @@
             <td colspan="6"><strong>CLIENT</strong></td>
         </tr>
         <tr>
-            <td colspan="6" class="no-border"><strong>Date Emission :</strong> {{ $devis->date_emission }}</td>
+            <td colspan="6" class="no-border"><strong>Date Em :</strong>{{ $devis->date_emission_fr }} <strong>Date Eche :</strong>{{ $devis->date_echeance_fr }}</td>
             <td colspan="6">{{ $devis->client->nom }}</td>
         </tr>
         <tr class="info-client">
