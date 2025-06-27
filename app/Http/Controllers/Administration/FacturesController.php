@@ -217,6 +217,8 @@ class FacturesController extends Controller
     public function createTotale($id)
 {
     $devis = Devis::with('client', 'banque', 'details.designation')->findOrFail($id);
+    $montantTTC = $devis->total_ttc;
+
     $facture = Facture::where('devis_id', $devis->id)->first(); // Changé $factures en $facture
 
     if ($facture && $facture->status === 'Facturé' && $facture->type === 'Totale') {
@@ -227,7 +229,7 @@ class FacturesController extends Controller
     $banque = $devis->banque;
     $designations = $devis->details;
     
-    return view('administration.pages.factures.totale.create', compact('client', 'banque', 'designations', 'devis', 'facture'));
+    return view('administration.pages.factures.totale.create', compact('client', 'banque', 'designations', 'devis', 'facture','montantTTC'));
 }
 
     public function createPartielle($id)
@@ -296,6 +298,7 @@ public function store(Request $request)
             'selected_items' => $request->type_facture === 'Partielle' ? 'required|array' : 'nullable',
             'selected_items.*' => $request->type_facture === 'Partielle' ? 'exists:devis_details,id' : 'nullable',
         ]);
+        // dd($validated);
 
         $devis = Devis::findOrFail($validated['devis_id']);
         $client = Client::findOrFail($validated['client_id']);

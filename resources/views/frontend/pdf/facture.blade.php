@@ -381,7 +381,7 @@
                 <tr>
                     <td colspan="10" class="no-border" id="no-fond"></td>
                     <td colspan="2" class="prices" id="no-fond">
-                        <strong>Net à payer :</strong>
+                        <strong>NET A PAYER :</strong>
                     </td>
                     <td colspan="3" class="prices right" id="no-fond">
                         @if($devis->devise === 'XOF')

@@ -139,11 +139,22 @@
                     <label class="form-label">Numéro BL</label>
                     <input type="number" name="num_bl" placeholder="Numéro BL" value="{{ $facture->num_bl ?? '0' }}" class="form-control">
                 </div>
-
-                 <div class="mb-4">
-                    <label class="form-label">Net A payer (vide pour acompte)</label>
-                    <input type="number" name="net_a_payer" placeholder="Net A Payer" value="{{ $facture->net_a_payer ?? '0' }}" class="form-control">
+                <div class="mb-4 form-check">
+                    <input 
+                        type="checkbox" 
+                        id="net_a_payer_checkbox" 
+                        class="form-check-input"
+                        @if(isset($facture->net_a_payer) && $facture->net_a_payer > 0) checked @endif
+                    >
+                    <label class="form-check-label" for="net_a_payer_checkbox">
+                        Cocher pour activer le net à payer
+                    </label>
                 </div>
+
+                <input type="hidden" name="net_a_payer" id="net_a_payer_input" value="{{ $facture->net_a_payer ?? 0 }}">
+
+
+                
 
                 <button type="submit" class="btn btn-success">Enregistrer</button>
 
@@ -271,5 +282,30 @@
         toggleMontantField();
     });
 </script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const checkbox = document.getElementById('net_a_payer_checkbox');
+    const input = document.getElementById('net_a_payer_input');
+
+    const montantTTC = {{ $montantTTC ?? 0 }};
+
+    // Si checkbox cochée au chargement, forcer la valeur dans le hidden
+    if (checkbox.checked) {
+        input.value = montantTTC;
+    } else {
+        input.value = 0;
+    }
+
+    checkbox.addEventListener('change', function () {
+        if (this.checked) {
+            input.value = montantTTC;
+        } else {
+            input.value = 0;
+        }
+    });
+});
+</script>
+
 
 @endsection
