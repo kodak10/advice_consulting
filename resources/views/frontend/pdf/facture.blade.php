@@ -195,7 +195,7 @@
             <td colspan="6"><strong>Téléphone :</strong> {{ $devis->client->telephone }}</td>
         </tr>
         <tr class="info-client">
-            <td colspan="6" class="no-border"><strong>N° Rap Rap activ :</strong> {{ $devis->facture->num_rap }} <span></span> <strong>N° BL :</strong> {{ $devis->facture->num_bl }}</td>
+            <td colspan="6" class="no-border"><strong>N° Rap activ :</strong> {{ $devis->facture->num_rap }} <span></span> <br> <strong>N° BL :</strong> {{ $devis->facture->num_bl }}</td>
             <td colspan="6"><strong>Adresse :</strong> {{ $devis->client->adresse }}</td>
 
         </tr>

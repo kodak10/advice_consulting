@@ -216,7 +216,7 @@
     
     <table>
         <tr>
-            <td colspan="10" id="no-fond">
+            <td colspan="10" id="no-fond" style="line-height: 1.2">
                 {{ $devis->texte }}            
             </td>
         </tr>
