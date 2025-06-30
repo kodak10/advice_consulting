@@ -524,7 +524,8 @@ private function formatDelai(array $data): string
 
             // 'delai' => 'required',
             'delai_type' => 'required|in:jours,deja_livre,planning,periode',
-            'delai_jours' => 'required_if:delai_type,jours|integer|min:1',
+            //'delai_jours' => 'required_if:delai_type,jours|integer|min:1',
+            'delai_jours' => 'nullable|required_if:delai_type,jours|integer|min:1',
             'delai_periode_min' => 'nullable|required_if:delai_type,periode|integer|min:1',
             'delai_periode_max' => 'nullable|required_if:delai_type,periode|integer|min:1|gte:delai_periode_min',
 
