@@ -167,6 +167,12 @@
         .vide{
             height: 150px;
         }
+        .description-cell {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-width: 200px; /* Ajustez cette valeur selon vos besoins */
+            padding: 5px;
+        }
     </style>
 </head>
 
@@ -224,7 +230,10 @@
             @foreach ($devis->details as $devisDetail)
                 <tr>
                     <td>{{ $devisDetail->designation->reference }}</td>
-                    <td colspan="5">{{ $devisDetail->designation->description }}</td>
+                    {{-- <td colspan="5">{{ $devisDetail->designation->description }}</td> --}}
+                    <td colspan="5" class="description-cell">
+                        {{ trim($devisDetail->designation->description) }}
+                    </td>
                     <td colspan="1">{{ $devisDetail->quantite }}</td>
                     <td colspan="3" class="right">
                         @if($devis->devise === 'XOF')
