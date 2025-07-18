@@ -166,6 +166,13 @@
         .right {
             text-align: right !important;
         }
+
+        .description-cell {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-width: 200px; /* Ajustez cette valeur selon vos besoins */
+            padding: 5px;
+        }
     </style>
 </head>
 
@@ -236,7 +243,16 @@
         @foreach ($devis->details as $devisDetail)
             <tr>
                 <td colspan="1">{{ $devisDetail->designation->reference }}</td>
-                <td colspan="4">{{ $devisDetail->designation->description }}</td>
+                {{-- <td colspan="4">{{ $devisDetail->designation->description }}</td> --}}
+                {{-- <td colspan="4" style="word-wrap: break-word; white-space: normal;">
+                    {{ $devisDetail->designation->description }}
+                </td> --}}
+                
+                <td colspan="4" class="description-cell">
+                    {{ trim($devisDetail->designation->description) }}
+                </td>
+
+
                 <td colspan="1">{{ $devisDetail->quantite }}</td>
                 <td colspan="3" class="right">
                     @if($devis->devise === 'XOF')
