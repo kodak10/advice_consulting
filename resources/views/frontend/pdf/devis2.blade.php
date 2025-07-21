@@ -18,11 +18,14 @@
             height: 100%;
             font-size: 12px;
             line-height: 1.2;
+            text-indent: 0; /* Supprime tout retrait de première ligne */
+
         }
         table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
+            border-spacing: 0; /* Supprime l'espacement entre cellules */
         }
         th, td {
             border: 1px solid #ddd;
@@ -167,11 +170,20 @@
             text-align: right !important;
         }
 
-        .description-cell {
+        /* .description-cell {
             white-space: pre-wrap;
             word-wrap: break-word;
-            max-width: 200px; /* Ajustez cette valeur selon vos besoins */
+            max-width: 200px; 
             padding: 5px;
+        } */
+         .description-cell {
+            white-space: normal;  /* Remplace pre-wrap */
+            word-wrap: break-word;
+            max-width: 200px;
+            padding: 2px 5px 2px 0 !important; /* Réduit le padding et supprime le gauche */
+            margin-left: 0;
+            text-indent: 0;
+            text-align: left;
         }
     </style>
 </head>

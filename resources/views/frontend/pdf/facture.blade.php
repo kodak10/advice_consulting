@@ -167,11 +167,20 @@
         .vide{
             height: 150px;
         }
-        .description-cell {
+        /* .description-cell {
             white-space: pre-wrap;
             word-wrap: break-word;
-            max-width: 200px; /* Ajustez cette valeur selon vos besoins */
+            max-width: 200px; 
             padding: 5px;
+        } */
+         .description-cell {
+            white-space: normal;  /* Remplace pre-wrap */
+            word-wrap: break-word;
+            max-width: 200px;
+            padding: 2px 5px 2px 0 !important; /* Réduit le padding et supprime le gauche */
+            margin-left: 0;
+            text-indent: 0;
+            text-align: left;
         }
     </style>
 </head>
