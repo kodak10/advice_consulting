@@ -25,12 +25,14 @@ class DesignationsController extends Controller
         try {
             $validatedData = $request->validate([
                 'reference'       => 'required|string|unique:designations,reference|max:20',
+                'libelle'      => 'required|string|max:100',
                 'description' => 'required|string|max:150',
                 'prix_unitaire' => 'required|string|max:10',
             ]);
 
             $designation = new Designation([
                 'reference'       => $validatedData['reference'],
+                'libelle'      => $validatedData['libelle'],
                 'description' => $validatedData['description'],
                 'prix_unitaire' => $validatedData['prix_unitaire'],
                 
@@ -87,15 +89,17 @@ class DesignationsController extends Controller
     // Validation
     $validatedData = $request->validate([
         'reference' => 'required|string|max:255',
-        'description' => 'required|string|unique:designations,description,' . $designation->id,
+        'libelle' => 'required|string|max:100' . $designation->id,
+        'description' => 'required|string|unique:designations,description,',
         'prix_unitaire' => 'nullable|string',
     ]);
 
     // Mise à jour du designation
     try {
         $designation->update([
-            'description' => $request->description,
             'reference' => $request->reference,
+            'libelle' => $request->libelle,
+            'description' => $request->description,
             'prix_unitaire' => $request->prix_unitaire,
         ]);
 

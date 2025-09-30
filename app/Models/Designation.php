@@ -8,6 +8,7 @@ class Designation extends Model
 {
     protected $fillable = [
         'reference', 
+        'libelle',
         'description', 
         'prix_unitaire', 
     ];
