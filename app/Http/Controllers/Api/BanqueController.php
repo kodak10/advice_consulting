@@ -15,7 +15,7 @@ class BanqueController extends Controller
         return response()->json($banques);
     }
 
-     public function store(Request $request)
+    public function store(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
