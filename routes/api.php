@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\BanqueController;
 use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\DesignationController;
 use App\Http\Controllers\Api\DevisController;
+use App\Http\Controllers\Api\DeviseController;
 use App\Http\Controllers\Api\ConfigurationController;
 use App\Models\Pays;
 
@@ -26,7 +27,12 @@ Route::resource('banques', BanqueController::class);
 Route::resource('clients', ClientController::class);
 Route::resource('designations', DesignationController::class);
 Route::resource('devis', DevisController::class);
+Route::get('/devis/{id}/details', [DevisController::class, 'getDetails']);
 
+Route::get('/devis/{id}/pdf', [DevisController::class, 'getPdf']);
+
+Route::get('/devises', [DeviseController::class, 'index']);
+Route::get('/taux-change', [DeviseController::class, 'getTauxChange']);
 
 Route::get('/user', function (Request $request) {
     return $request->user();

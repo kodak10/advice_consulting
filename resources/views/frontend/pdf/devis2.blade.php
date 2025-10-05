@@ -261,7 +261,7 @@
                 </td> --}}
                 
                 <td colspan="4" class="description-cell">
-                    {{ trim($devisDetail->designation->description) }}
+                    {{ trim($devisDetail->designation->libelle) }}
                 </td>
 
 
