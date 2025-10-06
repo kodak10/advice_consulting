@@ -170,10 +170,6 @@ public function generateNumProforma()
             $devis->commande = $validated['commande'];
             $devis->livraison = $validated['livraison'];
             $devis->validite = $validated['validite_offre'];
-            // $devis->delai = $validated['delai_type'];
-            // $devis->delai_jours = $validated['delai_jours'] ?? null;
-            // $devis->delai_de = $validated['delai_de'] ?? null;
-            // $devis->delai_a = $validated['delai_a'] ?? null;
             $devis->delai = $delaiFormatted; // Champ texte formaté
             $devis->total_ht = $validated['total_ht'];
             $devis->tva = $validated['tva'];
@@ -399,10 +395,6 @@ public function show($id)
             $devis->commande = $validated['commande'];
             $devis->livraison = $validated['livraison'];
             $devis->validite = $validated['validite_offre'];
-            $devis->delai_type = $validated['delai_type'];
-            $devis->delai_jours = $validated['delai_jours'] ?? null;
-            $devis->delai_de = $validated['delai_de'] ?? null;
-            $devis->delai_a = $validated['delai_a'] ?? null;
             $devis->delai = $delaiFormatted; // Champ texte formaté
             $devis->total_ht = $validated['total_ht'];
             $devis->tva = $validated['tva'];
