@@ -49,7 +49,7 @@ class Devis extends Model
 
     public function details()
     {
-        return $this->hasMany(DevisDetail::class);
+        return $this->hasMany(DevisDetail::class, 'devis_id');
     }
 
     public function designations()

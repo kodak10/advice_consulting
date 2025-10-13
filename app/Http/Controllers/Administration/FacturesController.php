@@ -293,12 +293,13 @@ public function store(Request $request)
             'num_bl' => 'nullable|string',
             'remise_speciale' => 'required|string',
             'type_facture' => 'required|in:Totale,Partielle',
-            'net_a_payer' => 'required|numeric|min:0',
+            'net_a_payer' => 'nullable|numeric|min:0',
             'montant' => $request->type_facture === 'Partielle' ? 'required|numeric|min:0' : 'nullable',
             'selected_items' => $request->type_facture === 'Partielle' ? 'required|array' : 'nullable',
             'selected_items.*' => $request->type_facture === 'Partielle' ? 'exists:devis_details,id' : 'nullable',
         ]);
-        // dd($validated);
+
+
 
         $devis = Devis::findOrFail($validated['devis_id']);
         $client = Client::findOrFail($validated['client_id']);
@@ -316,6 +317,8 @@ public function store(Request $request)
         // Calcul du montant HT
         $montantHT = DevisDetail::whereIn('id', $selectedItems)->sum('total');
         $montantTTC = $montantHT * (1 + ($devis->tva / 100));
+        $netAPayer = $validated['net_a_payer'] ?? $montantTTC;
+
 
         // Vérifier si une facture existe déjà pour ce devis
         $existingFacture = Facture::where('devis_id', $devis->id)->first();
@@ -360,9 +363,15 @@ public function store(Request $request)
             $customNumber = $this->generateCustomNumber();
             $facture->numero = $customNumber;
         }
-        if ($validated['net_a_payer'] > $montantTTC) {
-            return back()->withErrors(['net_a_payer' => 'Le montant net à payer ne peut pas dépasser le montant total.'])->withInput();
+        // if ($validated['net_a_payer'] > $montantTTC) {
+        //     return back()->withErrors(['net_a_payer' => 'Le montant net à payer ne peut pas dépasser le montant total.'])->withInput();
+        // }
+        if ($netAPayer > $montantTTC) {
+            return back()
+                ->withErrors(['net_a_payer' => 'Le montant net à payer ne peut pas dépasser le montant total.'])
+                ->withInput();
         }
+
 
 
         // Mise à jour des attributs de la facture
@@ -376,7 +385,9 @@ public function store(Request $request)
         $facture->status = 'En Attente du Daf';
         $facture->type_facture = $validated['type_facture'];
         $facture->montant = $montantTTC;
-        $facture->net_a_payer = $validated['net_a_payer'];
+        //$facture->net_a_payer = $validated['net_a_payer'];
+        $facture->net_a_payer = $netAPayer;
+
 
         if ($validated['type_facture'] === 'Partielle') {
             $facture->selected_items = json_encode($selectedItems);
