@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
+use App\Models\UserProfile;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Notifications\VerifyEmailNotification; // Assure-toi d'importer ta notification personnalisée
 
@@ -53,11 +54,15 @@ class User extends Authenticatable implements MustVerifyEmail
         $this->notify(new VerifyEmailNotification());
     }
 
+    function userProfile(){
+        return $this->hasOne(UserProfile::class);
+    }
+
     public function pays()
     {
         return $this->belongsTo(Pays::class);
     }
-    
+
 
     public function creator()
     {
