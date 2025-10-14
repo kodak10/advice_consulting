@@ -3,121 +3,65 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\Categorie;
 use App\Models\Designation;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class DesignationController extends Controller
 {
     public function index()
     {
-        $designations = Designation::orderBy('description', 'asc')->get();
-
+        $designations = Designation::with('categorie')->orderBy('reference')->get();
+        Log::info('designations:', $designations->toArray());
         return response()->json($designations);
+    }
+
+    public function getCategories()
+    {
+        $categories = Categorie::orderBy('nom', 'asc')->get();
+
+        return response()->json($categories);
     }
 
     public function store(Request $request)
     {
-        try {
-            $validatedData = $request->validate([
-                'reference'     => 'required|string|unique:designations,reference|max:20',
-                'libelle'        => 'required|string|max:100',
-                'description'   => 'nullable|string|max:150',
-                'prix_unitaire' => 'required|numeric|min:0',
-            ]);
+        $validatedData = $request->validate([
+            'reference'     => 'required|string|unique:designations,reference|max:20',
+            'libelle'       => 'required|string|max:100',
+            'description'   => 'nullable|string|max:150',
+            'prix_unitaire' => 'required|numeric|min:0',
+            'categorie_id'  => 'required|exists:categories,id',
+        ]);
 
-            $designation = new Designation([
-                'reference'     => $validatedData['reference'],
-                'libelle'        => $validatedData['libelle'],
-                'description'   => $validatedData['description'] ?? null,
-                'prix_unitaire' => $validatedData['prix_unitaire'],
-            ]);
+        $designation = Designation::create($validatedData);
 
-            $designation->save();
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Désignation ajouté avec succès!'
-            ]);
-
-        } catch (\Illuminate\Validation\ValidationException $e) {
-            return response()->json([
-                'success' => false,
-                'message' => "Une erreur est survenue lors de l'enregistrement.",
-                'errors'  => $e->errors()
-            ], 422);
-
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => "Une erreur est survenue lors de l'enregistrement.",
-                'errors'  => $e->getMessage()
-            ], 500);
-        }
+        return response()->json([
+            'success' => true,
+            'message' => 'Désignation ajoutée avec succès',
+            'data'    => $designation
+        ]);
     }
-
 
     public function update(Request $request, Designation $designation)
     {
-        // Validation
         $validatedData = $request->validate([
-            'reference' => 'required|string|max:255',
-            'libelle' => 'required|string|max:100',
-            'description' => 'nullable|string|max:150',
+            'reference'     => 'required|string|max:20|unique:designations,reference,' . $designation->id,
+            'libelle'       => 'required|string|max:100',
+            'description'   => 'nullable|string|max:150',
             'prix_unitaire' => 'required|numeric|min:0',
+            'categorie_id'  => 'required|exists:categories,id',
         ]);
 
-        // Mise à jour du designation
-        try {
-            $designation->update([
-                'reference' => $request->reference,
-                'libelle' => $request->libelle,
-                'description' => $request->description,
-                'prix_unitaire' => $request->prix_unitaire,
-            ]);
+        $designation->update($validatedData);
 
-            // Message de succès
-            session()->flash('success', 'Désignation mise à jour avec succès!');
-
-            return response()->json([
-                'success' => true,
-                'message' => 'Désignation mise à jour avec succès!'
-            ]);
-
-        } catch (ValidationException $e) {
-        
-            $errors = $e->errors();
-        
-            $errorMessages = [];
-            foreach ($errors as $fieldErrors) {
-                foreach ($fieldErrors as $message) {
-                    $errorMessages[] = $message;
-                }
-            }
-            $errorString = implode('<br>', $errorMessages);
-        
-            session()->flash('error', $errorString);
-        
-            // Retourner un message générique pour le toast
-            return response()->json([
-                'success' => false,
-                'message' => "Une erreur est survenue lors de la mise à jour.",
-                'errors'  => $errors
-            ], 422);
-        
-        } catch (\Exception $e) {
-            // Pour toute autre exception, on stocke le message détaillé en session
-            session()->flash('error', 'Une erreur est survenue : ' . $e->getMessage());
-        
-            // Et on renvoie un message générique pour le toast
-            return response()->json([
-                'success' => false,
-                'message' => "Une erreur est survenue lors de la mise à jour.",
-                'errors'  => $e->getMessage()
-            ], 500);
-        }
+        return response()->json([
+            'success' => true,
+            'message' => 'Désignation mise à jour avec succès',
+            'data'    => $designation
+        ]);
     }
 
-    // Supprimer une designation
     public function destroy(Designation $designation)
     {
         $designation->delete();

@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use App\Models\Devise;
@@ -14,7 +15,7 @@ class DeviseController extends Controller
     public function index()
     {
         try {
-            $devises = Devise::where('actif', true)->get();
+            $devises = Devise::get();
             
             return response()->json([
                 'success' => true,

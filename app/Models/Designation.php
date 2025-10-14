@@ -18,4 +18,9 @@ class Designation extends Model
         return $this->belongsToMany(Devis::class, 'devis_designation');
     }
 
+    public function categorie()
+    {
+        return $this->belongsTo(Categorie::class);
+    }
+
 }
