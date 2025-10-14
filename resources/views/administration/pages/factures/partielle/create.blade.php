@@ -37,39 +37,7 @@
 
                     <div class="mb-5">
                         <h5>Désignations</h5>
-                        {{-- <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th width="5%">✔️</th>
-                                    <th>Description</th>
-                                    <th width="10%">Quantité</th>
-                                    <th width="15%">Prix Unitaire</th>
-                                    <th width="15%">Total</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach($devis->details as $detail)
-                                <tr>
-                                    <td>
-                                        <input type="checkbox" 
-                                               class="form-check-input item-checkbox" 
-                                               name="selected_items[]" 
-                                               value="{{ $detail->id }}" 
-                                               id="item_{{ $detail->id }}"
-                                               data-price="{{ $detail->total }}">
-                                    </td>
-                                    <td>{{ $detail->designation->description }}</td>
-                                    <td>{{ $detail->quantite }}</td>
-                                    <td>{{ number_format($detail->prix_unitaire, 0, ',', ' ') }} {{ $devis->devise }}</td>
-                                    <td class="item-total">{{ number_format($detail->total, 0, ',', ' ') }} {{ $devis->devise }}</td>
-                                </tr>
-                                @endforeach
-                                <tr class="table-secondary">
-                                    <td colspan="4" class="text-end"><strong>Total sélectionné :</strong></td>
-                                    <td id="selected-total">0 {{ $devis->devise }}</td>
-                                </tr>
-                            </tbody>
-                        </table> --}}
+                       
                         <table class="table table-bordered">
                             <thead>
                                 <tr>

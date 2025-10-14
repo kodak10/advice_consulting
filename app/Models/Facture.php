@@ -4,12 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class Facture extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+        'libelle',
         'devis_id', 
         'user_id',  
         'num_bc',   
@@ -47,8 +49,15 @@ class Facture extends Model
     }
     public function details()
     {
-        return $this->hasMany(DevisDetail::class);  
+        return $this->devis ? $this->devis->details() : collect();
     }
+
+
+    public function paiements()
+    {
+        return $this->hasMany(Paiement::class);
+    }
+
 
     public function user()
     {

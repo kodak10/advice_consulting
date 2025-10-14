@@ -8,10 +8,7 @@ use App\Http\Controllers\Api\BanqueController;
 use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\DesignationController;
 use App\Http\Controllers\Api\DevisController;
-use App\Http\Controllers\DeviseController;
-use App\Http\Controllers\Api\ConfigurationController;
 use App\Http\Controllers\BienEtServicesController;
-use App\Models\Pays;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PictureController;
 use App\Http\Controllers\DemandeController;
@@ -25,12 +22,65 @@ use App\Http\Controllers\SettingController;
 use App\Http\Controllers\RoleController;
 use App\Models\TravelRequest;
 use App\Models\DemObjet;
+use App\Http\Controllers\Api\FactureController;
+use App\Http\Controllers\Api\DeviseController;
+use App\Http\Controllers\Api\ConfigurationController;
+use App\Http\Controllers\Api\ApiAuthController;
+use App\Models\Pays;
+use Spatie\Permission\Models\Role;
 
-Route::get('entreprise', [ConfigurationController::class, 'show']);
-Route::post('entreprise', [ConfigurationController::class, 'update']);
+/*
+|--------------------------------------------------------------------------
+| Routes publiques (non protégées)
+|--------------------------------------------------------------------------
+*/
 
-Route::get('/roles', function() {
-    return Spatie\Permission\Models\Role::all();
+Route::post('/login', [ApiAuthController::class, 'login']);
+Route::post('/forgot-password', [ApiAuthController::class, 'forgotPassword']);
+Route::post('/reset-password', [ApiAuthController::class, 'resetPassword']);
+
+/*
+|--------------------------------------------------------------------------
+| Routes protégées par Sanctum
+|--------------------------------------------------------------------------
+*/
+Route::middleware('auth:sanctum')->group(function () {
+
+    Route::post('/logout', [ApiAuthController::class, 'logout']);
+
+    Route::get('/user', function (Request $request) {
+        return $request->user();
+    });
+
+    Route::get('entreprise', [ConfigurationController::class, 'show']);
+    Route::post('entreprise', [ConfigurationController::class, 'update']);
+
+    Route::get('/roles', fn() => Role::all());
+    Route::get('/pays', fn() => Pays::all());
+
+    Route::resource('users', UserController::class);
+    Route::resource('banques', BanqueController::class);
+    Route::resource('clients', ClientController::class);
+    Route::resource('designations', DesignationController::class);
+    Route::get('/categories', [DesignationController::class, 'getCategories']);
+
+    Route::resource('devis', DevisController::class);
+    Route::get('/devis/{id}/details', [DevisController::class, 'getDetails']);
+    Route::get('/devis/{id}/pdf', [DevisController::class, 'getPdf']);
+    Route::put('/devis/{id}/send-devis', [DevisController::class, 'sendDevis']);
+    Route::put('/devis/{id}/refuse-devis', [DevisController::class, 'refuseDevis']);
+    Route::get('/devis/suivi', [DevisController::class, 'suivi']);
+
+    Route::get('/devises', [DeviseController::class, 'index']);
+    Route::get('/taux-change', [DeviseController::class, 'getTauxChange']);
+
+    Route::resource('factures', FactureController::class);
+    Route::get('/factures/{id}/pdf', [FactureController::class, 'getPdf']);
+    Route::post('/factures/{id}/paiements', [FactureController::class, 'ajouterPaiement']);
+    Route::get('/factures/{id}/paiements', [FactureController::class, 'getHistoriquePaiements']);
+    Route::put('/factures/{id}/validate', [FactureController::class, 'validateFacture']);
+    Route::put('/factures/{id}/refuse-facture', [FactureController::class, 'refuseFacture']);
+    Route::get('/factures/suivi', [FactureController::class, 'suivi']);
 });
 
 Route::get('/pays', function() {

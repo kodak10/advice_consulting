@@ -46,7 +46,7 @@ class ClientController extends Controller
 
         $validated = $request->validate([
             'nom' => 'required|string|max:255',
-            'numero_cc' => 'required|string|regex:/^[A-Z0-9 ]+$/|unique:clients,numero_cc,' . $client->id,
+            'numero_cc' => 'required|string|regex:/^[A-Z0-9 ]+$/',
             'email' => 'nullable|email|max:255',
             'telephone' => 'nullable|string|max:50',
             'adresse' => 'nullable|string|max:255',
