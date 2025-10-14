@@ -13,24 +13,21 @@ return new class extends Migration
     {
         Schema::create('travel_requests', function (Blueprint $table) {
             $table->id();
-            $table->string('label'); // Nom & prénom
+            $table->string('nom_prenom'); // Nom & prénom
             $table->date('date');    // Date de la demande
             $table->string('lieu');
-            $table->date('du');
-            $table->date('au');
+            $table->date('debut');
+            $table->date('fin');
             $table->string('motif');
-            $table->decimal('montant_c', 10, 2); // Montant demandé (chiffre)
-            $table->string('en_lettre');         // Montant en lettres
-            $table->decimal('billet', 10, 2);
+            $table->decimal('montant_en_chiffre', 10, 2); // Montant demandé (chiffre)
+            $table->string('montant_en_lettre');         // Montant en lettres
+            $table->decimal('billet_avion', 10, 2);
             $table->decimal('cheque', 10, 2);
-            $table->decimal('hebergement', 10, 2);
-            $table->decimal('espece', 10, 2);
-            $table->decimal('total', 10, 2);
-            $table->integer('statut')->default('0');
-            $table->foreignId('users_id')->contrained()->onDelect('cascade')->nullable();
-            $table->foreignId('direction_id')->contrained()->onDelect('cascade')->nullable();
-            $table->foreignId('filliale_id')->contrained()->onDelect('cascade')->nullable();
-            $table->foreignId('type_demandes_id')->contrained()->onDelect('cascade')->nullable();
+            $table->decimal('hebergement_repars', 10, 2);
+            $table->decimal('especes', 10, 2);
+            $table->decimal('totale', 10, 2);
+            $table->string('pdf_path')->nullable();
+            $table->string('status');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -13,24 +13,21 @@ class TravelRequest extends Model
     protected $table = 'travel_requests';
 
     protected $fillable = [
-        'label',
-        'date',
+        'nom_prenom', // Nom & prénom
+        'date',    // Date de la demande
         'lieu',
-        'du',
-        'au',
+        'debut',
+        'fin',
         'motif',
-        'montant_c',
-        'en_lettre',
-        'billet',
+        'montant_en_chiffre', // Montant demandé (chiffre)
+        'montant_en_lettre',         // Montant en lettres
+        'billet_avion',
         'cheque',
-        'hebergement',
-        'espece',
-        'total',
-        'users_id',
-        'direction_id',
-        'filliale_id',
-        'type_demandes_id',
-        'statut'
+        'hebergement_repars',
+        'especes',
+        'totale',
+        'status',
+        'pdf_path',
     ];
 
     public function accords()

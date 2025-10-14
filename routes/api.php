@@ -8,14 +8,14 @@ use App\Http\Controllers\Api\BanqueController;
 use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\DesignationController;
 use App\Http\Controllers\Api\DevisController;
-use App\Http\Controllers\Api\DeviseController;
+use App\Http\Controllers\DeviseController;
 use App\Http\Controllers\Api\ConfigurationController;
 use App\Http\Controllers\BienEtServicesController;
 use App\Models\Pays;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PictureController;
 use App\Http\Controllers\DemandeController;
-use App\Http\Controllers\TravelRequestController;
+use App\Http\Controllers\Api\TravelRequestController;
 use App\Http\Controllers\CircuitOrganeController;
 use App\Http\Controllers\CongerController;
 use App\Http\Controllers\DemandePermissionsController;
@@ -122,12 +122,10 @@ Route::get('/change-password', [ProfileController::class, 'showChangePasswordFor
         Route::get('/travel/imprimer/{id}',[TravelRequestController::class, 'imprime']);
         Route::get('/travelrequest/create',[TravelRequestController::class, 'create']);
         Route::get('/demande/visualiser/view/{id}',[TravelRequestController::class, 'visualiser']);
-        Route::patch('/travelrequest/update/{Tavel}',[TravelRequestController::class, 'update'])->name("travelrequest.update");
+        Route::get('/travel/{id}', [TravelRequestController::class, 'show']);
+        Route::put('/travel/{id}',[TravelRequestController::class, 'update'])->name("travelrequest.update");
         Route::delete('/travelrequest/delete/{id}', [TravelRequestController::class, 'destroy'])->name('travelrequest.destroy');
-        Route::post('/travel-request', [TravelRequestController::class, 'generatePDF'])->name('travel_request.pdf');
-        Route::get('/imprimer/pdf', [TravelRequestController::class, 'imprimer']);
-        Route::get('/imprimer/document', [TravelRequestController::class, 'imprimerdoc'])->name('imprime');
-
+        Route::get('/travel/{id}/pdf', [TravelRequestController::class, 'getPdf']);
     // route de pages de tratement de demande
         Route::get('/traiter_demande/visualiser/view/{id}',[DemandeController::class, 'visualiser']);
         Route::get('/traiter_demande', function () {return view('/pages/traiter_demande');})->name('traiter_demande');
