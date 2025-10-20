@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Models\UserProfile;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class CongerController extends Controller
 {
@@ -634,29 +635,47 @@ class CongerController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, conger $conger)
+    public function update(Request $request, $conger)
     {
         $conger = conger::findOrFail($conger);
 
         $user = User::with('userProfile')->find(1);
         // $request['directions_id'] = $user->userProfile->directions_id;
-        $validated  = $request->validate([
-            'objet' => 'string|nullable',
-            'montant_demande' => 'integer|nullable',
+        $rules = [
             'motif_permi' => 'string|nullable',
             'motif' => 'string|nullable',
-            'detail' => 'string|nullable',
-            'payement' => 'integer|nullable',
             'lieu_travail' => 'string|nullable',
-            'moment' => 'string|nullable',
-            'periode' => 'string|nullable',
-            'nombre_de_jours'=>'integer|nullable',
+            'heure_debut' => 'string|nullable',
+            'heure_fin' => 'string|nullable',
             'date_depart' => 'date|nullable',
             'date_fin' => 'date|nullable',
-            'type' => 'string|nullable',
-            'directions_id'=>'integer|nullable',
-            'type_demandes_id'=>'integer|nullable'
-        ]);
+            'nombre_de_jours'=>'integer|nullable',
+            'user_id'=>'integer|nullable',
+            'direction_id'=>'integer|nullable',
+            'filliale_id'=>'integer|nullable',
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                Log::warning('Erreur de validation TravelRequest Update:', $validator->errors()->toArray());
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Erreur de validation',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $validated = $validator->validated();
+
+        $conger->motif_permi = $validated['motif_permi'];
+        $conger->motif = $validated['motif'];
+        $conger->date_depart = $validated['date_depart'];
+        $conger->date_fin = $validated['date_fin'];
+        $conger->lieu_travail = $validated['lieu_travail'];
+        $conger->user_id = $validated['user_id'];
+        $conger->direction_id = $validated['direction_id'];
+        $conger->filliale_id = $validated['filliale_id'];
 
         // dd($Demande);
 
@@ -783,9 +802,25 @@ class CongerController extends Controller
         // envoie de notification pour validation
         // $this->notification($demande->id);
 
-        $conger->update($validated);
+        $conger->save();
 
         return response()->json(['message' => 'Demande mis à jour avec succès']);
+    }
+
+    public function updateStatut(Request $request, $id)
+    {
+        $request->validate([
+            'statut' => 'required|in:0,1,2'
+        ]);
+
+        $conger = conger::findOrFail($id);
+        $conger->statut = $request->statut;
+        $conger->save();
+
+        return response()->json([
+            'message' => 'Statut mis à jour avec succès',
+            'absence' => $conger
+        ]);
     }
 
     /**

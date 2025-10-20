@@ -160,7 +160,7 @@ class TravelRequestController extends Controller
             $travel->montant_en_lettre = $validated['montant_en_lettre'];; // Champ texte formaté
             $travel->billet_avion = $validated['billet_avion'];
             $travel->cheque = $validated['cheque'];
-            $travel->status = "En Attente de validation";
+            $travel->status = "Brouillon";
             $travel->hebergement_repars = $validated['hebergement_repars'];
             $travel->Especes = $validated['especes'];
             $travel->totale = $validated['totale'];
@@ -331,6 +331,68 @@ class TravelRequestController extends Controller
         }
     }
 
+    public function sendTravel($id)
+    {
+        try {
+            // 🔹 Récupérer le devis
+            $travel = TravelRequest::findOrFail($id);
+            $creator = $travel->user_id;
+
+            // 🔹 Vérifier le statut
+            if ($travel->status !== 'En Attente de validation') {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Le Travel request ne peut être envoyé que s'il est un Brouillon.",
+                ], 400);
+            }
+
+            // 🔹 Vérifier l’existence du PDF
+            $pdfPathTravels = storage_path('app/public/' . $travel->pdf_path);
+            if (!file_exists($pdfPathTravels)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => "Le fichier PDF du Travel request n'existe pas.",
+                ], 404);
+            }
+
+            // 🔹 Récupérer le pays de l'utilisateur connecté
+            // $userCountry = Auth::user()->pays_id;
+
+            // 🔹 Rôles et notifications
+            // $comptables = User::whereHas('roles', fn($q) => $q->where('name', 'Comptable'))
+            //     ->where('pays_id', $userCountry)
+            //     ->get();
+
+            // $dafsAndComptables = User::whereHas('roles', fn($q) => $q->whereIn('name', ['DAF', 'DG', 'Comptable']))
+            //     ->get();
+
+            // $usersToNotify = $comptables->merge($dafsAndComptables)->unique('id');
+            // Notification::send($usersToNotify, new DevisCreatedNotification($devis));
+
+            // 🔹 Mettre à jour le statut
+            $travel->status = 'Validé';
+            $travel->save();
+
+            // 🔹 Retour JSON vers Angular
+            return response()->json([
+                'success' => true,
+                'message' => 'Travel request Envoyée avec succès.',
+                'data' => [
+                    'travel_id' => $travel->id,
+                    'status' => $travel->status,
+                ],
+            ], 200);
+
+        } catch (\Exception $e) {
+            Log::error('Erreur approbation Travel request : ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => "Une erreur est survenue lors de l'envoi du Travel request.",
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
 
     /**
      * Formater le délai en fonction du type
@@ -396,13 +458,42 @@ class TravelRequestController extends Controller
      */
     public function getPdf($id)
     {
-        $devis = Devis::findOrFail($id);
+        $travel = TravelRequest::findOrFail($id);
 
-        if (!Storage::disk('public')->exists($devis->pdf_path)) {
+        if (!Storage::disk('public')->exists($travel->pdf_path)) {
             return response()->json(['error' => 'PDF non trouvé'], 404);
         }
 
-        return response()->file(Storage::disk('public')->path($devis->pdf_path));
+        return response()->file(Storage::disk('public')->path($travel->pdf_path));
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $travel = TravelRequest::findOrFail($id);
+
+            // Vérifier le statut
+            if ($travel->status !== 'Brouillon') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Seuls les proforma au statut "Brouillon" peuvent être supprimées.'
+                ], 400);
+            }
+
+            $travel->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Devis supprimé avec succès.'
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Une erreur est survenue lors de la suppression du devis.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
 }

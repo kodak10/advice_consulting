@@ -119,7 +119,8 @@ Route::get('/change-password', [ProfileController::class, 'showChangePasswordFor
             Route::resource('/edit',BienEtServicesController::class);
             Route::resource('/create',BienEtServicesController::class);
             Route::resource('/visualiser/view',BienEtServicesController::class);
-            Route::patch('/update/{bien_et_services}',[BienEtServicesController::class, 'update']);
+            Route::put('/update/{bien_et_services}',[BienEtServicesController::class, 'update']);
+            Route::patch('/{id}/statut', [BienEtServicesController::class, 'updateStatut']);
             Route::delete('/delete/{id}', [BienEtServicesController::class, 'destroy']);
             // Route::get('/demandes/filter', [DemandeController::class, 'filter'])->name('demandes.filter');
             // teste de l'envoie de mail de demande
@@ -132,7 +133,8 @@ Route::get('/change-password', [ProfileController::class, 'showChangePasswordFor
             Route::resource('/editabsence',AbsencesController::class);
             Route::resource('/createabsence',AbsencesController::class);
             Route::resource('/visualiser/views',AbsencesController::class);
-            Route::patch('/updates/{Absence}',[AbsencesController::class, 'update']);
+            Route::put('/updates/{Absence}',[AbsencesController::class, 'update']);
+            Route::patch('/{id}/statut', [AbsencesController::class, 'updateStatut']);
             Route::delete('/deletes/{id}', [AbsencesController::class, 'destroy']);
             // Route::get('/demandes/filter', [DemandeController::class, 'filter'])->name('demandes.filter');
             // teste de l'envoie de mail de demande
@@ -145,7 +147,8 @@ Route::get('/change-password', [ProfileController::class, 'showChangePasswordFor
             Route::resource('/editconger',CongerController::class);
             Route::resource('/createconger',CongerController::class);
             // Route::resource('/visualiser/views',CongerController::class);
-            Route::patch('/update/conger/{conger}',[CongerController::class, 'update']);
+            Route::put('/update/conger/{conger}',[CongerController::class, 'update']);
+            Route::patch('/{id}/statut', [CongerController::class, 'updateStatut']);
             Route::delete('/delete/conger/{id}', [CongerController::class, 'destroy']);
             // Route::get('/demandes/filter', [DemandeController::class, 'filter'])->name('demandes.filter');
             // teste de l'envoie de mail de demande
@@ -157,7 +160,8 @@ Route::get('/change-password', [ProfileController::class, 'showChangePasswordFor
             Route::resource('/editpermission',DemandePermissionsController::class);
             Route::resource('/createpermission',DemandePermissionsController::class);
             // Route::resource('/visualiser/views',CongerController::class);
-            Route::patch('/updates/permission/{demandepermissions}',[DemandePermissionsController::class, 'update']);
+            Route::put('/updates/permission/{demandepermissions}',[DemandePermissionsController::class, 'update']);
+            Route::patch('/{id}/statut', [DemandePermissionsController::class, 'updateStatut']);
             Route::delete('/deletes/permission/{id}', [DemandePermissionsController::class, 'destroy']);
             // Route::get('/demandes/filter', [DemandeController::class, 'filter'])->name('demandes.filter');
             // teste de l'envoie de mail de demande
@@ -166,16 +170,18 @@ Route::get('/change-password', [ProfileController::class, 'showChangePasswordFor
         Route::get('/calculer',[DemandeController::class, 'calculerDateFin']);
 
         // route pour les demandes de voyages
-        Route::get('/travel',[TravelRequestController::class, 'index'])->name('travel');
-        Route::post('/travel', [TravelRequestController::class, 'store'])->name('travel_request');
+        Route::get('/travel',[TravelRequestController::class, 'index']);
+        Route::post('/travel', [TravelRequestController::class, 'store']);
         Route::get('/travel/edit/{id}',[TravelRequestController::class, 'edit']);
-        Route::get('/travel/imprimer/{id}',[TravelRequestController::class, 'imprime']);
-        Route::get('/travelrequest/create',[TravelRequestController::class, 'create']);
-        Route::get('/demande/visualiser/view/{id}',[TravelRequestController::class, 'visualiser']);
+        Route::get('/travel/{id}/pdf', [TravelRequestController::class, 'getPdf']);
         Route::get('/travel/{id}', [TravelRequestController::class, 'show']);
+        Route::put('/travel/{id}/send-travel', [TravelRequestController::class, 'sendTravel']);
+        Route::put('/travel/{id}/refuse-travel', [TravelRequestController::class, 'refuseDevis']);
         Route::put('/travel/{id}',[TravelRequestController::class, 'update'])->name("travelrequest.update");
         Route::delete('/travelrequest/delete/{id}', [TravelRequestController::class, 'destroy'])->name('travelrequest.destroy');
         Route::get('/travel/{id}/pdf', [TravelRequestController::class, 'getPdf']);
+
+
     // route de pages de tratement de demande
         Route::get('/traiter_demande/visualiser/view/{id}',[DemandeController::class, 'visualiser']);
         Route::get('/traiter_demande', function () {return view('/pages/traiter_demande');})->name('traiter_demande');

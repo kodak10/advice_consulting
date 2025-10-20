@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('payement')->nullable();
             $table->string('lieu_travail')->nullable();
             $table->json('procces_valide_result')->nullable();
-            $table->integer('statut')->default('0');
+            $table->integer('statut')->default('0')->comment('0=en attente, 1=validée, 2=refusée');
             $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('direction_id')->nullable();
             $table->unsignedBigInteger('filliale_id')->nullable();

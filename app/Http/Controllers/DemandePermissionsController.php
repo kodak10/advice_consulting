@@ -13,6 +13,7 @@ use App\Models\User;
 use App\Models\UserProfile;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class DemandePermissionsController extends Controller
 {
@@ -634,29 +635,47 @@ class DemandePermissionsController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, demandepermissions $demandepermissions)
+    public function update(Request $request, $demandepermissions)
     {
         $demandepermissions = demandepermissions::findOrFail($demandepermissions);
 
         $user = User::with('userProfile')->find(1);
         // $request['directions_id'] = $user->userProfile->directions_id;
-        $validated  = $request->validate([
-            'objet' => 'string|nullable',
-            'montant_demande' => 'integer|nullable',
+        $rules = [
             'motif_permi' => 'string|nullable',
             'motif' => 'string|nullable',
-            'detail' => 'string|nullable',
-            'payement' => 'integer|nullable',
             'lieu_travail' => 'string|nullable',
-            'moment' => 'string|nullable',
-            'periode' => 'string|nullable',
-            'nombre_de_jours'=>'integer|nullable',
+            'heure_debut' => 'string|nullable',
+            'heure_fin' => 'string|nullable',
             'date_depart' => 'date|nullable',
             'date_fin' => 'date|nullable',
-            'type' => 'string|nullable',
-            'directions_id'=>'integer|nullable',
-            'type_demandes_id'=>'integer|nullable'
-        ]);
+            'nombre_de_jours'=>'integer|nullable',
+            'user_id'=>'integer|nullable',
+            'direction_id'=>'integer|nullable',
+            'filliale_id'=>'integer|nullable',
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                Log::warning('Erreur de validation TravelRequest Update:', $validator->errors()->toArray());
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Erreur de validation',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $validated = $validator->validated();
+
+        $demandepermissions->motif_permi = $validated['motif_permi'];
+        $demandepermissions->motif = $validated['motif'];
+        $demandepermissions->date_depart = $validated['date_depart'];
+        $demandepermissions->date_fin = $validated['date_fin'];
+        $demandepermissions->lieu_travail = $validated['lieu_travail'];
+        $demandepermissions->user_id = $validated['user_id'];
+        $demandepermissions->direction_id = $validated['direction_id'];
+        $demandepermissions->filliale_id = $validated['filliale_id'];
 
         // dd($Demande);
 
@@ -783,9 +802,25 @@ class DemandePermissionsController extends Controller
         // envoie de notification pour validation
         // $this->notification($demande->id);
 
-        $demandepermissions->update($validated);
+        $demandepermissions->save();
 
         return response()->json(['message' => 'Demande mis à jour avec succès']);
+    }
+
+    public function updateStatut(Request $request, $id)
+    {
+        $request->validate([
+            'statut' => 'required|in:0,1,2'
+        ]);
+
+        $demandepermissions = demandepermissions::findOrFail($id);
+        $demandepermissions->statut = $request->statut;
+        $demandepermissions->save();
+
+        return response()->json([
+            'message' => 'Statut mis à jour avec succès',
+            'absence' => $demandepermissions
+        ]);
     }
 
     /**

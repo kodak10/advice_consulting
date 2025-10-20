@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\bien_et_services;
+use App\Models\demande;
 use App\Models\Document;
 use App\Helpers\ImageManager;
 use App\Models\Notification;
@@ -13,6 +14,7 @@ use App\Models\User;
 use App\Models\UserProfile;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class BienEtServicesController extends Controller
 {
@@ -630,29 +632,44 @@ class BienEtServicesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, bien_et_services $bien_et_services)
+    public function update(Request $request, $bien_et_services)
     {
         $bien_et_services = bien_et_services::findOrFail($bien_et_services);
 
         $user = User::with('userProfile')->find(1);
         // $request['directions_id'] = $user->userProfile->directions_id;
-        $validated  = $request->validate([
-            'objet' => 'string|nullable',
+        $rules = [
             'montant_demande' => 'integer|nullable',
             'motif_permi' => 'string|nullable',
             'motif' => 'string|nullable',
-            'detail' => 'string|nullable',
             'payement' => 'integer|nullable',
             'lieu_travail' => 'string|nullable',
-            'moment' => 'string|nullable',
-            'periode' => 'string|nullable',
-            'nombre_de_jours'=>'integer|nullable',
-            'date_depart' => 'date|nullable',
-            'date_fin' => 'date|nullable',
-            'type' => 'string|nullable',
-            'directions_id'=>'integer|nullable',
-            'type_demandes_id'=>'integer|nullable'
-        ]);
+            'user_id'=>'integer|nullable',
+            'direction_id'=>'integer|nullable',
+            'filliale_id'=>'integer|nullable',
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+
+            if ($validator->fails()) {
+                Log::warning('Erreur de validation TravelRequest Update:', $validator->errors()->toArray());
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Erreur de validation',
+                    'errors' => $validator->errors()
+                ], 422);
+            }
+
+            $validated = $validator->validated();
+
+        $bien_et_services->montant_demande = $validated['montant_demande'];
+        $bien_et_services->motif_permi = $validated['motif_permi'];
+        $bien_et_services->motif = $validated['motif'];
+        $bien_et_services->payement = $validated['payement'];
+        $bien_et_services->lieu_travail = $validated['lieu_travail'];
+        $bien_et_services->user_id = $validated['user_id'];
+        $bien_et_services->direction_id = $validated['direction_id'];
+        $bien_et_services->filliale_id = $validated['filliale_id'];
 
         // dd($Demande);
 
@@ -778,10 +795,25 @@ class BienEtServicesController extends Controller
         // dd($dem->id);
         // envoie de notification pour validation
         // $this->notification($demande->id);
-
-        $bien_et_services->update($validated);
+        $bien_et_services->save();
 
         return response()->json(['message' => 'Demande mis à jour avec succès']);
+    }
+
+    public function updateStatut(Request $request, $id)
+    {
+        $request->validate([
+            'statut' => 'required|in:0,1,2'
+        ]);
+
+        $bien_et_services = bien_et_services::findOrFail($id);
+        $bien_et_services->statut = $request->statut;
+        $bien_et_services->save();
+
+        return response()->json([
+            'message' => 'Statut mis à jour avec succès',
+            'absence' => $bien_et_services
+        ]);
     }
 
     /**
