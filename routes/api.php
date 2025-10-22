@@ -27,6 +27,7 @@ use App\Http\Controllers\Api\DeviseController;
 use App\Http\Controllers\Api\ConfigurationController;
 use App\Http\Controllers\Api\ApiAuthController;
 use App\Models\Pays;
+use Spatie\Permission\Contracts\Role as ContractsRole;
 use Spatie\Permission\Models\Role;
 
 /*
@@ -85,6 +86,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::get('/pays', function() {
     return Pays::all();
+});
+Route::get('/roles', function() {
+    return Role::all();
 });
 
 Route::resource('users', UserController::class);
@@ -275,9 +279,9 @@ Route::get('/change-password', [ProfileController::class, 'showChangePasswordFor
 
         Route::get('/traceability', [DemandeController::class, 'indexhistorique'])->name('traceability.index');
 
-        Route::get('/roles-permissions', [RoleController::class, 'manageRolesAndPermissions'])
-        ->name('roles.permissions');
-        Route::resource('roles', RoleController::class)->except(['show']);
+        // Route::get('/roles-permissions', [RoleController::class, 'manageRolesAndPermissions'])
+        // ->name('roles.permissions');
+        // Route::resource('roles', RoleController::class)->except(['show']);
 
         Route::get('/profiles',[ProfileController::class, 'index'])->name('profiles');
 

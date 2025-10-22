@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('missions', function (Blueprint $table) {
-           $table->id();
+            $table->id();
             $table->integer('montant_demande')->nullable();
             $table->string('motif_permi')->nullable();
             $table->string('motif')->nullable();

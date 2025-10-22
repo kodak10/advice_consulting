@@ -49,6 +49,14 @@ class User extends Authenticatable implements MustVerifyEmail
             'password' => 'hashed',
         ];
     }
+
+    protected static function booted()
+    {
+        static::deleting(function ($user) {
+            $user->profile()->delete();
+        });
+    }
+
     public function sendEmailVerificationNotification()
     {
         $this->notify(new VerifyEmailNotification());
@@ -63,6 +71,10 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->belongsTo(Pays::class);
     }
 
+    public function profile()
+    {
+        return $this->hasOne(UserProfile::class, 'user_id');
+    }
 
     public function creator()
     {

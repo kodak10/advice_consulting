@@ -20,7 +20,8 @@ class RoleController extends Controller
     {
         $roles = Role::with('permissions')->get();
         $permissions = Permission::all();
-        return view('roles.index', compact('roles', 'permissions'));
+        // return view('roles.index', compact('roles', 'permissions'));
+        return response()->json($roles, $permissions);
     }
 
     public function edit(Role $role)

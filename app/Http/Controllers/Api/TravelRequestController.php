@@ -160,7 +160,7 @@ class TravelRequestController extends Controller
             $travel->montant_en_lettre = $validated['montant_en_lettre'];; // Champ texte formaté
             $travel->billet_avion = $validated['billet_avion'];
             $travel->cheque = $validated['cheque'];
-            $travel->status = "Brouillon";
+            $travel->status = "En Attente de validation";
             $travel->hebergement_repars = $validated['hebergement_repars'];
             $travel->Especes = $validated['especes'];
             $travel->totale = $validated['totale'];
